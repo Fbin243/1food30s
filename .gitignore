@@ -46,8 +46,6 @@ local.properties
 
 # Liên quan đến Gradle
 .gradle/
-gradle/
 gradlew.bat
-gradlew
 
 
