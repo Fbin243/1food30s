@@ -22,3 +22,30 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# *********** Phần tự thêm ********************
+
+# Thư mục build
+build/
+
+# Thư mục out
+out/
+
+# File `local.properties`
+local.properties
+
+# File cấu hình của IDE
+*.iml
+.idea/
+
+# Cho macOS
+.DS_Store
+
+# File của các bản sao lưu
+*.bak
+
+# Liên quan đến Gradle
+.gradle/
+gradlew.bat
+
+
