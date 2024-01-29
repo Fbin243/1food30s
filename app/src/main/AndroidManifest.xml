@@ -13,13 +13,18 @@
         android:theme="@style/Theme.App1food30s"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <!-- Declaration for AdminStatisticsActivity -->
+        <activity android:name=".ui.admin_statistics.AdminStatisticsActivity"
+            android:exported="true">
+            <!-- If there are any specific intent-filters for AdminStatisticsActivity, they should be declared here -->
         </activity>
     </application>
 
