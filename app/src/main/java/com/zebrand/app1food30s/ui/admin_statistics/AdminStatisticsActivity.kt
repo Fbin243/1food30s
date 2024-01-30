@@ -23,7 +23,14 @@ class AdminStatisticsActivity : AppCompatActivity() {
         myGridRecyclerView = findViewById(R.id.my_grid_recycler_view)
         // Create an adapter for the grid RecyclerView with predefined data
         // Modified to contain 6 elements for a 3x2 grid
-        val myGridAdapter = MyGridAdapter(arrayOf("Data 1", "Data 2", "Data 3", "Data 4", "Data 5", "Data 6"))
+        val myGridAdapter = MyGridAdapter(
+            arrayOf(
+                MyGridAdapter.GridItem("Text 1", 1, R.drawable.image),
+                MyGridAdapter.GridItem("Text 2", 2, R.drawable.image),
+                MyGridAdapter.GridItem("Text 3", 3, R.drawable.image),
+                MyGridAdapter.GridItem("Text 4", 4, R.drawable.image),
+            )
+        )
         // Setting the adapter to the RecyclerView
         myGridRecyclerView.adapter = myGridAdapter
         // Define the layout as a GridLayoutManager with 2 columns
