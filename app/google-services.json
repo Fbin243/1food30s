@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "225251472016",
+    "project_id": "food30s",
+    "storage_bucket": "food30s.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:225251472016:android:50216ea6a0c46b83ca1e15",
+        "android_client_info": {
+          "package_name": "com.zebrand.app1food30s"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDE5wwxXsKdni0UQyjzUUq5MusrDkg0do8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
