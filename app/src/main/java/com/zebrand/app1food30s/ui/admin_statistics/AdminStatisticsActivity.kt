@@ -2,6 +2,7 @@ package com.zebrand.app1food30s.ui.admin_statistics
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,19 +34,22 @@ class AdminStatisticsActivity : AppCompatActivity() {
                 )
             )
             myGridRecyclerView.adapter = myGridAdapter
+            val spanCount = 2 // Number of columns
+            myGridRecyclerView.layoutManager = GridLayoutManager(this@AdminStatisticsActivity, spanCount)
+            val spacing = 60 // Spacing in pixels
+            val includeEdge = true
+            myGridRecyclerView.addItemDecoration(GridSpacingItemDecoration(spanCount, spacing, includeEdge))
+            myGridRecyclerView.setHasFixedSize(true)
+            // Ensure the RecyclerView is updated
         }
 
-        // Define the layout as a GridLayoutManager with 2 columns
-        val spanCount = 2 // Number of columns
-        myGridRecyclerView.layoutManager = GridLayoutManager(this, spanCount)
-
-        // Add item decoration for spacing
-        val spacing = 60 // Spacing in pixels
-        val includeEdge = true
-        myGridRecyclerView.addItemDecoration(GridSpacingItemDecoration(spanCount, spacing, includeEdge))
-
-        // Improve performance by setting to a fixed size, as changes in content do not change the layout size
-        myGridRecyclerView.setHasFixedSize(true)
+//        // Example of dynamically updating the TextViews
+//        val textViewValue1: TextView = findViewById(R.id.textViewValue1)
+//        val textViewValue2: TextView = findViewById(R.id.textViewValue2)
+//
+//        // Set the text based on your data
+//        textViewValue1.text = "10" // Example value
+//        textViewValue2.text = "20" // Example value
     }
 }
 
