@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Value 2"
-            app:layout_constraintTop_toBottomOf="@id/textViewNumber2"
+            app:layout_constraintTop_toBottomOf="@id/textViewValue1"
             app:layout_constraintStart_toEndOf="@id/textViewNumber2" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
+import com.yourpackage.name.Customer
+import com.yourpackage.name.FirestoreUtils
+import com.yourpackage.name.FirestoreUtils.addOrderForCustomer
 import com.zebrand.app1food30s.R
 
 class AdminStatisticsActivity : AppCompatActivity() {
@@ -50,18 +53,40 @@ class AdminStatisticsActivity : AppCompatActivity() {
 //        // Set the text based on your data
 //        textViewValue1.text = "10" // Example value
 //        textViewValue2.text = "20" // Example value
-    }
-}
 
-private fun getTotalNumberOfOrders(callback: (Int) -> Unit) {
-    val db = FirebaseFirestore.getInstance()
-    db.collection("orders").get()
-        .addOnSuccessListener { documents ->
-            val totalOrders = documents.size()
-            callback(totalOrders)
+        val newCustomer = Customer(name = "Jane Doe", email = "jane.doe@example.com")
+        FirestoreUtils.addNewCustomer(newCustomer) { customerId ->
+            // This block will be executed once the customer is successfully added.
+            // The customerId parameter contains the auto-generated ID of the new customer.
+            println("New customer added with ID: $customerId")
+
+            // Here, you can proceed to add an order for the new customer using the customerId.
+            // For example:
+            val orderData = mapOf(
+                "date" to "2023-01-01",
+                "status" to "Completed",
+                "totalAmount" to 150
+            )
+            val items = listOf(
+                mapOf("productId" to "prod123", "quantity" to 2, "price" to 50),
+                mapOf("productId" to "prod456", "quantity" to 1, "price" to 50)
+            )
+
+            // Assuming you have defined a function to add an order for a customer
+            FirestoreUtils.addOrderForCustomer(customerId, orderData, items)
         }
-        .addOnFailureListener { exception ->
-            Log.w("Firestore", "Error getting documents: ", exception)
-            callback(0) // Handle error case as needed
-        }
+    }
+
+    private fun getTotalNumberOfOrders(callback: (Int) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("orders").get()
+            .addOnSuccessListener { documents ->
+                val totalOrders = documents.size()
+                callback(totalOrders)
+            }
+            .addOnFailureListener { exception ->
+                Log.w("Firestore", "Error getting documents: ", exception)
+                callback(0) // Handle error case as needed
+            }
+    }
 }
