@@ -26,12 +26,36 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
+        <EditText
+            android:id="@+id/editTextNumberOfDays"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="12dp"
+            android:paddingBottom="12dp"
+            android:hint="Enter number of days"
+            android:inputType="number"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <Button
+            android:id="@+id/calculateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Calculate Revenue"
+            app:layout_constraintTop_toBottomOf="@id/editTextNumberOfDays"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <TextView
             android:id="@+id/textViewNumber1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Number 1: "
-            app:layout_constraintTop_toTopOf="parent"
+            android:text="Total Revenue Last X Days: "
+            app:layout_constraintTop_toBottomOf="@id/calculateButton"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
@@ -39,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Value 1"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textViewNumber1"
             app:layout_constraintStart_toEndOf="@id/textViewNumber1" />
 
         <TextView

@@ -2,6 +2,8 @@ package com.zebrand.app1food30s.ui.admin_statistics
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -12,6 +14,8 @@ import com.yourpackage.name.Customer
 import com.yourpackage.name.FirestoreUtils
 import com.yourpackage.name.FirestoreUtils.addOrderForCustomer
 import com.zebrand.app1food30s.R
+import com.google.firebase.firestore.Query
+import java.util.*
 
 class AdminStatisticsActivity : AppCompatActivity() {
     private lateinit var myGridRecyclerView: RecyclerView
@@ -54,26 +58,39 @@ class AdminStatisticsActivity : AppCompatActivity() {
 //        textViewValue1.text = "10" // Example value
 //        textViewValue2.text = "20" // Example value
 
-        val newCustomer = Customer(name = "Jane Doe", email = "jane.doe@example.com")
-        FirestoreUtils.addNewCustomer(newCustomer) { customerId ->
-            // This block will be executed once the customer is successfully added.
-            // The customerId parameter contains the auto-generated ID of the new customer.
-            println("New customer added with ID: $customerId")
+//        val newCustomer = Customer(name = "Jane Doe", email = "jane.doe@example.com")
+//        FirestoreUtils.addNewCustomer(newCustomer) { customerId ->
+//            // This block will be executed once the customer is successfully added.
+//            // The customerId parameter contains the auto-generated ID of the new customer.
+//            println("New customer added with ID: $customerId")
+//
+//            // Here, you can proceed to add an order for the new customer using the customerId.
+//            // For example:
+//            val orderData = mapOf(
+//                "date" to "2023-01-01",
+//                "status" to "Completed",
+//                "totalAmount" to 150
+//            )
+//            val items = listOf(
+//                mapOf("productId" to "prod123", "quantity" to 2, "price" to 50),
+//                mapOf("productId" to "prod456", "quantity" to 1, "price" to 50)
+//            )
+//
+//            // Assuming you have defined a function to add an order for a customer
+//            FirestoreUtils.addOrderForCustomer(customerId, orderData, items)
+//        }
 
-            // Here, you can proceed to add an order for the new customer using the customerId.
-            // For example:
-            val orderData = mapOf(
-                "date" to "2023-01-01",
-                "status" to "Completed",
-                "totalAmount" to 150
-            )
-            val items = listOf(
-                mapOf("productId" to "prod123", "quantity" to 2, "price" to 50),
-                mapOf("productId" to "prod456", "quantity" to 1, "price" to 50)
-            )
+        val editTextNumberOfDays = findViewById<EditText>(R.id.editTextNumberOfDays)
+        val textViewValue1 = findViewById<TextView>(R.id.textViewValue1)
 
-            // Assuming you have defined a function to add an order for a customer
-            FirestoreUtils.addOrderForCustomer(customerId, orderData, items)
+        // Example button to trigger the calculation
+        val calculateButton = findViewById<Button>(R.id.calculateButton)
+        calculateButton.setOnClickListener {
+            val days = editTextNumberOfDays.text.toString().toIntOrNull() ?: 0
+            calculateTotalRevenueLastXDays(days) { totalRevenue ->
+                // Update the TextView with the calculated total revenue
+                textViewValue1.text = totalRevenue.toString()
+            }
         }
     }
 
@@ -87,6 +104,53 @@ class AdminStatisticsActivity : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.w("Firestore", "Error getting documents: ", exception)
                 callback(0) // Handle error case as needed
+            }
+    }
+
+    fun calculateTotalRevenueLastXDays(days: Int, onResult: (Double) -> Unit) {
+        val db = FirebaseFirestore.getInstance()
+        val customersRef = db.collection("customers")
+
+        // Calculate the start date for the query
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR, -days)
+        val startDate = calendar.time
+
+        var totalRevenue = 0.0
+        customersRef.get().addOnSuccessListener { customerSnapshots ->
+            val customerCount = customerSnapshots.size()
+            var processedCustomers = 0
+
+            if (customerCount == 0) {
+                onResult(0.0) // No customers found
+                return@addOnSuccessListener
+            }
+
+            customerSnapshots.documents.forEach { customerDoc ->
+                val ordersRef = customerDoc.reference.collection("orders")
+                ordersRef.whereGreaterThan("date", startDate).get()
+                    .addOnSuccessListener { orderSnapshots ->
+                        orderSnapshots.forEach { orderDoc ->
+                            val totalAmount = orderDoc.getDouble("totalAmount") ?: 0.0
+                            totalRevenue += totalAmount
+                        }
+                        processedCustomers++
+                        if (processedCustomers == customerCount) {
+                            onResult(totalRevenue) // Final total after all customers processed
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        println("Error fetching orders: $e")
+                        processedCustomers++
+                        if (processedCustomers == customerCount) {
+                            onResult(totalRevenue) // Handle partial failure scenario
+                        }
+                    }
+            }
+        }
+            .addOnFailureListener { e ->
+                println("Error fetching customers: $e")
+                onResult(0.0) // Error fetching customers
             }
     }
 }
