@@ -16,6 +16,11 @@ import com.yourpackage.name.FirestoreUtils.addOrderForCustomer
 import com.zebrand.app1food30s.R
 import com.google.firebase.firestore.Query
 import java.util.*
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import java.text.SimpleDateFormat
+import com.github.mikephil.charting.data.Entry
 
 class AdminStatisticsActivity : AppCompatActivity() {
     private lateinit var myGridRecyclerView: RecyclerView
@@ -46,7 +51,6 @@ class AdminStatisticsActivity : AppCompatActivity() {
             val spacing = 60 // Spacing in pixels
             val includeEdge = true
             myGridRecyclerView.addItemDecoration(GridSpacingItemDecoration(spanCount, spacing, includeEdge))
-            myGridRecyclerView.setHasFixedSize(true)
             // Ensure the RecyclerView is updated
         }
 
@@ -82,32 +86,65 @@ class AdminStatisticsActivity : AppCompatActivity() {
 
         val editTextNumberOfDays = findViewById<EditText>(R.id.editTextNumberOfDays)
         val textViewValue1 = findViewById<TextView>(R.id.textViewValue1)
+        val textViewValue2 = findViewById<TextView>(R.id.textViewValue2)
+        val lineChart: LineChart = findViewById(R.id.lineChart)
 
         // Example button to trigger the calculation
         val calculateButton = findViewById<Button>(R.id.calculateButton)
         calculateButton.setOnClickListener {
             val days = editTextNumberOfDays.text.toString().toIntOrNull() ?: 0
-            calculateTotalRevenueLastXDays(days) { totalRevenue ->
-                // Update the TextView with the calculated total revenue
-                textViewValue1.text = totalRevenue.toString()
-            }
+            calculateRevenueAndDrawChart(days, lineChart, textViewValue1, textViewValue2)
         }
     }
 
+    // store global count is better
     private fun getTotalNumberOfOrders(callback: (Int) -> Unit) {
-        val db = FirebaseFirestore.getInstance()
-        db.collection("orders").get()
-            .addOnSuccessListener { documents ->
-                val totalOrders = documents.size()
-                callback(totalOrders)
-            }
-            .addOnFailureListener { exception ->
-                Log.w("Firestore", "Error getting documents: ", exception)
-                callback(0) // Handle error case as needed
-            }
+        callback(1)
+//        val db = FirebaseFirestore.getInstance()
+//        val customersRef = db.collection("customers")
+//
+//        var totalOrders = 0
+//        customersRef.get()
+//            .addOnSuccessListener { customerSnapshots ->
+//                // Check if there are no customers
+//                if (customerSnapshots.isEmpty) {
+//                    callback(0)
+//                    return@addOnSuccessListener
+//                }
+//
+//                // Track the number of processed customers to know when all have been processed
+//                var processedCustomers = 0
+//                val numberOfCustomers = customerSnapshots.size()
+//
+//                // Iterate over each customer and fetch their orders
+//                for (customerSnapshot in customerSnapshots) {
+//                    val ordersRef = customerSnapshot.reference.collection("orders")
+//                    ordersRef.get()
+//                        .addOnSuccessListener { orderSnapshots ->
+//                            totalOrders += orderSnapshots.size()
+//                            processedCustomers++
+//                            // If all customers have been processed, return the total
+//                            if (processedCustomers == numberOfCustomers) {
+//                                callback(totalOrders)
+//                            }
+//                        }
+//                        .addOnFailureListener { exception ->
+//                            Log.w("Firestore", "Error getting orders for customer: ", exception)
+//                            processedCustomers++
+//                            // Still proceed with the count in case of failure, to ensure completion
+//                            if (processedCustomers == numberOfCustomers) {
+//                                callback(totalOrders)
+//                            }
+//                        }
+//                }
+//            }
+//            .addOnFailureListener { exception ->
+//                Log.w("Firestore", "Error getting customers: ", exception)
+//                callback(0)
+//            }
     }
 
-    fun calculateTotalRevenueLastXDays(days: Int, onResult: (Double) -> Unit) {
+    fun calculateRevenueAndDrawChart(days: Int, lineChart: LineChart, textViewValue1: TextView, textViewValue2: TextView) {
         val db = FirebaseFirestore.getInstance()
         val customersRef = db.collection("customers")
 
@@ -116,13 +153,19 @@ class AdminStatisticsActivity : AppCompatActivity() {
         calendar.add(Calendar.DAY_OF_YEAR, -days)
         val startDate = calendar.time
 
-        var totalRevenue = 0.0
+        // Initialize a map to hold revenue per day
+        val revenuePerDay = mutableMapOf<String, Double>()
+
+        // Prepare to format dates
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
         customersRef.get().addOnSuccessListener { customerSnapshots ->
             val customerCount = customerSnapshots.size()
             var processedCustomers = 0
 
             if (customerCount == 0) {
-                onResult(0.0) // No customers found
+                // No customers found, proceed to update the chart with no data
+                updateChartAndTextViews(lineChart, revenuePerDay, days, textViewValue1, textViewValue2)
                 return@addOnSuccessListener
             }
 
@@ -132,25 +175,57 @@ class AdminStatisticsActivity : AppCompatActivity() {
                     .addOnSuccessListener { orderSnapshots ->
                         orderSnapshots.forEach { orderDoc ->
                             val totalAmount = orderDoc.getDouble("totalAmount") ?: 0.0
-                            totalRevenue += totalAmount
+                            val orderDate = orderDoc.getDate("date")
+                            val formattedDate = dateFormat.format(orderDate)
+                            revenuePerDay[formattedDate] = revenuePerDay.getOrDefault(formattedDate, 0.0) + totalAmount
                         }
                         processedCustomers++
                         if (processedCustomers == customerCount) {
-                            onResult(totalRevenue) // Final total after all customers processed
+                            // All customers processed, update the chart and TextViews
+                            updateChartAndTextViews(lineChart, revenuePerDay, days, textViewValue1, textViewValue2)
                         }
                     }
                     .addOnFailureListener { e ->
                         println("Error fetching orders: $e")
                         processedCustomers++
                         if (processedCustomers == customerCount) {
-                            onResult(totalRevenue) // Handle partial failure scenario
+                            // Handle partial failure scenario
+                            updateChartAndTextViews(lineChart, revenuePerDay, days, textViewValue1, textViewValue2)
                         }
                     }
             }
         }
             .addOnFailureListener { e ->
                 println("Error fetching customers: $e")
-                onResult(0.0) // Error fetching customers
+                // Error fetching customers, update the chart with no data
+                updateChartAndTextViews(lineChart, revenuePerDay, days, textViewValue1, textViewValue2)
             }
+    }
+
+    private fun updateChartAndTextViews(lineChart: LineChart, revenuePerDay: Map<String, Double>, days: Int, textViewValue1: TextView, textViewValue2: TextView) {
+        val entries = ArrayList<Entry>()
+
+        // Sort the map by date to ensure the data is plotted in chronological order
+        val sortedRevenuePerDay = revenuePerDay.toSortedMap()
+
+        // Convert the revenue per day into chart entries
+        sortedRevenuePerDay.keys.forEachIndexed { index, date ->
+            entries.add(Entry(index.toFloat(), sortedRevenuePerDay[date]!!.toFloat()))
+        }
+
+        val dataSet = LineDataSet(entries, "Daily Revenue")
+        val lineData = LineData(dataSet)
+        lineChart.data = lineData
+        lineChart.invalidate() // Refresh the chart
+
+        // Calculate total and average revenue
+        val totalRevenue = sortedRevenuePerDay.values.sum()
+        val averageRevenuePerDay = if (days > 0) totalRevenue / days else 0.0
+
+        // Update the TextViews on the UI thread
+        textViewValue1.post {
+            textViewValue1.text = "Total Revenue: ${"%.2f".format(totalRevenue)}"
+            textViewValue2.text = "Average Revenue/Day: ${"%.2f".format(averageRevenuePerDay)}"
+        }
     }
 }
