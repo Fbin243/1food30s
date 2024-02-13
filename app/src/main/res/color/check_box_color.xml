@@ -1,0 +1,19 @@
+<selector xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!-- Disabled -->
+    <item android:alpha="@dimen/m3_comp_checkbox_selected_disabled_container_opacity"
+        android:color="@macro/m3_comp_checkbox_selected_disabled_container_color"
+        android:state_enabled="false" tools:ignore="PrivateResource" />
+
+    <!-- Error -->
+    <item android:color="@macro/m3_comp_checkbox_selected_error_container_color" app:state_error="true"/>
+
+    <!-- Indeterminate -->
+    <item android:color="@color/primary" app:state_indeterminate="true"/>
+
+    <!-- Checked -->
+    <item android:color="@color/primary" android:state_checked="true"/>
+
+    <!-- Unchecked -->
+    <item android:color="@macro/m3_comp_checkbox_unselected_outline_color" android:state_checked="false"/>
+</selector>

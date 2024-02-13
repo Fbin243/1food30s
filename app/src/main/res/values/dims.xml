@@ -33,6 +33,9 @@
     <dimen name="spacing56">56dp</dimen>
     <dimen name="spacing60">60dp</dimen>
     <dimen name="spacing64">64dp</dimen>
+    <dimen name="spacing68">68dp</dimen>
+    <dimen name="spacing72">72dp</dimen>
+    <dimen name="spacing76">76dp</dimen>
     <dimen name="spacing80">80dp</dimen>
 
     <!-- Border Radius -->
