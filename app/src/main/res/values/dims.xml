@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Padding -->
+    <dimen name="padding4">4dp</dimen>
+    <dimen name="padding8">8dp</dimen>
+    <dimen name="padding12">12dp</dimen>
+    <dimen name="padding16">16dp</dimen>
+    <dimen name="padding24">24dp</dimen>
+    <dimen name="padding32">32dp</dimen>
+    <dimen name="padding40">40dp</dimen>
+    <dimen name="padding48">48dp</dimen>
+
+    <!-- Spacings -->
+    <dimen name="spacing1">1dp</dimen>
+    <dimen name="spacing2">2dp</dimen>
+    <dimen name="spacing4">4dp</dimen>
+    <dimen name="spacing6">6dp</dimen>
+    <dimen name="spacing8">8dp</dimen>
+    <dimen name="spacing10">10dp</dimen>
+    <dimen name="spacing12">12dp</dimen>
+    <dimen name="spacing14">14dp</dimen>
+    <dimen name="spacing16">16dp</dimen>
+    <dimen name="spacing18">18dp</dimen>
+    <dimen name="spacing20">20dp</dimen>
+    <dimen name="spacing24">24dp</dimen>
+    <dimen name="spacing28">28dp</dimen>
+    <dimen name="spacing32">32dp</dimen>
+    <dimen name="spacing40">40dp</dimen>
+    <dimen name="spacing44">44dp</dimen>
+    <dimen name="spacing48">48dp</dimen>
+    <dimen name="spacing50">50dp</dimen>
+    <dimen name="spacing52">52dp</dimen>
+    <dimen name="spacing56">56dp</dimen>
+    <dimen name="spacing60">60dp</dimen>
+    <dimen name="spacing64">64dp</dimen>
+    <dimen name="spacing80">80dp</dimen>
+
+    <!-- Border Radius -->
+    <dimen name="radius8">8dp</dimen>
+    <dimen name="radius12">12dp</dimen>
+    <dimen name="radius16">16dp</dimen>
+    <dimen name="radius24">24dp</dimen>
+</resources>

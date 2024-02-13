@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">app1food30s</string>
+
+<!--    Authentication-->
+    <string name="txt_welcome_back">Welcome Back!</string>
+    <string name="txt_email">Email</string>
+    <string name="txt_password">Password</string>
+    <string name="txt_remember_me">Remember me</string>
+    <string name="txt_forgot_password">Forgot password</string>
+    <string name="txt_login">Login</string>
+    <string name="txt_no_account">Don\'t have an account?</string>
+    <string name="txt_sign_up">Sign up</string>
 </resources>

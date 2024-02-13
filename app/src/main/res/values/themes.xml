@@ -5,5 +5,7 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.App1food30s" parent="Base.Theme.App1food30s" />
+    <style name="Theme.App1food30s" parent="Base.Theme.App1food30s">
+        <item name="android:fontFamily">@font/rubik_regular</item>
+    </style>
 </resources>
