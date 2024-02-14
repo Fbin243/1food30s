@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.MainActivity">
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottom_app_bar"
         android:layout_width="match_parent"
@@ -13,6 +18,7 @@
         android:layout_gravity="bottom"
         app:contentInsetStart="0dp"
         app:fabCradleMargin="@dimen/spacing10"
+        style="@style/Widget.MaterialComponents.BottomAppBar"
         >
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -26,6 +32,7 @@
             android:outlineAmbientShadowColor="@color/transparent"
             app:itemTextColor="@color/black"
             app:itemIconSize="@dimen/spacing24"
+            style="@style/Widget.MaterialComponents.BottomNavigationView"
             />
     </com.google.android.material.bottomappbar.BottomAppBar>
 
@@ -40,7 +47,7 @@
         app:layout_anchor="@id/bottom_app_bar"
         app:tint="@color/white"
         app:maxImageSize="@dimen/spacing32"
-        android:elevation="100dp"
+        style="@style/Widget.MaterialComponents.FloatingActionButton"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

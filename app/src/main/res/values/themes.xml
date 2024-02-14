@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.App1food30s" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Base.Theme.App1food30s" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
          <item name="colorPrimary">@color/primary</item>
         <item name="colorBackgroundFloating">@color/white</item>
