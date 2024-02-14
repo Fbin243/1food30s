@@ -13,7 +13,8 @@
         android:paddingHorizontal="@dimen/spacing24"
         android:paddingBottom="@dimen/spacing64"
         >
-        <include layout="@layout/back_item"
+        <include
+            layout="@layout/back_item"
             android:layout_width="60dp"
             android:layout_height="60dp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -121,11 +122,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/font_default"
                     android:text="@string/txt_remember_me"/>
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_forgot_password"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -141,7 +142,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing60"
             android:text="@string/txt_login"
-            android:textSize="@dimen/font_header"
+            android:textSize="@dimen/font_size16"
             android:textStyle="bold"
             android:backgroundTint="@color/primary"
             android:layout_marginTop="@dimen/spacing20"
@@ -163,14 +164,15 @@
                 android:text="@string/txt_no_account"
                 android:textColor="@color/grey" />
             <TextView
+                android:id="@+id/tv_sign_up"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="viewEnd"
-                android:textSize="@dimen/font_size16"
                 android:text="@string/txt_sign_up"
+                android:textSize="@dimen/font_size15"
                 android:fontFamily="@font/rubik_medium"
                 android:textColor="@color/primary"
-                android:layout_marginStart="@dimen/spacing12"/>
+                android:layout_marginStart="@dimen/spacing8"/>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
