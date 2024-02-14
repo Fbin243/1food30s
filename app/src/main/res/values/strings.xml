@@ -20,7 +20,8 @@
     <string name="txt_profile">Profile</string>
 
     <!--    Home -->
-
+    <string name="txt_our_menu">Our Menu</string>
+    <string name="txt_view_all">View All</string>
 
     <!--    Menu -->
 </resources>
