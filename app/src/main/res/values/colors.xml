@@ -6,4 +6,5 @@
     <color name="primary_75">#BF4057BF</color>
     <color name="grey">#FF3A3A4F</color>
     <color name="grey_30">#4D3A3A4F</color>
+    <color name="transparent">#00000000</color>
 </resources>

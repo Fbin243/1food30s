@@ -4,7 +4,7 @@ import android.content.res.Configuration
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatDelegate
+import android.util.Log
 import com.zebrand.app1food30s.R
 
 class LoginActivity : AppCompatActivity() {
@@ -19,7 +19,5 @@ class LoginActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_login)
-
-
     }
 }
