@@ -1,21 +1,19 @@
 package com.zebrand.app1food30s.ui.authentication
 
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+<<<<<<< HEAD
 import android.util.Log
 import android.widget.LinearLayout
 import android.widget.TextView
+=======
+>>>>>>> parent of be08fb7 ([finish] login-signUp-forgotPass)
 import androidx.appcompat.app.AppCompatDelegate
 import com.zebrand.app1food30s.R
 
 class LoginActivity : AppCompatActivity() {
-    private lateinit var tv_sign_up:TextView
-    private lateinit var tv_forgot_password:TextView
-    private lateinit var back_icon:LinearLayout
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -28,29 +26,6 @@ class LoginActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_login)
 
-        init()
-        events()
-    }
 
-    private fun init(){
-        tv_sign_up = findViewById(R.id.tv_sign_up)
-        tv_forgot_password = findViewById(R.id.tv_forgot_password)
-        back_icon = findViewById(R.id.back_icon)
-    }
-
-    private fun events(){
-        tv_sign_up.setOnClickListener {
-            val intent = Intent(this, SignUpActivity::class.java)
-            startActivity(intent)
-        }
-
-        tv_forgot_password.setOnClickListener {
-            val intent = Intent(this, ForgotPasswordActivity::class.java)
-            startActivity(intent)
-        }
-
-//        back_icon.setOnClickListener {
-//            onBackPressedDispatcher.onBackPressed()
-//        }
     }
 }
