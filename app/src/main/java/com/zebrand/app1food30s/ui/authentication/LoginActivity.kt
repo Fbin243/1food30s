@@ -4,7 +4,12 @@ import android.content.res.Configuration
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+<<<<<<< HEAD
 import android.util.Log
+import android.widget.LinearLayout
+import android.widget.TextView
+=======
+>>>>>>> parent of be08fb7 ([finish] login-signUp-forgotPass)
 import androidx.appcompat.app.AppCompatDelegate
 import com.zebrand.app1food30s.R
 
@@ -20,5 +25,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         setContentView(R.layout.activity_login)
+
+
     }
 }
