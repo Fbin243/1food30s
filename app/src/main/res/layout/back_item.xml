@@ -7,7 +7,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_back"
         android:contentDescription="@null"
-        android:background="@drawable/circle_border"
+        android:background="@drawable/primary_circle_border"
         android:padding="6dp"
         />
 </LinearLayout>

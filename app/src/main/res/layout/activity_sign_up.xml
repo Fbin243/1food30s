@@ -35,7 +35,7 @@
             android:id="@+id/header_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/txt_welcome_back"
+            android:text="@string/txt_let_get_started"
             android:textSize="@dimen/font_super_header"
             android:textStyle="bold"
             android:fontFamily="@font/rubik_bold"
@@ -55,15 +55,13 @@
             app:boxCornerRadiusTopEnd="@dimen/radius8"
             app:boxCornerRadiusBottomStart="@dimen/radius8"
             app:boxCornerRadiusBottomEnd="@dimen/radius8"
-            app:cursorColor="@color/primary"
-            app:hintTextColor="@color/primary"
+
             >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing60"
+                android:layout_height="@dimen/spacing64"
                 android:hint="@string/txt_email"
-                android:inputType="textEmailAddress"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -74,19 +72,17 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/tf_email"
             app:boxStrokeColor="@color/primary"
-            android:layout_marginTop="@dimen/spacing20"
+            android:layout_marginTop="@dimen/spacing32"
             app:boxCornerRadiusTopStart="@dimen/radius8"
             app:boxCornerRadiusTopEnd="@dimen/radius8"
             app:boxCornerRadiusBottomStart="@dimen/radius8"
             app:boxCornerRadiusBottomEnd="@dimen/radius8"
             app:endIconMode="password_toggle"
-            app:cursorColor="@color/primary"
-            app:hintTextColor="@color/primary"
             >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing60"
+                android:layout_height="@dimen/spacing64"
                 android:hint="@string/txt_password"
                 android:inputType="textPassword"
                 android:maxLines="1" />
@@ -101,8 +97,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tf_password"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginTop="@dimen/spacing12"
-            android:weightSum="2"
-            android:gravity="center_vertical">
+            android:weightSum="2">
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -130,16 +125,16 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textAlignment="viewEnd"
-                android:textSize="@dimen/font_size15"
+                android:textSize="@dimen/font_header"
                 android:text="@string/txt_forgot_password"
-                android:fontFamily="@font/rubik_medium"
+                android:fontFamily="@font/rubik_semibold"
                 android:textColor="@color/primary"/>
         </LinearLayout>
 
         <Button
             android:id="@+id/login_btn"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing60"
+            android:layout_height="@dimen/spacing64"
             android:text="@string/txt_login"
             android:textSize="@dimen/font_header"
             android:textStyle="bold"
@@ -161,14 +156,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/txt_no_account"
-                android:textColor="@color/grey" />
+                android:textColor="@color/grey"
+                android:textSize="@dimen/font_size16"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAlignment="viewEnd"
-                android:textSize="@dimen/font_size16"
+                android:textSize="@dimen/font_header"
                 android:text="@string/txt_sign_up"
-                android:fontFamily="@font/rubik_medium"
+                android:fontFamily="@font/rubik_semibold"
                 android:textColor="@color/primary"
                 android:layout_marginStart="@dimen/spacing12"/>
         </LinearLayout>

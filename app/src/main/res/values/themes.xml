@@ -7,5 +7,6 @@
 
     <style name="Theme.App1food30s" parent="Base.Theme.App1food30s">
         <item name="android:fontFamily">@font/rubik_regular</item>
+        <item name="android:textSize">@dimen/font_default</item>
     </style>
 </resources>
