@@ -20,5 +20,4 @@
     </style>
 
     <style name="Widget.Material3.CompoundButton.CheckBox" parent="Base.Widget.Material3.CompoundButton.CheckBox" />
-    <style name="FabStyle" parent="Widget.MaterialComponents.FloatingActionButton" />
 </resources>
