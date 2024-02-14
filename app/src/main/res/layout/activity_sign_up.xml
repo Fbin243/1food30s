@@ -23,7 +23,7 @@
         <ImageView
             android:id="@+id/img_logo"
             android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_height="120dp"
             android:layout_marginTop="40dp"
             android:src="@drawable/ic_logo"
             android:contentDescription="@null"
@@ -55,13 +55,15 @@
             app:boxCornerRadiusTopEnd="@dimen/radius8"
             app:boxCornerRadiusBottomStart="@dimen/radius8"
             app:boxCornerRadiusBottomEnd="@dimen/radius8"
-
+            app:cursorColor="@color/primary"
+            app:hintTextColor="@color/primary"
             >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing64"
+                android:layout_height="@dimen/spacing60"
                 android:hint="@string/txt_email"
+                android:inputType="textEmailAddress"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -72,75 +74,60 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/tf_email"
             app:boxStrokeColor="@color/primary"
-            android:layout_marginTop="@dimen/spacing32"
+            android:layout_marginTop="@dimen/spacing20"
             app:boxCornerRadiusTopStart="@dimen/radius8"
             app:boxCornerRadiusTopEnd="@dimen/radius8"
             app:boxCornerRadiusBottomStart="@dimen/radius8"
             app:boxCornerRadiusBottomEnd="@dimen/radius8"
             app:endIconMode="password_toggle"
+            app:cursorColor="@color/primary"
+            app:hintTextColor="@color/primary"
             >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing64"
+                android:layout_height="@dimen/spacing60"
                 android:hint="@string/txt_password"
                 android:inputType="textPassword"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
-            android:id="@+id/linear_forgot"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_retype_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             app:layout_constraintTop_toBottomOf="@+id/tf_password"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginTop="@dimen/spacing12"
-            android:weightSum="2">
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_weight="1"
-                android:gravity="center_vertical">
-                <androidx.appcompat.widget.AppCompatCheckBox
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minHeight="0dp"
-                    android:minWidth="0dp"
-                    android:translationX="-5dp"
-                    android:buttonTint="@color/check_box_color"
-                    />
+            app:boxStrokeColor="@color/primary"
+            android:layout_marginTop="@dimen/spacing20"
+            app:boxCornerRadiusTopStart="@dimen/radius8"
+            app:boxCornerRadiusTopEnd="@dimen/radius8"
+            app:boxCornerRadiusBottomStart="@dimen/radius8"
+            app:boxCornerRadiusBottomEnd="@dimen/radius8"
+            app:endIconMode="password_toggle"
+            app:cursorColor="@color/primary"
+            app:hintTextColor="@color/primary"
+            >
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/font_default"
-                    android:text="@string/txt_remember_me"/>
-            </LinearLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing60"
+                android:hint="@string/txt_retype_password"
+                android:inputType="textPassword"
+                android:maxLines="1" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAlignment="viewEnd"
-                android:textSize="@dimen/font_header"
-                android:text="@string/txt_forgot_password"
-                android:fontFamily="@font/rubik_semibold"
-                android:textColor="@color/primary"/>
-        </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/login_btn"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing64"
-            android:text="@string/txt_login"
-            android:textSize="@dimen/font_header"
+            android:layout_height="@dimen/spacing60"
+            android:text="@string/txt_sign_up"
+            android:textSize="@dimen/font_size16"
             android:textStyle="bold"
             android:backgroundTint="@color/primary"
             android:layout_marginTop="@dimen/spacing20"
-            app:layout_constraintTop_toBottomOf="@+id/linear_forgot"
+            app:layout_constraintTop_toBottomOf="@+id/tf_retype_password"
             app:layout_constraintLeft_toLeftOf="parent"
             />
 
@@ -155,18 +142,19 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/txt_no_account"
-                android:textColor="@color/grey"
-                android:textSize="@dimen/font_size16"/>
+                android:text="@string/txt_already_have_an_account"
+                android:textColor="@color/grey" />
+
             <TextView
+                android:id="@+id/tv_login"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/spacing8"
+                android:fontFamily="@font/rubik_medium"
+                android:text="@string/txt_login"
+                android:textSize="@dimen/font_size15"
                 android:textAlignment="viewEnd"
-                android:textSize="@dimen/font_header"
-                android:text="@string/txt_sign_up"
-                android:fontFamily="@font/rubik_semibold"
-                android:textColor="@color/primary"
-                android:layout_marginStart="@dimen/spacing12"/>
+                android:textColor="@color/primary" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

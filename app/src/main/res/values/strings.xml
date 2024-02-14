@@ -12,6 +12,8 @@
     <string name="txt_sign_up">Sign up</string>
     <string name="txt_let_get_started">Let\'s get started</string>
     <string name="txt_already_have_an_account">Already have an account?</string>
+    <string name="txt_retype_password">Retype password</string>
+    <string name="txt_confirm">Confirm</string>
 
 <!--    Bottom navigation -->
     <string name="txt_home">Home</string>
