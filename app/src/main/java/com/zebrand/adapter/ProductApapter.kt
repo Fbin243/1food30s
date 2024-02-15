@@ -9,8 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
 import com.zebrand.model.Product
 
-class ProductApapter(private val products: List<Product>): RecyclerView.Adapter<ProductApapter.ProductViewHolder>() {
-    inner class ProductViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView) {
+class ProductApapter(private val products: List<Product>) :
+    RecyclerView.Adapter<ProductApapter.ProductViewHolder>() {
+    inner class ProductViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val productImg: ImageView = listItemView.findViewById(R.id.productImg)
         val productTitle: TextView = listItemView.findViewById(R.id.productTitle)
         val productDescription: TextView = listItemView.findViewById(R.id.productDescription)
@@ -18,7 +19,8 @@ class ProductApapter(private val products: List<Product>): RecyclerView.Adapter<
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-        val productCardView = LayoutInflater.from(parent.context).inflate(R.layout.product_card_view, parent, false)
+        val productCardView =
+            LayoutInflater.from(parent.context).inflate(R.layout.product_card_view, parent, false)
         return ProductViewHolder(productCardView)
     }
 
@@ -31,6 +33,6 @@ class ProductApapter(private val products: List<Product>): RecyclerView.Adapter<
         holder.productImg.setImageResource(product.img)
         holder.productTitle.text = product.title
         holder.productDescription.text = product.description
-        holder.productPrice.text = product.price.toString()
+        holder.productPrice.text = "$${String.format("%.2f", product.price).replace(",", ".")}"
     }
 }
