@@ -5,6 +5,7 @@
     <color name="primary">#7F9839</color>
     <color name="primary_75">#BF7F9839</color>
     <color name="secondary">#FF9D46</color>
+    <color name="secondary_20">#33FF9D46</color>
     <color name="grey">#FF3A3A4F</color>
     <color name="grey_60">#993A3A4F</color>
     <color name="grey_30">#4D3A3A4F</color>
