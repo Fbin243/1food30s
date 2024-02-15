@@ -5,9 +5,9 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_back"
         android:contentDescription="@null"
-        android:background="@drawable/primary_circle_border"
+        android:src="@drawable/ic_back"
         android:padding="6dp"
+        android:background="@drawable/primary_circle_border"
         />
 </LinearLayout>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.my_order.MyOrderActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing12"
+        >
+        <LinearLayout
+            android:id="@+id/linear_app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing20"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:paddingBottom="@dimen/spacing24"
+            android:paddingHorizontal="@dimen/spacing20">
+
+            <include
+                layout="@layout/back_item"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing18"
+                android:fontFamily="@font/rubik_bold"
+                android:text="@string/txt_my_order"
+                android:textSize="@dimen/font_header" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_active_orders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_active_orders"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linear_app_bar"
+            android:textSize="@dimen/font_header"
+            android:fontFamily="@font/rubik_semibold"
+            android:paddingHorizontal="@dimen/spacing20"/>
+
+        <LinearLayout
+            android:id="@+id/order_item_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/tv_active_orders"
+            android:layout_margin="@dimen/spacing10"
+            >
+            <include layout="@layout/my_order_item"/>
+            <include layout="@layout/my_order_item"/>
+            <include layout="@layout/my_order_item"/>
+            <include layout="@layout/my_order_item"/>
+            <include layout="@layout/my_order_item"/>
+            <include layout="@layout/my_order_item"/>
+            <include layout="@layout/my_order_item"/>
+            <include layout="@layout/my_order_item"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_previous_orders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_previous_orders"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/order_item_list"
+            android:textSize="@dimen/font_header"
+            android:fontFamily="@font/rubik_semibold"
+            android:layout_marginTop="@dimen/spacing12"
+            android:paddingHorizontal="@dimen/spacing20"/>
+
+        <LinearLayout
+            android:id="@+id/order_item_list_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/tv_previous_orders"
+            android:layout_margin="@dimen/spacing10"
+            >
+            <include layout="@layout/my_order_item"/>
+            <include layout="@layout/my_order_item"/>
+            <include layout="@layout/my_order_item"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

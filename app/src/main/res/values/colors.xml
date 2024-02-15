@@ -5,9 +5,12 @@
     <color name="primary">#7F9839</color>
     <color name="primary_75">#BF7F9839</color>
     <color name="secondary">#FF9D46</color>
-    <color name="secondary_50">#22FF9D46</color>
     <color name="grey">#FF3A3A4F</color>
+    <color name="grey_60">#993A3A4F</color>
     <color name="grey_30">#4D3A3A4F</color>
     <color name="transparent">#00000000</color>
     <color name="search_bgc">#EEE</color>
+    <color name="ocean_blue">#077BA4</color>
+    <color name="yellow">#FFEAA62A</color>
+    <color name="yellow_30">#4DEAA62A</color>
 </resources>
