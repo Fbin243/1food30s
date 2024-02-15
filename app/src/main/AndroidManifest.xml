@@ -39,6 +39,11 @@
                 <action android:name="android.intent.action.MAIN" />
 
         </activity>
+        <!-- Declaration for AdminStatisticsActivity -->
+        <activity android:name=".ui.admin_statistics.AdminStatisticsActivity"
+            android:exported="true">
+            <!-- If there are any specific intent-filters for AdminStatisticsActivity, they should be declared here -->
+        </activity>
     </application>
 
 </manifest>
