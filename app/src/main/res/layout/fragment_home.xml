@@ -28,13 +28,16 @@
         android:paddingStart="@dimen/spacing8"
         android:paddingEnd="@dimen/spacing8"
         android:paddingBottom="@dimen/spacing4"
+        android:paddingTop="@dimen/spacing4"
         app:boxStrokeColor="@color/transparent"
         app:boxStrokeWidth="0dp"
         app:cursorColor="@color/primary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:startIconDrawable="@drawable/ic_search">
+        app:startIconDrawable="@drawable/ic_search"
+        app:hintEnabled="false"
+        >
 
 
         <com.google.android.material.textfield.TextInputEditText
@@ -43,7 +46,10 @@
             android:layout_gravity="center_vertical"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
-            android:textSize="@dimen/font_default" />
+            android:textSize="@dimen/font_default"
+            android:hint="@string/txt_search"
+
+            />
     </com.google.android.material.textfield.TextInputLayout>
 
     <ScrollView
@@ -57,12 +63,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout"
+        android:scrollbars="none">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/spacing32"
+            android:layout_marginTop="@dimen/spacing4">
 
             <TextView
                 android:id="@+id/textView"
@@ -93,11 +102,49 @@
                 android:id="@+id/cateRcv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/rubik_extrabold"
+                android:text="@string/txt_latest_dishes"
+                android:textSize="@dimen/font_header"
+                app:layout_constraintBaseline_toBaselineOf="@+id/btn1"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/btn1"
+                android:layout_width="70dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="30dp"
+                android:backgroundTint="@color/secondary_50"
+                android:fontFamily="@font/rubik_bold"
+                android:lineHeight="@dimen/spacing1"
+                android:padding="0dp"
+                android:text="@string/txt_view_all"
+                android:textColor="@color/secondary"
+                android:textSize="@dimen/font_size12"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cateRcv"
+                app:strokeColor="@color/primary" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/productRcv1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="-8dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView1" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
