@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.github.vipulasri.timelineview.TimelineView
+        android:id="@+id/timeline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:markerSize="20dp"
+        app:lineWidth="3dp"
+        app:marker="@drawable/marker"
+        app:startLineColor="@color/transparent"
+        app:endLineColor="@color/primary"
+        app:lineStyle="normal"
+        app:lineOrientation="horizontal"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pending"
+        android:textColor="@color/primary"
+        android:textAlignment="center"/>
+
+</LinearLayout>

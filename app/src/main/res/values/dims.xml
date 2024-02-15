@@ -11,6 +11,7 @@
     <dimen name="padding48">48dp</dimen>
 
     <!-- Spacings -->
+    <dimen name="spacing0">0dp</dimen>
     <dimen name="spacing1">1dp</dimen>
     <dimen name="spacing2">2dp</dimen>
     <dimen name="spacing4">4dp</dimen>
@@ -43,4 +44,12 @@
     <dimen name="radius12">12dp</dimen>
     <dimen name="radius16">16dp</dimen>
     <dimen name="radius24">24dp</dimen>
+
+    <!--  Negative values  -->
+    <dimen name="nev_spacing_2">-2dp</dimen>
+    <dimen name="nev_spacing_4">-4dp</dimen>
+    <dimen name="nev_spacing_6">-6dp</dimen>
+    <dimen name="nev_spacing_8">-8dp</dimen>
+    <dimen name="nev_spacing_12">-12dp</dimen>
+    <dimen name="nev_spacing_16">-16dp</dimen>
 </resources>

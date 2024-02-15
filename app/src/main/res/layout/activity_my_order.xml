@@ -21,10 +21,10 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:paddingBottom="@dimen/spacing24"
-            android:paddingHorizontal="@dimen/spacing20">
+            android:paddingHorizontal="@dimen/spacing16">
 
             <include
-                layout="@layout/back_item"
+                layout="@layout/item_back"
                 android:layout_width="30dp"
                 android:layout_height="30dp" />
 

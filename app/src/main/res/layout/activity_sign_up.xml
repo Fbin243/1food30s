@@ -10,10 +10,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/spacing24"
+        android:paddingHorizontal="@dimen/spacing16"
         android:paddingBottom="@dimen/spacing64"
         >
-        <include layout="@layout/back_item"
+        <include layout="@layout/item_back"
             android:layout_width="30dp"
             android:layout_height="30dp"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -45,12 +45,58 @@
             />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_email"
+            android:id="@+id/tf_first_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/header_title"
             app:boxStrokeColor="@color/primary"
             android:layout_marginTop="@dimen/spacing32"
+            app:boxCornerRadiusTopStart="@dimen/radius8"
+            app:boxCornerRadiusTopEnd="@dimen/radius8"
+            app:boxCornerRadiusBottomStart="@dimen/radius8"
+            app:boxCornerRadiusBottomEnd="@dimen/radius8"
+            app:cursorColor="@color/primary"
+            app:hintTextColor="@color/primary"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing60"
+                android:hint="@string/txt_first_name"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_last_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/tf_first_name"
+            app:boxStrokeColor="@color/primary"
+            android:layout_marginTop="@dimen/spacing20"
+            app:boxCornerRadiusTopStart="@dimen/radius8"
+            app:boxCornerRadiusTopEnd="@dimen/radius8"
+            app:boxCornerRadiusBottomStart="@dimen/radius8"
+            app:boxCornerRadiusBottomEnd="@dimen/radius8"
+            app:cursorColor="@color/primary"
+            app:hintTextColor="@color/primary"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing60"
+                android:hint="@string/txt_last_name"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/tf_last_name"
+            app:boxStrokeColor="@color/primary"
+            android:layout_marginTop="@dimen/spacing20"
             app:boxCornerRadiusTopStart="@dimen/radius8"
             app:boxCornerRadiusTopEnd="@dimen/radius8"
             app:boxCornerRadiusBottomStart="@dimen/radius8"

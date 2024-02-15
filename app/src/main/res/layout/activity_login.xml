@@ -10,11 +10,11 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/spacing24"
+        android:paddingHorizontal="@dimen/spacing16"
         android:paddingBottom="@dimen/spacing64"
         >
         <include
-            layout="@layout/back_item"
+            layout="@layout/item_back"
             android:layout_width="30dp"
             android:layout_height="30dp"
             app:layout_constraintLeft_toLeftOf="parent"
