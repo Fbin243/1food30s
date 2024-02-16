@@ -15,33 +15,25 @@
         <activity
             android:name=".ui.product_detail.ProductDetailActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:name=".ui.my_order.MyOrderDetailsActivity"
+            android:exported="true" />
         <activity
             android:name=".ui.search.SearchActivity"
-            android:exported="true"></activity>
+            android:exported="true"/>
         <activity
             android:name=".ui.my_order.MyOrderActivity"
-            android:exported="true">
+            android:exported="true"/>
 
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <activity
+            android:name=".ui.my_order.MyOrderActivity"
+            android:exported="false"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
-        </activity>
         <activity
             android:name=".ui.authentication.ForgotPasswordActivity"
             android:exported="false" />
         <activity
             android:name=".ui.authentication.SignUpActivity"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".ui.authentication.LoginActivity"
             android:exported="true" />
@@ -56,10 +48,7 @@
         </activity> <!-- Declaration for AdminStatisticsActivity -->
         <activity
             android:name=".ui.admin_statistics.AdminStatisticsActivity"
-            android:exported="true">
-
-            <!-- If there are any specific intent-filters for AdminStatisticsActivity, they should be declared here -->
-        </activity>
+            android:exported="true"/>
     </application>
 
 </manifest>
