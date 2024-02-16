@@ -1,22 +1,20 @@
 package com.zebrand.app1food30s.ui.menu
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.view.ViewGroup.MarginLayoutParams
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CategoryAdapter
-import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.adapter.ProductApapter
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Product
-import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.databinding.FragmentMenuBinding
 
 class MenuFragment : Fragment() {
@@ -46,11 +44,15 @@ class MenuFragment : Fragment() {
         binding.gridBtn.setOnClickListener {
             binding.gridBtn.setImageResource(R.drawable.active_grid)
             binding.linearBtn.setImageResource(R.drawable.linear)
+            rcv.layoutManager = GridLayoutManager(requireContext(), 2)
+            rcv.adapter = ProductApapter(getListProducts())
         }
 
         binding.linearBtn.setOnClickListener {
             binding.linearBtn.setImageResource(R.drawable.active_linear)
             binding.gridBtn.setImageResource(R.drawable.grid)
+            rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            rcv.adapter = ProductApapter(getListProducts(), false)
         }
 
     }

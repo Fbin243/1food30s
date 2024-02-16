@@ -6,7 +6,7 @@
     app:cardCornerRadius="@dimen/spacing16"
     android:layout_marginTop="@dimen/spacing10"
     android:layout_marginBottom="@dimen/spacing10"
-    android:layout_marginEnd="@dimen/spacing2"
+    android:layout_marginEnd="@dimen/spacing10"
     android:layout_marginStart="2dp"
     >
 
