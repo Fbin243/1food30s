@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Offer
 import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.ui.search.SearchActivity
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -27,7 +29,30 @@ class HomeFragment : Fragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater)
         val view = binding.root
+        handleDisplay()
+        handleOpenSearchScreen()
+        return view
+    }
 
+    override fun onResume() {
+        super.onResume()
+        binding.searchInput.clearFocus()
+    }
+
+    private fun handleOpenSearchScreen() {
+        binding.searchInput.setOnFocusChangeListener { _, focus ->
+            if (focus) {
+                val intent = Intent(requireContext(), SearchActivity::class.java)
+                startActivity(intent)
+            }
+        }
+        binding.searchInput.setOnClickListener {
+            val intent = Intent(requireContext(), SearchActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun handleDisplay() {
         // Category
         rcv = binding.cateRcv
         rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
@@ -47,8 +72,6 @@ class HomeFragment : Fragment() {
         rcv = binding.productRcv2
         rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         rcv.adapter = ProductApapter(getListProducts(), false)
-
-        return view
     }
 
     private fun getListCategories(): List<Category> {

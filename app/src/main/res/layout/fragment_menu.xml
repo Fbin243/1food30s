@@ -91,7 +91,7 @@
                 android:layout_height="40dp"
                 android:backgroundTint="@color/transparent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/grid"
+                android:src="@drawable/ic_grid"
                 app:layout_constraintBottom_toBottomOf="@+id/textView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/textView" />
@@ -103,7 +103,7 @@
                 android:layout_marginEnd="40dp"
                 android:backgroundTint="@color/transparent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/linear"
+                android:src="@drawable/ic_active_linear"
                 app:layout_constraintBottom_toBottomOf="@+id/textView"
                 app:layout_constraintEnd_toEndOf="@+id/gridBtn"
                 app:layout_constraintTop_toTopOf="@+id/textView"

@@ -1,40 +1,35 @@
-package com.zebrand.app1food30s.ui.menu
+package com.zebrand.app1food30s.ui.search
 
-import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.ProductApapter
-import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Product
-import com.zebrand.app1food30s.databinding.FragmentMenuBinding
+import com.zebrand.app1food30s.databinding.ActivitySearchBinding
 
-class MenuFragment : Fragment() {
-    private lateinit var binding: FragmentMenuBinding
+class SearchActivity : AppCompatActivity() {
+    private lateinit var binding: ActivitySearchBinding
     private lateinit var rcv: RecyclerView
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentMenuBinding.inflate(inflater)
-
-        handleCategoryMenu()
-        handleChangeLayout()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         handleDisplayProductList()
-
-        return binding.root
+        handleChangeLayout()
+        handleCloseSearchScreen()
     }
 
+    private fun handleCloseSearchScreen() {
+        binding.backFromSearch.root.setOnClickListener {
+            finish()
+        }
+    }
     private fun handleDisplayProductList() {
         rcv = binding.productRcv
-        rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        rcv.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         val adapter = ProductApapter(getListProducts(), false)
         rcv.adapter = adapter
     }
@@ -43,45 +38,17 @@ class MenuFragment : Fragment() {
         binding.gridBtn.setOnClickListener {
             binding.gridBtn.setImageResource(R.drawable.ic_active_grid)
             binding.linearBtn.setImageResource(R.drawable.ic_linear)
-            rcv.layoutManager = GridLayoutManager(requireContext(), 2)
+            rcv.layoutManager = GridLayoutManager(this, 2)
             rcv.adapter = ProductApapter(getListProducts())
         }
 
         binding.linearBtn.setOnClickListener {
             binding.linearBtn.setImageResource(R.drawable.ic_active_linear)
             binding.gridBtn.setImageResource(R.drawable.ic_grid)
-            rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+            rcv.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
             rcv.adapter = ProductApapter(getListProducts(), false)
         }
 
-    }
-
-    private fun handleCategoryMenu() {
-        rcv = binding.cateRcv
-        rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        val adapter = CategoryAdapter(getListCategories())
-
-        val primaryColor = Color.parseColor("#7F9839")
-        adapter.onItemClick = { holder ->
-            adapter.lastItemClicked?.cateTitle?.setTextColor(Color.parseColor("#FF3A3A4F"))
-            adapter.lastItemClicked?.cateUnderline?.setBackgroundResource(0)
-            holder.cateUnderline.setBackgroundResource(R.drawable.category_underline)
-            holder.cateTitle.setTextColor(primaryColor)
-        }
-        rcv.adapter = adapter
-    }
-
-    private fun getListCategories(): List<Category> {
-        var list = listOf<Category>()
-        list = list + Category(R.drawable.cate1, "Appetizers")
-        list = list + Category(R.drawable.cate1, "Burgers")
-        list = list + Category(R.drawable.cate1, "Appetizers")
-        list = list + Category(R.drawable.cate1, "Appetizers")
-        list = list + Category(R.drawable.cate1, "Appetizers")
-        list = list + Category(R.drawable.cate1, "Appetizers")
-        list = list + Category(R.drawable.cate1, "Appetizers")
-        list = list + Category(R.drawable.cate1, "Appetizers")
-        return list
     }
 
     private fun getListProducts(): List<Product> {

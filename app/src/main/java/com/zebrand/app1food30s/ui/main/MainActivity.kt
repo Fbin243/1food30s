@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.ui.main
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.zebrand.app1food30s.R
@@ -18,6 +19,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        handleBottomNavigation()
+    }
+
+    private fun handleBottomNavigation() {
         binding.bottomNavView.setOnItemSelectedListener { menuItem ->
             when(menuItem.itemId) {
                 R.id.ic_home -> replaceFragment(HomeFragment())
@@ -29,7 +34,6 @@ class MainActivity : AppCompatActivity() {
         }
         replaceFragment(HomeFragment())
     }
-
     private fun replaceFragment(fragment: Fragment) {
         val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
         ft.replace(R.id.fragment_container, fragment).commit()
