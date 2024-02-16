@@ -25,20 +25,39 @@ class MenuFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMenuBinding.inflate(inflater)
-        val view = binding.root
+
+        handleCategoryMenu(binding)
+        handleChangeLayout(binding)
+
+        return binding.root
+    }
+
+    private fun handleChangeLayout(binding: FragmentMenuBinding) {
+        binding.gridBtn.setOnClickListener {
+            binding.gridBtn.setImageResource(R.drawable.active_grid)
+            binding.linearBtn.setImageResource(R.drawable.linear)
+        }
+
+        binding.linearBtn.setOnClickListener {
+            binding.linearBtn.setImageResource(R.drawable.active_linear)
+            binding.gridBtn.setImageResource(R.drawable.grid)
+        }
+
+    }
+
+    private fun handleCategoryMenu(binding: FragmentMenuBinding) {
         rcv = binding.cateRcv
         rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         val adapter = CategoryAdapter(getListCategories())
 
         val primaryColor = Color.parseColor("#7F9839")
-        adapter.onItemClick = {holder ->
+        adapter.onItemClick = { holder ->
             adapter.lastItemClicked?.cateTitle?.setTextColor(Color.parseColor("#FF3A3A4F"))
             adapter.lastItemClicked?.cateUnderline?.setBackgroundResource(0)
             holder.cateUnderline.setBackgroundResource(R.drawable.category_underline)
             holder.cateTitle.setTextColor(primaryColor)
         }
         rcv.adapter = adapter
-        return view
     }
 
     private fun getListCategories(): List<Category> {
