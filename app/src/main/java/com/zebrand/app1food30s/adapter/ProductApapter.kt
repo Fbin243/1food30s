@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.model.Product
+import com.zebrand.app1food30s.data.Product
 
 class ProductApapter(private val products: List<Product>) :
     RecyclerView.Adapter<ProductApapter.ProductViewHolder>() {

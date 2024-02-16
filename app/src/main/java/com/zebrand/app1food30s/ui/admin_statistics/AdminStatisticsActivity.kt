@@ -1,18 +1,14 @@
 package com.zebrand.app1food30s.ui.admin_statistics
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
-import com.yourpackage.name.Customer
-import com.yourpackage.name.FirestoreUtils
-import com.yourpackage.name.FirestoreUtils.addOrderForCustomer
+import com.zebrand.app1food30s.data.FirestoreUtils.addOrderForCustomer
 import com.zebrand.app1food30s.R
 import com.google.firebase.firestore.Query
 import java.util.*

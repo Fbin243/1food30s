@@ -1,4 +1,4 @@
-package com.yourpackage.name // Change this to your actual package name
+package com.zebrand.app1food30s.data // Change this to your actual package name
 
 import com.google.firebase.firestore.FirebaseFirestore
 

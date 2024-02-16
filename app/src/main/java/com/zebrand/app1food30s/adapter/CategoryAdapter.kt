@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.model.Category
+import com.zebrand.app1food30s.data.Category
 
 class CategoryAdapter(private val categories: List<Category>): RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
     inner class CategoryViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView) {

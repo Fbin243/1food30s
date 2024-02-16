@@ -12,8 +12,8 @@ import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.ProductApapter
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
-import com.zebrand.app1food30s.model.Category
-import com.zebrand.app1food30s.model.Product
+import com.zebrand.app1food30s.data.Category
+import com.zebrand.app1food30s.data.Product
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
