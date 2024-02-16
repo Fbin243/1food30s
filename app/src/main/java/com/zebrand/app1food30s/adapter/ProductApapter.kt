@@ -1,4 +1,4 @@
-package com.zebrand.adapter
+package com.zebrand.app1food30s.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
-import com.zebrand.model.Product
+import com.zebrand.app1food30s.model.Product
 
 class ProductApapter(private val products: List<Product>) :
     RecyclerView.Adapter<ProductApapter.ProductViewHolder>() {

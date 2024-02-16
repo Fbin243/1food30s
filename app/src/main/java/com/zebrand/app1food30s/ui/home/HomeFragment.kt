@@ -8,12 +8,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.zebrand.adapter.CategoryAdapter
-import com.zebrand.adapter.ProductApapter
+import com.zebrand.app1food30s.adapter.CategoryAdapter
+import com.zebrand.app1food30s.adapter.ProductApapter
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
-import com.zebrand.model.Category
-import com.zebrand.model.Product
+import com.zebrand.app1food30s.model.Category
+import com.zebrand.app1food30s.model.Product
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
