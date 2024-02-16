@@ -14,26 +14,19 @@
         tools:targetApi="31">
         <activity
             android:name=".ui.product_detail.ProductDetailActivity"
-            android:exported="true">
-            android:name=".ui.my_order.MyOrderDetailsActivity"
             android:exported="true" />
         <activity
             android:name=".ui.search.SearchActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".ui.my_order.MyOrderActivity"
-            android:exported="true"/>
-
-            <activity
-            android:name=".ui.my_order.MyOrderActivity"
-            android:exported="false"/>
-
+            android:exported="true" />
         <activity
             android:name=".ui.authentication.ForgotPasswordActivity"
             android:exported="false" />
         <activity
             android:name=".ui.authentication.SignUpActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".ui.authentication.LoginActivity"
             android:exported="true" />
@@ -45,10 +38,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Declaration for AdminStatisticsActivity -->
+        </activity>
+        <!--  ADMIN -->
         <activity
             android:name=".ui.admin_statistics.AdminStatisticsActivity"
-            android:exported="true"/>
+            android:exported="true" />
     </application>
 
 </manifest>

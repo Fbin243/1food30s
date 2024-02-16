@@ -9,7 +9,7 @@
 
     <include
         android:id="@+id/backFromSearch"
-        layout="@layout/back_item"
+        layout="@layout/item_back"
         android:layout_width="30dp"
         android:layout_height="30dp"
         app:layout_constraintLeft_toLeftOf="parent"
