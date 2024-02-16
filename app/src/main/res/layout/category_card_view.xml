@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="test"
-            android:textSize="@dimen/font_default"
+            android:textSize="@dimen/font_size12"
             android:fontFamily="@font/rubik_medium"
             />
 

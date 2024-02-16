@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.OfferAdapter
+import com.zebrand.app1food30s.adapter.ProductApapter
 import com.zebrand.app1food30s.data.Category
+import com.zebrand.app1food30s.data.Product
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.databinding.FragmentMenuBinding
 
@@ -26,13 +28,21 @@ class MenuFragment : Fragment() {
     ): View? {
         binding = FragmentMenuBinding.inflate(inflater)
 
-        handleCategoryMenu(binding)
-        handleChangeLayout(binding)
+        handleCategoryMenu()
+        handleChangeLayout()
+        handleDisplayProductList()
 
         return binding.root
     }
 
-    private fun handleChangeLayout(binding: FragmentMenuBinding) {
+    private fun handleDisplayProductList() {
+        rcv = binding.productRcv
+        rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        val adapter = ProductApapter(getListProducts(), false)
+        rcv.adapter = adapter
+    }
+
+    private fun handleChangeLayout() {
         binding.gridBtn.setOnClickListener {
             binding.gridBtn.setImageResource(R.drawable.active_grid)
             binding.linearBtn.setImageResource(R.drawable.linear)
@@ -45,7 +55,7 @@ class MenuFragment : Fragment() {
 
     }
 
-    private fun handleCategoryMenu(binding: FragmentMenuBinding) {
+    private fun handleCategoryMenu() {
         rcv = binding.cateRcv
         rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         val adapter = CategoryAdapter(getListCategories())
@@ -70,6 +80,71 @@ class MenuFragment : Fragment() {
         list = list + Category(R.drawable.cate1, "Appetizers")
         list = list + Category(R.drawable.cate1, "Appetizers")
         list = list + Category(R.drawable.cate1, "Appetizers")
+        return list
+    }
+
+    private fun getListProducts(): List<Product> {
+        var list = listOf<Product>()
+        list = list + Product(
+            R.drawable.product1,
+            "Sweet & Sour Chicken",
+            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
+            4.5
+        )
+        list = list + Product(
+            R.drawable.product1,
+            "Sweet & Sour Chicken",
+            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
+            4.5
+        )
+        list = list + Product(
+            R.drawable.product1,
+            "Sweet & Sour Chicken",
+            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
+            4.5
+        )
+        list = list + Product(
+            R.drawable.product1,
+            "Sweet & Sour Chicken",
+            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
+            4.5
+        )
+        list = list + Product(
+            R.drawable.product1,
+            "Sweet & Sour Chicken",
+            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
+            4.5
+        )
+        list = list + Product(
+            R.drawable.product1,
+            "Sweet & Sour Chicken",
+            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
+            4.5
+        )
+        list = list + Product(
+            R.drawable.product1,
+            "Sweet & Sour Chicken",
+            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
+            4.5
+        )
+        list = list + Product(
+            R.drawable.product1,
+            "Sweet & Sour Chicken",
+            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
+            4.5
+        )
+        list = list + Product(
+            R.drawable.product1,
+            "Sweet & Sour Chicken",
+            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
+            4.5
+        )
+        list = list + Product(
+            R.drawable.product1,
+            "Sweet & Sour Chicken",
+            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
+            4.5
+        )
         return list
     }
 }

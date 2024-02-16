@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.menu.MenuFragment">
+    tools:context=".ui.menu.MenuFragment"
+    android:paddingBottom="@dimen/spacing50">
 
     <ImageView
         android:id="@+id/imageView"
@@ -42,54 +43,84 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing2"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="-8dp"
+        android:layout_marginTop="-10dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/category_divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cateRcv" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="30dp"
-        android:fontFamily="@font/rubik_extrabold"
-        android:text="Appetizers"
-        android:textSize="@dimen/font_default"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textColor="@color/primary"
-        app:layout_constraintTop_toBottomOf="@+id/cateRcv" />
-
-    <ImageButton
-        android:id="@+id/gridBtn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
         android:layout_marginEnd="16dp"
-        android:backgroundTint="@color/transparent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/grid"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider"
+        android:scrollbars="none"
+        android:orientation="vertical">
 
-    <ImageButton
-        android:id="@+id/linearBtn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="40dp"
-        android:backgroundTint="@color/transparent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/linear"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
-        app:layout_constraintEnd_toEndOf="@+id/gridBtn"
-        app:layout_constraintTop_toTopOf="@+id/textView"
-        />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/spacing50">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/rubik_extrabold"
+                android:text="Appetizers"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/font_default"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/gridBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/transparent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/grid"
+                app:layout_constraintBottom_toBottomOf="@+id/textView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textView" />
+
+            <ImageButton
+                android:id="@+id/linearBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="40dp"
+                android:backgroundTint="@color/transparent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/linear"
+                app:layout_constraintBottom_toBottomOf="@+id/textView"
+                app:layout_constraintEnd_toEndOf="@+id/gridBtn"
+                app:layout_constraintTop_toTopOf="@+id/textView"
+                />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/productRcv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
