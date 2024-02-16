@@ -22,6 +22,6 @@
     <style name="Widget.Material3.CompoundButton.CheckBox" parent="Base.Widget.Material3.CompoundButton.CheckBox" />
     <style name="RoundedImageView">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/spacing16</item>
+        <item name="cornerSize">@dimen/spacing20</item>
     </style>
 </resources>

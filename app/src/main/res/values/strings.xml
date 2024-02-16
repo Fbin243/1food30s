@@ -28,6 +28,10 @@
     <string name="txt_view_all">View All</string>
     <string name="txt_add">Add</string>
 
+    <!--    Product detail -->
+    <string name="txt_details">Details</string>
+    <string name="txt_quantity">Quantity :</string>
+
     <!--  My order  -->
     <string name="txt_my_order">My Orders</string>
     <string name="txt_active_orders">Active Orders</string>
