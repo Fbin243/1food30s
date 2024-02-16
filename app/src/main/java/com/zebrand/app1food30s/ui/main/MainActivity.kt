@@ -9,6 +9,7 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.ActivityMainBinding
 import com.zebrand.app1food30s.ui.home.HomeFragment
 import com.zebrand.app1food30s.ui.menu.MenuFragment
+import com.zebrand.app1food30s.ui.offers.OffersFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,7 +22,7 @@ class MainActivity : AppCompatActivity() {
             when(menuItem.itemId) {
                 R.id.ic_home -> replaceFragment(HomeFragment())
                 R.id.ic_menu -> replaceFragment(MenuFragment())
-                R.id.ic_offers -> replaceFragment(HomeFragment())
+                R.id.ic_offers -> replaceFragment(OffersFragment())
                 R.id.ic_profile -> replaceFragment(HomeFragment())
             }
             true
