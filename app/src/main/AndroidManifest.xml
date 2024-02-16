@@ -27,6 +27,7 @@
         <activity
             android:name=".ui.authentication.SignUpActivity"
             android:exported="false" />
+
         <activity
             android:name=".ui.authentication.LoginActivity"
             android:exported="true">

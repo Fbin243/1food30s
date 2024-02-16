@@ -11,14 +11,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.ProductApapter
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.data.Category
+import com.zebrand.app1food30s.data.Offer
 import com.zebrand.app1food30s.data.Product
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var rcv: RecyclerView
-    private lateinit var rcv2: RecyclerView
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,13 +28,20 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater)
         val view = binding.root
 
+        // Category
         rcv = binding.cateRcv
         rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         rcv.adapter = CategoryAdapter(getListCategories())
 
-        rcv2 = binding.productRcv1
-        rcv2.layoutManager = GridLayoutManager(requireContext(), 2)
-        rcv2.adapter = ProductApapter(getListProducts())
+        // Product
+        rcv = binding.productRcv1
+        rcv.layoutManager = GridLayoutManager(requireContext(), 2)
+        rcv.adapter = ProductApapter(getListProducts())
+
+        // Offer
+        rcv = binding.offerRcv
+        rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        rcv.adapter = OfferAdapter(getListOffers())
 
         return view
     }
@@ -76,6 +85,13 @@ class HomeFragment : Fragment() {
             "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
             4.5
         )
+        return list
+    }
+
+    private fun getListOffers(): List<Offer> {
+        var list = listOf<Offer>()
+        list = list + Offer(R.drawable.offer1, 7)
+        list = list + Offer(R.drawable.offer2, 5)
         return list
     }
 
