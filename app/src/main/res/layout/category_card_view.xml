@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="90dp"
-    android:layout_height="90dp"
+    android:layout_height="100dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    card_view:cardElevation="5dp"
+    card_view:cardElevation="0dp"
     app:cardCornerRadius="@dimen/spacing16"
-    android:layout_margin="@dimen/spacing4"
-    android:outlineAmbientShadowColor="@color/primary"
-    android:outlineSpotShadowColor="@color/primary"
+    android:layout_marginEnd="@dimen/spacing10"
     >
 
     <LinearLayout
@@ -23,7 +21,6 @@
             android:layout_height="wrap_content"
             android:src="@drawable/cate1"
             android:layout_gravity="center_horizontal"
-
             />
 
         <TextView
@@ -33,8 +30,17 @@
             android:layout_gravity="center"
             android:text="test"
             android:textSize="@dimen/font_default"
-            android:layout_marginTop="@dimen/spacing4"
             android:fontFamily="@font/rubik_medium"
+            />
+
+        <TextView
+            android:id="@+id/cateUnderline"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/spacing4"
+            android:layout_marginEnd="@dimen/spacing4"
+            android:layout_marginTop="@dimen/spacing10"
             />
 
     </LinearLayout>

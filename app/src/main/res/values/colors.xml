@@ -9,6 +9,7 @@
     <color name="grey">#FF3A3A4F</color>
     <color name="grey_60">#993A3A4F</color>
     <color name="grey_30">#4D3A3A4F</color>
+    <color name="divider">#F0F0F0</color>
     <color name="transparent">#00000000</color>
     <color name="search_bgc">#EEE</color>
     <color name="ocean_blue">#077BA4</color>

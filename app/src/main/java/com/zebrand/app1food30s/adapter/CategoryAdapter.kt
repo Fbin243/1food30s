@@ -9,10 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.Category
 
-class CategoryAdapter(private val categories: List<Category>): RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+class CategoryAdapter(private val categories: List<Category>, private val underline: Boolean = false): RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+    var onItemClick: ((CategoryViewHolder) -> Unit)? = null
+    var lastItemClicked: CategoryViewHolder? = null
+
     inner class CategoryViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView) {
         val cateImg: ImageView = listItemView.findViewById(R.id.cateImg)
         val cateTitle: TextView = listItemView.findViewById(R.id.cateTitle)
+        val cateUnderline: TextView = listItemView.findViewById(R.id.cateUnderline)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
@@ -28,7 +32,11 @@ class CategoryAdapter(private val categories: List<Category>): RecyclerView.Adap
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val category: Category = categories[position]
-        holder.cateImg.setImageResource(category.img)
         holder.cateTitle.text = category.title
+        holder.cateImg.setImageResource(category.img)
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(holder)
+            lastItemClicked = holder
+        }
     }
 }
