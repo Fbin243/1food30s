@@ -33,10 +33,15 @@ class HomeFragment : Fragment() {
         rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         rcv.adapter = CategoryAdapter(getListCategories())
 
-        // Product
+        // Product grid
         rcv = binding.productRcv1
         rcv.layoutManager = GridLayoutManager(requireContext(), 2)
         rcv.adapter = ProductApapter(getListProducts())
+
+        // Product linear
+        rcv = binding.productRcv2
+        rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        rcv.adapter = ProductApapter(getListProducts(), false)
 
         // Offer
         rcv = binding.offerRcv

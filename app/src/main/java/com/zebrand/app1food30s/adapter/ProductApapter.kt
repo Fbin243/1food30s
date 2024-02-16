@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.Product
 
-class ProductApapter(private val products: List<Product>) :
+class ProductApapter(private val products: List<Product>, private val isGrid: Boolean = true) :
     RecyclerView.Adapter<ProductApapter.ProductViewHolder>() {
     inner class ProductViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val productImg: ImageView = listItemView.findViewById(R.id.productImg)
@@ -20,7 +20,7 @@ class ProductApapter(private val products: List<Product>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val productCardView =
-            LayoutInflater.from(parent.context).inflate(R.layout.product_card_view, parent, false)
+            LayoutInflater.from(parent.context).inflate(if(isGrid) R.layout.product_card_view_grid else R.layout.product_card_view_linear, parent, false)
         return ProductViewHolder(productCardView)
     }
 
