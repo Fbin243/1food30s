@@ -38,15 +38,15 @@ class HomeFragment : Fragment() {
         rcv.layoutManager = GridLayoutManager(requireContext(), 2)
         rcv.adapter = ProductApapter(getListProducts())
 
-        // Product linear
-        rcv = binding.productRcv2
-        rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        rcv.adapter = ProductApapter(getListProducts(), false)
-
         // Offer
         rcv = binding.offerRcv
         rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         rcv.adapter = OfferAdapter(getListOffers())
+
+        // Product linear
+        rcv = binding.productRcv2
+        rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        rcv.adapter = ProductApapter(getListProducts(), false)
 
         return view
     }

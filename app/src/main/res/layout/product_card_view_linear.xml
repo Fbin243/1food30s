@@ -87,7 +87,8 @@
                     app:cornerRadius="10dp"
                     app:icon="@drawable/ic_cart"
                     app:iconPadding="-4dp"
-                    app:iconSize="16dp" />
+                    app:iconSize="16dp"
+                    android:layout_marginEnd="@dimen/spacing2"/>
 
 
             </LinearLayout>
