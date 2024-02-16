@@ -13,6 +13,7 @@
         app:markerSize="20dp"
         app:lineWidth="3dp"
         app:marker="@drawable/marker"
+
         app:startLineColor="@color/transparent"
         app:endLineColor="@color/primary"
         app:lineStyle="normal"
@@ -22,6 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Pending"
+        android:textSize="@dimen/font_size12"
         android:textColor="@color/primary"
         android:textAlignment="center"/>
 

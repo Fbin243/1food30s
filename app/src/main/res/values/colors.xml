@@ -9,9 +9,11 @@
     <color name="grey_60">#993A3A4F</color>
     <color name="grey_80">#CC3A3A4F</color>
     <color name="grey_30">#4D3A3A4F</color>
+    <color name="grey_10">#1A3A3A4F</color>
     <color name="ocean_blue">#077BA4</color>
     <color name="yellow">#FFEAA62A</color>
     <color name="yellow_30">#4DEAA62A</color>
     <color name="deep_orange">#D1481B</color>
     <color name="transparent">#00000000</color>
+    <color name="kelly_green">#FF46C346</color>
 </resources>
