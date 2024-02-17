@@ -12,6 +12,7 @@ dependencyResolutionManagement {
         mavenCentral()
         // Define your repositories here, including JitPack
         maven { url = uri("https://jitpack.io") }
+        maven {url = uri("https://jcenter.bintray.com")}
     }
 }
 
