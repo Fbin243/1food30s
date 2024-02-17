@@ -21,10 +21,10 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:paddingBottom="@dimen/spacing24"
-            android:paddingHorizontal="@dimen/spacing20">
+            android:paddingHorizontal="@dimen/spacing16">
 
             <include
-                layout="@layout/back_item"
+                layout="@layout/item_back"
                 android:layout_width="30dp"
                 android:layout_height="30dp" />
 
@@ -56,14 +56,14 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_active_orders"
             android:layout_margin="@dimen/spacing10"
             >
-            <include layout="@layout/my_order_item"/>
-            <include layout="@layout/my_order_item"/>
-            <include layout="@layout/my_order_item"/>
-            <include layout="@layout/my_order_item"/>
-            <include layout="@layout/my_order_item"/>
-            <include layout="@layout/my_order_item"/>
-            <include layout="@layout/my_order_item"/>
-            <include layout="@layout/my_order_item"/>
+            <include layout="@layout/item_my_order"/>
+            <include layout="@layout/item_my_order"/>
+            <include layout="@layout/item_my_order"/>
+            <include layout="@layout/item_my_order"/>
+            <include layout="@layout/item_my_order"/>
+            <include layout="@layout/item_my_order"/>
+            <include layout="@layout/item_my_order"/>
+            <include layout="@layout/item_my_order"/>
         </LinearLayout>
 
         <TextView
@@ -86,9 +86,9 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_previous_orders"
             android:layout_margin="@dimen/spacing10"
             >
-            <include layout="@layout/my_order_item"/>
-            <include layout="@layout/my_order_item"/>
-            <include layout="@layout/my_order_item"/>
+            <include layout="@layout/item_my_order"/>
+            <include layout="@layout/item_my_order"/>
+            <include layout="@layout/item_my_order"/>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
