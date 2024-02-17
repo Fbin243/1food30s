@@ -11,6 +11,7 @@ import com.zebrand.app1food30s.data.Product
 
 class ProductApapter(private val products: List<Product>, private val isGrid: Boolean = true) :
     RecyclerView.Adapter<ProductApapter.ProductViewHolder>() {
+    var onItemClick: ((ProductApapter.ProductViewHolder) -> Unit)? = null
     inner class ProductViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val productImg: ImageView = listItemView.findViewById(R.id.productImg)
         val productTitle: TextView = listItemView.findViewById(R.id.productTitle)
@@ -34,5 +35,8 @@ class ProductApapter(private val products: List<Product>, private val isGrid: Bo
         holder.productTitle.text = product.title
         holder.productDescription.text = product.description
         holder.productPrice.text = "$${String.format("%.2f", product.price).replace(",", ".")}"
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(holder)
+        }
     }
 }

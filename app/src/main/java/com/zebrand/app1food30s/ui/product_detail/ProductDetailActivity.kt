@@ -24,6 +24,13 @@ class ProductDetailActivity : AppCompatActivity() {
         handleDisplayReview()
         handleDisplayRelatedProducts()
         handleOpenReviewScreen()
+        handleCloseDetailScreen()
+    }
+
+    private fun handleCloseDetailScreen() {
+        binding.backFromDetail.root.setOnClickListener {
+            finish()
+        }
     }
 
     private fun handleOpenReviewScreen() {

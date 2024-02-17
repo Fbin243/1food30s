@@ -17,6 +17,7 @@ import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Offer
 import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
 
 class HomeFragment : Fragment() {
@@ -61,7 +62,12 @@ class HomeFragment : Fragment() {
         // Product grid
         rcv = binding.productRcv1
         rcv.layoutManager = GridLayoutManager(requireContext(), 2)
-        rcv.adapter = ProductApapter(getListProducts())
+        var adapter = ProductApapter(getListProducts())
+        adapter.onItemClick = { holder ->
+            val intent = Intent(requireContext(), ProductDetailActivity::class.java)
+            startActivity(intent)
+        }
+        rcv.adapter = adapter
 
         // Offer
         rcv = binding.offerRcv
@@ -71,7 +77,12 @@ class HomeFragment : Fragment() {
         // Product linear
         rcv = binding.productRcv2
         rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        rcv.adapter = ProductApapter(getListProducts(), false)
+        adapter = ProductApapter(getListProducts(), false)
+        adapter.onItemClick = { holder ->
+            val intent = Intent(requireContext(), ProductDetailActivity::class.java)
+            startActivity(intent)
+        }
+        rcv.adapter = adapter
     }
 
     private fun getListCategories(): List<Category> {
