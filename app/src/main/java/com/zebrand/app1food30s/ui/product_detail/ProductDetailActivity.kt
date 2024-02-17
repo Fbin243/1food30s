@@ -1,7 +1,8 @@
 package com.zebrand.app1food30s.ui.product_detail
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +12,7 @@ import com.zebrand.app1food30s.adapter.ReviewAdapter
 import com.zebrand.app1food30s.data.Product
 import com.zebrand.app1food30s.data.Review
 import com.zebrand.app1food30s.databinding.ActivityProductDetailBinding
+import com.zebrand.app1food30s.ui.review.ReviewActivity
 
 class ProductDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProductDetailBinding
@@ -21,6 +23,14 @@ class ProductDetailActivity : AppCompatActivity() {
         setContentView(binding.root)
         handleDisplayReview()
         handleDisplayRelatedProducts()
+        handleOpenReviewScreen()
+    }
+
+    private fun handleOpenReviewScreen() {
+        binding.viewAllBtn.setOnClickListener {
+            val intent = Intent(this, ReviewActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun handleDisplayRelatedProducts() {

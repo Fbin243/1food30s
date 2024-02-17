@@ -32,6 +32,8 @@
     <!--    Product detail -->
     <string name="txt_details">Details</string>
     <string name="txt_quantity">Quantity :</string>
+    <string name="txt_reviews">Reviews</string>
+
     <string name="txt_first_name">First name</string>
     <string name="txt_last_name">Last name</string>
 
