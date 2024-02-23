@@ -16,10 +16,8 @@ import com.airbnb.lottie.LottieDrawable
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.ActivityMyOrderDetailsBinding
 
-@SuppressLint("StaticFieldLeak")
-lateinit var binding:ActivityMyOrderDetailsBinding
 class MyOrderDetailsActivity : AppCompatActivity() {
-
+    lateinit var binding:ActivityMyOrderDetailsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMyOrderDetailsBinding.inflate(layoutInflater)
@@ -31,7 +29,15 @@ class MyOrderDetailsActivity : AppCompatActivity() {
         }
         setContentView(binding.root)
 
+        events()
         lottieAnimation()
+    }
+
+    private fun events(){
+        binding.backIcon.root.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
     }
 
     private fun lottieAnimation(){

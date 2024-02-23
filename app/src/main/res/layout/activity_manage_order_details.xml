@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".ui.my_order.MyOrderDetailsActivity">
+    tools:context=".ui.manage_order.ManageOrderDetailsActivity">
 
     <LinearLayout
         android:id="@+id/linear_app_bar"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing18"
             android:fontFamily="@font/rubik_bold"
-            android:text="@string/txt_order_status"
+            android:text="@string/txt_order_details"
             android:textSize="@dimen/font_header" />
     </LinearLayout>
 
@@ -52,156 +52,150 @@
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
                 android:orientation="vertical">
+
                 <LinearLayout
-                    android:id="@+id/linear_body_1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:paddingHorizontal="@dimen/spacing16"
-                    app:layout_constraintTop_toBottomOf="@id/linear_app_bar">
-
-                    <LinearLayout
+                    android:layout_marginHorizontal="@dimen/spacing8"
+                    >
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/tv_order_label"
-                            android:layout_width="wrap_content"
+                        app:cardCornerRadius="@dimen/radius12"
+                        android:layout_margin="@dimen/spacing8"
+                        app:cardElevation="@dimen/spacing2"
+                        >
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/rubik_semibold"
-                            android:text="@string/txt_order_id"
-                            android:textColor="@color/grey_60"
-                            android:textSize="@dimen/font_size16" />
+                            android:orientation="horizontal"
+                            android:padding="@dimen/padding12"
+                            android:gravity="center_vertical">
 
-                        <TextView
-                            android:id="@+id/tv_order_id"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/rubik_semibold"
-                            android:text="1402323"
-                            android:textColor="@color/ocean_blue"
-                            android:textSize="@dimen/font_size16" />
-                    </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/spacing24"
+                                    android:weightSum="2"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="06:14 PM 14-02-2024"
-                        android:textColor="@color/grey_60" />
+                                    <LinearLayout
+                                        android:layout_width="0dp"
+                                        android:layout_weight="2"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center_vertical">
+                                        <ImageView
+                                            android:layout_width="@dimen/spacing20"
+                                            android:layout_height="@dimen/spacing20"
+                                            android:src="@drawable/ic_cloche_grey"
+                                            android:layout_marginBottom="@dimen/spacing1"
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing24"
-                        android:fontFamily="@font/rubik_semibold"
-                        android:text="@string/txt_estimated_delivery_time"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/font_size16" />
+                                            android:contentDescription="@null"/>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/rubik_bold"
-                        android:text="@string/txt_estimated_minutes"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/font_super_header" />
+                                        <TextView
+                                            android:id="@+id/tv_order_label"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="@string/txt_order_id"
+                                            android:textColor="@color/grey_60"
+                                            android:textSize="@dimen/font_size16"
+                                            android:layout_marginStart="@dimen/spacing8"
+                                            />
 
-                    <com.airbnb.lottie.LottieAnimationView
-                        android:id="@+id/lottieSuccess"
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:elevation="@dimen/spacing6"
-                        app:lottie_rawRes="@raw/lottie_success_order">
+                                        <TextView
+                                            android:id="@+id/tv_order_id"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:textSize="@dimen/font_size16"
+                                            android:text=" 1402323" />
+                                    </LinearLayout>
 
-                    </com.airbnb.lottie.LottieAnimationView>
+                                    <include
+                                        android:id="@+id/statusPayment"
+                                        layout="@layout/my_order_status_span"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="@dimen/spacing20"
+                                        android:layout_marginEnd="@dimen/spacing8"
+                                        />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/rubik_semibold"
-                        android:text="@string/txt_got_your_order"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/font_size16">
+                                    <include
+                                        android:id="@+id/statusDelivery"
+                                        layout="@layout/my_order_status_span"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="@dimen/spacing20"
+                                        />
 
-                    </TextView>
+                                </LinearLayout>
 
-                    <include
-                        layout="@layout/timeline"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing12" />
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/rubik_semibold"
+                                        android:text="@string/txt_customer_name"
+                                        />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing16"
-                        android:fontFamily="@font/rubik_semibold"
-                        android:text="@string/txt_address"
-                        android:textSize="@dimen/font_size16" />
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Tuan Nguyen"
+                                        />
+                                </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/txt_uni_address" />
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/rubik_semibold"
+                                        android:text="@string/txt_payment_type"
+                                        />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing16"
-                        android:fontFamily="@font/rubik_semibold"
-                        android:text="@string/txt_payment_info"
-                        android:textSize="@dimen/font_size16" />
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Cash on Delivery"
+                                        />
+                                </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/rubik_semibold"
+                                        android:text="@string/txt_date"
+                                        />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/rubik_semibold"
-                            android:text="@string/txt_payment_method"
-                            android:textColor="@color/grey_60"
-                             />
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="14-02-2024 06:14 PM - 07:14 PM"
+                                        />
+                                </LinearLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/rubik_semibold"
-                            android:text=" Cash on Delivery"
-                             />
-                    </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                            </LinearLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/rubik_semibold"
-                            android:text="@string/txt_payment_status"
-                            android:textColor="@color/grey_60" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/rubik_semibold"
-                            android:text=" UNPAID"
-                            android:textColor="@color/primary" />
-                    </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
                 </LinearLayout>
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/spacing16"
-                    android:layout_marginTop="@dimen/spacing28"
+                    android:layout_marginTop="@dimen/spacing12"
                     app:cardCornerRadius="@dimen/spacing16"
-                    app:cardElevation="@dimen/spacing4"
                     app:contentPadding="@dimen/spacing8"
                     android:layout_marginBottom="170dp"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -222,6 +216,10 @@
 
                         <include layout="@layout/item_order_details" />
 
+                        <include layout="@layout/item_order_details" />
+                        <include layout="@layout/item_order_details" />
+                        <include layout="@layout/item_order_details" />
+                        <include layout="@layout/item_order_details" />
                         <include layout="@layout/item_order_details" />
 
                         <androidx.cardview.widget.CardView
@@ -320,6 +318,7 @@
 
 
                 </androidx.cardview.widget.CardView>
+
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
@@ -347,24 +346,31 @@
             android:weightSum="2"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/payNowBtn"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/spacing60"
                 android:layout_weight="1"
-                android:backgroundTint="@color/primary"
-                android:text="@string/txt_pay_now"
+                android:backgroundTint="@color/deep_orange"
+                android:text="@string/txt_reject"
                 android:textSize="@dimen/font_size16"
-                android:textStyle="bold" />
+                app:iconSize="@dimen/spacing24"
+                android:textStyle="bold"
+                app:icon="@drawable/ic_delete"
+                app:iconGravity="textStart"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
+                android:textAlignment="center"
                 android:id="@+id/cancelOrderBtn"
+                app:icon="@drawable/ic_check"
+                app:iconGravity="textStart"
+                app:iconSize="@dimen/spacing24"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/spacing60"
                 android:layout_marginStart="@dimen/spacing12"
                 android:layout_weight="1"
-                android:backgroundTint="@color/deep_orange"
-                android:text="@string/txt_cancel_order"
+                android:backgroundTint="@color/primary"
+                android:text="@string/txt_accept"
                 android:textSize="@dimen/font_size16"
                 android:textStyle="bold" />
         </LinearLayout>
