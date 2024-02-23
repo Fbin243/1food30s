@@ -68,5 +68,9 @@
     <string name="txt_delivery_charge">Delivery charge</string>
     <string name="txt_total">Total</string>
     <string name="txt_category">Category</string>
+    <string name="my_profile">My Profile</string>
+    <string name="login_to_see_your_info">Login to see your info</string>
+    <string name="login">Login</string>
+    <string name="change_language">Change Language</string>
 
 </resources>
