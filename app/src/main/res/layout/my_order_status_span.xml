@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="15dp"
-    app:cardElevation="0dp"
-    android:backgroundTint="@color/yellow_30"
-    >
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
+<!--    <data>-->
+<!--        <variable-->
+<!--            name="status"-->
+<!--            type="java.lang.String" />-->
+<!--    </data>-->
+
+    <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/txt_pending_status"
-        android:paddingVertical="@dimen/spacing1"
-        android:paddingHorizontal="@dimen/spacing6"
-        android:textSize="@dimen/font_size10"
-        android:textColor="@color/yellow"/>
+        app:cardCornerRadius="15dp"
+        app:cardElevation="0dp"
+        android:backgroundTint="@color/yellow_30"
+        >
 
-</androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/statusSpan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_pending_status"
+            android:paddingVertical="@dimen/spacing1"
+            android:paddingHorizontal="@dimen/spacing6"
+            android:textSize="@dimen/font_size10"
+            android:textColor="@color/yellow"/>
+
+    </androidx.cardview.widget.CardView>
+</layout>

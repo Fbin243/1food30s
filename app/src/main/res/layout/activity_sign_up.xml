@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.authentication.LoginActivity">
+    tools:context=".ui.authentication.SignUpActivity">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,6 +14,7 @@
         android:paddingBottom="@dimen/spacing64">
 
         <include
+            android:id="@+id/backIcon"
             layout="@layout/item_back"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -204,11 +205,12 @@
                 android:textSize="@dimen/font_size16" />
 
             <TextView
+                android:id="@+id/tvLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing12"
                 android:fontFamily="@font/rubik_semibold"
-                android:text="@string/txt_sign_up"
+                android:text="@string/txt_login"
                 android:textAlignment="viewEnd"
                 android:textColor="@color/primary"
                 android:textSize="@dimen/font_header" />

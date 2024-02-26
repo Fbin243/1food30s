@@ -60,17 +60,31 @@
     </string-array>
     <string name="txt_address">Address</string>
     <string name="txt_payment_info">Payment info</string>
-    <string name="txt_payment_method">Method: </string>
-    <string name="txt_payment_status">Status: </string>
+    <string name="txt_payment_method">Method:&#160;</string>
+    <string name="txt_payment_status">Status:&#160;</string>
     <string name="txt_order_details">Order details</string>
-    <string name="txt_subtotal">Subtotal</string>
+    <string name="txt_subtotal">Subtotal:&#160;</string>
     <string name="txt_deals">Deals</string>
     <string name="txt_delivery_charge">Delivery charge</string>
-    <string name="txt_total">Total</string>
+    <string name="txt_total">Total:&#160;</string>
     <string name="txt_category">Category</string>
     <string name="my_profile">My Profile</string>
     <string name="login_to_see_your_info">Login to see your info</string>
     <string name="login">Login</string>
     <string name="change_language">Change Language</string>
+
+    <!-- Manage order   -->
+    <string name="txt_manage_order">Manage orders</string>
+    <string name="txt_customer_name">Customer:&#160;</string>
+    <string name="txt_amount">Amount:&#160;</string>
+    <string name="txt_date">Date:&#160;</string>
+    <string name="txt_see_order_details">Order Details ></string>
+    <string name="txt_payment_type">Payment Type:&#160;</string>
+    <string name="txt_order_type">Order Type:&#160;</string>
+    <string name="txt_delivery_time">Delivery Time: &#160;</string>
+    <string name="txt_unpaid">Unpaid</string>
+    <string name="txt_cash_on_delivery">Cash on Delivery</string>
+    <string name="txt_accept">Accept</string>
+    <string name="txt_reject">Reject</string>
 
 </resources>
