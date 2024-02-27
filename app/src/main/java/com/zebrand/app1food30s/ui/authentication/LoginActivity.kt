@@ -11,9 +11,11 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.ActivityLoginBinding
+import com.zebrand.app1food30s.ui.main.MainActivity
+import com.zebrand.app1food30s.ui.profile.ProfileAfterLoginFragment
 
 class LoginActivity : AppCompatActivity() {
-    lateinit var binding:ActivityLoginBinding
+    lateinit var binding: ActivityLoginBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -26,10 +28,9 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         events()
-
     }
 
-    private fun events(){
+    private fun events() {
         binding.tvSignUp.setOnClickListener {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
@@ -40,5 +41,13 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.loginBtn.setOnClickListener {
+            // Intent to start MainActivity
+            val intent = Intent(this, MainActivity::class.java)
+            // Include extra information to tell MainActivity to load ProfileAfterLoginFragment
+            intent.putExtra("loadProfileFragment", true)
+            startActivity(intent)
+            finish() // Optional: Close LoginActivity once the transition is made
+        }
     }
 }

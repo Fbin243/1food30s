@@ -11,6 +11,7 @@ import com.zebrand.app1food30s.databinding.ActivityMainBinding
 import com.zebrand.app1food30s.ui.home.HomeFragment
 import com.zebrand.app1food30s.ui.menu.MenuFragment
 import com.zebrand.app1food30s.ui.offers.OffersFragment
+import com.zebrand.app1food30s.ui.profile.ProfileAfterLoginFragment
 import com.zebrand.app1food30s.ui.profile.ProfileFragment
 
 class MainActivity : AppCompatActivity() {
@@ -20,7 +21,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         handleBottomNavigation()
+
+        // Check if MainActivity should load ProfileAfterLoginFragment directly
+        if (intent.getBooleanExtra("loadProfileFragment", false)) {
+            replaceFragment(ProfileAfterLoginFragment())
+        } else {
+            // Your default fragment to load
+            replaceFragment(HomeFragment())
+        }
     }
 
     private fun handleBottomNavigation() {

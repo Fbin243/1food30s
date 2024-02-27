@@ -71,7 +71,7 @@
     <string name="txt_category">Category</string>
     <string name="my_profile">My Profile</string>
     <string name="login_to_see_your_info">Login to see your info</string>
-    <string name="login">Login</string>
+    <string name="login">Log In</string>
     <string name="change_language">Change Language</string>
 
     <!-- Manage order   -->
@@ -87,5 +87,14 @@
     <string name="txt_cash_on_delivery">Cash on Delivery</string>
     <string name="txt_accept">Accept</string>
     <string name="txt_reject">Reject</string>
+    <string name="ava">ava</string>
+    <string name="ic_change_language">ic_change_language</string>
+    <string name="log_out">Log Out</string>
+    <string name="ic_my_orders">my_orders</string>
+    <string name="my_orders">My Orders</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="ic_edit_profile">ic_edit_profile</string>
+    <string name="ic_change_password">ic_change_password</string>
+    <string name="change_password">Change Password</string>
 
 </resources>
