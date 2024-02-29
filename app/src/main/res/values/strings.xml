@@ -96,5 +96,9 @@
     <string name="ic_edit_profile">ic_edit_profile</string>
     <string name="ic_change_password">ic_change_password</string>
     <string name="change_password">Change Password</string>
+    <string name="cart">Cart</string>
+    <string name="my_cart">My Cart</string>
+    <string name="minus_button">Minus button</string>
+    <string name="plus_button">Plus button</string>
 
 </resources>

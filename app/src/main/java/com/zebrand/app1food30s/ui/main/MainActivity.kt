@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.ActivityMainBinding
+import com.zebrand.app1food30s.ui.cart.CartFragment
 import com.zebrand.app1food30s.ui.home.HomeFragment
 import com.zebrand.app1food30s.ui.menu.MenuFragment
 import com.zebrand.app1food30s.ui.offers.OffersFragment
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         handleBottomNavigation()
+        setupFloatingButton()
 
         // Check if MainActivity should load ProfileAfterLoginFragment directly
         if (intent.getBooleanExtra("loadProfileFragment", false)) {
@@ -43,7 +45,13 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-        replaceFragment(HomeFragment())
+//        replaceFragment(HomeFragment())
+    }
+    private fun setupFloatingButton() {
+        binding.floatingBtn.setOnClickListener {
+            // Call replaceFragment with an instance of CartFragment
+            replaceFragment(CartFragment())
+        }
     }
     private fun replaceFragment(fragment: Fragment) {
         val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
