@@ -100,5 +100,6 @@
     <string name="my_cart">My Cart</string>
     <string name="minus_button">Minus button</string>
     <string name="plus_button">Plus button</string>
+    <string name="checkout">Checkout</string>
 
 </resources>
