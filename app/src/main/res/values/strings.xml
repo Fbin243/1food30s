@@ -101,5 +101,6 @@
     <string name="minus_button">Minus button</string>
     <string name="plus_button">Plus button</string>
     <string name="checkout">Checkout</string>
+    <string name="back_button">Back button</string>
 
 </resources>

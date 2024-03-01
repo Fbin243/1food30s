@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="16dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:srcCompat="@drawable/ic_left_arrow_circle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:tint="@color/primary"
+            android:paddingBottom="1dp"
+            android:contentDescription="@string/back_button"/>
+
+        <TextView
+            android:id="@+id/tvCheckout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/checkout"
+            android:fontFamily="@font/rubik_bold"
+            android:textSize="@dimen/font_size24"
+            android:textColor="@color/primary"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ivBack"
+            android:layout_marginStart="5dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/tvCartSummary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cart Summary"
+        android:fontFamily="@font/rubik_bold"
+        android:textSize="@dimen/font_size24"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@+id/clHeader"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="5dp"/>
+
+    <include
+        layout="@layout/item_order_details"
+        android:id="@+id/cartItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/tvCartSummary"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <include
+        layout="@layout/item_order_details"
+        android:id="@+id/cartItem2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/cartItem"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

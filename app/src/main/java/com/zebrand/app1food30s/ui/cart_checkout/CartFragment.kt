@@ -1,4 +1,4 @@
-package com.zebrand.app1food30s.ui.cart
+package com.zebrand.app1food30s.ui.cart_checkout
 
 import android.os.Bundle
 import android.view.LayoutInflater

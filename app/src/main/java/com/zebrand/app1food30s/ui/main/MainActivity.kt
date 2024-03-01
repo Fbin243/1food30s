@@ -2,13 +2,11 @@ package com.zebrand.app1food30s.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.ActivityMainBinding
-import com.zebrand.app1food30s.ui.cart.CartFragment
+import com.zebrand.app1food30s.ui.cart_checkout.CartFragment
 import com.zebrand.app1food30s.ui.home.HomeFragment
 import com.zebrand.app1food30s.ui.menu.MenuFragment
 import com.zebrand.app1food30s.ui.offers.OffersFragment
