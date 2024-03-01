@@ -186,18 +186,23 @@
 
     <include
         layout="@layout/component_total_price"
-        app:layout_constraintBottom_toTopOf="@+id/inCheckoutBtn"
+        app:layout_constraintBottom_toTopOf="@+id/btnCheckout"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginBottom="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <include
-        android:id="@+id/inCheckoutBtn"
-        layout="@layout/component_final_button"
+    <Button
+        android:id="@+id/btnCheckout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/checkout"
+        android:textSize="@dimen/font_size24"
+        android:fontFamily="@font/rubik_bold"
+        android:background="@drawable/rounded_button"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -102,5 +102,6 @@
     <string name="plus_button">Plus button</string>
     <string name="checkout">Checkout</string>
     <string name="back_button">Back button</string>
+    <string name="place_order">Place Order</string>
 
 </resources>
