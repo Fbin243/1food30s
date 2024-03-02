@@ -90,5 +90,7 @@
     <string name="txt_edit">Edit</string>
     <string name="txt_add_product">Add product</string>
     <string name="product_name">Name</string>
+    <string name="product_price">Price</string>
+    <string name="text_category">Category</string>
 
 </resources>

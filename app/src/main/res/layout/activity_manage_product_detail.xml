@@ -62,8 +62,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
+        <TextView
+            android:id="@+id/text_product_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/product_name"
+            android:layout_marginTop="@dimen/spacing24"
+            app:layout_constraintTop_toBottomOf="@+id/linear_line"
+            tools:layout_editor_absoluteX="14dp" />
+
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_first_name"
+            android:id="@+id/edit_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:boxCornerRadiusBottomEnd="@dimen/radius8"
@@ -80,25 +89,24 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
-                android:hint="@string/txt_first_name"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/text_product_category"
+            android:id="@+id/text_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/product_name"
+            android:text="@string/text_category"
             android:layout_marginTop="@dimen/spacing20"
-            app:layout_constraintTop_toBottomOf="@+id/tf_first_name"
+            app:layout_constraintTop_toBottomOf="@+id/edit_name"
             tools:layout_editor_absoluteX="14dp" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_last_name"
+            android:id="@+id/category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/text_product_category"
+            app:layout_constraintTop_toBottomOf="@+id/text_category"
             app:boxStrokeColor="@color/primary"
             app:boxCornerRadiusTopStart="@dimen/radius8"
             app:boxCornerRadiusTopEnd="@dimen/radius8"
@@ -117,21 +125,20 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/text_product"
-            android:layout_width="match_parent"
+            android:id="@+id/text_price"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="@string/product_name"
-            android:layout_marginTop="@dimen/spacing24"
-            app:layout_constraintTop_toBottomOf="@+id/tf_first_name"
+            android:layout_marginTop="@dimen/spacing20"
+            app:layout_constraintTop_toBottomOf="@+id/category"
             tools:layout_editor_absoluteX="14dp" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_email"
-            android:layout_width="match_parent"
+            android:id="@+id/price"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/tf_last_name"
+            app:layout_constraintTop_toBottomOf="@+id/text_price"
             app:boxStrokeColor="@color/primary"
-            android:layout_marginTop="@dimen/spacing20"
             app:boxCornerRadiusTopStart="@dimen/radius8"
             app:boxCornerRadiusTopEnd="@dimen/radius8"
             app:boxCornerRadiusBottomStart="@dimen/radius8"
@@ -149,18 +156,27 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_password"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/text_offer"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/tf_email"
-            app:boxStrokeColor="@color/primary"
+            android:text="@string/product_price"
             android:layout_marginTop="@dimen/spacing20"
+            app:layout_constraintTop_toBottomOf="@+id/category"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:layout_editor_absoluteX="14dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/offer"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/text_offer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:boxStrokeColor="@color/primary"
             app:boxCornerRadiusTopStart="@dimen/radius8"
             app:boxCornerRadiusTopEnd="@dimen/radius8"
             app:boxCornerRadiusBottomStart="@dimen/radius8"
             app:boxCornerRadiusBottomEnd="@dimen/radius8"
-            app:endIconMode="password_toggle"
             app:cursorColor="@color/primary"
             app:hintTextColor="@color/primary"
             >
@@ -168,33 +184,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
-                android:hint="@string/txt_password"
-                android:inputType="textPassword"
-                android:maxLines="1" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_retype_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/tf_password"
-            app:boxStrokeColor="@color/primary"
-            android:layout_marginTop="@dimen/spacing20"
-            app:boxCornerRadiusTopStart="@dimen/radius8"
-            app:boxCornerRadiusTopEnd="@dimen/radius8"
-            app:boxCornerRadiusBottomStart="@dimen/radius8"
-            app:boxCornerRadiusBottomEnd="@dimen/radius8"
-            app:endIconMode="password_toggle"
-            app:cursorColor="@color/primary"
-            app:hintTextColor="@color/primary"
-            >
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing60"
-                android:hint="@string/txt_confirm_password"
-                android:inputType="textPassword"
+                android:hint="@string/txt_last_name"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -203,14 +193,12 @@
             android:id="@+id/login_btn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing60"
+            android:backgroundTint="@color/primary"
             android:text="@string/txt_sign_up"
             android:textSize="@dimen/font_size16"
             android:textStyle="bold"
-            android:backgroundTint="@color/primary"
-            android:layout_marginTop="@dimen/spacing20"
-            app:layout_constraintTop_toBottomOf="@+id/tf_retype_password"
             app:layout_constraintLeft_toLeftOf="parent"
-            />
+            tools:layout_editor_absoluteY="643dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -237,16 +225,6 @@
                 android:textAlignment="viewEnd"
                 android:textColor="@color/primary" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/text_product_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/product_name"
-            android:layout_marginTop="@dimen/spacing24"
-            app:layout_constraintTop_toBottomOf="@+id/linear_line"
-            tools:layout_editor_absoluteX="14dp" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
