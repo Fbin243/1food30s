@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CategoryAdapter
+import com.zebrand.app1food30s.adapter.ManageProductAdapter
 import com.zebrand.app1food30s.adapter.ProductApapter
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Product
@@ -29,7 +30,7 @@ class ManageProductActivity : AppCompatActivity() {
     private fun handleDisplayProductList() {
         rcv = binding.productRcv
         rcv.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        val adapter = ProductApapter(getListProducts(), false)
+        val adapter = ManageProductAdapter(getListProducts(), false)
         rcv.adapter = adapter
     }
 

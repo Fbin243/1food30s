@@ -87,5 +87,6 @@
     <string name="txt_cash_on_delivery">Cash on Delivery</string>
     <string name="txt_accept">Accept</string>
     <string name="txt_reject">Reject</string>
+    <string name="txt_edit">Edit</string>
 
 </resources>
