@@ -13,7 +13,7 @@
         android:theme="@style/Base.Theme.App1food30s"
         tools:targetApi="31">
         <activity
-            android:name=".ui.manage_product.ManageProductDetailActivity"
+            android:name=".ui.profile.EditProfileActivity"
             android:exported="true" >
 
             <intent-filter>
@@ -23,13 +23,24 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.manage_product.ManageProductActivity"
+            android:name=".ui.manage_product.ManageProductDetailActivity"
             android:exported="true">
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
 
 <!--                <category android:name="android.intent.category.LAUNCHER" />-->
 <!--            </intent-filter>-->
+        </activity>
+        <activity
+            android:name=".ui.manage_product.ManageProductActivity"
+            android:exported="true">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".ui.manage_order.ManageOrderDetailsActivity"
@@ -65,13 +76,14 @@
             android:exported="false" />
         <activity
             android:name=".ui.authentication.SignUpActivity"
-            android:exported="true" >
+            android:exported="true">
 
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".ui.authentication.LoginActivity"

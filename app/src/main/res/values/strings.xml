@@ -97,5 +97,11 @@
     <string name="text_stock">Stock</string>
     <string name="txt_create">Create Product</string>
     <string name="txt_description">Description</string>
+    <string name="txt_edit_profile">Edit profile</string>
+    <string name="txt_my_profile">My profile</string>
+    <string name="txt_phone">Mobile Number</string>
+    <string name="txt_save">Save</string>
+    <string name="text_address">Address</string>
+    <string name="txt_all_product">All products</string>
 
 </resources>
