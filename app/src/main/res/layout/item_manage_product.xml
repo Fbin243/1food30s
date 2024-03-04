@@ -30,7 +30,7 @@
             android:orientation="vertical"
             android:padding="@dimen/spacing6"
             >
-            
+
 
             <TextView
                 android:id="@+id/productTitle"

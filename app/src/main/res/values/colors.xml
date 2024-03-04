@@ -19,4 +19,6 @@
     <color name="yellow_30">#4DEAA62A</color>
     <color name="deep_orange">#D1481B</color>
     <color name="kelly_green">#FF46C346</color>
+    <color name="pressed_color">#E0E0E0</color>
+    <color name="selected_color">#B2DFDB</color>
 </resources>

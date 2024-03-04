@@ -39,4 +39,9 @@
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
 
+    <style name="NoUnderlineDropdown" parent="Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+    </style>
+
 </resources>

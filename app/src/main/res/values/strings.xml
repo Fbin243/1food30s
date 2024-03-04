@@ -104,4 +104,15 @@
     <string name="text_address">Address</string>
     <string name="txt_all_product">All products</string>
 
+    <string-array name="prices_array">
+        <item>10000</item>
+        <item>20000</item>
+        <item>30000</item>
+    </string-array>
+
+    <string-array name="offers_array">
+        <item>5%</item>
+        <item>10%</item>
+        <item>15%</item>
+    </string-array>
 </resources>
