@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/spacing16"
-        android:paddingBottom="@dimen/spacing64"
+        android:paddingBottom="@dimen/spacing24"
         >
 
         <LinearLayout
@@ -218,7 +218,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:gravity="center"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -247,8 +248,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
-                android:maxLines="4"
-                android:minLines="3"/>
+                android:maxLines="7"
+                android:minLines="5"
+                android:gravity="top|start"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
@@ -276,6 +278,7 @@
             android:layout_marginTop="@dimen/spacing50"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image_product"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:layout_editor_absoluteY="643dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

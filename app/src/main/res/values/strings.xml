@@ -92,8 +92,8 @@
     <string name="product_name">Name</string>
     <string name="product_price">Price</string>
     <string name="text_category">Category</string>
-    <string name="title_price">Price</string>
-    <string name="id_offer">OfferID</string>
+    <string name="title_price">Price ($)</string>
+    <string name="id_offer">Offer</string>
     <string name="text_stock">Stock</string>
     <string name="txt_create">Create Product</string>
     <string name="txt_description">Description</string>
