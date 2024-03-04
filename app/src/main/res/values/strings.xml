@@ -105,9 +105,9 @@
     <string name="txt_all_product">All products</string>
 
     <string-array name="prices_array">
-        <item>10000</item>
-        <item>20000</item>
-        <item>30000</item>
+        <item>Meat</item>
+        <item>Vegetable</item>
+        <item>Soup</item>
     </string-array>
 
     <string-array name="offers_array">

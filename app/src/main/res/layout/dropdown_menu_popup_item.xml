@@ -8,5 +8,5 @@
     android:paddingEnd="16dp"
     android:textAppearance="@style/TextAppearance.AppCompat.Small"
     android:gravity="start|center_vertical"
-    android:textColor="@color/black"
+    android:textColor="@color/white"
     android:background="@drawable/dropdown_item_selector" />
