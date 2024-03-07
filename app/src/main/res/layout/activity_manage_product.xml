@@ -7,41 +7,51 @@
     tools:context=".ui.manage_product.ManageProductActivity"
     android:paddingBottom="@dimen/spacing50">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="90dp"
-        android:layout_height="20dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_logo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/button"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="@dimen/spacing50"
+    <LinearLayout
+        android:id="@+id/linear_app_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="6dp"
-        app:icon="@drawable/ic_search"
-        app:iconSize="@dimen/spacing28"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingHorizontal="@dimen/spacing16"
+        android:paddingTop="@dimen/spacing12">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="90dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_logo"
+            android:contentDescription="@null"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_active_orders"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/txt_manage_order"
+        android:textSize="@dimen/font_header"
+        android:fontFamily="@font/rubik_semibold"
+        android:paddingHorizontal="@dimen/spacing20"
+        android:paddingBottom="@dimen/spacing4"
+        app:layout_constraintTop_toBottomOf="@id/linear_app_bar"
+        app:drawableEndCompat="@drawable/ic_filter" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:orientation="vertical"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/tv_active_orders"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button"
-        android:scrollbars="none"
-        android:orientation="vertical">
+        app:layout_constraintStart_toStartOf="parent">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -53,7 +63,7 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="@dimen/spacing10"
                 android:fontFamily="@font/rubik_extrabold"
                 android:text="All products"
                 android:textColor="@color/primary"
@@ -82,8 +92,7 @@
                 android:src="@drawable/ic_active_linear"
                 app:layout_constraintBottom_toBottomOf="@+id/textView"
                 app:layout_constraintEnd_toEndOf="@+id/gridBtn"
-                app:layout_constraintTop_toTopOf="@+id/textView"
-                />
+                app:layout_constraintTop_toTopOf="@+id/textView" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/productRcv"
