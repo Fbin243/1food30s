@@ -71,29 +71,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageButton
-                android:id="@+id/gridBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:backgroundTint="@color/transparent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_grid"
-                app:layout_constraintBottom_toBottomOf="@+id/textView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textView" />
-
-            <ImageButton
-                android:id="@+id/linearBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="40dp"
-                android:backgroundTint="@color/transparent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_active_linear"
-                app:layout_constraintBottom_toBottomOf="@+id/textView"
-                app:layout_constraintEnd_toEndOf="@+id/gridBtn"
-                app:layout_constraintTop_toTopOf="@+id/textView" />
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/productRcv"
                 android:layout_width="match_parent"

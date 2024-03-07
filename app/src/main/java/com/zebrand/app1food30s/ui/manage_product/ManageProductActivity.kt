@@ -23,7 +23,6 @@ class ManageProductActivity : AppCompatActivity() {
         binding = ActivityManageProductBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        handleChangeLayout()
         handleDisplayProductList()
     }
 
@@ -32,22 +31,6 @@ class ManageProductActivity : AppCompatActivity() {
         rcv.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         val adapter = ManageProductAdapter(getListProducts(), false)
         rcv.adapter = adapter
-    }
-
-    private fun handleChangeLayout() {
-        binding.gridBtn.setOnClickListener {
-            binding.gridBtn.setImageResource(R.drawable.ic_active_grid)
-            binding.linearBtn.setImageResource(R.drawable.ic_linear)
-            rcv.layoutManager = GridLayoutManager(this, 2)
-            rcv.adapter = ProductApapter(getListProducts())
-        }
-
-        binding.linearBtn.setOnClickListener {
-            binding.linearBtn.setImageResource(R.drawable.ic_active_linear)
-            binding.gridBtn.setImageResource(R.drawable.ic_grid)
-            rcv.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-            rcv.adapter = ProductApapter(getListProducts(), false)
-        }
     }
 
     private fun getListProducts(): List<Product> {
