@@ -36,34 +36,34 @@ class ManageProductActivity : AppCompatActivity() {
     private fun getListProducts(): List<Product> {
         return listOf(
             Product(
-                R.drawable.product1,
-                "Sweet & Sour Chicken",
-                "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-                4.5
+                R.drawable.sample_food,
+                "Bread Burger Fusion",
+                "Hamburger",
+                20.5
             ),
             Product(
-                R.drawable.product1,
-                "Sweet & Sour Chicken",
-                "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-                4.5
+                R.drawable.sample_food,
+                "Bread Burger Fusion",
+                "Hamburger",
+                20.5
             ),
             Product(
-                R.drawable.product1,
-                "Sweet & Sour Chicken",
-                "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-                4.5
+                R.drawable.sample_food,
+                "Bread Burger Fusion",
+                "Hamburger",
+                20.5
             ),
             Product(
-                R.drawable.product1,
-                "Sweet & Sour Chicken",
-                "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-                4.5
+                R.drawable.sample_food,
+                "Bread Burger Fusion",
+                "Hamburger",
+                20.5
             ),
             Product(
-                R.drawable.product1,
-                "Sweet & Sour Chicken",
-                "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-                4.5
+                R.drawable.sample_food,
+                "Bread Burger Fusion",
+                "Hamburger",
+                20.5
             ),
             // Add more products as needed
         )

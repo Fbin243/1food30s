@@ -103,6 +103,7 @@
     <string name="txt_save">Save</string>
     <string name="text_address">Address</string>
     <string name="txt_all_product">All products</string>
+    <string name="txt_manage_products">Manage products</string>
 
     <string-array name="prices_array">
         <item>Meat</item>
