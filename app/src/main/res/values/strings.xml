@@ -71,7 +71,7 @@
     <string name="txt_category">Category</string>
     <string name="my_profile">My Profile</string>
     <string name="login_to_see_your_info">Login to see your info</string>
-    <string name="login">Login</string>
+    <string name="login">Log In</string>
     <string name="change_language">Change Language</string>
 
     <!-- Manage order   -->
@@ -104,6 +104,23 @@
     <string name="text_address">Address</string>
     <string name="txt_all_product">All products</string>
     <string name="txt_manage_products">Manage products</string>
+    
+    <string name="ava">ava</string>
+    <string name="ic_change_language">ic_change_language</string>
+    <string name="log_out">Log Out</string>
+    <string name="ic_my_orders">my_orders</string>
+    <string name="my_orders">My Orders</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="ic_edit_profile">ic_edit_profile</string>
+    <string name="ic_change_password">ic_change_password</string>
+    <string name="change_password">Change Password</string>
+    <string name="cart">Cart</string>
+    <string name="my_cart">My Cart</string>
+    <string name="minus_button">Minus button</string>
+    <string name="plus_button">Plus button</string>
+    <string name="checkout">Checkout</string>
+    <string name="back_button">Back button</string>
+    <string name="place_order">Place Order</string>
 
     <string-array name="prices_array">
         <item>Meat</item>

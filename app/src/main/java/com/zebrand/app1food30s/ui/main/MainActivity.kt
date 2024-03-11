@@ -2,15 +2,16 @@ package com.zebrand.app1food30s.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.ActivityMainBinding
+import com.zebrand.app1food30s.ui.cart_checkout.CartFragment
 import com.zebrand.app1food30s.ui.home.HomeFragment
 import com.zebrand.app1food30s.ui.menu.MenuFragment
 import com.zebrand.app1food30s.ui.offers.OffersFragment
+import com.zebrand.app1food30s.ui.profile.ProfileAfterLoginFragment
+import com.zebrand.app1food30s.ui.profile.ProfileFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,7 +20,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         handleBottomNavigation()
+        setupFloatingButton()
+
+        // Check if MainActivity should load ProfileAfterLoginFragment directly
+        if (intent.getBooleanExtra("loadProfileFragment", false)) {
+            replaceFragment(ProfileAfterLoginFragment())
+        } else {
+            // Your default fragment to load
+            replaceFragment(HomeFragment())
+        }
     }
 
     private fun handleBottomNavigation() {
@@ -28,11 +39,17 @@ class MainActivity : AppCompatActivity() {
                 R.id.ic_home -> replaceFragment(HomeFragment())
                 R.id.ic_menu -> replaceFragment(MenuFragment())
                 R.id.ic_offers -> replaceFragment(OffersFragment())
-                R.id.ic_profile -> replaceFragment(HomeFragment())
+                R.id.ic_profile -> replaceFragment(ProfileFragment())
             }
             true
         }
-        replaceFragment(HomeFragment())
+//        replaceFragment(HomeFragment())
+    }
+    private fun setupFloatingButton() {
+        binding.floatingBtn.setOnClickListener {
+            // Call replaceFragment with an instance of CartFragment
+            replaceFragment(CartFragment())
+        }
     }
     private fun replaceFragment(fragment: Fragment) {
         val ft: FragmentTransaction = supportFragmentManager.beginTransaction()

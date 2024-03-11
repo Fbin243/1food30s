@@ -97,8 +97,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- ADMIN -->
+
         <activity
             android:name=".ui.admin_statistics.AdminStatisticsActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".ui.cart_checkout.CheckoutActivity"
             android:exported="true" />
     </application>
 

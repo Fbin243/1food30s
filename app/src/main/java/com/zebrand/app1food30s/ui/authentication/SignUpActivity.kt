@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.ui.authentication
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.zebrand.app1food30s.R
@@ -18,7 +19,8 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun events(){
         binding.tvLogin.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
         }
 
         binding.backIcon.root.setOnClickListener {
