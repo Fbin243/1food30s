@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         handleBottomNavigation()
-        setupFloatingButton()
+//        setupFloatingButton()
 
         // Check if MainActivity should load ProfileAfterLoginFragment directly
         if (intent.getBooleanExtra("loadProfileFragment", false)) {
@@ -40,17 +40,18 @@ class MainActivity : AppCompatActivity() {
                 R.id.ic_menu -> replaceFragment(MenuFragment())
                 R.id.ic_offers -> replaceFragment(OffersFragment())
                 R.id.ic_profile -> replaceFragment(ProfileFragment())
+                R.id.ic_cart -> replaceFragment(CartFragment())
             }
             true
         }
-//        replaceFragment(HomeFragment())
+        replaceFragment(HomeFragment())
     }
-    private fun setupFloatingButton() {
-        binding.floatingBtn.setOnClickListener {
-            // Call replaceFragment with an instance of CartFragment
-            replaceFragment(CartFragment())
-        }
-    }
+//    private fun setupFloatingButton() {
+//        binding.floatingBtn.setOnClickListener {
+//            // Call replaceFragment with an instance of CartFragment
+//            replaceFragment(CartFragment())
+//        }
+//    }
     private fun replaceFragment(fragment: Fragment) {
         val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
         ft.replace(R.id.fragment_container, fragment).commit()

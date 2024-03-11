@@ -37,7 +37,7 @@
     </com.google.android.material.bottomappbar.BottomAppBar>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floating_btn"
+        android:id="@+id/ic_cart"
         android:tint="@color/white"
         android:foregroundTint="@color/white"
         android:layout_width="wrap_content"
