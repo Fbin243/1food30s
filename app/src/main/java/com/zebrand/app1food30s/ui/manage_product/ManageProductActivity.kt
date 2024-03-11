@@ -65,6 +65,18 @@ class ManageProductActivity : AppCompatActivity() {
                 "Hamburger",
                 20.5
             ),
+            Product(
+                R.drawable.sample_food,
+                "Bread Burger Fusion",
+                "Hamburger",
+                20.5
+            ),
+            Product(
+                R.drawable.sample_food,
+                "Bread Burger Fusion",
+                "Hamburger",
+                20.5
+            ),
             // Add more products as needed
         )
     }
