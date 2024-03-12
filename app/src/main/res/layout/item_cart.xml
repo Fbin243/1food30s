@@ -90,4 +90,26 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="@dimen/spacing24"
+        android:layout_height="@dimen/spacing24"
+        app:cardCornerRadius="@dimen/spacing20"
+        android:backgroundTint="@color/black"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="-12dp"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_x"
+                app:tint="@color/white"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
 </FrameLayout>
