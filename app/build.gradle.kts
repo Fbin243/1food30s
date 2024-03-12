@@ -62,4 +62,9 @@ dependencies {
     implementation("com.airbnb.android:lottie:6.3.0")
     implementation("com.github.vipulasri:timelineview:1.1.5")
     implementation("com.borjabravo:readmoretextview:2.1.0")
+
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+    implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
+    implementation("com.firebaseui:firebase-ui-storage:7.2.0")
 }

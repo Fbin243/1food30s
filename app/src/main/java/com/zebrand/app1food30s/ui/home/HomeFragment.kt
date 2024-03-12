@@ -10,15 +10,17 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.adapter.CategoryAdapter
-import com.zebrand.app1food30s.adapter.ProductApapter
+import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Offer
 import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.Review
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
+import java.util.Date
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -62,7 +64,7 @@ class HomeFragment : Fragment() {
         // Product grid
         rcv = binding.productRcv1
         rcv.layoutManager = GridLayoutManager(requireContext(), 2)
-        var adapter = ProductApapter(getListProducts())
+        var adapter = ProductAdapter(getListProducts())
         adapter.onItemClick = { holder ->
             val intent = Intent(requireContext(), ProductDetailActivity::class.java)
             startActivity(intent)
@@ -77,7 +79,7 @@ class HomeFragment : Fragment() {
         // Product linear
         rcv = binding.productRcv2
         rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        adapter = ProductApapter(getListProducts(), false)
+        adapter = ProductAdapter(getListProducts(), false)
         adapter.onItemClick = { holder ->
             val intent = Intent(requireContext(), ProductDetailActivity::class.java)
             startActivity(intent)
@@ -98,33 +100,61 @@ class HomeFragment : Fragment() {
         return list
     }
 
+//    private fun getListProducts(): List<Product> {
+//        var list = listOf<Product>()
+//        list = list + Product(
+//            R.drawable.product1,
+//            "Sweet & Sour Chicken",
+//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
+//            4.5
+//        )
+//        list = list + Product(
+//            R.drawable.product1,
+//            "Sweet & Sour Chicken",
+//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
+//            4.5
+//        )
+//        list = list + Product(
+//            R.drawable.product1,
+//            "Sweet & Sour Chicken",
+//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
+//            4.5
+//        )
+//        list = list + Product(
+//            R.drawable.product1,
+//            "Sweet & Sour Chicken",
+//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
+//            4.5
+//        )
+//        return list
+//    }
+
     private fun getListProducts(): List<Product> {
-        var list = listOf<Product>()
-        list = list + Product(
-            R.drawable.product1,
-            "Sweet & Sour Chicken",
-            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-            4.5
+        // Mock date for sample products
+        val sampleDate = Date()
+
+        // Mock reviews for sample products
+        val sampleReviews = listOf(
+            Review("account1", 5.0, "Great product!", sampleDate),
+            Review("account2", 4.5, "Really enjoyed this.", sampleDate)
         )
-        list = list + Product(
-            R.drawable.product1,
-            "Sweet & Sour Chicken",
-            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-            4.5
+
+        return listOf(
+            Product(
+                id = "1",
+                idCategory = "category1",
+                idOffer = "offer1",
+                name = "Sweet & Sour Chicken",
+                image = "images/product1.png",
+                price = 4.5,
+                description = "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
+                stock = 10,
+                sold = 5,
+                reviews = sampleReviews,
+                date = sampleDate
+            ),
+            // Add more products as needed
         )
-        list = list + Product(
-            R.drawable.product1,
-            "Sweet & Sour Chicken",
-            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-            4.5
-        )
-        list = list + Product(
-            R.drawable.product1,
-            "Sweet & Sour Chicken",
-            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-            4.5
-        )
-        return list
     }
 
     private fun getListOffers(): List<Offer> {

@@ -24,8 +24,9 @@ class ReviewActivity : AppCompatActivity() {
     private fun handleDisplayReviewList() {
         rcv = binding.reviewRcv
         rcv.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        val adapter = ReviewAdapter(getListReviews())
-        rcv.adapter = adapter
+        // TODO
+//        val adapter = ReviewAdapter(getListReviews())
+//        rcv.adapter = adapter
     }
 
     private fun handleCloseReviewScreen() {
@@ -34,17 +35,18 @@ class ReviewActivity : AppCompatActivity() {
         }
     }
 
-    private fun getListReviews(): List<Review> {
-        var list = listOf<Review>()
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        return list
-    }
+    // TODO
+//    private fun getListReviews(): List<Review> {
+//        var list = listOf<Review>()
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        return list
+//    }
 }

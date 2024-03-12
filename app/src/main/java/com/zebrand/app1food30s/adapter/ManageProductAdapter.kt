@@ -31,8 +31,8 @@ class ManageProductAdapter(private val products: List<Product>, private val isGr
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product: Product = products[position]
-        holder.productImg.setImageResource(product.img)
-        holder.productTitle.text = product.title
+//        holder.productImg.setImageResource(product.image)
+        holder.productTitle.text = product.name
         holder.productDescription.text = product.description
         holder.productPrice.text = "$${String.format("%.2f", product.price).replace(",", ".")}"
         holder.itemView.setOnClickListener {
