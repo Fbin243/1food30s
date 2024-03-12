@@ -2,14 +2,23 @@ package com.zebrand.app1food30s.ui.cart_checkout
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.adapter.CartItemAdapter
+import com.zebrand.app1food30s.data.Product
 
 class CartFragment : Fragment() {
+
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -21,6 +30,20 @@ class CartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val recyclerView: RecyclerView = view.findViewById(R.id.cartItemsRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        // Initialize adapter once
+        val adapter = CartItemAdapter(requireContext(), emptyList())
+        recyclerView.adapter = adapter
+
+        sharedViewModel.cartItems.observe(viewLifecycleOwner) { items ->
+            // Log.d("sharedViewModel Cart", sharedViewModel.cartItems.value.toString())
+            adapter.updateItems(items)
+            // TODO
+            // updateTotalPrice(items)
+        }
+
         // Move to CheckoutActivity
         val btnCheckout = view.findViewById<Button>(R.id.btnCheckout)
         btnCheckout.setOnClickListener {
@@ -28,4 +51,9 @@ class CartFragment : Fragment() {
             startActivity(intent)
         }
     }
+
+//    private fun updateTotalPrice(items: List<Product>) {
+//        val total = items.sumOf { it.price * it.quantity /* Make sure to include quantity in your Product model if you haven't already */ }
+//        view?.findViewById<TextView>(R.id.textView_amount)?.text = getString(R.string.product_price_number, total)
+//    }
 }

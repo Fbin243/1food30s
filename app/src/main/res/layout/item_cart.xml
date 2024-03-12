@@ -18,10 +18,12 @@
             app:cardCornerRadius="@dimen/spacing16">
 
             <ImageView
+                android:id="@+id/productImg"
                 android:layout_width="84dp"
                 android:layout_height="wrap_content"
-                android:scaleType="centerCrop"
-                android:src="@drawable/sample_food" />
+                android:scaleType="fitCenter"
+                android:background="@android:color/white"
+                android:layout_gravity="center_horizontal"/>
         </androidx.cardview.widget.CardView>
 
         <LinearLayout
@@ -33,12 +35,14 @@
             android:layout_marginStart="@dimen/spacing16"
             android:layout_gravity="center_vertical">
             <TextView
+                android:id="@+id/productName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="French Fries"
                 android:textStyle="bold"
                 android:layout_marginBottom="@dimen/spacing0"/>
             <TextView
+                android:id="@+id/productCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Category: Food"
@@ -47,6 +51,7 @@
                 android:layout_marginTop="@dimen/nev_spacing_4"
                 android:layout_marginBottom="@dimen/spacing2"/>
             <TextView
+                android:id="@+id/productPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="$3.80"

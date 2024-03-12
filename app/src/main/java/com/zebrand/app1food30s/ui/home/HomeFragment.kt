@@ -2,10 +2,14 @@ package com.zebrand.app1food30s.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,10 +25,13 @@ import com.zebrand.app1food30s.data.Review
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
 import java.util.Date
+import androidx.fragment.app.activityViewModels
+import com.zebrand.app1food30s.ui.cart_checkout.SharedViewModel
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var rcv: RecyclerView
+    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -105,6 +112,10 @@ class HomeFragment : Fragment() {
         adapter.onItemClick = { product ->
             val intent = Intent(requireContext(), ProductDetailActivity::class.java)
             startActivity(intent)
+        }
+        adapter.onAddButtonClick = { product ->
+            // Log.d("CartItemAdapter", "Adding product to cart: ${product.name}")
+            sharedViewModel.addToCart(product)
         }
         recyclerView.adapter = adapter
     }
