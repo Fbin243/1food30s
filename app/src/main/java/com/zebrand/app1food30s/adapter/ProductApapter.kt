@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -48,18 +49,26 @@ import com.google.firebase.storage.ktx.storage
 class ProductAdapter(private val products: List<Product>, private val isGrid: Boolean = true) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
     var onItemClick: ((Product) -> Unit)? = null
+    var onAddButtonClick: ((Product) -> Unit)? = null
 
     inner class ProductViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val productImg: ImageView = listItemView.findViewById(R.id.productImg)
         val productTitle: TextView = listItemView.findViewById(R.id.productTitle)
         val productDescription: TextView = listItemView.findViewById(R.id.productDescription)
         val productPrice: TextView = listItemView.findViewById(R.id.productPrice)
+        private val addButton: Button = listItemView.findViewById(R.id.addBtn)
 
         init {
             listItemView.setOnClickListener {
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     onItemClick?.invoke(products[position])
+                }
+            }
+            addButton.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onAddButtonClick?.invoke(products[position])
                 }
             }
         }
@@ -94,5 +103,4 @@ class ProductAdapter(private val products: List<Product>, private val isGrid: Bo
             productPrice.text = "$${String.format("%.2f", product.price)}"
         }
     }
-
 }

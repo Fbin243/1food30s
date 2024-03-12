@@ -61,30 +61,52 @@ class HomeFragment : Fragment() {
         rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         rcv.adapter = CategoryAdapter(getListCategories())
 
-        // Product grid
-        rcv = binding.productRcv1
-        rcv.layoutManager = GridLayoutManager(requireContext(), 2)
-        var adapter = ProductAdapter(getListProducts())
-        adapter.onItemClick = { holder ->
-            val intent = Intent(requireContext(), ProductDetailActivity::class.java)
-            startActivity(intent)
-        }
-        rcv.adapter = adapter
-
         // Offer
         rcv = binding.offerRcv
         rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         rcv.adapter = OfferAdapter(getListOffers())
 
-        // Product linear
-        rcv = binding.productRcv2
-        rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        adapter = ProductAdapter(getListProducts(), false)
-        adapter.onItemClick = { holder ->
+//        // Product linear
+//        rcv = binding.productRcv2
+//        rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+//        var adapter = ProductAdapter(getListProducts(), false)
+//        adapter.onItemClick = { holder ->
+//            val intent = Intent(requireContext(), ProductDetailActivity::class.java)
+//            startActivity(intent)
+//        }
+//        rcv.adapter = adapter
+//
+//        // Product grid
+//        rcv = binding.productRcv1
+//        rcv.layoutManager = GridLayoutManager(requireContext(), 2)
+//        adapter = ProductAdapter(getListProducts())
+//        adapter.onItemClick = { holder ->
+//            val intent = Intent(requireContext(), ProductDetailActivity::class.java)
+//            startActivity(intent)
+//        }
+//        rcv.adapter = adapter
+
+        // Setup the linear layout RecyclerView
+        setupRecyclerView(binding.productRcv2, isGrid = false)
+
+        // Setup the grid layout RecyclerView
+        setupRecyclerView(binding.productRcv1, isGrid = true)
+    }
+
+    private fun setupRecyclerView(recyclerView: RecyclerView, isGrid: Boolean) {
+        val layoutManager = if (isGrid) {
+            GridLayoutManager(requireContext(), 2)
+        } else {
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        }
+        recyclerView.layoutManager = layoutManager
+
+        val adapter = ProductAdapter(getListProducts(), isGrid)
+        adapter.onItemClick = { product ->
             val intent = Intent(requireContext(), ProductDetailActivity::class.java)
             startActivity(intent)
         }
-        rcv.adapter = adapter
+        recyclerView.adapter = adapter
     }
 
     private fun getListCategories(): List<Category> {
@@ -99,35 +121,6 @@ class HomeFragment : Fragment() {
         list = list + Category(R.drawable.cate1, "Appetizers")
         return list
     }
-
-//    private fun getListProducts(): List<Product> {
-//        var list = listOf<Product>()
-//        list = list + Product(
-//            R.drawable.product1,
-//            "Sweet & Sour Chicken",
-//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-//            4.5
-//        )
-//        list = list + Product(
-//            R.drawable.product1,
-//            "Sweet & Sour Chicken",
-//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-//            4.5
-//        )
-//        list = list + Product(
-//            R.drawable.product1,
-//            "Sweet & Sour Chicken",
-//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-//            4.5
-//        )
-//        list = list + Product(
-//            R.drawable.product1,
-//            "Sweet & Sour Chicken",
-//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-//            4.5
-//        )
-//        return list
-//    }
 
     private fun getListProducts(): List<Product> {
         // Mock date for sample products
