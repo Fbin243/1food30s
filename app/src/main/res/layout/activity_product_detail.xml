@@ -164,7 +164,8 @@
                                 android:layout_height="24dp"
                                 android:layout_gravity="center_vertical"
                                 android:src="@drawable/ic_plus"
-                                app:tint="@color/primary" />
+                                app:tint="@color/primary"
+                                android:padding="1dp"/>
 
                         </LinearLayout>
 
