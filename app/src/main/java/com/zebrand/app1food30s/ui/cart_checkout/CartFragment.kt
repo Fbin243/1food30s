@@ -24,8 +24,7 @@ class CartFragment : Fragment() {
         // Move to CheckoutActivity
         val btnCheckout = view.findViewById<Button>(R.id.btnCheckout)
         btnCheckout.setOnClickListener {
-            // Intent to start CheckoutActivity
-            val intent = Intent(activity, CheckoutActivity::class.java)
+            val intent = Intent(requireActivity(), CheckoutActivity::class.java)
             startActivity(intent)
         }
     }
