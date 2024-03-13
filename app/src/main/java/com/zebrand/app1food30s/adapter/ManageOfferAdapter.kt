@@ -32,7 +32,8 @@ class ManageOfferAdapter(private val offers: List<Offer>, private val isGrid: Bo
         val offer: Offer = offers[position]
         holder.offerImg.setImageResource(offer.img)
         holder.offerName.text = offer.name
-        holder.offerRate.text = offer.discountRate.toString()
+//        holder.offerRate.text = offer.discountRate.toString()
+        holder.offerRate.text = "${offer.discountRate}%"
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(holder)
         }
