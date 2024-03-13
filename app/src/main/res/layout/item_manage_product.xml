@@ -95,7 +95,6 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/rubik_medium"
                         android:text="@string/txt_date"
                         />
 
@@ -103,7 +102,7 @@
                         android:id="@+id/productDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="14-02-2024"
+                        android:text="06:14 PM 14-02-2024"
                         android:textSize="@dimen/font_size12"
                         />
                 </LinearLayout>
