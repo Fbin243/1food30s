@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph.xml">
+
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.zebrand.app1food30s.ui.cart_checkout.CartFragment"
+        android:label="CartFragment" >
+        <action
+            android:id="@+id/action_CartFragment_to_HomeFragment"
+            app:destination="@id/homeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.zebrand.app1food30s.ui.home.HomeFragment"
+        android:label="HomeFragment" />
+</navigation>

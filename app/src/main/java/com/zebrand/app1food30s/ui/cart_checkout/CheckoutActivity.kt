@@ -2,7 +2,6 @@ package com.zebrand.app1food30s.ui.cart_checkout
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.ActivityCheckoutBinding
 
 class CheckoutActivity : AppCompatActivity() {

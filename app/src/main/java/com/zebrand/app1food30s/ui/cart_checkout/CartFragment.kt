@@ -10,31 +10,39 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CartItemAdapter
 import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.databinding.FragmentCartBinding
 
 class CartFragment : Fragment() {
 
     private val sharedViewModel: SharedViewModel by activityViewModels()
+    private var _binding: FragmentCartBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_cart, container, false)
+    ): View {
+        _binding = FragmentCartBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        Log.d("SharedViewModel", "SharedViewModel instance hash code in Fragment: ${sharedViewModel.hashCode()}")
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.cartItemsRecyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        setupRecyclerView()
+        observeCartItems()
+        handleCheckoutNavigation()
+        // TODO
+//        handleCloseCartScreen()
+    }
 
-        // Initialize adapter once
+    private fun setupRecyclerView() {
         val adapter = CartItemAdapter(
             context = requireContext(),
             items = emptyList(),
@@ -45,26 +53,37 @@ class CartFragment : Fragment() {
                 sharedViewModel.updateCartItem(cartItem)
             }
         )
+        binding.cartItemsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.cartItemsRecyclerView.adapter = adapter
+    }
 
-        recyclerView.adapter = adapter
-
+    private fun observeCartItems() {
         sharedViewModel.cartItems.observe(viewLifecycleOwner) { items ->
-//             Log.d("SharedViewModel", "Observing cart items: $items")
-            adapter.updateItems(items)
-            // TODO
-            // updateTotalPrice(items)
+            (binding.cartItemsRecyclerView.adapter as CartItemAdapter).updateItems(items)
+            updateTotalPrice(items)
         }
+    }
 
-        // Move to CheckoutActivity
-        val btnCheckout = view.findViewById<Button>(R.id.btnCheckout)
-        btnCheckout.setOnClickListener {
+    private fun handleCheckoutNavigation() {
+        binding.btnCheckout.setOnClickListener {
             val intent = Intent(requireActivity(), CheckoutActivity::class.java)
             startActivity(intent)
         }
     }
 
-//    private fun updateTotalPrice(items: List<Product>) {
-//        val total = items.sumOf { it.price * it.quantity /* Make sure to include quantity in your Product model if you haven't already */ }
-//        view?.findViewById<TextView>(R.id.textView_amount)?.text = getString(R.string.product_price_number, total)
+//    private fun handleCloseCartScreen() {
+//        binding.ivBack.root.setOnClickListener {
+//            findNavController().navigateUp()
+//        }
 //    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun updateTotalPrice(items: List<CartItemAdapter.CartItem>) {
+        val total = items.sumOf { it.product.price * it.quantity }
+        binding.textViewAmount.text = getString(R.string.product_price_number, total)
+    }
 }

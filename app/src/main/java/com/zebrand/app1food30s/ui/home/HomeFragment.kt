@@ -134,7 +134,19 @@ class HomeFragment : Fragment() {
                 reviews = sampleReviews,
                 date = sampleDate
             ),
-            // Add more products as needed
+            Product(
+                id = "2",
+                idCategory = "category1",
+                idOffer = "offer1",
+                name = "Burrito",
+                image = "images/product1.png",
+                price = 6.5,
+                description = "Burrito description",
+                stock = 5,
+                sold = 5,
+                reviews = sampleReviews,
+                date = sampleDate
+            ),
         )
     }
 
