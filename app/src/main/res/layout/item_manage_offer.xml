@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    app:cardCornerRadius="@dimen/spacing20"
+    android:layout_marginTop="@dimen/spacing10"
+    android:layout_marginBottom="@dimen/spacing10"
+    android:layout_marginEnd="@dimen/spacing10"
+    android:layout_marginStart="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/offerImg"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/product1"
+            app:shapeAppearanceOverlay="@style/RoundedImageView" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing4"
+            >
+
+            <TextView
+                android:id="@+id/offerName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:text="Uplifting Anytime"
+                android:textSize="@dimen/font_default"
+                android:fontFamily="@font/rubik_semibold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/rubik_medium"
+                    android:text="Discount rate: "
+                    />
+
+                <TextView
+                    android:id="@+id/productDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="10%"
+                    android:textSize="@dimen/font_size12"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/spacing2">
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:id="@+id/productDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="06:14 PM 14-02-2024"
+                        android:textSize="@dimen/font_size12"
+                        />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:paddingRight="@dimen/spacing4"
+                    android:gravity="end">
+
+                    <Button
+                        android:id="@+id/addBtn"
+                        style="@style/Widget.MaterialComponents.Button.TextButton"
+                        android:layout_width="55dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="bottom"
+                        android:backgroundTint="@color/white"
+                        android:elevation="2dp"
+                        android:padding="1dp"
+                        android:shadowColor="@color/secondary"
+                        android:text="@string/txt_edit"
+                        android:textAllCaps="false"
+                        android:textColor="@color/primary"
+                        android:textSize="@dimen/font_size12"
+                        android:textStyle="bold"
+                        app:icon="@drawable/ic_edit"
+                        app:iconPadding="1dp"
+                        app:iconSize="16dp"
+                        android:layout_marginEnd="@dimen/spacing2"/>
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
