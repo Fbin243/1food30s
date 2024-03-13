@@ -52,7 +52,7 @@
         android:id="@+id/tv_active_orders"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/txt_manage_products"
+        android:text="@string/txt_manage_offers"
         android:textSize="@dimen/font_header"
         android:fontFamily="@font/rubik_semibold"
         android:paddingLeft="@dimen/spacing20"
