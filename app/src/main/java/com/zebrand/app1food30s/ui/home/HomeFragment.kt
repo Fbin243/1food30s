@@ -26,6 +26,9 @@ import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
 import java.util.Date
 import androidx.fragment.app.activityViewModels
+import com.google.firebase.firestore.FirebaseFirestore
+import com.zebrand.app1food30s.data.Cart
+import com.zebrand.app1food30s.data.CartItem
 import com.zebrand.app1food30s.ui.cart_checkout.SharedViewModel
 
 class HomeFragment : Fragment() {
@@ -91,8 +94,37 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
         adapter.onAddButtonClick = { product ->
-            // Log.d("CartItemAdapter", "Adding product to cart: ${product.name}")
-            sharedViewModel.addToCart(product)
+            val db = FirebaseFirestore.getInstance()
+            val cartRef = db.collection("carts").document("mdXn8lvirHaAogStOY1K")
+
+            // Check if the product already exists in the cart
+            cartRef.get().addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val cart = document.toObject(Cart::class.java)
+                    val existingItemIndex = cart?.items?.indexOfFirst { it.productId == product.id }
+
+                    if (existingItemIndex != null && existingItemIndex >= 0) {
+                        // If the product already exists in the cart, update the quantity
+                        cart.items[existingItemIndex].quantity += 1
+                    } else {
+                        // If the product is new to the cart, add it
+                        cart?.items?.add(CartItem(product.id, 1))
+                    }
+
+                    // Update the cart document with the modified cart object
+                    if (cart != null) {
+                        cartRef.set(cart)
+                    }
+                } else {
+                    // If the cart document does not exist, create a new cart with the product
+                    val newCart = Cart("mdXn8lvirHaAogStOY1K", null).apply {
+                        items.add(CartItem(product.id, 1))
+                    }
+                    cartRef.set(newCart)
+                }
+            }.addOnFailureListener { exception ->
+                Log.d("HomeFragment", "Error getting cart document: ", exception)
+            }
         }
         recyclerView.adapter = adapter
     }
