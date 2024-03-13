@@ -16,4 +16,11 @@ class SharedViewModel : ViewModel() {
         _cartItems.value = currentItems + product
         // Log.d("addToCart", _cartItems.value.toString())
     }
+
+    fun removeFromCart(product: Product) {
+        val updatedList = _cartItems.value?.toMutableList()
+        updatedList?.remove(product)
+        _cartItems.value = updatedList
+    }
+
 }

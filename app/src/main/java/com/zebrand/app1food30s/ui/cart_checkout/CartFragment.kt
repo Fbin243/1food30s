@@ -34,7 +34,9 @@ class CartFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // Initialize adapter once
-        val adapter = CartItemAdapter(requireContext(), emptyList())
+        val adapter = CartItemAdapter(requireContext(), listOf(), onItemDeleted = { product ->
+            sharedViewModel.removeFromCart(product)
+        })
         recyclerView.adapter = adapter
 
         sharedViewModel.cartItems.observe(viewLifecycleOwner) { items ->

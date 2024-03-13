@@ -109,12 +109,13 @@
             android:layout_height="match_parent">
 
             <ImageView
+                android:id="@+id/deleteBtn"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
+                android:layout_centerInParent="true"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_x"
-                app:tint="@color/white"
-                android:layout_centerInParent="true"/>
+                app:tint="@color/white" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>
