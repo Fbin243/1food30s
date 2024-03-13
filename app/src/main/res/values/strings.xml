@@ -121,6 +121,7 @@
     <string name="checkout">Checkout</string>
     <string name="back_button">Back button</string>
     <string name="place_order">Place Order</string>
+    <string name="txt_new_product">New product</string>
 
     <string-array name="prices_array">
         <item>Meat</item>

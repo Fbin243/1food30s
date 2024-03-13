@@ -92,11 +92,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/txt_date"
-                        />
 
                     <TextView
                         android:id="@+id/productDate"
@@ -112,24 +107,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
+                    android:paddingRight="@dimen/spacing4"
                     android:gravity="end">
 
                     <Button
                         android:id="@+id/addBtn"
                         style="@style/Widget.MaterialComponents.Button.TextButton"
-                        android:layout_width="50dp"
+                        android:layout_width="55dp"
                         android:layout_height="30dp"
                         android:layout_gravity="bottom"
                         android:backgroundTint="@color/white"
                         android:elevation="2dp"
-                        android:padding="2dp"
+                        android:padding="1dp"
                         android:shadowColor="@color/secondary"
                         android:text="@string/txt_edit"
                         android:textAllCaps="false"
                         android:textColor="@color/primary"
                         android:textSize="@dimen/font_size12"
                         android:textStyle="bold"
-                        app:cornerRadius="10dp"
                         app:icon="@drawable/ic_edit"
                         app:iconPadding="1dp"
                         app:iconSize="16dp"
