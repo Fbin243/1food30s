@@ -11,21 +11,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.model.Product
+import com.zebrand.app1food30s.data.model.CartItem
 
 class CartItemAdapter(
     private val context: Context,
     private var items: List<CartItem>,
     private val onItemDeleted: (CartItem) -> Unit,
-    private val onQuantityChanged: (CartItem) -> Unit
+    private val onQuantityChanged: (CartItem) -> Unit,
+    private val getProductById: (String, (Product?) -> Unit) -> Unit
 ) : RecyclerView.Adapter<CartItemAdapter.CartViewHolder>() {
 
-    data class CartItem(
-        val product: Product,
-        var quantity: Int = 1
-    )
-
-    class CartViewHolder(view: View, private val onItemDeleted: (CartItem) -> Unit, private val items: List<CartItem>) : RecyclerView.ViewHolder(view) {
+    class CartViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val productImg: ImageView = view.findViewById(R.id.productImg)
         val productName: TextView = view.findViewById(R.id.productName)
         val productCategory: TextView = view.findViewById(R.id.productCategory)
@@ -33,58 +30,53 @@ class CartItemAdapter(
         val minusBtn: ImageView = view.findViewById(R.id.minusBtn)
         val plusBtn: ImageView = view.findViewById(R.id.plusBtn)
         val itemQuantity: TextView = view.findViewById(R.id.itemQuantity)
-        private val deleteBtn: ImageView = view.findViewById(R.id.deleteBtn)
-
-        init {
-            deleteBtn.setOnClickListener {
-                val position = bindingAdapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    val cartItem = items[position]
-                    onItemDeleted(cartItem)
-                }
-            }
-        }
+        val deleteBtn: ImageView = view.findViewById(R.id.deleteBtn)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_cart, parent, false)
-        return CartViewHolder(view, onItemDeleted, items)
+        return CartViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
         val cartItem = items[position]
-        with(holder) {
+        // Log.d("Test00", "onBindViewHolder - cartItem: $cartItem")
+        getProductById(cartItem.productId) { product ->
+            product?.let { prod ->
+                with(holder) {
+                    // Log.d("Test00", "onBindViewHolder prod: $prod")
 
-            val storageReference = FirebaseStorage.getInstance().reference.child(cartItem.product.image)
-            storageReference.downloadUrl.addOnSuccessListener { uri ->
-                Glide.with(context)
-                    .load(uri.toString())
-//                    .placeholder(R.drawable.placeholder) // Optional: Placeholder image
-//                    .error(R.drawable.error_image) // Optional: Error image
-                    .into(productImg)
-            }.addOnFailureListener {
-                // Optional: Log or handle any errors here
-            }
+                    val storageReference = FirebaseStorage.getInstance().reference.child(prod.image)
+                    storageReference.downloadUrl.addOnSuccessListener { uri ->
+                        Glide.with(context).load(uri.toString()).into(productImg)
+                    }.addOnFailureListener {
+                        // Handle error, e.g., by displaying a placeholder image
+                    }
 
-            productName.text = cartItem.product.name
-            productPrice.text = context.getString(R.string.product_price_number, cartItem.product.price)
-            // TODO
-            productCategory.text = "Placeholder"
-            itemQuantity.text = cartItem.quantity.toString()
-
-            plusBtn.setOnClickListener {
-                if (cartItem.quantity < cartItem.product.stock) {
-                    cartItem.quantity++
+                    productName.text = prod.name
+                    productPrice.text = context.getString(R.string.product_price_number, prod.price)
+                    productCategory.text = "Placeholder"
                     itemQuantity.text = cartItem.quantity.toString()
-                    onQuantityChanged(cartItem)
-                }
-            }
 
-            minusBtn.setOnClickListener {
-                if (cartItem.quantity > 1) {
-                    cartItem.quantity--
-                    itemQuantity.text = cartItem.quantity.toString()
-                    onQuantityChanged(cartItem)
+                    plusBtn.setOnClickListener {
+                        if (cartItem.quantity < prod.stock) {
+                            cartItem.quantity++
+                            itemQuantity.text = cartItem.quantity.toString()
+                            onQuantityChanged(cartItem)
+                        }
+                    }
+
+                    minusBtn.setOnClickListener {
+                        if (cartItem.quantity > 1) {
+                            cartItem.quantity--
+                            itemQuantity.text = cartItem.quantity.toString()
+                            onQuantityChanged(cartItem)
+                        }
+                    }
+
+                    deleteBtn.setOnClickListener {
+                        onItemDeleted(cartItem)
+                    }
                 }
             }
         }
@@ -93,6 +85,7 @@ class CartItemAdapter(
     override fun getItemCount(): Int = items.size
 
     fun updateItems(newItems: List<CartItem>) {
+        Log.d("Test00", "updateItems: Runs")
         items = newItems
 //        Log.d("SharedViewModel", "updateItems$items")
         notifyDataSetChanged()

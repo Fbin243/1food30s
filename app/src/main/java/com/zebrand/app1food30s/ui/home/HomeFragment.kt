@@ -7,9 +7,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,21 +17,18 @@ import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Offer
-import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.model.Product
 import com.zebrand.app1food30s.data.Review
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
 import java.util.Date
-import androidx.fragment.app.activityViewModels
 import com.google.firebase.firestore.FirebaseFirestore
-import com.zebrand.app1food30s.data.Cart
-import com.zebrand.app1food30s.data.CartItem
-import com.zebrand.app1food30s.ui.cart_checkout.SharedViewModel
+import com.zebrand.app1food30s.data.model.Cart
+import com.zebrand.app1food30s.data.model.CartItem
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var rcv: RecyclerView
-    private val sharedViewModel: SharedViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -93,40 +87,43 @@ class HomeFragment : Fragment() {
             val intent = Intent(requireContext(), ProductDetailActivity::class.java)
             startActivity(intent)
         }
+
+        // addProductToCart
         adapter.onAddButtonClick = { product ->
-            val db = FirebaseFirestore.getInstance()
-            val cartRef = db.collection("carts").document("mdXn8lvirHaAogStOY1K")
-
-            // Check if the product already exists in the cart
-            cartRef.get().addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val cart = document.toObject(Cart::class.java)
-                    val existingItemIndex = cart?.items?.indexOfFirst { it.productId == product.id }
-
-                    if (existingItemIndex != null && existingItemIndex >= 0) {
-                        // If the product already exists in the cart, update the quantity
-                        cart.items[existingItemIndex].quantity += 1
-                    } else {
-                        // If the product is new to the cart, add it
-                        cart?.items?.add(CartItem(product.id, 1))
-                    }
-
-                    // Update the cart document with the modified cart object
-                    if (cart != null) {
-                        cartRef.set(cart)
-                    }
-                } else {
-                    // If the cart document does not exist, create a new cart with the product
-                    val newCart = Cart("mdXn8lvirHaAogStOY1K", null).apply {
-                        items.add(CartItem(product.id, 1))
-                    }
-                    cartRef.set(newCart)
-                }
-            }.addOnFailureListener { exception ->
-                Log.d("HomeFragment", "Error getting cart document: ", exception)
-            }
+            addProductToCart(product.id)
         }
+
         recyclerView.adapter = adapter
+    }
+
+    fun addProductToCart(productId: String, cartId: String = "mdXn8lvirHaAogStOY1K") {
+        val db = FirebaseFirestore.getInstance()
+        val cartRef = db.collection("carts").document(cartId)
+
+        cartRef.get().addOnSuccessListener { document ->
+            val cart = if (document.exists()) {
+                document.toObject(Cart::class.java)
+            } else {
+                // If the cart does not exist, create a new one
+                Cart(cartId, null)
+            }
+
+            cart?.let {
+                val existingItemIndex = it.items.indexOfFirst { item -> item.productId == productId }
+                if (existingItemIndex >= 0) {
+                    // Product exists, update quantity
+                    it.items[existingItemIndex].quantity += 1
+                } else {
+                    // New product, add to cart
+                    it.items.add(CartItem(productId, 1))
+                }
+
+                // Save updated cart back to Firestore
+                cartRef.set(it)
+            }
+        }.addOnFailureListener { exception ->
+            Log.e("addProductToCart", "Error updating cart: ", exception)
+        }
     }
 
     private fun getListCategories(): List<Category> {
@@ -154,7 +151,7 @@ class HomeFragment : Fragment() {
 
         return listOf(
             Product(
-                id = "1",
+                id = "tQHHzFF0MRcuetqzD6Zc",
                 idCategory = "category1",
                 idOffer = "offer1",
                 name = "Sweet & Sour Chicken",
@@ -167,7 +164,7 @@ class HomeFragment : Fragment() {
                 date = sampleDate
             ),
             Product(
-                id = "2",
+                id = "GsWAFO80YukqOXm5Eybu",
                 idCategory = "category1",
                 idOffer = "offer1",
                 name = "Burrito",

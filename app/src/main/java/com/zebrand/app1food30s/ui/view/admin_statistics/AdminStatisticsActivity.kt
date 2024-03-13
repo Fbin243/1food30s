@@ -1,4 +1,4 @@
-package com.zebrand.app1food30s.ui.admin_statistics
+package com.zebrand.app1food30s.ui.view.admin_statistics
 
 import android.os.Bundle
 import android.widget.Button

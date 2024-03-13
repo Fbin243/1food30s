@@ -6,14 +6,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.data.model.CheckoutItem
 
-class CheckoutItemsAdapter(private val items: List<CartItemAdapter.CartItem>) : RecyclerView.Adapter<CheckoutItemsAdapter.CheckoutViewHolder>() {
+class CheckoutItemsAdapter(private val items: List<CheckoutItem>) : RecyclerView.Adapter<CheckoutItemsAdapter.CheckoutViewHolder>() {
 
     class CheckoutViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val productName: TextView = view.findViewById(R.id.productName) // Adjust ID as necessary
-        val productPrice: TextView = view.findViewById(R.id.productPrice) // Adjust ID as necessary
-        val productQuantity: TextView = view.findViewById(R.id.productQuantity) // You might need to add this to your XML layout if it doesn't exist
-        // Add more views as necessary
+        val productName: TextView = view.findViewById(R.id.productName)
+        val productPrice: TextView = view.findViewById(R.id.productPrice)
+        val productQuantity: TextView = view.findViewById(R.id.productQuantity)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheckoutViewHolder {
@@ -23,9 +23,9 @@ class CheckoutItemsAdapter(private val items: List<CartItemAdapter.CartItem>) : 
 
     override fun onBindViewHolder(holder: CheckoutViewHolder, position: Int) {
         val item = items[position]
-        holder.productName.text = item.product.name
-        holder.productPrice.text = "Price: ${item.product.price}" // Format as needed
-        holder.productQuantity.text = "Quantity: ${item.quantity}" // Ensure you have this TextView in your item layout
+        holder.productName.text = item.productName
+        holder.productPrice.text = "Price: ${item.productPrice}" // Format as needed
+        holder.productQuantity.text = "Quantity: ${item.quantity}"
         // Update other views as necessary
     }
 

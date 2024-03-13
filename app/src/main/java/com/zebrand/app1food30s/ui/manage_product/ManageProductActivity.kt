@@ -1,18 +1,5 @@
 package com.zebrand.app1food30s.ui.manage_product
 
-import android.graphics.Color
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.adapter.CategoryAdapter
-import com.zebrand.app1food30s.adapter.ManageProductAdapter
-import com.zebrand.app1food30s.adapter.ProductAdapter
-import com.zebrand.app1food30s.data.Category
-import com.zebrand.app1food30s.data.Product
-import com.zebrand.app1food30s.databinding.ActivityManageProductBinding
 // TODO
 //class ManageProductActivity : AppCompatActivity() {
 //    private lateinit var binding: ActivityManageProductBinding
