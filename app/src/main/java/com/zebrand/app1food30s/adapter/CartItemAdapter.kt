@@ -15,23 +15,32 @@ import com.zebrand.app1food30s.data.Product
 
 class CartItemAdapter(
     private val context: Context,
-    private var items: List<Product>,
-    private val onItemDeleted: (Product) -> Unit
+    private var items: List<CartItem>,
+    private val onItemDeleted: (CartItem) -> Unit,
+    private val onQuantityChanged: (CartItem) -> Unit
 ) : RecyclerView.Adapter<CartItemAdapter.CartViewHolder>() {
 
-    class CartViewHolder(view: View, private val onItemDeleted: (Product) -> Unit, private val items: List<Product>) : RecyclerView.ViewHolder(view) {
+    data class CartItem(
+        val product: Product,
+        var quantity: Int = 1
+    )
+
+    class CartViewHolder(view: View, private val onItemDeleted: (CartItem) -> Unit, private val items: List<CartItem>) : RecyclerView.ViewHolder(view) {
         val productImg: ImageView = view.findViewById(R.id.productImg)
         val productName: TextView = view.findViewById(R.id.productName)
         val productCategory: TextView = view.findViewById(R.id.productCategory)
         val productPrice: TextView = view.findViewById(R.id.productPrice)
+        val minusBtn: ImageView = view.findViewById(R.id.minusBtn)
+        val plusBtn: ImageView = view.findViewById(R.id.plusBtn)
+        val itemQuantity: TextView = view.findViewById(R.id.itemQuantity)
         private val deleteBtn: ImageView = view.findViewById(R.id.deleteBtn)
 
         init {
             deleteBtn.setOnClickListener {
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    val product = items[position]
-                    onItemDeleted(product)
+                    val cartItem = items[position]
+                    onItemDeleted(cartItem)
                 }
             }
         }
@@ -43,10 +52,10 @@ class CartItemAdapter(
     }
 
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
-        val product = items[position]
+        val cartItem = items[position]
         with(holder) {
 
-            val storageReference = FirebaseStorage.getInstance().reference.child(product.image)
+            val storageReference = FirebaseStorage.getInstance().reference.child(cartItem.product.image)
             storageReference.downloadUrl.addOnSuccessListener { uri ->
                 Glide.with(context)
                     .load(uri.toString())
@@ -57,18 +66,35 @@ class CartItemAdapter(
                 // Optional: Log or handle any errors here
             }
 
-            productName.text = product.name
-            productPrice.text = context.getString(R.string.product_price_number, product.price)
+            productName.text = cartItem.product.name
+            productPrice.text = context.getString(R.string.product_price_number, cartItem.product.price)
             // TODO
             productCategory.text = "Placeholder"
+            itemQuantity.text = cartItem.quantity.toString()
+
+            plusBtn.setOnClickListener {
+                if (cartItem.quantity < cartItem.product.stock) {
+                    cartItem.quantity++
+                    itemQuantity.text = cartItem.quantity.toString()
+                    onQuantityChanged(cartItem)
+                }
+            }
+
+            minusBtn.setOnClickListener {
+                if (cartItem.quantity > 1) {
+                    cartItem.quantity--
+                    itemQuantity.text = cartItem.quantity.toString()
+                    onQuantityChanged(cartItem)
+                }
+            }
         }
     }
 
     override fun getItemCount(): Int = items.size
 
-    fun updateItems(newItems: List<Product>) {
+    fun updateItems(newItems: List<CartItem>) {
         items = newItems
-        // Log.d("updateItems", items.toString())
+//        Log.d("SharedViewModel", "updateItems$items")
         notifyDataSetChanged()
     }
 }

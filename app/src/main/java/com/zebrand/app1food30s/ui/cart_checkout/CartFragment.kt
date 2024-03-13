@@ -29,18 +29,27 @@ class CartFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+//        Log.d("SharedViewModel", "SharedViewModel instance hash code in Fragment: ${sharedViewModel.hashCode()}")
 
         val recyclerView: RecyclerView = view.findViewById(R.id.cartItemsRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // Initialize adapter once
-        val adapter = CartItemAdapter(requireContext(), listOf(), onItemDeleted = { product ->
-            sharedViewModel.removeFromCart(product)
-        })
+        val adapter = CartItemAdapter(
+            context = requireContext(),
+            items = emptyList(),
+            onItemDeleted = { cartItem ->
+                sharedViewModel.removeFromCart(cartItem)
+            },
+            onQuantityChanged = { cartItem ->
+                sharedViewModel.updateCartItem(cartItem)
+            }
+        )
+
         recyclerView.adapter = adapter
 
         sharedViewModel.cartItems.observe(viewLifecycleOwner) { items ->
-            // Log.d("sharedViewModel Cart", sharedViewModel.cartItems.value.toString())
+//             Log.d("SharedViewModel", "Observing cart items: $items")
             adapter.updateItems(items)
             // TODO
             // updateTotalPrice(items)

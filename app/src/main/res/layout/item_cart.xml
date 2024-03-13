@@ -69,6 +69,7 @@
             android:paddingEnd="@dimen/spacing4">
 
             <ImageView
+                android:id="@+id/minusBtn"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center_vertical"
@@ -76,16 +77,18 @@
                 app:tint="@color/primary" />
 
             <TextView
+                android:id="@+id/itemQuantity"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing2"
                 android:layout_weight="1"
-                android:text="7"
+                android:text="1"
                 android:textAlignment="center"
                 android:textSize="@dimen/font_header"
                 android:textStyle="bold" />
 
             <ImageView
+                android:id="@+id/plusBtn"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center_vertical"

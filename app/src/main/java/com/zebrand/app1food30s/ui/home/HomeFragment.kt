@@ -73,30 +73,7 @@ class HomeFragment : Fragment() {
         rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         rcv.adapter = OfferAdapter(getListOffers())
 
-//        // Product linear
-//        rcv = binding.productRcv2
-//        rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-//        var adapter = ProductAdapter(getListProducts(), false)
-//        adapter.onItemClick = { holder ->
-//            val intent = Intent(requireContext(), ProductDetailActivity::class.java)
-//            startActivity(intent)
-//        }
-//        rcv.adapter = adapter
-//
-//        // Product grid
-//        rcv = binding.productRcv1
-//        rcv.layoutManager = GridLayoutManager(requireContext(), 2)
-//        adapter = ProductAdapter(getListProducts())
-//        adapter.onItemClick = { holder ->
-//            val intent = Intent(requireContext(), ProductDetailActivity::class.java)
-//            startActivity(intent)
-//        }
-//        rcv.adapter = adapter
-
-        // Setup the linear layout RecyclerView
         setupRecyclerView(binding.productRcv2, isGrid = false)
-
-        // Setup the grid layout RecyclerView
         setupRecyclerView(binding.productRcv1, isGrid = true)
     }
 
