@@ -123,6 +123,7 @@
     <string name="place_order">Place Order</string>
     <string name="txt_new_product">New product</string>
     <string name="txt_manage_offers">Manage offers</string>
+    <string name="txt_manage_categories">Manage categories</string>
 
     <string-array name="prices_array">
         <item>Meat</item>
