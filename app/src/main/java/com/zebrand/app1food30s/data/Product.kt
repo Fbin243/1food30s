@@ -9,11 +9,11 @@ data class Product(
     val idCategory: String,
     val idOffer: String,
     val name: String,
-    val image: String, // Assuming you're using resource IDs for sample images
+    val image: Int, // Assuming you're using resource IDs for sample images
     val price: Double,
     val description: String,
     val stock: Int,
     val sold: Int,
-    val reviews: List<Review>,
-    val date: Date // Date the product is created
+    val reviews: List<Review>?,
+    val date: Date? // Date the product is created
 )

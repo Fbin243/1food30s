@@ -4,6 +4,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.ReviewAdapter
 import com.zebrand.app1food30s.data.Review
@@ -12,6 +15,7 @@ import com.zebrand.app1food30s.databinding.ActivityReviewBinding
 class ReviewActivity : AppCompatActivity() {
     private lateinit var binding: ActivityReviewBinding
     private lateinit var rcv: RecyclerView
+    private val fireStore = FirebaseFirestore.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_review)
@@ -36,15 +40,16 @@ class ReviewActivity : AppCompatActivity() {
 
     private fun getListReviews(): List<Review> {
         var list = listOf<Review>()
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
+//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
         return list
     }
 }

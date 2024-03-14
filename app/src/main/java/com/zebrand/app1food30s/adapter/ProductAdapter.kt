@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.Product
 
-class ProductApapter(private val products: List<Product>, private val isGrid: Boolean = true) :
-    RecyclerView.Adapter<ProductApapter.ProductViewHolder>() {
-    var onItemClick: ((ProductApapter.ProductViewHolder) -> Unit)? = null
+class ProductAdapter(private val products: List<Product>, private val isGrid: Boolean = true) :
+    RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
+    var onItemClick: ((ProductAdapter.ProductViewHolder) -> Unit)? = null
     inner class ProductViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val productImg: ImageView = listItemView.findViewById(R.id.productImg)
         val productTitle: TextView = listItemView.findViewById(R.id.productTitle)
@@ -31,8 +32,9 @@ class ProductApapter(private val products: List<Product>, private val isGrid: Bo
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product: Product = products[position]
-        holder.productImg.setImageResource(product.img)
-        holder.productTitle.text = product.title
+        Log.i("d123", "onBindViewHolder: $product")
+        holder.productImg.setImageResource(product.image)
+        holder.productTitle.text = product.name
         holder.productDescription.text = product.description
         holder.productPrice.text = "$${String.format("%.2f", product.price).replace(",", ".")}"
         holder.itemView.setOnClickListener {

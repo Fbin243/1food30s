@@ -32,7 +32,7 @@ class CategoryAdapter(private val categories: List<Category>, private val underl
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val category: Category = categories[position]
-        holder.cateTitle.text = category.title
+        holder.cateTitle.text = category.name
         holder.cateImg.setImageResource(category.img)
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(holder)
