@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="90dp"
@@ -198,4 +199,5 @@
     </androidx.core.widget.NestedScrollView>
 
 
+<!--    <include layout="@layout/loading_screen" android:id="@+id/loading_screen"/>-->
 </androidx.constraintlayout.widget.ConstraintLayout>

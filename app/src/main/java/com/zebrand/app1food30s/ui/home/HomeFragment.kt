@@ -6,15 +6,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.OfferAdapter
+import com.zebrand.app1food30s.adapter.OverlayAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Offer
@@ -30,6 +33,7 @@ import kotlinx.coroutines.withContext
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private val fireStore = FirebaseFirestore.getInstance()
+    private val fireStorage = FirebaseStorage.getInstance()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,12 +65,19 @@ class HomeFragment : Fragment() {
     }
 
     private fun handleDisplay() {
-        // Category
+        val overlayAdapter = OverlayAdapter(4)
+        binding.cateRcv.adapter = overlayAdapter
         binding.cateRcv.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        binding.cateRcv.adapter = CategoryAdapter(getListCategories())
+        binding.productRcv1.adapter = overlayAdapter
+        binding.productRcv2.adapter = overlayAdapter
 
         lifecycleScope.launch {
+            // Category
+            binding.cateRcv.layoutManager =
+                LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+            binding.cateRcv.adapter = CategoryAdapter(getListCategories())
+
             // Product grid
             binding.productRcv1.layoutManager = GridLayoutManager(requireContext(), 2)
             var adapter = ProductAdapter(getListProducts())
@@ -91,20 +102,33 @@ class HomeFragment : Fragment() {
             }
             binding.productRcv2.adapter = adapter
         }
-
     }
 
-    private fun getListCategories(): List<Category> {
-        var list = listOf<Category>()
-//        list = list + Category(R.drawable.cate1, "Appetizers")
-//        list = list + Category(R.drawable.cate1, "Burgers")
-//        list = list + Category(R.drawable.cate1, "Appetizers")
-//        list = list + Category(R.drawable.cate1, "Appetizers")
-//        list = list + Category(R.drawable.cate1, "Appetizers")
-//        list = list + Category(R.drawable.cate1, "Appetizers")
-//        list = list + Category(R.drawable.cate1, "Appetizers")
-//        list = list + Category(R.drawable.cate1, "Appetizers")
-        return list
+    private suspend fun getListCategories(): List<Category> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val querySnapshot = fireStore.collection("categories").get().await()
+                querySnapshot.documents.map { document ->
+                    val id = document.id
+                    val name = document.getString("name") ?: ""
+                    val date = document.getDate("date")
+                    val image = document.getString("image") ?: ""
+                    val imageUrl = fireStorage.reference.child(image).downloadUrl.await().toString()
+
+                    Category(
+                        "",
+                        name,
+                        imageUrl,
+                        0,
+                        date
+                    )
+                }
+            } catch (e: Exception) {
+                // Xử lý khi có lỗi
+                Log.e("getListCategories", "Error getting products", e)
+                emptyList()
+            }
+        }
     }
 
     private suspend fun getListProducts(): List<Product> {
@@ -119,13 +143,16 @@ class HomeFragment : Fragment() {
                     val stock = document.getDouble("stock") ?: 0
                     val sold = document.getDouble("sold") ?: 0
                     val date = document.getDate("date")
+                    val image = document.getString("image") ?: ""
+                    val imageUrl = fireStorage.reference.child(image).downloadUrl.await().toString()
+                    Log.i("TAG", "getListProducts: $imageUrl")
 
                     Product(
                         "",
                         "",
                         "",
                         name,
-                        R.drawable.product1,
+                        imageUrl,
                         price,
                         description,
                         stock.toInt(),

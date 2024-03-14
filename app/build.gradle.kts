@@ -58,6 +58,8 @@ dependencies {
     implementation("com.airbnb.android:lottie:6.3.0")
     implementation("com.github.vipulasri:timelineview:1.1.5")
     implementation("com.borjabravo:readmoretextview:2.1.0")
+    // Download and display image from URL
+    implementation("com.squareup.picasso:picasso:2.8")
     // ================ Firebase services =======================
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("com.google.firebase:firebase-firestore-ktx")

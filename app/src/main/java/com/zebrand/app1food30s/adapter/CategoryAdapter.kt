@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.Category
 
@@ -33,7 +34,7 @@ class CategoryAdapter(private val categories: List<Category>, private val underl
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val category: Category = categories[position]
         holder.cateTitle.text = category.name
-        holder.cateImg.setImageResource(category.img)
+        Picasso.get().load(category.image).into(holder.cateImg)
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(holder)
             lastItemClicked = holder

@@ -6,14 +6,14 @@ import java.util.Date
 
 data class Product(
     val id: String,
-    val idCategory: String,
-    val idOffer: String,
+    val idCategory: String?,
+    val idOffer: String?,
     val name: String,
-    val image: Int, // Assuming you're using resource IDs for sample images
+    val image: String, // Assuming you're using resource IDs for sample images
     val price: Double,
     val description: String,
     val stock: Int,
-    val sold: Int,
+    val sold: Int = 0,
     val reviews: List<Review>?,
     val date: Date? // Date the product is created
 )
