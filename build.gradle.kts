@@ -3,8 +3,8 @@ buildscript {
         classpath("com.google.gms:google-services:4.4.0")
     }
     repositories {
-//        google()
-//        mavenCentral()
+        google()
+        mavenCentral()
     }
 }
 
@@ -15,9 +15,9 @@ plugins {
 
 allprojects {
     repositories {
-//        google()
-//        mavenCentral()
-//        maven(url = "https://jitpack.io")
+        google()
+        mavenCentral()
+        maven(url = "https://jitpack.io")
     }
 }
 

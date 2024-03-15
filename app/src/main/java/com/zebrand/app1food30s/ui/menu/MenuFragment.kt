@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CategoryAdapter
+import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.databinding.FragmentMenuBinding
 
@@ -33,9 +34,8 @@ class MenuFragment : Fragment() {
     private fun handleDisplayProductList() {
         rcv = binding.productRcv
         rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        // TODO
-//        val adapter = ProductAdapter(getListProducts(), false)
-//        rcv.adapter = adapter
+        val adapter = ProductAdapter(getListProducts(), false)
+        rcv.adapter = adapter
     }
 
     private fun handleChangeLayout() {
@@ -43,16 +43,14 @@ class MenuFragment : Fragment() {
             binding.gridBtn.setImageResource(R.drawable.ic_active_grid)
             binding.linearBtn.setImageResource(R.drawable.ic_linear)
             rcv.layoutManager = GridLayoutManager(requireContext(), 2)
-            // TODO
-//            rcv.adapter = ProductAdapter(getListProducts())
+            rcv.adapter = ProductAdapter(getListProducts())
         }
 
         binding.linearBtn.setOnClickListener {
             binding.linearBtn.setImageResource(R.drawable.ic_active_linear)
             binding.gridBtn.setImageResource(R.drawable.ic_grid)
             rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            // TODO
-//            rcv.adapter = ProductAdapter(getListProducts(), false)
+            rcv.adapter = ProductAdapter(getListProducts(), false)
         }
 
     }
@@ -74,80 +72,25 @@ class MenuFragment : Fragment() {
 
     private fun getListCategories(): List<Category> {
         var list = listOf<Category>()
-        list = list + Category(R.drawable.cate1, "Appetizers")
-        list = list + Category(R.drawable.cate1, "Burgers")
-        list = list + Category(R.drawable.cate1, "Appetizers")
-        list = list + Category(R.drawable.cate1, "Appetizers")
-        list = list + Category(R.drawable.cate1, "Appetizers")
-        list = list + Category(R.drawable.cate1, "Appetizers")
-        list = list + Category(R.drawable.cate1, "Appetizers")
-        list = list + Category(R.drawable.cate1, "Appetizers")
+//        list = list + Category(R.drawable.cate1, "Appetizers")
+//        list = list + Category(R.drawable.cate1, "Burgers")
+//        list = list + Category(R.drawable.cate1, "Appetizers")
+//        list = list + Category(R.drawable.cate1, "Appetizers")
+//        list = list + Category(R.drawable.cate1, "Appetizers")
+//        list = list + Category(R.drawable.cate1, "Appetizers")
+//        list = list + Category(R.drawable.cate1, "Appetizers")
+//        list = list + Category(R.drawable.cate1, "Appetizers")
         return list
     }
 
-    // TODO
-//    private fun getListProducts(): List<Product> {
-//        var list = listOf<Product>()
+    private fun getListProducts(): List<Product> {
+        var list = listOf<Product>()
 //        list = list + Product(
 //            R.drawable.product1,
 //            "Sweet & Sour Chicken",
 //            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
 //            4.5
 //        )
-//        list = list + Product(
-//            R.drawable.product1,
-//            "Sweet & Sour Chicken",
-//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-//            4.5
-//        )
-//        list = list + Product(
-//            R.drawable.product1,
-//            "Sweet & Sour Chicken",
-//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-//            4.5
-//        )
-//        list = list + Product(
-//            R.drawable.product1,
-//            "Sweet & Sour Chicken",
-//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-//            4.5
-//        )
-//        list = list + Product(
-//            R.drawable.product1,
-//            "Sweet & Sour Chicken",
-//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-//            4.5
-//        )
-//        list = list + Product(
-//            R.drawable.product1,
-//            "Sweet & Sour Chicken",
-//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-//            4.5
-//        )
-//        list = list + Product(
-//            R.drawable.product1,
-//            "Sweet & Sour Chicken",
-//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-//            4.5
-//        )
-//        list = list + Product(
-//            R.drawable.product1,
-//            "Sweet & Sour Chicken",
-//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-//            4.5
-//        )
-//        list = list + Product(
-//            R.drawable.product1,
-//            "Sweet & Sour Chicken",
-//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-//            4.5
-//        )
-//        list = list + Product(
-//            R.drawable.product1,
-//            "Sweet & Sour Chicken",
-//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-//            4.5
-//        )
-//        return list
-//    }
+        return list
+    }
 }

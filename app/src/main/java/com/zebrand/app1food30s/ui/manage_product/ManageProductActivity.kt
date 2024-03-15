@@ -1,27 +1,34 @@
 package com.zebrand.app1food30s.ui.manage_product
 
-// TODO
-//class ManageProductActivity : AppCompatActivity() {
-//    private lateinit var binding: ActivityManageProductBinding
-//    private lateinit var rcv: RecyclerView
-//
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        binding = ActivityManageProductBinding.inflate(layoutInflater)
-//        setContentView(binding.root)
-//
-//        handleDisplayProductList()
-//    }
-//
-//    private fun handleDisplayProductList() {
-//        rcv = binding.productRcv
-//        rcv.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-//        val adapter = ManageProductAdapter(getListProducts(), false)
-//        rcv.adapter = adapter
-//    }
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.zebrand.app1food30s.adapter.ManageProductAdapter
+import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.databinding.ActivityManageProductBinding
 
-    // TODO
-//    private fun getListProducts(): List<Product> {
+class ManageProductActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityManageProductBinding
+    private lateinit var rcv: RecyclerView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityManageProductBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        handleDisplayProductList()
+    }
+
+    private fun handleDisplayProductList() {
+        rcv = binding.productRcv
+        rcv.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        val adapter = ManageProductAdapter(getListProducts(), false)
+        rcv.adapter = adapter
+    }
+
+    private fun getListProducts(): List<Product> {
+        return listOf()
 //        return listOf(
 //            Product(
 //                R.drawable.sample_food,
@@ -67,5 +74,5 @@ package com.zebrand.app1food30s.ui.manage_product
 //            ),
 //            // Add more products as needed
 //        )
-//    }
-//}
+    }
+}

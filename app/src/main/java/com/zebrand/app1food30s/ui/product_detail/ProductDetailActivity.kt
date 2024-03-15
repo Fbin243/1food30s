@@ -6,6 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.zebrand.app1food30s.adapter.ProductAdapter
+import com.zebrand.app1food30s.adapter.ReviewAdapter
+import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.Review
 import com.zebrand.app1food30s.databinding.ActivityProductDetailBinding
 import com.zebrand.app1food30s.ui.review.ReviewActivity
 
@@ -38,8 +42,7 @@ class ProductDetailActivity : AppCompatActivity() {
     private fun handleDisplayRelatedProducts() {
         rcv = binding.relatedProductRcv
         rcv.layoutManager = GridLayoutManager(this,  2)
-        // TODO
-//        rcv.adapter = ProductAdapter(getListProducts())
+        rcv.adapter = ProductAdapter(getListProducts())
     }
 
     private fun handleDisplayReview() {
@@ -49,18 +52,16 @@ class ProductDetailActivity : AppCompatActivity() {
 //        rcv.adapter = ReviewAdapter(getListReviews())
     }
 
-    // TODO
-//    private fun getListReviews(): List<Review> {
-//        var list = listOf<Review>()
+    private fun getListReviews(): List<Review> {
+        var list = listOf<Review>()
 //        list = list + Review(R.drawable.ava1, "", 5, "test", "")
 //        list = list + Review(R.drawable.ava1, "", 5, "test", "")
 //        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-//        return list
-//    }
+        return list
+    }
 
-    // TODO
-//    private fun getListProducts(): List<Product> {
-//        var list = listOf<Product>()
+    private fun getListProducts(): List<Product> {
+        var list = listOf<Product>()
 //        list = list + Product(
 //            R.drawable.product1,
 //            "Sweet & Sour Chicken",
@@ -85,6 +86,6 @@ class ProductDetailActivity : AppCompatActivity() {
 //            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
 //            4.5
 //        )
-//        return list
-//    }
+        return list
+    }
 }

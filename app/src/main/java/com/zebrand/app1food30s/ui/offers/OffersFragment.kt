@@ -30,8 +30,6 @@ class OffersFragment : Fragment() {
 
     private fun getListOffers(): List<Offer> {
         var list = listOf<Offer>()
-        list = list + Offer(R.drawable.offer1, 7)
-        list = list + Offer(R.drawable.offer2, 5)
         return list
     }
 }
