@@ -3,7 +3,6 @@ package com.zebrand.app1food30s.ui.home
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,24 +11,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.adapter.CategoryAdapter
-import com.zebrand.app1food30s.adapter.ProductAdapter
-import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
+import com.zebrand.app1food30s.data.Cart
+import com.zebrand.app1food30s.data.CartItem
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Offer
 import com.zebrand.app1food30s.data.Product
-import com.zebrand.app1food30s.data.Review
-import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
-import com.zebrand.app1food30s.ui.search.SearchActivity
-import java.util.Date
-import com.google.firebase.firestore.FirebaseFirestore
-import com.zebrand.app1food30s.data.Cart
-import com.zebrand.app1food30s.data.CartItem
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
@@ -43,14 +34,12 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private val fireStore = FirebaseFirestore.getInstance()
     private val fireStorage = FirebaseStorage.getInstance()
-private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding!!
     private lateinit var rcv: RecyclerView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
         handleDisplay()
         handleOpenSearchScreen()
         return binding.root
@@ -63,7 +52,7 @@ private var _binding: FragmentHomeBinding? = null
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+//        binding = null
     }
 
     private fun handleOpenSearchScreen() {
@@ -141,8 +130,8 @@ private var _binding: FragmentHomeBinding? = null
             binding.productRcv2.visibility = View.VISIBLE
         }
 
-        setupRecyclerView(binding.productRcv2, isGrid = false)
-        setupRecyclerView(binding.productRcv1, isGrid = true)
+//        setupRecyclerView(binding.productRcv2, isGrid = false)
+//        setupRecyclerView(binding.productRcv1, isGrid = true)
     }
 
     // private fun setupRecyclerView(recyclerView: RecyclerView, isGrid: Boolean) {

@@ -7,16 +7,15 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.firestore.FirebaseFirestore
-import com.zebrand.app1food30s.data.FirestoreUtils.addOrderForCustomer
-import com.zebrand.app1food30s.R
-import com.google.firebase.firestore.Query
-import java.util.*
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.google.firebase.firestore.FirebaseFirestore
+import com.zebrand.app1food30s.R
 import java.text.SimpleDateFormat
-import com.github.mikephil.charting.data.Entry
+import java.util.Calendar
+import java.util.Locale
 
 class AdminStatisticsActivity : AppCompatActivity() {
     private lateinit var myGridRecyclerView: RecyclerView

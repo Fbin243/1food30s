@@ -14,6 +14,6 @@ data class Product(
     val description: String = "",
     val stock: Int = 0,
     val sold: Int = 0,
-    val reviews: List<Review> = emptyList(),
-    val date: Date = Date() // Date the product is created
+    val reviews: List<Review>? = emptyList(),
+    val date: Date? = Date() // Date the product is created
 )

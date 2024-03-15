@@ -13,6 +13,7 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.data.Category
+import com.zebrand.app1food30s.data.Product
 import com.zebrand.app1food30s.databinding.FragmentMenuBinding
 
 class MenuFragment : Fragment() {

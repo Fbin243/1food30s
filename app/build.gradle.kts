@@ -74,7 +74,7 @@ dependencies {
     // Shimmer effect
     implementation("com.facebook.shimmer:shimmer:0.5.0")
     // ================ Firebase services =======================
-    implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
+    implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-firestore:24.10.3")
     // Cloud storage
