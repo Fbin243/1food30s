@@ -1,4 +1,4 @@
-package com.zebrand.app1food30s.ui.view.cart_checkout
+package com.zebrand.app1food30s.ui.cart_checkout
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,17 +6,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
+import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CartItemAdapter
 import com.zebrand.app1food30s.data.model.Cart
 import com.zebrand.app1food30s.data.model.CartItem
 import com.zebrand.app1food30s.data.service.ProductService
 import com.zebrand.app1food30s.databinding.FragmentCartBinding
 
-class CartFragment : Fragment() {
+class CartFragment : Fragment(), CartView {
 
     private var _binding: FragmentCartBinding? = null
     private val binding get() = _binding!!
@@ -24,12 +25,12 @@ class CartFragment : Fragment() {
     private val db = FirebaseFirestore.getInstance()
     private val cartId = "mdXn8lvirHaAogStOY1K"
     private val productService = ProductService()
+    private lateinit var presenter: CartPresenter
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCartBinding.inflate(inflater, container, false)
+        presenter = CartPresenter(this)
         return binding.root
     }
 
@@ -37,7 +38,7 @@ class CartFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
-        listenToCartChanges()
+        presenter.listenToCartChanges()
         handleCheckoutNavigation()
         // TODO
 //        handleCloseCartScreen()
@@ -55,41 +56,71 @@ class CartFragment : Fragment() {
             },
             onQuantityChanged = { cartItem ->
                 updateCartItem(cartItem)
+            },
+            onUpdateTotalPrice = { totalPrice ->
+                binding.textViewAmount.text = getString(R.string.product_price_number, totalPrice)
             }
         )
         binding.cartItemsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.cartItemsRecyclerView.adapter = adapter
     }
 
-//    private fun observeCartItems() {
-//        sharedViewModel.cartItems.observe(viewLifecycleOwner) { items ->
-//            (binding.cartItemsRecyclerView.adapter as CartItemAdapter).updateItems(items)
-//            updateTotalPrice(items)
-//        }
-//    }
-
-    private fun listenToCartChanges() {
-        // Log.d("Test00", "listenToCartChanges: Runs")
-        db.collection("carts").document(cartId)
-            .addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    // Handle error
-                    // Log.d("Test00", "listenToCartChanges: Error")
-                    return@addSnapshotListener
-                }
-                if (snapshot != null && snapshot.exists()) {
-                    // Log.d("Test00", "listenToCartChanges: No error")
-                    val cartItems = snapshot.toObject(Cart::class.java)?.items ?: listOf()
-//                    Log.d("Test00", "snapshot: $snapshot")
-                    Log.d("Test00", "CartFragment - cartItems: $cartItems")
-                    adapter.updateItems(cartItems)
-                    updateTotalPrice(cartItems)
-                }
-            }
+    override fun displayCartItems(cartItems: List<CartItem>) {
+        adapter.updateItems(cartItems)
     }
 
+    override fun displayTotalPrice(totalPrice: Double) {
+        val formattedPrice = String.format("$%.2f", totalPrice)
+        view?.findViewById<TextView>(R.id.textView_amount)?.text = formattedPrice
+    }
+
+    override fun displayError(error: String) {
+        // Display error to user
+    }
+
+//    private fun listenToCartChanges() {
+//        // Log.d("Test00", "listenToCartChanges: Runs")
+//        db.collection("carts").document(cartId)
+//            .addSnapshotListener { snapshot, e ->
+//                if (e != null) {
+//                    // Handle error
+//                    // Log.d("Test00", "listenToCartChanges: Error")
+//                    return@addSnapshotListener
+//                }
+//                if (snapshot != null && snapshot.exists()) {
+//                    // Log.d("Test00", "listenToCartChanges: No error")
+//                    val cartItems = snapshot.toObject(Cart::class.java)?.items ?: listOf()
+////                    Log.d("Test00", "snapshot: $snapshot")
+//                    // Log.d("Test00", "CartFragment - cartItems: $cartItems")
+//                    adapter.updateItems(cartItems)
+//                    // updateTotalPrice(cartItems)
+//                }
+//            }
+//    }
+
     private fun removeFromCart(productId: String) {
-        // Firestore operation to remove the item from the cart
+        val db = FirebaseFirestore.getInstance()
+        val cartRef = db.collection("carts").document(cartId)
+
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(cartRef)
+            val cart = snapshot.toObject(Cart::class.java)
+            val items = cart?.items?.toMutableList() ?: mutableListOf()
+
+            // Remove the item with the specified productId
+            items.removeAll { it.productId == productId }
+
+            // Update the cart with the new list of items
+            cart?.items = items
+            transaction.set(cartRef, cart ?: return@runTransaction)
+
+            null // Indicate success but no result
+        }.addOnSuccessListener {
+            // Handle success, e.g., by showing a toast or updating the UI
+        }.addOnFailureListener { e ->
+            // Handle error
+            Log.e("CartFragment", "Error removing item from cart", e)
+        }
     }
 
     private fun updateCartItem(cartItem: CartItem) {
@@ -120,6 +151,14 @@ class CartFragment : Fragment() {
         }
     }
 
+//    private fun observeTotalPrice() {
+//        // Observe the totalPrice LiveData from ViewModel to get updates
+//        productViewModel.totalPrice.observe(viewLifecycleOwner) { totalPrice ->
+//            // Update the total price UI
+//            binding.textViewAmount.text = getString(R.string.product_price_number, totalPrice)
+//        }
+//    }
+
     private fun handleCheckoutNavigation() {
         binding.btnCheckout.setOnClickListener {
             val intent = Intent(requireActivity(), CheckoutActivity::class.java)
@@ -132,15 +171,6 @@ class CartFragment : Fragment() {
 //            findNavController().navigateUp()
 //        }
 //    }
-
-//    private fun updateTotalPrice(items: List<CartItemAdapter.CartItem>) {
-//        val total = items.sumOf { it.product.price * it.quantity }
-//        binding.textViewAmount.text = getString(R.string.product_price_number, total)
-//    }
-
-    private fun updateTotalPrice(items: List<CartItem>) {
-        // Update total price based on Firestore cart items data
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

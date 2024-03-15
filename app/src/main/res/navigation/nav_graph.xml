@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/cartFragment"
-        android:name="com.zebrand.app1food30s.ui.view.cart_checkout.CartFragment"
+        android:name="com.zebrand.app1food30s.ui.cart_checkout.CartFragment"
         android:label="CartFragment" >
         <action
             android:id="@+id/action_CartFragment_to_HomeFragment"

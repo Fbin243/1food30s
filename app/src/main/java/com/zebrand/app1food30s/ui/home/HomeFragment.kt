@@ -152,10 +152,10 @@ class HomeFragment : Fragment() {
         return listOf(
             Product(
                 id = "tQHHzFF0MRcuetqzD6Zc",
-                idCategory = "category1",
-                idOffer = "offer1",
+                idCategory = null,
+                idOffer = null,
                 name = "Sweet & Sour Chicken",
-                image = "images/product1.png",
+                image = "images/product/product1.png",
                 price = 4.5,
                 description = "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
                 stock = 10,
@@ -165,10 +165,10 @@ class HomeFragment : Fragment() {
             ),
             Product(
                 id = "GsWAFO80YukqOXm5Eybu",
-                idCategory = "category1",
-                idOffer = "offer1",
+                idCategory = null,
+                idOffer = null,
                 name = "Burrito",
-                image = "images/product1.png",
+                image = "images/product/product2.png",
                 price = 6.5,
                 description = "Burrito description",
                 stock = 5,

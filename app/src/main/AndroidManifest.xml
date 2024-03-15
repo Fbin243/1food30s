@@ -99,11 +99,11 @@
         </activity> <!-- ADMIN -->
 
         <activity
-            android:name=".ui.view.admin_statistics.AdminStatisticsActivity"
+            android:name=".ui.admin_statistics.AdminStatisticsActivity"
             android:exported="true" />
 
         <activity
-            android:name=".ui.view.cart_checkout.CheckoutActivity"
+            android:name=".ui.cart_checkout.CheckoutActivity"
             android:exported="true" />
     </application>
 

@@ -19,7 +19,8 @@ class CartItemAdapter(
     private var items: List<CartItem>,
     private val onItemDeleted: (CartItem) -> Unit,
     private val onQuantityChanged: (CartItem) -> Unit,
-    private val getProductById: (String, (Product?) -> Unit) -> Unit
+    private val getProductById: (String, (Product?) -> Unit) -> Unit,
+    private val onUpdateTotalPrice: (Double) -> Unit
 ) : RecyclerView.Adapter<CartItemAdapter.CartViewHolder>() {
 
     class CartViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -85,9 +86,16 @@ class CartItemAdapter(
     override fun getItemCount(): Int = items.size
 
     fun updateItems(newItems: List<CartItem>) {
-        Log.d("Test00", "updateItems: Runs")
         items = newItems
-//        Log.d("SharedViewModel", "updateItems$items")
         notifyDataSetChanged()
+
+//        // Direct calculation of total price if CartItem includes price
+//        val totalPrice = items.sumOf { cartItem ->
+//            // Assuming cartItem includes a price field or you've fetched the price beforehand
+//            cartItem.quantity * cartItem.productPrice
+//        }
+//
+//        // Update the UI with the total price
+//        onUpdateTotalPrice(totalPrice)
     }
 }
