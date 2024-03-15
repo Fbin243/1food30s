@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:scaleType="fitCenter"
                 android:background="@android:color/white"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center"/>
         </androidx.cardview.widget.CardView>
 
         <LinearLayout

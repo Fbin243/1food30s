@@ -18,5 +18,6 @@ data class DetailedCartItem(
     val productName: String,
     val productPrice: Double,
     val productImage: String,
-    val quantity: Int,
+    val productStock: Int,
+    var quantity: Int,
 )

@@ -68,7 +68,8 @@ class CartPresenter(private val view: CartView) : CoroutineScope by CoroutineSco
                                 productName = product.name ?: "",
                                 productPrice = product.price ?: 0.0,
                                 productImage = imageUrl,
-                                quantity = cartItem.quantity
+                                productStock = product.stock,
+                                quantity = cartItem.quantity,
                             )
                             Tasks.forResult(detailedCartItem)
                         } else {
@@ -121,6 +122,23 @@ class CartPresenter(private val view: CartView) : CoroutineScope by CoroutineSco
                 withContext(Dispatchers.Main) {
                     view.displayError(e.message ?: "Unknown error")
                 }
+            }
+        }
+    }
+
+    fun updateCartItemQuantity(productRef: DocumentReference, newQuantity: Int) {
+        launch {
+            try {
+                // Your existing logic to find the cart item and update its quantity
+                val cartRef = db.collection("carts").document(cartId)
+                val cartSnapshot = cartRef.get().await()
+                val cart = cartSnapshot.toObject(Cart::class.java)
+                cart?.items?.find { it.productId == productRef }?.let {
+                    it.quantity = newQuantity
+                    cartRef.set(cart).await() // Save the updated cart
+                }
+            } catch (e: Exception) {
+                Log.e("CartPresenter", "Error updating item quantity", e)
             }
         }
     }

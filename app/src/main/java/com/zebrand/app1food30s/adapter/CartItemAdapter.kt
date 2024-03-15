@@ -1,6 +1,7 @@
 package com.zebrand.app1food30s.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,9 +15,9 @@ import com.zebrand.app1food30s.data.model.DetailedCartItem
 
 class CartItemAdapter(
     private val context: Context,
-    private var items: List<DetailedCartItem>,
+    private var items: MutableList<DetailedCartItem>,
     private val onItemDeleted: (DetailedCartItem) -> Unit,
-    private val onQuantityChanged: (DetailedCartItem) -> Unit,
+    private val onQuantityUpdated: (DetailedCartItem, Int) -> Unit,
     private val onUpdateTotalPrice: (Double) -> Unit
 ) : RecyclerView.Adapter<CartItemAdapter.CartViewHolder>() {
 
@@ -35,6 +36,22 @@ class CartItemAdapter(
         return CartViewHolder(view)
     }
 
+    override fun onBindViewHolder(holder: CartViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads)
+        } else {
+            payloads.forEach { payload ->
+                when (payload) {
+                    "quantity" -> {
+                        // Update only the quantity text view
+                        holder.itemQuantity.text = items[position].quantity.toString()
+                    }
+                    // Handle other specific updates with different payloads if necessary
+                }
+            }
+        }
+    }
+
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
         val detailedCartItem = items[position]
         with(holder) {
@@ -44,16 +61,20 @@ class CartItemAdapter(
             itemQuantity.text = detailedCartItem.quantity.toString()
 
             plusBtn.setOnClickListener {
-                if (detailedCartItem.quantity < Int.MAX_VALUE) { // Assuming stock check is handled elsewhere
+                if (detailedCartItem.quantity < detailedCartItem.productStock) {
                     val newQuantity = detailedCartItem.quantity + 1
-                    onQuantityChanged(detailedCartItem.copy(quantity = newQuantity))
+                    detailedCartItem.quantity = newQuantity // Update the item directly
+                    notifyItemChanged(position, "quantity") // Use payload to specify what changed
+                    onQuantityUpdated(detailedCartItem, newQuantity) // Notify the presenter
                 }
             }
 
             minusBtn.setOnClickListener {
-                if (detailedCartItem.quantity > 1) {
-                    val newQuantity = detailedCartItem.quantity - 1
-                    onQuantityChanged(detailedCartItem.copy(quantity = newQuantity))
+                val newQuantity = detailedCartItem.quantity - 1
+                if (newQuantity >= 1) { // Ensure quantity doesn't go below 1
+                    detailedCartItem.quantity = newQuantity
+                    notifyItemChanged(position, "quantity") // Use payload to specify what changed
+                    onQuantityUpdated(detailedCartItem, newQuantity)
                 }
             }
 
@@ -66,7 +87,7 @@ class CartItemAdapter(
     override fun getItemCount(): Int = items.size
 
     fun updateItems(newItems: List<DetailedCartItem>) {
-        items = newItems
+        items = newItems.toMutableList()
         notifyDataSetChanged()
         onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
     }
