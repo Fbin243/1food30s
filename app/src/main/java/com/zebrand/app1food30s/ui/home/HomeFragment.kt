@@ -67,10 +67,12 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             binding.cateShimmer.startShimmer()
             binding.product1Shimmer.startShimmer()
+            binding.offerShimmer.startShimmer()
+            binding.cateShimmer.startShimmer()
+
             val products = async { getListProducts() }
             val categories = async { getListCategories() }
             val offers = async { getListOffers() }
-
 
             // Category
             binding.cateRcv.layoutManager =
@@ -96,6 +98,10 @@ class HomeFragment : Fragment() {
             binding.offerRcv.layoutManager =
                 LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             binding.offerRcv.adapter = OfferAdapter(offers.await())
+            binding.offerShimmer.stopShimmer()
+            binding.offerShimmer.visibility = View.GONE
+            binding.offerRcv.visibility = View.VISIBLE
+
 
             // Product linear
             binding.productRcv2.layoutManager =
@@ -106,6 +112,9 @@ class HomeFragment : Fragment() {
                 startActivity(intent)
             }
             binding.productRcv2.adapter = adapter
+            binding.product2Shimmer.stopShimmer()
+            binding.product2Shimmer.visibility = View.GONE
+            binding.productRcv2.visibility = View.VISIBLE
         }
     }
 
