@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.Offer
 
@@ -30,7 +31,7 @@ class ManageOfferAdapter(private val offers: List<Offer>, private val isGrid: Bo
 
     override fun onBindViewHolder(holder: OfferViewHolder, position: Int) {
         val offer: Offer = offers[position]
-        holder.offerImg.setImageResource(offer.img)
+        Picasso.get().load(offer.image).into(holder.offerImg)
         holder.offerName.text = offer.name
 //        holder.offerRate.text = offer.discountRate.toString()
         holder.offerRate.text = "${offer.discountRate}%"

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.manange_category.ManageCategory"
+    tools:context=".ui.manage_category.ManageCategory"
     android:paddingBottom="@dimen/spacing50">
 
     <LinearLayout

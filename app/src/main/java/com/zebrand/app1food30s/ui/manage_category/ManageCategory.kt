@@ -1,4 +1,4 @@
-package com.zebrand.app1food30s.ui.manange_category
+package com.zebrand.app1food30s.ui.manage_category
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
