@@ -284,7 +284,7 @@
                 android:id="@+id/btn2"
                 android:layout_width="70dp"
                 android:layout_height="30dp"
-                android:layout_marginTop="700dp"
+                android:layout_marginTop="650dp"
                 android:backgroundTint="@color/secondary_20"
                 android:fontFamily="@font/rubik_bold"
                 android:lineHeight="@dimen/spacing1"
