@@ -70,7 +70,7 @@
             android:id="@+id/textView_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="$24.73"
+            android:text="$0.00"
             android:textSize="@dimen/font_size20"
             android:textColor="@color/primary"
             android:fontFamily="@font/rubik_bold"

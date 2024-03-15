@@ -14,7 +14,7 @@ data class Cart(
 )
 
 data class DetailedCartItem(
-//    val productId: DocumentReference? = null,
+    val productId: DocumentReference? = null,
     val productName: String,
     val productPrice: Double,
     val productImage: String,

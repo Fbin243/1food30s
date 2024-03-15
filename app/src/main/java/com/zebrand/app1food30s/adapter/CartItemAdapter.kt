@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.model.DetailedCartItem
 
@@ -68,5 +69,13 @@ class CartItemAdapter(
         items = newItems
         notifyDataSetChanged()
         onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
+    }
+
+    fun removeItemByRef(productRef: DocumentReference) {
+        val indexToRemove = items.indexOfFirst { it.productId == productRef }
+        if (indexToRemove != -1) {
+            (items as MutableList).removeAt(indexToRemove)
+            notifyItemRemoved(indexToRemove)
+        }
     }
 }
