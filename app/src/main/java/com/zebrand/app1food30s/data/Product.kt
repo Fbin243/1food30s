@@ -1,13 +1,13 @@
 package com.zebrand.app1food30s.data
 
+import com.google.firebase.firestore.DocumentReference
+import com.zebrand.app1food30s.data.Review
 import java.util.Date
-
-//class Product(var img: Int, var title: String, var description: String, var price: Double)
 
 data class Product(
     val id: String = "",
-    val idCategory: String = "",
-    val idOffer: String = "",
+    val idCategory: DocumentReference? = null,
+    val idOffer: DocumentReference? = null,
     val name: String = "",
     val image: String = "", // Firebase Storage
     val price: Double = 0.0,
