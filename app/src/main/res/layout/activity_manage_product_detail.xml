@@ -21,7 +21,7 @@
             android:layout_marginTop="@dimen/spacing20"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/spacing24"
+            android:paddingBottom="@dimen/spacing16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -37,20 +37,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing18"
                 android:fontFamily="@font/rubik_bold"
-                android:text="@string/txt_all_product"
+                android:text="@string/txt_new_product"
                 android:textSize="@dimen/font_header" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/text_title_add_product"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="New product"
-            android:textSize="@dimen/font_header"
-            android:fontFamily="@font/rubik_bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linear_app_bar" />
 
         <View
             android:id="@+id/linear_line"
@@ -58,7 +48,7 @@
             android:layout_height="1dp"
             android:layout_gravity="bottom"
             android:background="#28000000"
-            app:layout_constraintTop_toBottomOf="@id/text_title_add_product"
+            app:layout_constraintTop_toBottomOf="@id/linear_app_bar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -162,23 +152,20 @@
 
         <TextView
             android:id="@+id/text_offer"
-            android:layout_width="0dp"
-            app:layout_constraintWidth_percent="0.4"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/id_offer"
             android:layout_marginTop="@dimen/spacing20"
-            app:layout_constraintTop_toBottomOf="@+id/category"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/price"
             tools:layout_editor_absoluteX="14dp" />
 
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/offer"
             style="@style/NoUnderlineDropdown"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_marginTop="5dp"
             app:boxBackgroundColor="@color/transparent"
-            app:layout_constraintWidth_percent="0.4"
             android:layout_height="61dp"
             android:background="@drawable/dropdown_background"
             app:layout_constraintTop_toBottomOf="@id/text_offer"
@@ -198,18 +185,22 @@
 
         <TextView
             android:id="@+id/text_stock"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            app:layout_constraintWidth_percent="0.4"
             android:layout_height="wrap_content"
             android:text="@string/text_stock"
             android:layout_marginTop="@dimen/spacing20"
-            app:layout_constraintTop_toBottomOf="@+id/price"
+            app:layout_constraintTop_toBottomOf="@+id/category"
+            app:layout_constraintEnd_toEndOf="parent"
             tools:layout_editor_absoluteX="14dp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/stock"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            app:layout_constraintWidth_percent="0.4"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/text_stock"
+            app:layout_constraintEnd_toEndOf="parent"
             app:boxStrokeColor="@color/primary"
             app:boxCornerRadiusTopStart="@dimen/radius8"
             app:boxCornerRadiusTopEnd="@dimen/radius8"
@@ -223,7 +214,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
                 android:maxLines="1"
-                android:gravity="center"/>
+                android:gravity="start"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -233,7 +224,7 @@
             android:layout_height="wrap_content"
             android:text="@string/txt_description"
             android:layout_marginTop="@dimen/spacing20"
-            app:layout_constraintTop_toBottomOf="@+id/stock"
+            app:layout_constraintTop_toBottomOf="@+id/offer"
             tools:layout_editor_absoluteX="14dp" />
 
         <com.google.android.material.textfield.TextInputLayout

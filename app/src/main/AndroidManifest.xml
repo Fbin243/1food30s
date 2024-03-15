@@ -13,14 +13,29 @@
         android:theme="@style/Base.Theme.App1food30s"
         tools:targetApi="31">
         <activity
+            android:name=".ui.manange_category.ManageCategory"
+            android:exported="false" />
+        <activity
+            android:name=".ui.offers.ManageOffer"
+            android:exported="true">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity
             android:name=".ui.profile.EditProfileActivity"
-            android:exported="true" >
+            android:exported="true">
 
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".ui.manage_product.ManageProductDetailActivity"
@@ -35,12 +50,12 @@
             android:name=".ui.manage_product.ManageProductActivity"
             android:exported="true">
 
-<!--             <intent-filter>-->
-<!--             <action android:name="android.intent.action.MAIN" />-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
 
 
-<!--             <category android:name="android.intent.category.LAUNCHER" />-->
-<!--             </intent-filter>-->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".ui.manage_order.ManageOrderDetailsActivity"
@@ -97,11 +112,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- ADMIN -->
-
         <activity
             android:name=".ui.admin_statistics.AdminStatisticsActivity"
             android:exported="true" />
-
         <activity
             android:name=".ui.cart_checkout.CheckoutActivity"
             android:exported="true" />

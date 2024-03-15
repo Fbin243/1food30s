@@ -2,8 +2,8 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    app:cardCornerRadius="@dimen/spacing16"
+    android:layout_height="180dp"
+    app:cardCornerRadius="@dimen/spacing20"
     android:layout_marginTop="@dimen/spacing10"
     android:layout_marginBottom="@dimen/spacing10"
     android:layout_marginEnd="@dimen/spacing10"
@@ -12,31 +12,31 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         >
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/productImg"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
+            android:id="@+id/offerImg"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
             android:scaleType="centerCrop"
             android:src="@drawable/product1"
-            app:shapeAppearanceOverlay="@style/RoundedImageView"
-            android:layout_marginEnd="@dimen/spacing10"/>
+            app:shapeAppearanceOverlay="@style/RoundedImageView" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="@dimen/spacing2"
+            android:paddingHorizontal="@dimen/spacing8"
+            android:paddingVertical="@dimen/spacing4"
             >
 
             <TextView
-                android:id="@+id/productTitle"
+                android:id="@+id/offerName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="2"
-                android:text="Sweet &amp; Sour Chicken"
+                android:text="Uplifting Anytime"
                 android:textSize="@dimen/font_default"
                 android:fontFamily="@font/rubik_semibold" />
 
@@ -48,34 +48,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/rubik_medium"
-                    android:text="Category: "
+                    android:text="Discount rate: "
                     />
 
                 <TextView
-                    android:id="@+id/productDescription"
+                    android:id="@+id/offerRate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Vegetable"
-                    android:textSize="@dimen/font_size12"
-                    />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/rubik_medium"
-                    android:text="Price: "
-                    />
-
-                <TextView
-                    android:id="@+id/productPrice"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="$3.00"
+                    android:text="10%"
                     android:textSize="@dimen/font_size12"
                     />
             </LinearLayout>

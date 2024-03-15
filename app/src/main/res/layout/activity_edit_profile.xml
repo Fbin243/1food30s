@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="@dimen/spacing16"
+    android:paddingBottom="@dimen/spacing20"
     tools:context=".ui.profile.EditProfileActivity">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="@dimen/spacing16"
-        android:paddingBottom="@dimen/spacing20"
-        >
 
         <LinearLayout
             android:id="@+id/linear_app_bar"
@@ -20,7 +15,7 @@
             android:layout_marginTop="@dimen/spacing20"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingBottom="@dimen/spacing24"
+            android:paddingBottom="@dimen/spacing16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -36,20 +31,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing18"
                 android:fontFamily="@font/rubik_bold"
-                android:text="@string/txt_my_profile"
+                android:text="@string/txt_edit_profile"
                 android:textSize="@dimen/font_header" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/text_title_add_product"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Edit profile"
-            android:textSize="@dimen/font_header"
-            android:fontFamily="@font/rubik_bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linear_app_bar" />
 
         <View
             android:id="@+id/linear_line"
@@ -57,7 +42,7 @@
             android:layout_height="1dp"
             android:layout_gravity="bottom"
             android:background="#28000000"
-            app:layout_constraintTop_toBottomOf="@id/text_title_add_product"
+            app:layout_constraintTop_toBottomOf="@id/linear_app_bar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -87,7 +72,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing60"
+                android:layout_height="@dimen/spacing52"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -117,7 +102,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing60"
+                android:layout_height="@dimen/spacing52"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -147,7 +132,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing60"
+                android:layout_height="@dimen/spacing52"
                 android:maxLines="1"
                 android:inputType="textEmailAddress"/>
 
@@ -178,7 +163,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing60"
+                android:layout_height="@dimen/spacing52"
                 android:maxLines="1"
                 android:inputType="textEmailAddress"/>
 
@@ -212,7 +197,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing60"
+                android:layout_height="@dimen/spacing52"
                 android:inputType="textEmailAddress"
                 android:maxLines="1" />
 
@@ -236,7 +221,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing60"
+                android:layout_height="@dimen/spacing52"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -251,9 +236,7 @@
             android:textStyle="bold"
             android:layout_marginTop="@dimen/spacing32"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/price"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:layout_editor_absoluteY="643dp" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
