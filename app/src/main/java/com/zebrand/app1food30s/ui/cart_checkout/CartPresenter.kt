@@ -6,10 +6,10 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.zebrand.app1food30s.data.model.Cart
-import com.zebrand.app1food30s.data.model.CartItem
-import com.zebrand.app1food30s.data.model.DetailedCartItem
-import com.zebrand.app1food30s.data.model.Product
+import com.zebrand.app1food30s.data.Cart
+import com.zebrand.app1food30s.data.CartItem
+import com.zebrand.app1food30s.data.DetailedCartItem
+import com.zebrand.app1food30s.data.Product
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -25,6 +25,8 @@ interface CartView {
 class CartPresenter(private val view: CartView) : CoroutineScope by CoroutineScope(Dispatchers.IO) {
     private val db = FirebaseFirestore.getInstance()
     private val cartId = "mdXn8lvirHaAogStOY1K"
+    private var detailedCartItems: List<DetailedCartItem> = emptyList()
+    private var totalPrice: Double = 0.0
 
     fun listenToCartChanges() {
         db.collection("carts").document(cartId)
@@ -65,6 +67,7 @@ class CartPresenter(private val view: CartView) : CoroutineScope by CoroutineSco
                             val imageUrl = urlTask.result.toString()
                             val detailedCartItem = DetailedCartItem(
                                 productId = productDocumentReference, // Directly use the existing DocumentReference
+                                productCategory = "Food",
                                 productName = product.name ?: "",
                                 productPrice = product.price ?: 0.0,
                                 productImage = imageUrl,
@@ -97,7 +100,8 @@ class CartPresenter(private val view: CartView) : CoroutineScope by CoroutineSco
         }
 
         Tasks.whenAllSuccess<DetailedCartItem>(tasks).addOnSuccessListener { detailedCartItems ->
-            // detailedCartItems contains all DetailedCartItem objects
+            this.detailedCartItems = detailedCartItems
+            this.totalPrice = detailedCartItems.sumOf { it.productPrice * it.quantity }
             callback(detailedCartItems)
         }.addOnFailureListener { exception ->
             // Handle error
@@ -141,5 +145,13 @@ class CartPresenter(private val view: CartView) : CoroutineScope by CoroutineSco
                 Log.e("CartPresenter", "Error updating item quantity", e)
             }
         }
+    }
+
+    fun getCartSummary(): Pair<List<String>, Double> {
+        val itemDescriptions = detailedCartItems.map { item ->
+            "${item.productImage} - ${item.productName} - ${item.productCategory} - \$${item.productPrice} - ${item.quantity}"
+        }
+        val totalPrice = detailedCartItems.sumOf { it.productPrice * it.quantity }
+        return Pair(itemDescriptions, totalPrice)
     }
 }

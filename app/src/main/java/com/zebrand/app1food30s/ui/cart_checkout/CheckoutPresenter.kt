@@ -1,12 +1,9 @@
 package com.zebrand.app1food30s.ui.cart_checkout
 
-import com.zebrand.app1food30s.data.model.CartItem
-import com.zebrand.app1food30s.data.model.CheckoutItem
-
 interface CheckoutView {
-    fun displayProducts(checkoutItemsList: List<CheckoutItem>)
-    fun displayTotalPrice(totalPrice: Double)
-    fun showError(error: String)
+//    fun displayProducts(checkoutItemsList: List<CheckoutItem>)
+//    fun displayTotalPrice(totalPrice: Double)
+//    fun showError(error: String)
 }
 
 class CheckoutPresenter(private val view: CheckoutView) {

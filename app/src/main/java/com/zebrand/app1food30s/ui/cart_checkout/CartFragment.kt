@@ -2,7 +2,6 @@ package com.zebrand.app1food30s.ui.cart_checkout
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CartItemAdapter
-import com.zebrand.app1food30s.data.model.DetailedCartItem
+import com.zebrand.app1food30s.data.DetailedCartItem
 import com.zebrand.app1food30s.databinding.FragmentCartBinding
+import com.google.gson.Gson
 
 class CartFragment : Fragment(), CartView {
 
@@ -76,7 +76,12 @@ class CartFragment : Fragment(), CartView {
 
     private fun handleCheckoutNavigation() {
         binding.btnCheckout.setOnClickListener {
-            val intent = Intent(requireActivity(), CheckoutActivity::class.java)
+            val cartSummary = presenter.getCartSummary() // Pair<List<String>, Double>
+            val intent = Intent(context, CheckoutActivity::class.java).apply {
+                val itemDescriptionsJson = Gson().toJson(cartSummary.first) // Convert list to JSON string
+                putExtra("item_descriptions", itemDescriptionsJson)
+                putExtra("total_price", cartSummary.second)
+            }
             startActivity(intent)
         }
     }

@@ -1,4 +1,4 @@
-package com.zebrand.app1food30s.data.model
+package com.zebrand.app1food30s.data
 
 import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.data.Review

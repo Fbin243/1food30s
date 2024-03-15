@@ -1,4 +1,4 @@
-package com.zebrand.app1food30s.data.model
+package com.zebrand.app1food30s.data
 
 import com.google.firebase.firestore.DocumentReference
 
@@ -15,6 +15,7 @@ data class Cart(
 
 data class DetailedCartItem(
     val productId: DocumentReference? = null,
+    val productCategory: String,
     val productName: String,
     val productPrice: Double,
     val productImage: String,

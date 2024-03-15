@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.data.model.Product
+import com.zebrand.app1food30s.data.Product
 
 class ManageProductAdapter(private val products: List<Product>, private val isGrid: Boolean = true) :
     RecyclerView.Adapter<ManageProductAdapter.ProductViewHolder>() {

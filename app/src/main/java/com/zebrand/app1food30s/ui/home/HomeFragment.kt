@@ -17,14 +17,14 @@ import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Offer
-import com.zebrand.app1food30s.data.model.Product
+import com.zebrand.app1food30s.data.Product
 import com.zebrand.app1food30s.data.Review
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
 import java.util.Date
 import com.google.firebase.firestore.FirebaseFirestore
-import com.zebrand.app1food30s.data.model.Cart
-import com.zebrand.app1food30s.data.model.CartItem
+import com.zebrand.app1food30s.data.Cart
+import com.zebrand.app1food30s.data.CartItem
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null

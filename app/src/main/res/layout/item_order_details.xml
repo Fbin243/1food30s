@@ -22,6 +22,7 @@
             app:cardCornerRadius="@dimen/spacing16">
 
             <ImageView
+                android:id="@+id/productImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
@@ -36,6 +37,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/productName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing0"
@@ -43,6 +45,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/productCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/nev_spacing_4"
@@ -52,6 +55,7 @@
                 android:textSize="@dimen/font_size12" />
 
             <TextView
+                android:id="@+id/productPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="$3.80"
@@ -72,11 +76,12 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/itemQuantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:paddingTop="1dp"
                 android:includeFontPadding="false"
+                android:paddingTop="1dp"
                 android:text="3"
                 android:textColor="@color/white" />
         </RelativeLayout>

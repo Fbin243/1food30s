@@ -1,7 +1,6 @@
 package com.zebrand.app1food30s.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.data.model.DetailedCartItem
+import com.zebrand.app1food30s.data.DetailedCartItem
 
 class CartItemAdapter(
     private val context: Context,
@@ -22,6 +21,7 @@ class CartItemAdapter(
 ) : RecyclerView.Adapter<CartItemAdapter.CartViewHolder>() {
 
     class CartViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val productCategory: TextView = view.findViewById(R.id.productCategory)
         val productImg: ImageView = view.findViewById(R.id.productImg)
         val productName: TextView = view.findViewById(R.id.productName)
         val productPrice: TextView = view.findViewById(R.id.productPrice)
@@ -56,6 +56,7 @@ class CartItemAdapter(
         val detailedCartItem = items[position]
         with(holder) {
             Glide.with(context).load(detailedCartItem.productImage).into(productImg)
+            productCategory.text = detailedCartItem.productCategory
             productName.text = detailedCartItem.productName
             productPrice.text = context.getString(R.string.product_price_number, detailedCartItem.productPrice)
             itemQuantity.text = detailedCartItem.quantity.toString()
