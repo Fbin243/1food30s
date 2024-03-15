@@ -1,7 +1,6 @@
 package com.zebrand.app1food30s.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,24 +8,20 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.data.model.Product
-import com.zebrand.app1food30s.data.model.CartItem
+import com.zebrand.app1food30s.data.model.DetailedCartItem
 
 class CartItemAdapter(
     private val context: Context,
-    private var items: List<CartItem>,
-    private val onItemDeleted: (CartItem) -> Unit,
-    private val onQuantityChanged: (CartItem) -> Unit,
-    private val getProductById: (String, (Product?) -> Unit) -> Unit,
+    private var items: List<DetailedCartItem>,
+    private val onItemDeleted: (DetailedCartItem) -> Unit,
+    private val onQuantityChanged: (DetailedCartItem) -> Unit,
     private val onUpdateTotalPrice: (Double) -> Unit
 ) : RecyclerView.Adapter<CartItemAdapter.CartViewHolder>() {
 
     class CartViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val productImg: ImageView = view.findViewById(R.id.productImg)
         val productName: TextView = view.findViewById(R.id.productName)
-        val productCategory: TextView = view.findViewById(R.id.productCategory)
         val productPrice: TextView = view.findViewById(R.id.productPrice)
         val minusBtn: ImageView = view.findViewById(R.id.minusBtn)
         val plusBtn: ImageView = view.findViewById(R.id.plusBtn)
@@ -40,62 +35,38 @@ class CartItemAdapter(
     }
 
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
-        val cartItem = items[position]
-        // Log.d("Test00", "onBindViewHolder - cartItem: $cartItem")
-        getProductById(cartItem.productId) { product ->
-            product?.let { prod ->
-                with(holder) {
-                    // Log.d("Test00", "onBindViewHolder prod: $prod")
+        val detailedCartItem = items[position]
+        with(holder) {
+            Glide.with(context).load(detailedCartItem.productImage).into(productImg)
+            productName.text = detailedCartItem.productName
+            productPrice.text = context.getString(R.string.product_price_number, detailedCartItem.productPrice)
+            itemQuantity.text = detailedCartItem.quantity.toString()
 
-                    val storageReference = FirebaseStorage.getInstance().reference.child(prod.image)
-                    storageReference.downloadUrl.addOnSuccessListener { uri ->
-                        Glide.with(context).load(uri.toString()).into(productImg)
-                    }.addOnFailureListener {
-                        // Handle error, e.g., by displaying a placeholder image
-                    }
-
-                    productName.text = prod.name
-                    productPrice.text = context.getString(R.string.product_price_number, prod.price)
-                    productCategory.text = "Placeholder"
-                    itemQuantity.text = cartItem.quantity.toString()
-
-                    plusBtn.setOnClickListener {
-                        if (cartItem.quantity < prod.stock) {
-                            cartItem.quantity++
-                            itemQuantity.text = cartItem.quantity.toString()
-                            onQuantityChanged(cartItem)
-                        }
-                    }
-
-                    minusBtn.setOnClickListener {
-                        if (cartItem.quantity > 1) {
-                            cartItem.quantity--
-                            itemQuantity.text = cartItem.quantity.toString()
-                            onQuantityChanged(cartItem)
-                        }
-                    }
-
-                    deleteBtn.setOnClickListener {
-                        onItemDeleted(cartItem)
-                    }
+            plusBtn.setOnClickListener {
+                if (detailedCartItem.quantity < Int.MAX_VALUE) { // Assuming stock check is handled elsewhere
+                    val newQuantity = detailedCartItem.quantity + 1
+                    onQuantityChanged(detailedCartItem.copy(quantity = newQuantity))
                 }
+            }
+
+            minusBtn.setOnClickListener {
+                if (detailedCartItem.quantity > 1) {
+                    val newQuantity = detailedCartItem.quantity - 1
+                    onQuantityChanged(detailedCartItem.copy(quantity = newQuantity))
+                }
+            }
+
+            deleteBtn.setOnClickListener {
+                onItemDeleted(detailedCartItem)
             }
         }
     }
 
     override fun getItemCount(): Int = items.size
 
-    fun updateItems(newItems: List<CartItem>) {
+    fun updateItems(newItems: List<DetailedCartItem>) {
         items = newItems
         notifyDataSetChanged()
-
-//        // Direct calculation of total price if CartItem includes price
-//        val totalPrice = items.sumOf { cartItem ->
-//            // Assuming cartItem includes a price field or you've fetched the price beforehand
-//            cartItem.quantity * cartItem.productPrice
-//        }
-//
-//        // Update the UI with the total price
-//        onUpdateTotalPrice(totalPrice)
+        onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
     }
 }

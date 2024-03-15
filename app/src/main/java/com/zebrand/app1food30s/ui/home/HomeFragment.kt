@@ -27,23 +27,28 @@ import com.zebrand.app1food30s.data.model.Cart
 import com.zebrand.app1food30s.data.model.CartItem
 
 class HomeFragment : Fragment() {
-    private lateinit var binding: FragmentHomeBinding
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
     private lateinit var rcv: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHomeBinding.inflate(inflater)
-        val view = binding.root
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
         handleDisplay()
         handleOpenSearchScreen()
-        return view
+        return binding.root
     }
 
     override fun onResume() {
         super.onResume()
         binding.searchInput.clearFocus()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun handleOpenSearchScreen() {
@@ -99,6 +104,7 @@ class HomeFragment : Fragment() {
     fun addProductToCart(productId: String, cartId: String = "mdXn8lvirHaAogStOY1K") {
         val db = FirebaseFirestore.getInstance()
         val cartRef = db.collection("carts").document(cartId)
+        val productRef = db.collection("products").document(productId) // Convert string ID to DocumentReference
 
         cartRef.get().addOnSuccessListener { document ->
             val cart = if (document.exists()) {
@@ -109,13 +115,13 @@ class HomeFragment : Fragment() {
             }
 
             cart?.let {
-                val existingItemIndex = it.items.indexOfFirst { item -> item.productId == productId }
+                val existingItemIndex = it.items.indexOfFirst { item -> item.productId?.path == productRef.path }
                 if (existingItemIndex >= 0) {
                     // Product exists, update quantity
                     it.items[existingItemIndex].quantity += 1
                 } else {
                     // New product, add to cart
-                    it.items.add(CartItem(productId, 1))
+                    it.items.add(CartItem(productRef, 1))
                 }
 
                 // Save updated cart back to Firestore

@@ -14,7 +14,7 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CartItemAdapter
 import com.zebrand.app1food30s.data.model.Cart
 import com.zebrand.app1food30s.data.model.CartItem
-import com.zebrand.app1food30s.data.service.ProductService
+import com.zebrand.app1food30s.data.model.DetailedCartItem
 import com.zebrand.app1food30s.databinding.FragmentCartBinding
 
 class CartFragment : Fragment(), CartView {
@@ -24,7 +24,6 @@ class CartFragment : Fragment(), CartView {
     private lateinit var adapter: CartItemAdapter
     private val db = FirebaseFirestore.getInstance()
     private val cartId = "mdXn8lvirHaAogStOY1K"
-    private val productService = ProductService()
     private lateinit var presenter: CartPresenter
 
 
@@ -48,14 +47,11 @@ class CartFragment : Fragment(), CartView {
         adapter = CartItemAdapter(
             context = requireContext(),
             items = emptyList(),
-            getProductById = { productId, callback ->
-                productService.getProductById(productId, callback)
-            },
             onItemDeleted = { cartItem ->
-                removeFromCart(cartItem.productId)
+//                removeFromCart(cartItem.productId)
             },
             onQuantityChanged = { cartItem ->
-                updateCartItem(cartItem)
+//                updateCartItem(cartItem)
             },
             onUpdateTotalPrice = { totalPrice ->
                 binding.textViewAmount.text = getString(R.string.product_price_number, totalPrice)
@@ -65,8 +61,8 @@ class CartFragment : Fragment(), CartView {
         binding.cartItemsRecyclerView.adapter = adapter
     }
 
-    override fun displayCartItems(cartItems: List<CartItem>) {
-        adapter.updateItems(cartItems)
+    override fun displayCartItems(detailedCartItems: List<DetailedCartItem>) {
+        adapter.updateItems(detailedCartItems)
     }
 
     override fun displayTotalPrice(totalPrice: Double) {
@@ -78,37 +74,18 @@ class CartFragment : Fragment(), CartView {
         // Display error to user
     }
 
-//    private fun listenToCartChanges() {
-//        // Log.d("Test00", "listenToCartChanges: Runs")
-//        db.collection("carts").document(cartId)
-//            .addSnapshotListener { snapshot, e ->
-//                if (e != null) {
-//                    // Handle error
-//                    // Log.d("Test00", "listenToCartChanges: Error")
-//                    return@addSnapshotListener
-//                }
-//                if (snapshot != null && snapshot.exists()) {
-//                    // Log.d("Test00", "listenToCartChanges: No error")
-//                    val cartItems = snapshot.toObject(Cart::class.java)?.items ?: listOf()
-////                    Log.d("Test00", "snapshot: $snapshot")
-//                    // Log.d("Test00", "CartFragment - cartItems: $cartItems")
-//                    adapter.updateItems(cartItems)
-//                    // updateTotalPrice(cartItems)
-//                }
-//            }
-//    }
-
     private fun removeFromCart(productId: String) {
         val db = FirebaseFirestore.getInstance()
         val cartRef = db.collection("carts").document(cartId)
+        val productRef = db.collection("products").document(productId) // Convert string ID to DocumentReference
 
         db.runTransaction { transaction ->
             val snapshot = transaction.get(cartRef)
             val cart = snapshot.toObject(Cart::class.java)
             val items = cart?.items?.toMutableList() ?: mutableListOf()
 
-            // Remove the item with the specified productId
-            items.removeAll { it.productId == productId }
+            // Remove the item with the specified product DocumentReference
+            items.removeAll { it.productId?.path == productRef.path }
 
             // Update the cart with the new list of items
             cart?.items = items
