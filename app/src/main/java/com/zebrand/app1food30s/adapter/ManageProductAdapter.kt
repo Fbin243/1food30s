@@ -6,9 +6,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.Category
 
 class ManageProductAdapter(private val products: List<Product>, private val isGrid: Boolean = true) :
     RecyclerView.Adapter<ManageProductAdapter.ProductViewHolder>() {
@@ -34,8 +36,23 @@ class ManageProductAdapter(private val products: List<Product>, private val isGr
         val product: Product = products[position]
         Picasso.get().load(product.image).into(holder.productImg)
 //        holder.productImg.setImageResource(product.image)
-        holder.productTitle.text = product.idCategory.ge
-        holder.productDescription.text = product.description
+        holder.productTitle.text = product.name
+//        holder.productDescription.text = product.idCategory
+        // Lấy tên danh mục từ Firestore
+        // Sử dụng ID danh mục để truy vấn Firestore và lấy tên danh mục
+//        val categoryId = product.idCategory.id
+        // Giả định rằng bạn có một bộ sưu tập tên là "categories" trong Firestore
+//        val categoriesCollection = FirebaseFirestore.getInstance().collection("categories")
+//        categoriesCollection.document(categoryId).get().addOnSuccessListener { document ->
+//            if (document != null && document.exists()) {
+//                val category = document.toObject(Category::class.java)
+//                holder.productDescription.text = category?.name ?: "Danh mục không xác định"
+//            } else {
+//                holder.productDescription.text = "Danh mục không tồn tại"
+//            }
+//        }.addOnFailureListener {
+//            holder.productDescription.text = "Lỗi khi lấy danh mục"
+//        }
         holder.productPrice.text = "$${String.format("%.2f", product.price).replace(",", ".")}"
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(holder)

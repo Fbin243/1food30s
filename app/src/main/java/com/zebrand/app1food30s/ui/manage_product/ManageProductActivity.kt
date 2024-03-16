@@ -62,13 +62,14 @@ class ManageProductActivity : AppCompatActivity() {
 
                     // Fetch category details
                     val categoryRef = document.getDocumentReference("idCategory")
-                    val category = categoryRef?.get()?.await()?.toObject(Category::class.java)
+//                    val category = categoryRef?.get()?.await()?.toObject(Category::class.java)
 //
+
 //                    // Fetch offer details
                     val offerRef = document.getDocumentReference("idOffer")
-                    val offer = offerRef?.get()?.await()?.toObject(Offer::class.java)
+//                    val offer = offerRef?.get()?.await()?.toObject(Offer::class.java)
 //
-                    Product(id, category, offer, name, imageUrl, price, description, stock, sold, null, document.getDate("date"))
+                    Product(id, categoryRef, offerRef, name, imageUrl, price, description, stock, sold, null, document.getDate("date"))
                 }
             } catch (e: Exception) {
                 Log.e("getListProducts", "Error getting products", e)
