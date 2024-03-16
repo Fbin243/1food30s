@@ -2,7 +2,6 @@ package com.zebrand.app1food30s.ui.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,16 +22,13 @@ import com.zebrand.app1food30s.data.Product
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), HomeMVPView {
     private lateinit var binding: FragmentHomeBinding
     private val fireStore = FirebaseFirestore.getInstance()
     private val fireStorage = FirebaseStorage.getInstance()
+    private lateinit var homePresenter: HomePresenter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,7 +36,10 @@ class HomeFragment : Fragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater)
         val view = binding.root
-        handleDisplay()
+
+        homePresenter = HomePresenter(this, fireStore, fireStorage)
+        lifecycleScope.launch { homePresenter.getDataAndDisplay() }
+
         handleOpenSearchScreen()
         return view
     }
@@ -63,151 +62,57 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun handleDisplay() {
-        lifecycleScope.launch {
-            binding.cateShimmer.startShimmer()
-            binding.product1Shimmer.startShimmer()
-            binding.offerShimmer.startShimmer()
-            binding.cateShimmer.startShimmer()
-
-            val products = async { getListProducts() }
-            val categories = async { getListCategories() }
-            val offers = async { getListOffers() }
-
-            // Category
-            binding.cateRcv.layoutManager =
-                LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-            binding.cateRcv.adapter = CategoryAdapter(categories.await())
-            binding.cateShimmer.stopShimmer()
-            binding.cateShimmer.visibility = View.GONE
-            binding.cateRcv.visibility = View.VISIBLE
-
-            // Product grid
-            binding.productRcv1.layoutManager = GridLayoutManager(requireContext(), 2)
-            var adapter = ProductAdapter(products.await())
-            adapter.onItemClick = { holder ->
-                val intent = Intent(requireContext(), ProductDetailActivity::class.java)
-                startActivity(intent)
-            }
-            binding.productRcv1.adapter = adapter
-            binding.product1Shimmer.stopShimmer()
-            binding.product1Shimmer.visibility = View.GONE
-            binding.productRcv1.visibility = View.VISIBLE
-
-            // Offer
-            binding.offerRcv.layoutManager =
-                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            binding.offerRcv.adapter = OfferAdapter(offers.await())
-            binding.offerShimmer.stopShimmer()
-            binding.offerShimmer.visibility = View.GONE
-            binding.offerRcv.visibility = View.VISIBLE
-
-
-            // Product linear
-            binding.productRcv2.layoutManager =
-                LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            adapter = ProductAdapter(products.await(), false)
-            adapter.onItemClick = { holder ->
-                val intent = Intent(requireContext(), ProductDetailActivity::class.java)
-                startActivity(intent)
-            }
-            binding.productRcv2.adapter = adapter
-            binding.product2Shimmer.stopShimmer()
-            binding.product2Shimmer.visibility = View.GONE
-            binding.productRcv2.visibility = View.VISIBLE
-        }
+    override fun showCategories(categories: List<Category>) {
+        binding.cateRcv.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        binding.cateRcv.adapter = CategoryAdapter(categories)
     }
 
-    private suspend fun getListCategories(): List<Category> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val querySnapshot = fireStore.collection("categories").get().await()
-                querySnapshot.documents.map { document ->
-                    val id = document.id
-                    val name = document.getString("name") ?: ""
-                    val date = document.getDate("date")
-                    val image = document.getString("image") ?: ""
-                    val imageUrl = fireStorage.reference.child(image).downloadUrl.await().toString()
-
-                    Category(
-                        id,
-                        name,
-                        imageUrl,
-                        0,
-                        date
-                    )
-                }
-            } catch (e: Exception) {
-                Log.e("getListCategories", "Error getting products", e)
-                emptyList()
-            }
+    override fun showProductsLatestDishes(products: List<Product>) {
+        binding.productRcv1.layoutManager = GridLayoutManager(requireContext(), 2)
+        val adapter = ProductAdapter(products)
+        adapter.onItemClick = { holder ->
+            val intent = Intent(requireContext(), ProductDetailActivity::class.java)
+            startActivity(intent)
         }
+        binding.productRcv1.adapter = adapter
     }
 
-    private suspend fun getListProducts(): List<Product> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val querySnapshot = fireStore.collection("products").get().await()
-                querySnapshot.documents.map { document ->
-                    val id = document.id
-                    val idCategory = document.getDocumentReference("idCategory")
-                    val idOffer = document.getDocumentReference("idOffer")
-                    val name = document.getString("name") ?: ""
-                    val image = document.getString("image") ?: ""
-                    val imageUrl = fireStorage.reference.child(image).downloadUrl.await().toString()
-                    val price = document.getDouble("price") ?: 0.0
-                    val description = document.getString("description") ?: ""
-                    val stock = document.getDouble("stock") ?: 0
-                    val sold = document.getDouble("sold") ?: 0
-                    val date = document.getDate("date")
-
-                    Product(
-                        id,
-                        idCategory,
-                        idOffer,
-                        name,
-                        imageUrl,
-                        price,
-                        description,
-                        stock.toInt(),
-                        sold.toInt(),
-                        null,
-                        date
-                    )
-                }.take(4)
-            } catch (e: Exception) {
-                Log.e("getListProducts", "Error getting products", e)
-                emptyList()
-            }
+    override fun showProductsBestSeller(products: List<Product>) {
+        binding.productRcv2.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        val adapter = ProductAdapter(products, false)
+        adapter.onItemClick = { holder ->
+            val intent = Intent(requireContext(), ProductDetailActivity::class.java)
+            startActivity(intent)
         }
+        binding.productRcv2.adapter = adapter
     }
 
-    private suspend fun getListOffers(): List<Offer> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val querySnapshot = fireStore.collection("offers").get().await()
-                querySnapshot.documents.map { document ->
-                    val id = document.id
-                    val name = document.getString("name") ?: ""
-                    val image = document.getString("image") ?: ""
-                    val imageUrl = fireStorage.reference.child(image).downloadUrl.await().toString()
-                    val price = document.getDouble("price") ?: 0.0
-                    val numProduct = document.getDouble("numProduct") ?: 0
-                    val date = document.getDate("date")
+    override fun showOffers(offers: List<Offer>) {
+        // Offer
+        binding.offerRcv.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        binding.offerRcv.adapter = OfferAdapter(offers)
+    }
 
-                    Offer(
-                        id,
-                        name,
-                        imageUrl,
-                        price,
-                        numProduct.toInt(),
-                        date
-                    )
-                }.take(2)
-            } catch (e: Exception) {
-                Log.e("getListProducts", "Error getting products", e)
-                emptyList()
-            }
-        }
+    override fun showShimmerEffect() {
+        binding.cateShimmer.startShimmer()
+        binding.product1Shimmer.startShimmer()
+        binding.offerShimmer.startShimmer()
+        binding.cateShimmer.startShimmer()
+    }
+
+    override fun hideShimmerEffect() {
+        hideShimmerEffectForRcv(binding.cateShimmer, binding.cateRcv)
+        hideShimmerEffectForRcv(binding.product1Shimmer, binding.productRcv1)
+        hideShimmerEffectForRcv(binding.product2Shimmer, binding.productRcv2)
+        hideShimmerEffectForRcv(binding.offerShimmer, binding.offerRcv)
+    }
+
+    private fun hideShimmerEffectForRcv(shimmer: ShimmerFrameLayout, recyclerView: RecyclerView) {
+        shimmer.stopShimmer()
+        shimmer.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
     }
 }
