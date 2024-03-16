@@ -48,7 +48,8 @@ class ProductDetailActivity : AppCompatActivity() {
     private fun handleDisplayReview() {
         rcv = binding.reviewRcv
         rcv.layoutManager = LinearLayoutManager(this,  RecyclerView.VERTICAL, false)
-        rcv.adapter = ReviewAdapter(getListReviews())
+        // TODO
+//        rcv.adapter = ReviewAdapter(getListReviews())
     }
 
     private fun getListReviews(): List<Review> {

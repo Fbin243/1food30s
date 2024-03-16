@@ -104,7 +104,7 @@
     <string name="text_address">Address</string>
     <string name="txt_all_product">All products</string>
     <string name="txt_manage_products">Manage products</string>
-    
+
     <string name="ava">ava</string>
     <string name="ic_change_language">ic_change_language</string>
     <string name="log_out">Log Out</string>
@@ -121,6 +121,9 @@
     <string name="checkout">Checkout</string>
     <string name="back_button">Back button</string>
     <string name="place_order">Place Order</string>
+    <string name="txt_new_product">New product</string>
+    <string name="txt_manage_offers">Manage offers</string>
+    <string name="txt_manage_categories">Manage categories</string>
 
     <string-array name="prices_array">
         <item>Meat</item>
@@ -133,4 +136,7 @@
         <item>10%</item>
         <item>15%</item>
     </string-array>
+
+    <string name="product_price_number">$%.2f</string>
+
 </resources>

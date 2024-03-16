@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -16,12 +17,23 @@ import com.zebrand.app1food30s.data.Product
 class ProductAdapter(private val products: List<Product>, private val isGrid: Boolean = true) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
     var onItemClick: ((ProductAdapter.ProductViewHolder) -> Unit)? = null
+    var onAddButtonClick: ((Product) -> Unit)? = null
 
     inner class ProductViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val productImg: ImageView = listItemView.findViewById(R.id.productImg)
         val productTitle: TextView = listItemView.findViewById(R.id.productTitle)
         val productDescription: TextView = listItemView.findViewById(R.id.productDescription)
         val productPrice: TextView = listItemView.findViewById(R.id.productPrice)
+        private val addButton: Button = listItemView.findViewById(R.id.addBtn)
+
+        init {
+            addButton.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onAddButtonClick?.invoke(products[position])
+                }
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {

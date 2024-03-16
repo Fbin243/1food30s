@@ -7,202 +7,90 @@
     android:background="#FFFFFF"
     android:layout_marginBottom="100dp">
 
-    <TextView
-        android:id="@+id/tvMyCart"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clHeader"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/my_cart"
-        android:fontFamily="@font/rubik_bold"
-        android:textSize="@dimen/font_size24"
-        android:textColor="@color/primary"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:paddingBottom="11dp"/>
+        android:paddingBottom="16dp">
 
-    <androidx.cardview.widget.CardView
+        <include
+            android:id="@+id/ivBack"
+            layout="@layout/item_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/rubik_extrabold"
+            android:text="@string/my_cart"
+            android:textSize="@dimen/font_header"
+            app:layout_constraintStart_toEndOf="@+id/ivBack"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/cartItemsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/clHeader"
+        android:clipToPadding="false" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clTotalPrice"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvMyCart"
+        android:background="@drawable/rounded_background"
+        android:padding="8dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/cartItemsRecyclerView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_marginTop="24dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/itemLinearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/textView_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total"
+            android:textSize="@dimen/font_size20"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:padding="5dp">
-
-                <ImageView
-                    android:id="@+id/imageView_food"
-                    android:layout_width="75dp"
-                    android:layout_height="60dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/detailsLayout"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/product1"
-                    android:background="@drawable/rounded_background" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/detailsLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toEndOf="@id/imageView_food"
-                    app:layout_constraintEnd_toStartOf="@id/actionsLayout"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="0dp">
-
-                    <TextView
-                        android:id="@+id/textView_foodTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="American BBQ Double"
-                        android:fontFamily="@font/rubik_medium"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toStartOf="parent" />
-
-                    <TextView
-                        android:id="@+id/textView_foodSize"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Size: Large"
-                        app:layout_constraintTop_toBottomOf="@id/textView_foodTitle"
-                        app:layout_constraintStart_toStartOf="@id/textView_foodTitle" />
-
-                    <TextView
-                        android:id="@+id/textView_foodPrice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="$8.23"
-                        android:fontFamily="@font/rubik_semibold"
-                        android:textSize="@dimen/font_size16"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                        app:layout_constraintTop_toBottomOf="@id/textView_foodSize"
-                        app:layout_constraintStart_toStartOf="@id/textView_foodSize" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/actionsLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
-
-                    <ImageButton
-                        android:id="@+id/button_minus"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_minus"
-                        android:scaleType="centerInside"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/minus_button"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        android:padding="8dp"/>
-
-                    <TextView
-                        android:id="@+id/textView_quantity"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/rubik_medium"
-                        android:textSize="@dimen/font_size24"
-                        android:text="69"
-                        app:layout_constraintTop_toTopOf="@id/button_minus"
-                        app:layout_constraintBottom_toBottomOf="@id/button_minus"
-                        app:layout_constraintStart_toEndOf="@id/button_minus"
-                        app:layout_constraintEnd_toStartOf="@id/button_plus" />
-
-                    <ImageButton
-                        android:id="@+id/button_plus"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@drawable/ic_plus"
-                        android:scaleType="centerInside"
-                        android:adjustViewBounds="true"
-                        android:contentDescription="@string/plus_button"
-                        android:padding="8dp"
-                        app:layout_constraintTop_toTopOf="@id/textView_quantity"
-                        app:layout_constraintBottom_toBottomOf="@id/textView_quantity"
-                        app:layout_constraintEnd_toEndOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:id="@+id/tvExtras"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Extras: "
-                android:fontFamily="@font/rubik_medium"
-                app:layout_constraintTop_toBottomOf="@id/linearLayout"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <TextView
-                android:id="@+id/tvExtrasContent"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Add Tomato, Add Lettuce, Add Onion."
-                app:layout_constraintTop_toBottomOf="@id/linearLayout"
-                app:layout_constraintStart_toEndOf="@+id/tvExtras"/>
-
-            <TextView
-                android:id="@+id/tvInstructions"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Instruction: "
-                android:fontFamily="@font/rubik_medium"
-                app:layout_constraintTop_toBottomOf="@id/tvExtrasContent"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <TextView
-                android:id="@+id/tvInstructionsContent"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="extra large"
-                app:layout_constraintTop_toBottomOf="@id/tvExtrasContent"
-                app:layout_constraintStart_toEndOf="@+id/tvInstructions"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-    <include
-        layout="@layout/component_total_price"
-        app:layout_constraintBottom_toTopOf="@+id/btnCheckout"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/textView_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$0.00"
+            android:textSize="@dimen/font_size20"
+            android:textColor="@color/primary"
+            android:fontFamily="@font/rubik_bold"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView_total"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
         android:id="@+id/btnCheckout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/spacing60"
         android:text="@string/checkout"
-        android:textSize="@dimen/font_size24"
-        android:fontFamily="@font/rubik_bold"
-        android:background="@drawable/rounded_button"
-        android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:textSize="@dimen/font_header"
+        android:textStyle="bold"
+        android:backgroundTint="@color/primary"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/clTotalPrice"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

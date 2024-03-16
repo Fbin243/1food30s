@@ -10,12 +10,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
+import com.zebrand.app1food30s.data.Cart
+import com.zebrand.app1food30s.data.CartItem
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Offer
 import com.zebrand.app1food30s.data.Product
@@ -41,12 +42,17 @@ class HomeFragment : Fragment(), HomeMVPView {
         lifecycleScope.launch { homePresenter.getDataAndDisplay() }
 
         handleOpenSearchScreen()
-        return view
+        return binding.root
     }
 
     override fun onResume() {
         super.onResume()
         binding.searchInput.clearFocus()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+//        binding = null
     }
 
     private fun handleOpenSearchScreen() {

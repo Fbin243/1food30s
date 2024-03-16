@@ -28,8 +28,9 @@ class ReviewActivity : AppCompatActivity() {
     private fun handleDisplayReviewList() {
         rcv = binding.reviewRcv
         rcv.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        val adapter = ReviewAdapter(getListReviews())
-        rcv.adapter = adapter
+        // TODO
+//        val adapter = ReviewAdapter(getListReviews())
+//        rcv.adapter = adapter
     }
 
     private fun handleCloseReviewScreen() {
