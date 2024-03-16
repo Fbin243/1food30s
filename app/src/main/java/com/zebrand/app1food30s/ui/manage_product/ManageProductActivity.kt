@@ -48,7 +48,7 @@ class ManageProductActivity : AppCompatActivity() {
         return withContext(Dispatchers.IO) {
             try {
                 val querySnapshot = fireStore.collection("products").get().await()
-                querySnapshot.documents.map { document ->
+                querySnapshot.documents.mapNotNull { document ->
                     val id = document.id
                     val name = document.getString("name") ?: ""
                     val image = document.getString("image") ?: ""
@@ -57,25 +57,16 @@ class ManageProductActivity : AppCompatActivity() {
                     val description = document.getString("description") ?: ""
                     val stock = document.getLong("stock")?.toInt() ?: 0
                     val sold = document.getLong("sold")?.toInt() ?: 0
+                    val idCategoryRef = document.getDocumentReference("idCategory")
+                    val idOfferRef = document.getDocumentReference("idOffer")
 
-//                    Product(id, null, null, name, imageUrl, price, description, stock, sold, null, document.getDate("date"))
-
-                    // Fetch category details
-                    val categoryRef = document.getDocumentReference("idCategory")
-//                    val category = categoryRef?.get()?.await()?.toObject(Category::class.java)
-//
-
-//                    // Fetch offer details
-                    val offerRef = document.getDocumentReference("idOffer")
-//                    val offer = offerRef?.get()?.await()?.toObject(Offer::class.java)
-//
-                    Product(id, categoryRef, offerRef, name, imageUrl, price, description, stock, sold, null, document.getDate("date"))
+                    Product(id, idCategoryRef, idOfferRef, name, imageUrl, price, description, stock, sold, null, document.getDate("date"))
                 }
             } catch (e: Exception) {
                 Log.e("getListProducts", "Error getting products", e)
                 emptyList()
             }
         }
-        return listOf()
     }
+
 }
