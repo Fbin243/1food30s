@@ -10,13 +10,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
-import com.zebrand.app1food30s.data.Cart
-import com.zebrand.app1food30s.data.CartItem
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Offer
 import com.zebrand.app1food30s.data.Product
@@ -36,7 +35,6 @@ class HomeFragment : Fragment(), HomeMVPView {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater)
-        val view = binding.root
 
         homePresenter = HomePresenter(this, fireStore, fireStorage)
         lifecycleScope.launch { homePresenter.getDataAndDisplay() }
@@ -74,25 +72,29 @@ class HomeFragment : Fragment(), HomeMVPView {
         binding.cateRcv.adapter = CategoryAdapter(categories)
     }
 
-    override fun showProductsLatestDishes(products: List<Product>) {
+    override fun showProductsLatestDishes(products: List<Product>, offers: List<Offer>) {
         binding.productRcv1.layoutManager = GridLayoutManager(requireContext(), 2)
-        val adapter = ProductAdapter(products)
-        adapter.onItemClick = { holder ->
-            val intent = Intent(requireContext(), ProductDetailActivity::class.java)
-            startActivity(intent)
+        val adapter = ProductAdapter(products, offers)
+        adapter.onItemClick = { product ->
+            openDetailProduct(product)
         }
         binding.productRcv1.adapter = adapter
     }
 
-    override fun showProductsBestSeller(products: List<Product>) {
+    override fun showProductsBestSeller(products: List<Product>, offers: List<Offer>) {
         binding.productRcv2.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val adapter = ProductAdapter(products, false)
-        adapter.onItemClick = { holder ->
-            val intent = Intent(requireContext(), ProductDetailActivity::class.java)
-            startActivity(intent)
+        val adapter = ProductAdapter(products, offers, false)
+        adapter.onItemClick = { product ->
+            openDetailProduct(product)
         }
         binding.productRcv2.adapter = adapter
+    }
+
+    private fun openDetailProduct(product: Product) {
+        val intent = Intent(requireContext(), ProductDetailActivity::class.java)
+        intent.putExtra("idProduct", product.id)
+        startActivity(intent)
     }
 
     override fun showOffers(offers: List<Offer>) {

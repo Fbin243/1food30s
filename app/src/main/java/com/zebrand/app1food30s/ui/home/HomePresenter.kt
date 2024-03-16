@@ -6,9 +6,9 @@ import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Offer
 import com.zebrand.app1food30s.data.Product
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
@@ -19,15 +19,22 @@ class HomePresenter(
 ) {
 
     suspend fun getDataAndDisplay() {
-        view.showShimmerEffect()
-        val categories = getListCategories()
-        val products = getListProducts()
-        val offers =  getListOffers()
-        view.hideShimmerEffect()
-        view.showCategories(categories)
-        view.showProductsLatestDishes(products)
-        view.showProductsBestSeller(products)
-        view.showOffers(offers)
+        coroutineScope {
+            view.showShimmerEffect()
+            val categoriesDeferred = async { getListCategories() }
+            val productsDeferred = async { getListProducts() }
+            val offersDeferred = async { getListOffers() }
+
+            val categories = categoriesDeferred.await()
+            val products = productsDeferred.await()
+            val offers = offersDeferred.await()
+
+            view.hideShimmerEffect()
+            view.showCategories(categories)
+            view.showProductsLatestDishes(products, offers)
+            view.showProductsBestSeller(products, offers)
+            view.showOffers(offers)
+        }
     }
 
     suspend fun getListCategories(): List<Category> {
@@ -36,7 +43,7 @@ class HomePresenter(
                 val querySnapshot = fireStore.collection("categories").get().await()
                 Log.i("TAG", "getListCategories: T đã gọi xong categories")
                 querySnapshot.documents.map { document ->
-                    val id = document.id
+                    val id = document.getString("id") ?: ""
                     val name = document.getString("name") ?: ""
                     val date = document.getDate("date")
                     val image = document.getString("image") ?: ""
@@ -63,7 +70,7 @@ class HomePresenter(
                 val querySnapshot = fireStore.collection("products").get().await()
                 Log.i("TAG", "getListProducts: T đã gọi xong products")
                 querySnapshot.documents.map { document ->
-                    val id = document.id
+                    val id = document.getString("id") ?: ""
                     val idCategory = document.getDocumentReference("idCategory")
                     val idOffer = document.getDocumentReference("idOffer")
                     val name = document.getString("name") ?: ""
@@ -95,17 +102,18 @@ class HomePresenter(
             }
         }
     }
+
     suspend fun getListOffers(): List<Offer> {
         return withContext(Dispatchers.IO) {
             try {
                 val querySnapshot = fireStore.collection("offers").get().await()
                 Log.i("TAG", "getListOffers: T đã gọi xong offers")
                 querySnapshot.documents.map { document ->
-                    val id = document.id
+                    val id = document.getString("id") ?: ""
                     val name = document.getString("name") ?: ""
                     val image = document.getString("image") ?: ""
                     val imageUrl = fireStorage.reference.child(image).downloadUrl.await().toString()
-                    val price = document.getDouble("price") ?: 0.0
+                    val discountRate = document.getDouble("discountRate") ?: 0.0
                     val numProduct = document.getDouble("numProduct") ?: 0
                     val date = document.getDate("date")
 
@@ -113,7 +121,7 @@ class HomePresenter(
                         id,
                         name,
                         imageUrl,
-                        price,
+                        discountRate.toInt(),
                         numProduct.toInt(),
                         date
                     )

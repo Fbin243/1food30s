@@ -57,7 +57,7 @@ class ManageOffer : AppCompatActivity() {
                         id,
                         name,
                         imageUrl,
-                        price,
+                        price.toInt(),
                         numProduct.toInt(),
                         date
                     )

@@ -10,6 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/constraintLayout"
         android:paddingBottom="@dimen/spacing50">
 
         <include
@@ -34,33 +35,32 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="2dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="2dp"
-            android:layout_marginBottom="20dp"
             app:cardCornerRadius="@dimen/spacing24"
             app:cardElevation="2dp"
-            app:layout_constraintBottom_toTopOf="@+id/textView3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/backFromDetail">
+            app:layout_constraintTop_toBottomOf="@+id/backFromDetail"
+            android:visibility="gone">
 
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/imgView"
+                    android:id="@+id/productImage"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/product1" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="@dimen/spacing10">
@@ -74,6 +74,7 @@
                         android:maxLines="2"
                         android:text="Sweet &amp; Sour Chicken"
                         android:textSize="@dimen/font_header" />
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -98,32 +99,104 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/productCategory"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:text="| Sold: 113"
+                            android:text="| Food | "
+                            android:textColor="@color/grey_60" />
+
+                        <TextView
+                            android:id="@+id/productSold"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:text="Sold: 113"
                             android:textColor="@color/grey_60" />
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
 
-                    <TextView
+                        <TextView
+                            android:id="@+id/productOldPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:layout_marginEnd="@dimen/spacing4"
+                            android:background="@drawable/strikethrough"
+                            android:text="$5.20"
+                            android:textColor="@color/grey_60"
+                            android:textSize="@dimen/font_default"
+                            android:textStyle="bold"
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:id="@+id/productPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/rubik_bold"
+                            android:layout_gravity="bottom"
+                            android:text="$6.54"
+                            android:textColor="@color/accent"
+                            android:textSize="@dimen/font_header" />
+
+                    </LinearLayout>
+
+
+
+
+                    <com.borjabravo.readmoretextview.ReadMoreTextView
                         android:id="@+id/productDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing10"
-                        android:maxLines="2"
-                        android:text="Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce."
+                        android:ellipsize="end"
+                        android:text="Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce."
                         android:textColor="@color/grey_60"
-                        android:textSize="@dimen/font_default" />
+                        android:textSize="@dimen/font_default"
+                        app:colorClickableText="#039BE5"
+                        app:trimCollapsedText="@string/read_more"
+                        app:trimExpandedText="@string/read_less"
+                        app:trimLength="150"
+                        app:trimMode="trimModeLength" />
 
                     <LinearLayout
+                        android:id="@+id/categoryContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginTop="@dimen/spacing10"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/rubik_medium"
+                            android:text="@string/txt_stock"
+                            android:textSize="@dimen/font_size16" />
+
+                        <TextView
+                            android:id="@+id/productStock"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="100"
+                            android:textColor="@color/grey_60"
+                            android:textSize="@dimen/font_default" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/quantityContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing10"
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/productQuantity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
@@ -150,6 +223,7 @@
                                 app:tint="@color/primary" />
 
                             <TextView
+                                android:id="@+id/productQuantity"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="@dimen/spacing2"
@@ -163,20 +237,22 @@
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:layout_gravity="center_vertical"
+                                android:padding="1dp"
                                 android:src="@drawable/ic_plus"
-                                app:tint="@color/primary"
-                                android:padding="1dp"/>
+                                app:tint="@color/primary" />
 
                         </LinearLayout>
 
                     </LinearLayout>
 
                     <Button
+                        android:id="@+id/addToCartBtn"
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_marginTop="20dp"
                         android:paddingStart="70dp"
-                        android:text="Add to cart      $14.00"
+                        android:paddingEnd="70dp"
+                        android:text="Add to cart"
                         android:textAlignment="center"
                         android:textAllCaps="true"
                         android:textStyle="bold"
@@ -190,6 +266,19 @@
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/productShimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/backFromDetail">
+
+            <include layout="@layout/activity_product_detail_shimmer" />
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
         <TextView
             android:id="@+id/textView3"
@@ -206,7 +295,7 @@
             android:id="@+id/viewAllBtn"
             android:layout_width="70dp"
             android:layout_height="30dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="460dp"
             android:backgroundTint="@color/secondary_20"
             android:fontFamily="@font/rubik_bold"
             android:lineHeight="@dimen/spacing1"
@@ -214,9 +303,8 @@
             android:text="@string/txt_view_all"
             android:textColor="@color/secondary"
             android:textSize="@dimen/font_size12"
-            app:layout_constraintBottom_toBottomOf="@+id/textView3"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardView"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
             app:strokeColor="@color/primary" />
 
         <androidx.recyclerview.widget.RecyclerView

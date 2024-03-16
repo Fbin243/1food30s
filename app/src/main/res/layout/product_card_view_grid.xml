@@ -61,7 +61,8 @@
                     android:text="$5.20"
                     android:textColor="@color/grey_60"
                     android:textSize="@dimen/font_size10"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/productPrice"

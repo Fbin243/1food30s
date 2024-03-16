@@ -138,5 +138,6 @@
     </string-array>
 
     <string name="product_price_number">$%.2f</string>
+    <string name="txt_stock">"Stock: "</string>
 
 </resources>

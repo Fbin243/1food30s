@@ -30,8 +30,8 @@ class SearchActivity : AppCompatActivity() {
     private fun handleDisplayProductList() {
         rcv = binding.productRcv
         rcv.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        val adapter = ProductAdapter(getListProducts(), false)
-        rcv.adapter = adapter
+//        val adapter = ProductAdapter(getListProducts(), false)
+//        rcv.adapter = adapter
     }
 
     private fun handleChangeLayout() {
@@ -39,14 +39,14 @@ class SearchActivity : AppCompatActivity() {
             binding.gridBtn.setImageResource(R.drawable.ic_active_grid)
             binding.linearBtn.setImageResource(R.drawable.ic_linear)
             rcv.layoutManager = GridLayoutManager(this, 2)
-            rcv.adapter = ProductAdapter(getListProducts())
+//            rcv.adapter = ProductAdapter(getListProducts())
         }
 
         binding.linearBtn.setOnClickListener {
             binding.linearBtn.setImageResource(R.drawable.ic_active_linear)
             binding.gridBtn.setImageResource(R.drawable.ic_grid)
             rcv.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-            rcv.adapter = ProductAdapter(getListProducts(), false)
+//            rcv.adapter = ProductAdapter(getListProducts(), false)
         }
 
     }

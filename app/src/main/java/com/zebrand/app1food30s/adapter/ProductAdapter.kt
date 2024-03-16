@@ -1,6 +1,7 @@
 package com.zebrand.app1food30s.adapter
 
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +13,17 @@ import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerDrawable
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.data.Offer
 import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.utils.Utils.formatPrice
 
-class ProductAdapter(private val products: List<Product>, private val isGrid: Boolean = true) :
+class ProductAdapter(
+    private val products: List<Product>,
+    private val offers: List<Offer>,
+    private val isGrid: Boolean = true
+) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
-    var onItemClick: ((ProductAdapter.ProductViewHolder) -> Unit)? = null
+    var onItemClick: ((Product) -> Unit)? = null
     var onAddButtonClick: ((Product) -> Unit)? = null
 
     inner class ProductViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
@@ -24,6 +31,7 @@ class ProductAdapter(private val products: List<Product>, private val isGrid: Bo
         val productTitle: TextView = listItemView.findViewById(R.id.productTitle)
         val productDescription: TextView = listItemView.findViewById(R.id.productDescription)
         val productPrice: TextView = listItemView.findViewById(R.id.productPrice)
+        val productOldPrice: TextView = listItemView.findViewById(R.id.productOldPrice)
         private val addButton: Button = listItemView.findViewById(R.id.addBtn)
 
         init {
@@ -62,9 +70,21 @@ class ProductAdapter(private val products: List<Product>, private val isGrid: Bo
         Picasso.get().load(product.image).placeholder(shimmerDrawable).into(holder.productImg)
         holder.productTitle.text = product.name
         holder.productDescription.text = product.description
-        holder.productPrice.text = "$${String.format("%.2f", product.price).replace(",", ".")}"
+
+        // Find offer of product
+        val oldPrice = product.price
+        "$${formatPrice(oldPrice)}".also { holder.productPrice.text = it }
+        if (product.idOffer != null) {
+            val offer = offers.find { it.id == product.idOffer.id }
+            Log.i("Fix", "onBindViewHolder: $offer")
+            val newPrice = oldPrice - offer!!.discountRate * oldPrice / 100
+            "$${formatPrice(oldPrice)}".also { holder.productOldPrice.text = it }
+            "$${formatPrice(newPrice)}".also { holder.productPrice.text = it }
+            holder.productOldPrice.visibility = View.VISIBLE
+        }
+
         holder.itemView.setOnClickListener {
-            onItemClick?.invoke(holder)
+            onItemClick?.invoke(product)
         }
     }
 }

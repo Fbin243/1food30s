@@ -35,8 +35,8 @@ class MenuFragment : Fragment() {
     private fun handleDisplayProductList() {
         rcv = binding.productRcv
         rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val adapter = ProductAdapter(getListProducts(), false)
-        rcv.adapter = adapter
+//        val adapter = ProductAdapter(getListProducts(), false)
+//        rcv.adapter = adapter
     }
 
     private fun handleChangeLayout() {
@@ -44,14 +44,14 @@ class MenuFragment : Fragment() {
             binding.gridBtn.setImageResource(R.drawable.ic_active_grid)
             binding.linearBtn.setImageResource(R.drawable.ic_linear)
             rcv.layoutManager = GridLayoutManager(requireContext(), 2)
-            rcv.adapter = ProductAdapter(getListProducts())
+//            rcv.adapter = ProductAdapter(getListProducts())
         }
 
         binding.linearBtn.setOnClickListener {
             binding.linearBtn.setImageResource(R.drawable.ic_active_linear)
             binding.gridBtn.setImageResource(R.drawable.ic_grid)
             rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            rcv.adapter = ProductAdapter(getListProducts(), false)
+//            rcv.adapter = ProductAdapter(getListProducts(), false)
         }
 
     }
