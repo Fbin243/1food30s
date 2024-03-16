@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.Product
 
@@ -31,8 +32,9 @@ class ManageProductAdapter(private val products: List<Product>, private val isGr
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product: Product = products[position]
+        Picasso.get().load(product.image).into(holder.productImg)
 //        holder.productImg.setImageResource(product.image)
-        holder.productTitle.text = product.name
+        holder.productTitle.text = product.idCategory.ge
         holder.productDescription.text = product.description
         holder.productPrice.text = "$${String.format("%.2f", product.price).replace(",", ".")}"
         holder.itemView.setOnClickListener {
