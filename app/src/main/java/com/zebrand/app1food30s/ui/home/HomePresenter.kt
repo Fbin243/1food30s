@@ -127,7 +127,7 @@ class HomePresenter(
                     )
                 }.take(2)
             } catch (e: Exception) {
-                Log.e("getListProducts", "Error getting products", e)
+                Log.e("getListOffers", "Error getting products", e)
                 emptyList()
             }
         }

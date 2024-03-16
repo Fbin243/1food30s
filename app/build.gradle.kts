@@ -73,6 +73,9 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.8")
     // Shimmer effect
     implementation("com.facebook.shimmer:shimmer:0.5.0")
+    implementation("com.github.sharish:ShimmerRecyclerView:v1.3")
+    implementation("com.todkars:shimmer-recyclerview:0.4.1")
+
     // ================ Firebase services =======================
     implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
     implementation("com.google.firebase:firebase-firestore-ktx")

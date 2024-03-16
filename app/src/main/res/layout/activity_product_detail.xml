@@ -342,6 +342,7 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/relatedProductRcv"
             android:layout_width="match_parent"
@@ -351,7 +352,62 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/relatedProductTitleContainer" />
+            app:layout_constraintTop_toBottomOf="@+id/relatedProductTitleContainer"
+            android:visibility="gone"/>
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/relatedProductShimmer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relatedProductTitleContainer">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <include layout="@layout/product_card_view_grid_shimmer" />
+
+                    <include layout="@layout/product_card_view_grid_shimmer" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="-10dp"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/guideline3"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <include layout="@layout/product_card_view_grid_shimmer" />
+
+                    <include layout="@layout/product_card_view_grid_shimmer" />
+                </LinearLayout>
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

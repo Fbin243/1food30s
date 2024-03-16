@@ -11,11 +11,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Offer
 import com.zebrand.app1food30s.data.Product
@@ -27,7 +29,7 @@ import kotlinx.coroutines.launch
 
 class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
     private lateinit var binding: ActivityProductDetailBinding
-    private lateinit var rcv: RecyclerView
+    private lateinit var rcv: ShimmerRecyclerView
     private val fireStore = FirebaseFirestore.getInstance()
     private val fireStorage = FirebaseStorage.getInstance()
     private lateinit var productDetailPresenter: ProductDetailPresenter
@@ -38,10 +40,11 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
 
         productDetailPresenter = ProductDetailPresenter(this, fireStore, fireStorage)
         val idProduct = intent.getStringExtra("idProduct")
-        lifecycleScope.launch { productDetailPresenter.getProductDetail(idProduct!!) }
+        lifecycleScope.launch {
+            productDetailPresenter.getProductDetail(idProduct!!)
+        }
 
         handleDisplayReview()
-        handleDisplayRelatedProducts()
         handleOpenReviewScreen()
         handleCloseDetailScreen()
     }
@@ -52,8 +55,7 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
         "Sold: ${product.sold}".also { binding.productSold.text = it }
         product.description.also { binding.productDescription.text = it }
         "${product.stock}".also { binding.productStock.text = it }
-
-
+//        Hanlde price with offer
         val oldPrice = product.price
         "$${formatPrice(oldPrice)}".also { binding.productPrice.text = it }
         if (offer != null) {
@@ -62,12 +64,27 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
             "$${formatPrice(newPrice)}".also { binding.productPrice.text = it }
             binding.productOldPrice.visibility = View.VISIBLE
         }
-
         Picasso.get().load(product.image).into(binding.productImage)
+    }
+
+    override fun showRelatedProducts(relatedProducts: List<Product>, offers: List<Offer>) {
+        binding.relatedProductRcv.layoutManager = GridLayoutManager(this, 2)
+        val adapter = ProductAdapter(relatedProducts, offers)
+        adapter.onItemClick = { product ->
+            openDetailProduct(product)
+        }
+        binding.relatedProductRcv.adapter = adapter
+    }
+
+    private fun openDetailProduct(product: Product) {
+        val intent = Intent(this, ProductDetailActivity::class.java)
+        intent.putExtra("idProduct", product.id)
+        startActivity(intent)
     }
 
     override fun showShimmerEffect() {
         binding.productShimmer.startShimmer()
+        binding.relatedProductShimmer.startShimmer()
     }
 
     override fun hideShimmerEffect() {
@@ -83,12 +100,19 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
             20
         )
         constraintSet.applyTo(constraintLayout)
+        hideShimmerEffectForRcv(binding.relatedProductShimmer, binding.relatedProductRcv)
     }
 
     private fun hideShimmerEffectForCardView(shimmer: ShimmerFrameLayout, cardView: CardView) {
         shimmer.stopShimmer()
         shimmer.visibility = View.GONE
         cardView.visibility = View.VISIBLE
+    }
+
+    private fun hideShimmerEffectForRcv(shimmer: ShimmerFrameLayout, recyclerView: RecyclerView) {
+        shimmer.stopShimmer()
+        shimmer.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
     }
 
     private fun handleCloseDetailScreen() {
@@ -104,15 +128,9 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
         }
     }
 
-    private fun handleDisplayRelatedProducts() {
-        rcv = binding.relatedProductRcv
-        rcv.layoutManager = GridLayoutManager(this, 2)
-//        rcv.adapter = ProductAdapter(getListProducts())
-    }
-
     private fun handleDisplayReview() {
-        rcv = binding.reviewRcv
-        rcv.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+//        rcv = binding.reviewRcv
+//        rcv.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         // TODO
 //        rcv.adapter = ReviewAdapter(getListReviews())
     }
