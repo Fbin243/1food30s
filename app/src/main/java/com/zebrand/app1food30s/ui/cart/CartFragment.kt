@@ -21,7 +21,7 @@ class CartFragment : Fragment(), CartView {
     private val binding get() = _binding!!
     private lateinit var adapter: CartItemAdapter
     private lateinit var presenter: CartPresenter
-
+    private val cartId = "mdXn8lvirHaAogStOY1K"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCartBinding.inflate(inflater, container, false)
@@ -78,10 +78,13 @@ class CartFragment : Fragment(), CartView {
     private fun handleCheckoutNavigation() {
         binding.btnCheckout.setOnClickListener {
             val cartSummary = presenter.getCartSummary() // Pair<List<String>, Double>
+//            val intent = Intent(context, CheckoutActivity::class.java).apply {
+//                val itemDescriptionsJson = Gson().toJson(cartSummary.first) // Convert list to JSON string
+//                putExtra("item_descriptions", itemDescriptionsJson)
+//                putExtra("total_price", cartSummary.second)
+//            }
             val intent = Intent(context, CheckoutActivity::class.java).apply {
-                val itemDescriptionsJson = Gson().toJson(cartSummary.first) // Convert list to JSON string
-                putExtra("item_descriptions", itemDescriptionsJson)
-                putExtra("total_price", cartSummary.second)
+                putExtra("cart_id", cartId) // Assume cartId is a String representing the cart's ID
             }
             startActivity(intent)
         }
