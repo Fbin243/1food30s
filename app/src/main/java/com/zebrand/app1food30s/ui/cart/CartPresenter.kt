@@ -16,12 +16,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-interface CartView {
-    fun displayCartItems(detailedCartItems: List<DetailedCartItem>)
-    fun displayError(error: String)
-    fun refreshCart(productRef: DocumentReference)
-}
-
 class CartPresenter(private val view: CartView) : CoroutineScope by CoroutineScope(Dispatchers.IO) {
     private val db = FirebaseFirestore.getInstance()
     private val cartId = "mdXn8lvirHaAogStOY1K"

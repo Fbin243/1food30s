@@ -1,29 +1,21 @@
 package com.zebrand.app1food30s.ui.checkout
 
-interface CheckoutView {
-//    fun displayProducts(checkoutItemsList: List<CheckoutItem>)
-//    fun displayTotalPrice(totalPrice: Double)
-//    fun showError(error: String)
-}
+import com.google.firebase.firestore.FirebaseFirestore
+import com.zebrand.app1food30s.ui.cart.CartRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class CheckoutPresenter(private val view: CheckoutView) {
+class CheckoutPresenter(private val view: CheckoutInterface) : CoroutineScope by CoroutineScope(Dispatchers.IO) {
+    private val cartRepository = CartRepository(FirebaseFirestore.getInstance())
 
-//    fun prepareCheckoutItems(cartItems: List<CartItem>) {
-//        // Simulate asynchronous fetching and calculating
-//        val checkoutItemsList = mutableListOf<CheckoutItem>()
-//        var total = 0.0
-//
-//        cartItems.forEach { cartItem ->
-//            productService.getProductById(cartItem.productId) { product ->
-//                if (product != null) {
-//                    total += product.price * cartItem.quantity
-//                    checkoutItemsList.add(CheckoutItem(product.name, product.price, cartItem.quantity))
-//                }
-//            }
-//        }
-//
-//        // This is a simplified synchronous approach; you might need to handle async operations differently
-//        view.displayProducts(checkoutItemsList)
-//        view.displayTotalPrice(total)
-//    }
+    fun loadCartData(cartId: String) {
+        cartRepository.fetchProductDetailsForCartItems(cartId) { detailedCartItems, totalPrice ->
+            if (detailedCartItems != null) {
+                view.displayCartItems(detailedCartItems, totalPrice)
+            } else {
+                view.displayError("Failed to fetch cart details")
+            }
+        }
+    }
 }

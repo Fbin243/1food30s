@@ -77,7 +77,7 @@ class CartFragment : Fragment(), CartView {
 
     private fun handleCheckoutNavigation() {
         binding.btnCheckout.setOnClickListener {
-            val cartSummary = presenter.getCartSummary() // Pair<List<String>, Double>
+//            val cartSummary = presenter.getCartSummary() // Pair<List<String>, Double>
 //            val intent = Intent(context, CheckoutActivity::class.java).apply {
 //                val itemDescriptionsJson = Gson().toJson(cartSummary.first) // Convert list to JSON string
 //                putExtra("item_descriptions", itemDescriptionsJson)

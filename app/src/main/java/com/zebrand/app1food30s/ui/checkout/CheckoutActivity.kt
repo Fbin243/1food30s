@@ -7,14 +7,16 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CheckoutItemsAdapter
+import com.zebrand.app1food30s.data.DetailedCartItem
 import com.zebrand.app1food30s.databinding.ActivityCheckoutBinding
 import com.zebrand.app1food30s.ui.cart.CartRepository
 
-class CheckoutActivity : AppCompatActivity() {
+class CheckoutActivity : AppCompatActivity(), CheckoutInterface {
 
     private lateinit var binding: ActivityCheckoutBinding
     private val checkoutItemsAdapter = CheckoutItemsAdapter()
     private lateinit var cartRepository: CartRepository
+    private lateinit var presenter: CheckoutPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,8 +26,11 @@ class CheckoutActivity : AppCompatActivity() {
         cartRepository = CartRepository(FirebaseFirestore.getInstance())
 
         setupRecyclerView()
-        loadCartData()
         handleCloseCheckoutScreen()
+
+        presenter = CheckoutPresenter(this)
+        val cartId = intent.getStringExtra("cart_id") ?: return
+        presenter.loadCartData(cartId)
     }
 
     private fun setupRecyclerView() {
@@ -55,24 +60,40 @@ class CheckoutActivity : AppCompatActivity() {
 //        binding.textViewAmount.text = getString(R.string.product_price_number, totalPrice)
 //    }
 
-    private fun loadCartData() {
-        val cartId = intent.getStringExtra("cart_id") ?: return
-
-        cartRepository.fetchProductDetailsForCartItems(cartId) { detailedCartItems, totalPrice ->
-            detailedCartItems?.let {
-                // Update UI on the main thread
-                runOnUiThread {
-                    checkoutItemsAdapter.setItems(it)
-                    binding.tvCartTotalAmount.text = getString(R.string.product_price_number, totalPrice)
-                    binding.textViewAmount.text = getString(R.string.product_price_number, totalPrice)
-                }
-            } ?: runOnUiThread {
-                // Handle error or empty state
-                binding.tvCartTotalAmount.text = getString(R.string.product_price_number, 0.0)
-                binding.textViewAmount.text = getString(R.string.product_price_number, 0.0)
-            }
+    override fun displayCartItems(detailedCartItems: List<DetailedCartItem>, totalPrice: Double) {
+        runOnUiThread {
+            checkoutItemsAdapter.setItems(detailedCartItems)
+            binding.tvCartTotalAmount.text = getString(R.string.product_price_number, totalPrice)
+            binding.textViewAmount.text = getString(R.string.product_price_number, totalPrice)
         }
     }
+
+    override fun displayError(error: String) {
+        runOnUiThread {
+            // Handle error or empty state
+            binding.tvCartTotalAmount.text = getString(R.string.product_price_number, 0.0)
+            binding.textViewAmount.text = getString(R.string.product_price_number, 0.0)
+        }
+    }
+
+//    private fun loadCartData() {
+//        val cartId = intent.getStringExtra("cart_id") ?: return
+//
+//        cartRepository.fetchProductDetailsForCartItems(cartId) { detailedCartItems, totalPrice ->
+//            detailedCartItems?.let {
+//                // Update UI on the main thread
+//                runOnUiThread {
+//                    checkoutItemsAdapter.setItems(it)
+//                    binding.tvCartTotalAmount.text = getString(R.string.product_price_number, totalPrice)
+//                    binding.textViewAmount.text = getString(R.string.product_price_number, totalPrice)
+//                }
+//            } ?: runOnUiThread {
+//                // Handle error or empty state
+//                binding.tvCartTotalAmount.text = getString(R.string.product_price_number, 0.0)
+//                binding.textViewAmount.text = getString(R.string.product_price_number, 0.0)
+//            }
+//        }
+//    }
 
     private fun handleCloseCheckoutScreen() {
         binding.ivBack.root.setOnClickListener {
