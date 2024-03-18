@@ -1,7 +1,9 @@
 package com.zebrand.app1food30s.ui.cart
 
+import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.data.Cart
@@ -69,6 +71,72 @@ class CartRepository(private val db: FirebaseFirestore) {
         }
     }
 
+    // Function to place an order, clear the cart, and update product stock and sold count
+//    fun placeOrderAndClearCart(cartId: String, detailedCartItems: List<DetailedCartItem>, completion: (Boolean) -> Unit) {
+//        val batch = db.batch()
+//
+//        // Reference to the cart document
+//        val cartRef = db.collection("carts").document(cartId)
+//        batch.delete(cartRef) // Clear the cart
+//
+//        // Update each product based on the cart item details
+//        detailedCartItems.forEach { cartItem ->
+//            val productRef = cartItem.productId
+//            productRef?.get()?.addOnSuccessListener { documentSnapshot ->
+//                val product = documentSnapshot.toObject(Product::class.java)
+//                product?.let {
+//                    val newStock = it.stock - cartItem.quantity
+//                    val newSold = it.sold + cartItem.quantity
+//                    batch.update(productRef, "stock", newStock, "sold", newSold)
+//                }
+//            }?.addOnFailureListener {
+//                completion(false)
+//            }
+//        }
+//
+//        // Commit the batch operation
+//        batch.commit().addOnSuccessListener {
+//            completion(true)
+//        }.addOnFailureListener {
+//            completion(false)
+//        }
+//    }
+
+    fun placeOrderAndClearCart(cartId: String, detailedCartItems: List<DetailedCartItem>, completion: (Boolean) -> Unit) {
+        // Fetch each product document to prepare updates
+        val productFetchTasks = detailedCartItems.mapNotNull { cartItem ->
+            cartItem.productId?.get()
+        }
+
+        Tasks.whenAllSuccess<DocumentSnapshot>(productFetchTasks).addOnSuccessListener { documentSnapshots ->
+            val batch = db.batch()
+            val cartRef = db.collection("carts").document(cartId)
+            batch.delete(cartRef) // Prepare to clear the cart
+
+            // Prepare to update each product based on the cart item details
+            documentSnapshots.forEach { documentSnapshot ->
+                val product = documentSnapshot.toObject(Product::class.java)
+                val cartItem = detailedCartItems.firstOrNull { it.productId?.id == documentSnapshot.id } // Match cart item to product
+                if (product != null && cartItem != null) {
+                    val newStock = product.stock - cartItem.quantity
+                    val newSold = product.sold + cartItem.quantity
+                    batch.update(documentSnapshot.reference, "stock", newStock, "sold", newSold) // Prepare product update
+                }
+            }
+
+            // Commit all prepared operations in the batch
+            batch.commit().addOnSuccessListener {
+//                Log.d("Checkout", "Order placed and cart cleared successfully.")
+                completion(true)
+            }.addOnFailureListener { e ->
+//                Log.e("Checkout", "Failed to place order and clear cart.", e)
+                completion(false)
+            }
+        }.addOnFailureListener { e ->
+//            Log.e("Checkout", "Failed to fetch products for order.", e)
+            completion(false)
+        }
+    }
 
 }
 

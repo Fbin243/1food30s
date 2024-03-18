@@ -17,6 +17,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutInterface {
     private val checkoutItemsAdapter = CheckoutItemsAdapter()
     private lateinit var cartRepository: CartRepository
     private lateinit var presenter: CheckoutPresenter
+    private lateinit var cartId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,13 +25,21 @@ class CheckoutActivity : AppCompatActivity(), CheckoutInterface {
         setContentView(binding.root)
 
         cartRepository = CartRepository(FirebaseFirestore.getInstance())
+        presenter = CheckoutPresenter(this, cartRepository)
 
         setupRecyclerView()
         handleCloseCheckoutScreen()
 
-        presenter = CheckoutPresenter(this)
-        val cartId = intent.getStringExtra("cart_id") ?: return
+        cartId = intent.getStringExtra("cart_id") ?: return
         presenter.loadCartData(cartId)
+
+        handlePlaceOrderButton()
+    }
+
+    private fun handlePlaceOrderButton() {
+        binding.btnPlaceOrder.setOnClickListener {
+            presenter.placeOrder(cartId)
+        }
     }
 
     private fun setupRecyclerView() {
