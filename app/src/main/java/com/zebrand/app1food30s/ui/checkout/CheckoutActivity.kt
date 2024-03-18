@@ -1,4 +1,4 @@
-package com.zebrand.app1food30s.ui.cart_checkout
+package com.zebrand.app1food30s.ui.checkout
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

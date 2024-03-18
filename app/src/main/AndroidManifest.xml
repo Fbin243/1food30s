@@ -103,7 +103,7 @@
             android:exported="true" />
 
         <activity
-            android:name=".ui.cart_checkout.CheckoutActivity"
+            android:name=".ui.checkout.CheckoutActivity"
             android:exported="true" />
     </application>
 

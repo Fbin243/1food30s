@@ -1,4 +1,4 @@
-package com.zebrand.app1food30s.ui.cart_checkout
+package com.zebrand.app1food30s.ui.checkout
 
 interface CheckoutView {
 //    fun displayProducts(checkoutItemsList: List<CheckoutItem>)

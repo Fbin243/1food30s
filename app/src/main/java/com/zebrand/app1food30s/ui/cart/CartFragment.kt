@@ -1,4 +1,4 @@
-package com.zebrand.app1food30s.ui.cart_checkout
+package com.zebrand.app1food30s.ui.cart
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,6 +13,7 @@ import com.zebrand.app1food30s.adapter.CartItemAdapter
 import com.zebrand.app1food30s.data.DetailedCartItem
 import com.zebrand.app1food30s.databinding.FragmentCartBinding
 import com.google.gson.Gson
+import com.zebrand.app1food30s.ui.checkout.CheckoutActivity
 
 class CartFragment : Fragment(), CartView {
 
