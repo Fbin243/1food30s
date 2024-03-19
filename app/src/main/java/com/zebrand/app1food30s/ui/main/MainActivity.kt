@@ -17,7 +17,7 @@ import com.zebrand.app1food30s.ui.profile.ProfileFragment
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private var adminLogin: Boolean = true
+    private var adminLogin: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)

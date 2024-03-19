@@ -26,8 +26,6 @@ import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(), HomeMVPView {
     private lateinit var binding: FragmentHomeBinding
-    private val fireStore = FirebaseFirestore.getInstance()
-    private val fireStorage = FirebaseStorage.getInstance()
     private lateinit var homePresenter: HomePresenter
 
     override fun onCreateView(
@@ -36,7 +34,7 @@ class HomeFragment : Fragment(), HomeMVPView {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater)
 
-        homePresenter = HomePresenter(this, fireStore, fireStorage)
+        homePresenter = HomePresenter(this)
         lifecycleScope.launch { homePresenter.getDataAndDisplay() }
 
         handleOpenSearchScreen()

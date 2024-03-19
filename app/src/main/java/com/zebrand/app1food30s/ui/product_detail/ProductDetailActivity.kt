@@ -29,16 +29,13 @@ import kotlinx.coroutines.launch
 
 class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
     private lateinit var binding: ActivityProductDetailBinding
-    private lateinit var rcv: ShimmerRecyclerView
-    private val fireStore = FirebaseFirestore.getInstance()
-    private val fireStorage = FirebaseStorage.getInstance()
     private lateinit var productDetailPresenter: ProductDetailPresenter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProductDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        productDetailPresenter = ProductDetailPresenter(this, fireStore, fireStorage)
+        productDetailPresenter = ProductDetailPresenter(this)
         val idProduct = intent.getStringExtra("idProduct")
         lifecycleScope.launch {
             productDetailPresenter.getProductDetail(idProduct!!)
