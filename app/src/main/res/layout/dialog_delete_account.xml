@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="content"
+            type="String" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/spacing8"
+        app:cardElevation="@dimen/spacing4">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minWidth="320dp"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/spacing24">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing24"
+                android:fontFamily="@font/rubik_bold"
+                android:text="Delete"
+                android:textAllCaps="true"
+                android:textSize="@dimen/font_size16"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing12"
+                android:text="@{content}"
+                android:textSize="@dimen/font_size16" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing8"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/spacing8"
+                android:paddingBottom="@dimen/spacing20"
+                android:weightSum="2">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cancelBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/spacing56"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/deep_orange"
+                    android:text="@string/txt_cancel"
+                    android:textSize="@dimen/font_size16"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/saveBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/spacing56"
+                    android:layout_marginStart="@dimen/spacing24"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/primary"
+                    android:text="@string/txt_save"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/font_size16"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</layout>
