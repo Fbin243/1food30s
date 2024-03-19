@@ -31,7 +31,7 @@
             app:itemIconSize="@dimen/spacing24"
             app:itemTextColor="@color/black"
             app:labelVisibilityMode="labeled"
-            app:menu="@menu/bottom_nav_menu_admin" />
+            app:menu="@menu/bottom_nav_menu"/>
     </com.google.android.material.bottomappbar.BottomAppBar>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -45,7 +45,6 @@
         android:tint="@color/white"
         app:layout_anchor="@id/bottom_app_bar"
         app:maxImageSize="@dimen/spacing32"
-        android:visibility="gone"
         app:tint="@color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
