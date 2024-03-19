@@ -6,19 +6,16 @@ import com.google.firebase.firestore.toObject
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Offer
 import com.zebrand.app1food30s.data.Product
-import com.zebrand.app1food30s.ui.base.DataPresenter
-import com.zebrand.app1food30s.utils.FirebaseUtil
+import com.zebrand.app1food30s.utils.FirebaseUtils
 import kotlinx.coroutines.tasks.await
 
 class ProductDetailPresenter(
     private val view: ProductDetailMVPView
-) : DataPresenter() {
-    private val fireStore = FirebaseUtil.fireStore
-    private val fireStorage = FirebaseUtil.fireStorage
+) {
     suspend fun getProductDetail(idProduct: String) {
         try {
             view.showShimmerEffect()
-            val product = getOneProductByID(idProduct)!!
+            val product = FirebaseUtils.getOneProductByID(idProduct)!!
             // Get category
             val category = product.idCategory!!.get().await().toObject<Category>()
             val offer = product.idOffer?.get()?.await()?.toObject<Offer>()
@@ -38,16 +35,18 @@ class ProductDetailPresenter(
     ) {
         try {
             val querySnapshot =
-                fireStore.collection("products").whereEqualTo("idCategory", idCategory)
+                FirebaseUtils.fireStore.collection("products")
+                    .whereEqualTo("idCategory", idCategory)
                     .whereNotEqualTo("id", idProduct).get()
                     .await()
             val relatedProducts = querySnapshot.toObjects(Product::class.java).map { product ->
                 product.image =
-                    fireStorage.reference.child(product.image).downloadUrl.await().toString()
+                    FirebaseUtils.fireStorage.reference.child(product.image).downloadUrl.await()
+                        .toString()
                 product
             }
 
-            val offers = getListOffers()
+            val offers = FirebaseUtils.getListOffers()
             view.showRelatedProducts(relatedProducts, offers)
         } catch (e: Exception) {
             Log.i("Error", "getRelatedProductsByCategory: ${e}")

@@ -1,18 +1,18 @@
 package com.zebrand.app1food30s.ui.home
 
-import com.zebrand.app1food30s.ui.base.DataPresenter
+import com.zebrand.app1food30s.utils.FirebaseUtils
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
 class HomePresenter(
     private val view: HomeMVPView
-) : DataPresenter() {
+) {
     suspend fun getDataAndDisplay() {
         coroutineScope {
             view.showShimmerEffect()
-            val productsDeferred = async { getListProducts() }
-            val categoriesDeferred = async { getListCategories() }
-            val offersDeferred = async { getListOffers() }
+            val productsDeferred = async { FirebaseUtils.getListProducts() }
+            val categoriesDeferred = async { FirebaseUtils.getListCategories() }
+            val offersDeferred = async { FirebaseUtils.getListOffers() }
 
             val categories = categoriesDeferred.await()
             val products = productsDeferred.await()

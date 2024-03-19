@@ -1,17 +1,18 @@
-package com.zebrand.app1food30s.ui.base
+package com.zebrand.app1food30s.utils
 
 import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Offer
 import com.zebrand.app1food30s.data.Product
-import com.zebrand.app1food30s.utils.FirebaseUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-open class DataPresenter {
-    private val fireStore = FirebaseUtil.fireStore
-    private val fireStorage = FirebaseUtil.fireStorage
+object FirebaseUtils {
+    val fireStore: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
+    val fireStorage: FirebaseStorage by lazy { FirebaseStorage.getInstance() }
     suspend fun getListCategories(): List<Category> {
         return withContext(Dispatchers.IO) {
             try {
