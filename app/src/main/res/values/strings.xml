@@ -139,5 +139,9 @@
 
     <string name="product_price_number">$%.2f</string>
     <string name="txt_stock">"Stock: "</string>
+    <string name="txt_dashboard">Dashboard\n</string>
+    <string name="txt_orders">Orders</string>
+    <string name="txt_products">Products</string>
+    <string name="txt_manage">Manage</string>
 
 </resources>

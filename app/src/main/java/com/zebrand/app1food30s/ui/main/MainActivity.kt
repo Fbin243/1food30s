@@ -1,7 +1,11 @@
 package com.zebrand.app1food30s.ui.main
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.zebrand.app1food30s.R
@@ -16,13 +20,15 @@ import com.zebrand.app1food30s.ui.profile.ProfileFragment
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private var adminLogin: Boolean = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        handleBottomNavigation()
-//        setupFloatingButton()
+        if(adminLogin) {
+            handleBottomNavigationForAdmin()
+        } else handleBottomNavigation()
 
         // Check if MainActivity should load ProfileAfterLoginFragment directly
         if (intent.getBooleanExtra("loadProfileFragment", false)) {
@@ -33,6 +39,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun handleBottomNavigationForAdmin() {
+        binding.bottomNavView.setOnItemSelectedListener { menuItem ->
+            when(menuItem.itemId) {
+//                R.id.ic_dashboard -> replaceFragment()
+//                R.id.ic_order -> replaceFragment()
+//                R.id.ic_manage -> replaceFragment()
+                R.id.ic_profile -> replaceFragment(ProfileFragment())
+            }
+            true
+        }
+//        replaceFragment()
+    }
+
     private fun handleBottomNavigation() {
         binding.bottomNavView.setOnItemSelectedListener { menuItem ->
             when(menuItem.itemId) {
@@ -40,7 +59,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.ic_menu -> replaceFragment(MenuFragment())
                 R.id.ic_offers -> replaceFragment(OffersFragment())
                 R.id.ic_profile -> replaceFragment(ProfileFragment())
-//                R.id.ic_cart -> replaceFragment(CartFragment())
             }
             true
         }
@@ -50,6 +68,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupFloatingButton() {
         binding.icCart.setOnClickListener {
             replaceFragment(CartFragment())
+            binding.bottomNavView.selectedItemId = R.id.placeholder
         }
     }
     private fun replaceFragment(fragment: Fragment) {
@@ -57,26 +76,3 @@ class MainActivity : AppCompatActivity() {
         ft.replace(R.id.fragment_container, fragment).commit()
     }
 }
-
-// TODO: Code này thuộc branch của Hải 
-// import android.content.Intent
-// import androidx.appcompat.app.AppCompatActivity
-// import android.os.Bundle
-// import android.widget.Button
-// import com.zebrand.app1food30s.R
-// import com.zebrand.app1food30s.ui.admin_statistics.AdminStatisticsActivity
-
-// class MainActivity : AppCompatActivity() {
-//     override fun onCreate(savedInstanceState: Bundle?) {
-//         super.onCreate(savedInstanceState)
-//         setContentView(R.layout.activity_main)
-
-//         // Assuming you have a button in your activity_main.xml with the ID 'btn_view_statistics'
-//         val buttonViewStatistics: Button = findViewById(R.id.btn_view_statistics)
-//         buttonViewStatistics.setOnClickListener {
-//             // Intent to start AdminStatisticsActivity
-//             val intent = Intent(this, AdminStatisticsActivity::class.java)
-//             startActivity(intent)
-//         }
-//     }
-// }
