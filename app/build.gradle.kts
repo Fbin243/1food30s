@@ -79,4 +79,5 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore:24.10.3")
     // Cloud storage
     implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-auth")
 }

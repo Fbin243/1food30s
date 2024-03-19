@@ -13,7 +13,10 @@
         android:theme="@style/Base.Theme.App1food30s"
         tools:targetApi="31">
         <activity
-            android:name=".ui.authentication.DeleteAccountActivity"
+            android:name=".ui.main.AdminActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.authentication.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,6 +24,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.authentication.DeleteAccountActivity"
+            android:exported="true"></activity>
         <activity
             android:name=".ui.manage_category.ManageCategory"
             android:exported="false" />
@@ -41,9 +47,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.manage_order.ManageOrderActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".ui.review.ReviewActivity"
             android:exported="false" />
@@ -70,7 +74,7 @@
             android:exported="true" />
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="true"/><!-- ADMIN -->
+            android:exported="true" /> <!-- ADMIN -->
         <activity
             android:name=".ui.admin_statistics.AdminStatisticsActivity"
             android:exported="true" />
