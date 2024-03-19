@@ -17,7 +17,7 @@ class CartRepository(private val db: FirebaseFirestore) {
         db.collection("carts").document(cartId).get().addOnSuccessListener { documentSnapshot ->
             val cart = documentSnapshot.toObject(Cart::class.java)
             cart?.let { cart ->
-                val tasks = cart.items.mapNotNull { cartItem ->
+                val tasks = cart.items.map { cartItem ->
                     fetchProductDetailsForCartItem(cartItem)
                 }
                 Tasks.whenAllSuccess<DetailedCartItem>(tasks).addOnSuccessListener { detailedCartItems ->

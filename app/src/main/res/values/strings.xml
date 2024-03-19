@@ -135,5 +135,6 @@
     </string-array>
 
     <string name="product_price_number">$%.2f</string>
+    <string name="close_button_description">Close button</string>
 
 </resources>

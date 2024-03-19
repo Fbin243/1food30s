@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.ui.checkout
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,6 +11,7 @@ import com.zebrand.app1food30s.adapter.CheckoutItemsAdapter
 import com.zebrand.app1food30s.data.DetailedCartItem
 import com.zebrand.app1food30s.databinding.ActivityCheckoutBinding
 import com.zebrand.app1food30s.ui.cart.CartRepository
+import com.zebrand.app1food30s.ui.main.MainActivity
 
 class CheckoutActivity : AppCompatActivity(), CheckoutInterface {
 
@@ -38,7 +40,19 @@ class CheckoutActivity : AppCompatActivity(), CheckoutInterface {
 
     private fun handlePlaceOrderButton() {
         binding.btnPlaceOrder.setOnClickListener {
-            presenter.placeOrder(cartId)
+            presenter.placeOrder(cartId) {
+                // Assuming that the order placement was successful
+                // and the presenter has a callback to notify us.
+
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtra("showOrderConfirmation", true)
+                // Clear the task stack to prevent a back navigation to the checkout activity
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+
+                // Optionally, you can add a transition animation
+//                overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+            }
         }
     }
 
@@ -46,28 +60,6 @@ class CheckoutActivity : AppCompatActivity(), CheckoutInterface {
         binding.checkoutItemsRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.checkoutItemsRecyclerView.adapter = checkoutItemsAdapter
     }
-
-//    private fun updateUIWithCartSummary() {
-//        // Assume you've received the data as a JSON string and a total price
-//        // For demonstration, let's fetch them directly
-//        val itemDescriptionsJson = intent.getStringExtra("item_descriptions")
-//        val totalPrice = intent.getDoubleExtra("total_price", 0.0)
-//
-//        // Deserialize the JSON to List<String>
-//        val itemDescriptions = itemDescriptionsJson?.let { json ->
-//            // Use your preferred method to deserialize, e.g., Gson, Moshi, or Kotlinx.serialization
-//            // Example with Gson (make sure to add the dependency and initialize Gson)
-//            val gson = Gson()
-//            gson.fromJson(json, Array<String>::class.java).toList()
-//        } ?: emptyList()
-//
-//        // Update the RecyclerView
-//        checkoutItemsAdapter.setItems(itemDescriptions)
-//
-//        // Update the total price TextView
-//        binding.tvCartTotalAmount.text = getString(R.string.product_price_number, totalPrice)
-//        binding.textViewAmount.text = getString(R.string.product_price_number, totalPrice)
-//    }
 
     override fun displayCartItems(detailedCartItems: List<DetailedCartItem>, totalPrice: Double) {
         runOnUiThread {
@@ -84,25 +76,6 @@ class CheckoutActivity : AppCompatActivity(), CheckoutInterface {
             binding.textViewAmount.text = getString(R.string.product_price_number, 0.0)
         }
     }
-
-//    private fun loadCartData() {
-//        val cartId = intent.getStringExtra("cart_id") ?: return
-//
-//        cartRepository.fetchProductDetailsForCartItems(cartId) { detailedCartItems, totalPrice ->
-//            detailedCartItems?.let {
-//                // Update UI on the main thread
-//                runOnUiThread {
-//                    checkoutItemsAdapter.setItems(it)
-//                    binding.tvCartTotalAmount.text = getString(R.string.product_price_number, totalPrice)
-//                    binding.textViewAmount.text = getString(R.string.product_price_number, totalPrice)
-//                }
-//            } ?: runOnUiThread {
-//                // Handle error or empty state
-//                binding.tvCartTotalAmount.text = getString(R.string.product_price_number, 0.0)
-//                binding.textViewAmount.text = getString(R.string.product_price_number, 0.0)
-//            }
-//        }
-//    }
 
     private fun handleCloseCheckoutScreen() {
         binding.ivBack.root.setOnClickListener {

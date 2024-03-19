@@ -25,19 +25,16 @@ class CheckoutPresenter(private val view: CheckoutInterface, private val cartRep
         }
     }
 
-    fun placeOrder(cartId: String) {
+    fun placeOrder(cartId: String, completion: () -> Unit) {
         // Since this involves network/database operations, ensure this runs on an appropriate background thread if needed
         cartRepository.placeOrderAndClearCart(cartId, detailedCartItems) { success ->
             if (success) {
                 // Switch back to the Main thread for UI operations
                 launch(Dispatchers.Main) {
-                    // Assuming these methods are defined in your CheckoutInterface to handle UI updates
-//                    view.showOrderSuccessMessage()
-//                    view.navigateToOrderConfirmation()
+                    completion()
                 }
             } else {
                 launch(Dispatchers.Main) {
-//                    view.showOrderErrorMessage()
                 }
             }
         }

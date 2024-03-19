@@ -10,6 +10,7 @@ import com.zebrand.app1food30s.ui.cart.CartFragment
 import com.zebrand.app1food30s.ui.home.HomeFragment
 import com.zebrand.app1food30s.ui.menu.MenuFragment
 import com.zebrand.app1food30s.ui.offers.OffersFragment
+import com.zebrand.app1food30s.ui.order_confirm.OrderConfirmationDialogFragment
 import com.zebrand.app1food30s.ui.profile.ProfileAfterLoginFragment
 import com.zebrand.app1food30s.ui.profile.ProfileFragment
 
@@ -22,15 +23,22 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         handleBottomNavigation()
-//        setupFloatingButton()
 
-        // Check if MainActivity should load ProfileAfterLoginFragment directly
         if (intent.getBooleanExtra("loadProfileFragment", false)) {
             replaceFragment(ProfileAfterLoginFragment())
-        } else {
+        }
+        else if (intent.getBooleanExtra("showOrderConfirmation", false)) {
+            showOrderConfirmationDialog()
+        }
+        else {
             // Your default fragment to load
             replaceFragment(HomeFragment())
         }
+    }
+
+    private fun showOrderConfirmationDialog() {
+        val dialog = OrderConfirmationDialogFragment()
+        dialog.show(supportFragmentManager, "OrderConfirmationDialog")
     }
 
     private fun handleBottomNavigation() {
@@ -57,26 +65,3 @@ class MainActivity : AppCompatActivity() {
         ft.replace(R.id.fragment_container, fragment).commit()
     }
 }
-
-// TODO: Code này thuộc branch của Hải 
-// import android.content.Intent
-// import androidx.appcompat.app.AppCompatActivity
-// import android.os.Bundle
-// import android.widget.Button
-// import com.zebrand.app1food30s.R
-// import com.zebrand.app1food30s.ui.admin_statistics.AdminStatisticsActivity
-
-// class MainActivity : AppCompatActivity() {
-//     override fun onCreate(savedInstanceState: Bundle?) {
-//         super.onCreate(savedInstanceState)
-//         setContentView(R.layout.activity_main)
-
-//         // Assuming you have a button in your activity_main.xml with the ID 'btn_view_statistics'
-//         val buttonViewStatistics: Button = findViewById(R.id.btn_view_statistics)
-//         buttonViewStatistics.setOnClickListener {
-//             // Intent to start AdminStatisticsActivity
-//             val intent = Intent(this, AdminStatisticsActivity::class.java)
-//             startActivity(intent)
-//         }
-//     }
-// }
