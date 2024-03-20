@@ -146,6 +146,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
+                android:inputType="numberDecimal"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -214,6 +215,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
                 android:maxLines="1"
+                android:inputType="number"
                 android:gravity="start"/>
 
         </com.google.android.material.textfield.TextInputLayout>
