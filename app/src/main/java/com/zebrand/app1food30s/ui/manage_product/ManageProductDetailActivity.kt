@@ -8,15 +8,22 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.ImageView
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.data.Category
 
 class ManageProductDetailActivity : AppCompatActivity() {
     private lateinit var productImageView: ImageView
+    private lateinit var categorySpinner: Spinner
+    // Assume there's a Spinner for offers if you want to implement it similarly for offers
 
     companion object {
         private const val REQUEST_PERMISSION = 1
@@ -27,26 +34,14 @@ class ManageProductDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_product_detail)
 
-        setupDropdowns()
         setupImageView()
+        categorySpinner = findViewById(R.id.category_spinner)
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_PERMISSION)
         }
-    }
 
-    private fun setupDropdowns() {
-        val prices = resources.getStringArray(R.array.prices_array)
-        val offers = resources.getStringArray(R.array.offers_array)
-
-        val priceAdapter = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, prices)
-        val offerAdapter = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, offers)
-
-        val priceDropdown: AutoCompleteTextView = findViewById(R.id.price_dropdown)
-        val offerDropdown: AutoCompleteTextView = findViewById(R.id.offer_dropdown)
-
-        priceDropdown.setAdapter(priceAdapter)
-        offerDropdown.setAdapter(offerAdapter)
+        loadCategoriesFromFirebase()
     }
 
     private fun setupImageView() {
@@ -57,12 +52,31 @@ class ManageProductDetailActivity : AppCompatActivity() {
         }
     }
 
+    private fun loadCategoriesFromFirebase() {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("Categories")
+        databaseReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val categories = ArrayList<String>()
+                for (postSnapshot in dataSnapshot.children) {
+                    val category = postSnapshot.getValue(Category::class.java)
+                    category?.name?.let { categories.add(it) }
+                }
+                val categoryAdapter = ArrayAdapter(this@ManageProductDetailActivity, android.R.layout.simple_spinner_dropdown_item, categories)
+                categorySpinner.adapter = categoryAdapter
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle possible errors.
+            }
+        })
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_PERMISSION && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // Quyền đã được cấp, không cần thực hiện gì thêm ở đây
+            // Permission granted, no further action required here
         } else {
-            // Hiển thị thông báo cho người dùng biết quyền bị từ chối và chức năng không hoạt động
+            // Display a message to the user explaining that the permission was denied and the feature will not work
         }
     }
 
