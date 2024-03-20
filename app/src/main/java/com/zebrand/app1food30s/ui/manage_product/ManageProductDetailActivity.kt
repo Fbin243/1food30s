@@ -1,90 +1,137 @@
 package com.zebrand.app1food30s.ui.manage_product
 
-import android.Manifest
-import android.app.Activity
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.widget.ArrayAdapter
-import android.widget.ImageView
+import android.widget.Button
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import com.zebrand.app1food30s.R
+import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.zebrand.app1food30s.data.Category
+import com.zebrand.app1food30s.data.Offer
+import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.R // Change to your actual package name
+import java.util.Date
 
 class ManageProductDetailActivity : AppCompatActivity() {
-    private lateinit var productImageView: ImageView
-    private lateinit var categorySpinner: Spinner
-    // Assume there's a Spinner for offers if you want to implement it similarly for offers
 
-    companion object {
-        private const val REQUEST_PERMISSION = 1
-        private const val PICK_IMAGE_REQUEST = 2
-    }
+    private lateinit var nameEditText: TextInputEditText
+    private lateinit var priceEditText: TextInputEditText
+    private lateinit var stockEditText: TextInputEditText
+    private lateinit var descriptionEditText: TextInputEditText
+    private lateinit var createButton: Button
+    private lateinit var categorySpinner: Spinner
+    private lateinit var offerSpinner: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_product_detail)
 
-        setupImageView()
+        // Initialize UI components
+        nameEditText = findViewById(R.id.edit_name)
+        priceEditText = findViewById(R.id.price)
+        stockEditText = findViewById(R.id.stock)
+        descriptionEditText = findViewById(R.id.edit_description)
+        createButton = findViewById(R.id.create_btn)
+
         categorySpinner = findViewById(R.id.category_spinner)
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_PERMISSION)
-        }
-
+        offerSpinner = findViewById(R.id.offer_spinner)
         loadCategoriesFromFirebase()
+        loadOffersFromFirebase()
+
+        createButton.setOnClickListener {
+            saveProductToFirestore()
+        }
     }
 
-    private fun setupImageView() {
-        productImageView = findViewById(R.id.image_product)
-        productImageView.setOnClickListener {
-            val pickPhotoIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(pickPhotoIntent, PICK_IMAGE_REQUEST)
-        }
+    private fun saveProductToFirestore() {
+        val productName = nameEditText.text.toString().trim()
+        val productPrice = priceEditText.text.toString().toDoubleOrNull() ?: 0.0
+        val productStock = stockEditText.text.toString().toIntOrNull() ?: 0
+        val productDescription = descriptionEditText.text.toString().trim()
+
+        // Assuming you replace these methods with ones that map names to Firestore document references
+        val categoryRef = fetchCategoryReference(categorySpinner.selectedItem.toString())
+        val offerRef = fetchOfferReference(offerSpinner.selectedItem.toString())
+
+        val newProduct = Product(
+            name = productName,
+            idCategory = categoryRef,
+            idOffer = offerRef,
+            price = productPrice,
+            description = productDescription,
+            stock = productStock,
+            image = "", // This should be replaced with the actual image path after uploading the image to Firestore
+            sold = 0,
+            reviews = emptyList(),
+            date = Date()
+        )
+
+        val db = Firebase.firestore
+        db.collection("products").add(newProduct)
+            .addOnSuccessListener { documentReference ->
+                // Handle success, e.g., display a success message or navigate to another screen
+            }
+            .addOnFailureListener { e ->
+                // Handle failure, e.g., display an error message
+            }
+    }
+
+    private fun fetchCategoryReference(categoryName: String): DocumentReference {
+        val db = Firebase.firestore
+        // Implement the logic to convert categoryName to Firestore DocumentReference
+        // This is a placeholder. Replace it with actual logic.
+        return db.collection("categories").document() // Replace with the correct document reference
+    }
+
+    private fun fetchOfferReference(offerName: String): DocumentReference {
+        val db = Firebase.firestore
+        // Implement the logic to convert offerName to Firestore DocumentReference
+        // This is a placeholder. Replace it with actual logic.
+        return db.collection("offers").document() // Replace with the correct document reference
     }
 
     private fun loadCategoriesFromFirebase() {
-        val databaseReference = FirebaseDatabase.getInstance().getReference("Categories")
-        databaseReference.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val categories = ArrayList<String>()
-                for (postSnapshot in dataSnapshot.children) {
-                    val category = postSnapshot.getValue(Category::class.java)
-                    category?.name?.let { categories.add(it) }
+        val db = Firebase.firestore
+        val categoriesList = ArrayList<String>()
+
+        db.collection("categories").get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+//                    val category = document.toObject(Category::class.java)
+                    categoriesList.add(document.getString("name") ?: "")
                 }
-                val categoryAdapter = ArrayAdapter(this@ManageProductDetailActivity, android.R.layout.simple_spinner_dropdown_item, categories)
-                categorySpinner.adapter = categoryAdapter
+                // Update the spinner
+                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesList)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                categorySpinner.adapter = adapter
             }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                // Handle possible errors.
+            .addOnFailureListener { exception ->
+                // Handle any errors here, for example:
+                // Log.d("ManageProductDetailActivity", "Error getting documents: ", exception)
             }
-        })
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_PERMISSION && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // Permission granted, no further action required here
-        } else {
-            // Display a message to the user explaining that the permission was denied and the feature will not work
-        }
-    }
+    private fun loadOffersFromFirebase() {
+        val db = Firebase.firestore
+        val offersList = ArrayList<String>()
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK) {
-            val selectedImageUri: Uri? = data?.data
-            productImageView.setImageURI(selectedImageUri)
-        }
+        db.collection("offers").get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+//                    val category = document.toObject(Category::class.java)
+                    offersList.add(document.getString("name") ?: "")
+                }
+                // Update the spinner
+                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, offersList)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                offerSpinner.adapter = adapter
+            }
+            .addOnFailureListener { exception ->
+                // Handle any errors here, for example:
+                // Log.d("ManageProductDetailActivity", "Error getting documents: ", exception)
+            }
     }
 }
