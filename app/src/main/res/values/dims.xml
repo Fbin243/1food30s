@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="snackbar_margin">16dp</dimen>
+
     <!-- Padding -->
     <dimen name="padding4">4dp</dimen>
     <dimen name="padding8">8dp</dimen>
