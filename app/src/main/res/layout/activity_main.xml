@@ -15,9 +15,7 @@
         android:id="@+id/snackbar_anchor"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="@dimen/spacing72"
-        app:layout_constraintBottom_toTopOf="@id/bottom_app_bar"/>
+        android:layout_gravity="bottom" />
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottom_app_bar"
@@ -56,6 +54,6 @@
         app:tint="@color/white"
         app:maxImageSize="@dimen/spacing32"
         style="@style/Widget.MaterialComponents.FloatingActionButton"
-        android:elevation="6dp"
+        android:elevation="12dp"
         />
  </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -59,13 +59,10 @@ class MainActivity : AppCompatActivity() {
         // Add the custom layout
         snackbarLayout.addView(customView, 0)
 
-        // Use anchor view to position Snackbar
-        snackbar.anchorView = binding.bottomNavView
-
         // Access the Snackbar's layout params
         val layoutParams = snackbar.view.layoutParams as ViewGroup.MarginLayoutParams
 
-        // Remove margins
+        layoutParams.width = FrameLayout.LayoutParams.MATCH_PARENT
         layoutParams.setMargins(0, 0, 0, 0)
 
         // Apply layout params
@@ -75,6 +72,10 @@ class MainActivity : AppCompatActivity() {
         snackbar.view.requestLayout()
 
         snackbar.view.elevation = 0f
+
+        binding.bottomAppBar.post {
+            binding.bottomAppBar.elevation = 8f
+        }
 
         snackbar.show()
     }
