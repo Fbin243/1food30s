@@ -45,69 +45,71 @@ class ManageProductDetailActivity : AppCompatActivity() {
     }
 
     private fun saveProductToFirestore() {
-        // Collect product data from UI
         val productName = nameEditText.text.toString().trim()
         val productPrice = priceEditText.text.toString().toDoubleOrNull() ?: 0.0
         val productStock = stockEditText.text.toString().toIntOrNull() ?: 0
         val productDescription = descriptionEditText.text.toString().trim()
+        val db = Firebase.firestore
+
+        // Get the selected names from the spinners
         val selectedCategoryName = categorySpinner.selectedItem.toString()
         val selectedOfferName = offerSpinner.selectedItem.toString()
 
-        val db = Firebase.firestore
-
-        // Chain of tasks to get category ref, then offer ref, then save product
+        // First, find the category reference
         db.collection("categories").whereEqualTo("name", selectedCategoryName).limit(1).get()
-            .continueWithTask { task ->
-                val categoryId = task.result.documents.firstOrNull()?.id
-                if (categoryId != null) {
+            .addOnSuccessListener { categoryDocuments ->
+                if (categoryDocuments.documents.isNotEmpty()) {
+                    val categoryDocumentRef = categoryDocuments.documents.first().reference
+
+                    // Then, find the offer reference
                     db.collection("offers").whereEqualTo("name", selectedOfferName).limit(1).get()
-                        .continueWith { offerTask ->
-                            val offerId = offerTask.result.documents.firstOrNull()?.id
-                            Pair(categoryId, offerId)
+                        .addOnSuccessListener { offerDocuments ->
+                            if (offerDocuments.documents.isNotEmpty()) {
+                                val offerDocumentRef = offerDocuments.documents.first().reference
+
+                                // Create a new document reference with a unique ID in the "products" collection
+                                val newProductRef = db.collection("products").document()
+
+                                // Create the product with the new document's ID
+                                val newProduct = Product(
+                                    id = newProductRef.id,
+                                    name = productName,
+                                    idCategory = categoryDocumentRef,
+                                    idOffer = offerDocumentRef,
+                                    price = productPrice,
+                                    description = productDescription,
+                                    stock = productStock,
+                                    image = "", // Update this after image upload if necessary
+                                    date = Date() // Current date
+                                )
+
+                                // Set the new document with the new product
+                                newProductRef.set(newProduct)
+                                    .addOnSuccessListener {
+                                        // Handle success, e.g., show a success message to the user
+                                    }
+                                    .addOnFailureListener { e ->
+                                        // Handle failure, e.g., show an error message to the user
+                                    }
+                            } else {
+                                // Handle the case where no matching offer is found
+                            }
+                        }
+                        .addOnFailureListener { exception ->
+                            // Handle any errors in finding the offer
                         }
                 } else {
-                    throw Exception("Category not found")
+                    // Handle the case where no matching category is found
                 }
-            }.addOnSuccessListener { (categoryId, offerId) ->
-                if (categoryId != null && offerId != null) {
-                    val newProduct = Product(
-                        name = productName,
-                        idCategory = db.document("categories/$categoryId"),
-                        idOffer = db.document("offers/$offerId"),
-                        price = productPrice,
-                        description = productDescription,
-                        stock = productStock,
-                        date = Date() // Assuming other fields like 'image' are handled elsewhere
-                    )
-                    db.collection("products").add(newProduct)
-                        .addOnSuccessListener {
-                            // Successfully saved product
-                        }
-                        .addOnFailureListener {
-                            // Failed to save product
-                        }
-                } else {
-                    // Handle case where category or offer doesn't exist
-                }
-            }.addOnFailureListener {
-                // Handle failure in getting category or offer
+            }
+            .addOnFailureListener { exception ->
+                // Handle any errors in finding the category
             }
     }
 
-    // Dummy functions, replace these with your actual logic for retrieving document IDs based on the spinner selections
-    private fun fetchCategoryReference(categoryName: String): DocumentReference {
-        // Your logic here to convert categoryName to a Firestore DocumentReference
-        // This is just a placeholder; replace it with your actual Firestore reference retrieval logic
-        val db = Firebase.firestore
-        return db.collection("categories").document() // Replace with actual document ID based on categoryName
-    }
 
-    private fun fetchOfferReference(offerName: String): DocumentReference {
-        // Your logic here to convert offerName to a Firestore DocumentReference
-        // This is just a placeholder; replace it with your actual Firestore reference retrieval logic
-        val db = Firebase.firestore
-        return db.collection("offers").document() // Replace with actual document ID based on offerName
-    }
+    // Dummy functions, replace these with your actual logic for retrieving document IDs based on the spinner selections
+
 
 
     private fun loadCategoriesFromFirebase() {
