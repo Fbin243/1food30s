@@ -13,21 +13,28 @@ import com.zebrand.app1food30s.data.Product
 import com.zebrand.app1food30s.data.Category
 import kotlinx.coroutines.tasks.await
 
-class ManageProductAdapter(private val products: List<Product>, private val isGrid: Boolean = true) :
+class ManageProductAdapter(private val products: List<Product>, private val onProductClick: (Product) -> Unit) :
     RecyclerView.Adapter<ManageProductAdapter.ProductViewHolder>() {
-    var onItemClick: ((ManageProductAdapter.ProductViewHolder) -> Unit)? = null
-    inner class ProductViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
-        val productImg: ImageView = listItemView.findViewById(R.id.productImg)
-        val productTitle: TextView = listItemView.findViewById(R.id.productTitle)
-        val productDescription: TextView = listItemView.findViewById(R.id.productDescription)
-        val productPrice: TextView = listItemView.findViewById(R.id.productPrice)
-        val productDate: TextView = listItemView.findViewById(R.id.productDate)
+    inner class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val productImg: ImageView = itemView.findViewById(R.id.productImg)
+        val productTitle: TextView = itemView.findViewById(R.id.productTitle)
+        val productDescription: TextView = itemView.findViewById(R.id.productDescription)
+        val productPrice: TextView = itemView.findViewById(R.id.productPrice)
+        val productDate: TextView = itemView.findViewById(R.id.productDate)
+
+        init {
+            itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onProductClick(products[position])
+                }
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-        val productCardView =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_manage_product, parent, false)
-        return ProductViewHolder(productCardView)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_manage_product, parent, false)
+        return ProductViewHolder(view)
     }
 
     override fun getItemCount(): Int {
@@ -63,8 +70,5 @@ class ManageProductAdapter(private val products: List<Product>, private val isGr
         }
 
         holder.productPrice.text = "$${String.format("%.2f", product.price).replace(",", ".")}"
-        holder.itemView.setOnClickListener {
-            onItemClick?.invoke(holder)
-        }
     }
 }

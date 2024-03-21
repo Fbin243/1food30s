@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.ui.manage_product
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,7 @@ import com.zebrand.app1food30s.data.Offer
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Product
 import com.zebrand.app1food30s.databinding.ActivityManageProductBinding
+import com.zebrand.app1food30s.ui.edit_product.EditProduct
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -36,10 +38,14 @@ class ManageProductActivity : AppCompatActivity() {
 
     private fun handleDisplayProductList() {
         lifecycleScope.launch {
-            rcv = binding.productRcv
-            rcv.layoutManager = LinearLayoutManager(this@ManageProductActivity, RecyclerView.VERTICAL, false)
-            val adapter = ManageProductAdapter(getListProducts(), false)
-            rcv.adapter = adapter
+            val adapter = ManageProductAdapter(getListProducts(), onProductClick = { product ->
+                val intent = Intent(this@ManageProductActivity, EditProduct::class.java).apply {
+                    putExtra("PRODUCT_ID", product.id)
+                }
+                startActivity(intent)
+            })
+            binding.productRcv.layoutManager = LinearLayoutManager(this@ManageProductActivity)
+            binding.productRcv.adapter = adapter
         }
     }
 
