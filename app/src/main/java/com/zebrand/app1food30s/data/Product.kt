@@ -9,7 +9,7 @@ data class Product(
     val idCategory: DocumentReference? = null,
     val idOffer: DocumentReference? = null,
     val name: String = "",
-    val image: String = "", // Firebase Storage
+    var image: String = "", // Firebase Storage
     val price: Double = 0.0,
     val description: String = "",
     val stock: Int = 0,
