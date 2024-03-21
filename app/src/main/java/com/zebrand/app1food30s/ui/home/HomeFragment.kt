@@ -1,11 +1,13 @@
 package com.zebrand.app1food30s.ui.home
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -73,34 +75,49 @@ class HomeFragment : Fragment(), HomeMVPView {
         binding.cateRcv.adapter = CategoryAdapter(categories)
     }
 
-    fun addProductToCart(productId: String, cartId: String = "mdXn8lvirHaAogStOY1K") {
+    private fun addProductToCart(context: Context, productId: String, cartId: String = "mdXn8lvirHaAogStOY1K") {
         val db = FirebaseFirestore.getInstance()
-        val cartRef = db.collection("carts").document(cartId)
         val productRef = db.collection("products").document(productId)
 
-        cartRef.get().addOnSuccessListener { document ->
-            val cart = if (document.exists()) {
-                document.toObject(Cart::class.java)
-            } else {
-                // If the cart does not exist, create a new one
-                Cart(cartId, null)
-            }
+        productRef.get().addOnSuccessListener { productSnapshot ->
+            val product = productSnapshot.toObject(Product::class.java)
+            val stock = product?.stock ?: 0
 
-            cart?.let {
-                val existingItemIndex = it.items.indexOfFirst { item -> item.productId?.path == productRef.path }
-                if (existingItemIndex >= 0) {
-                    // Product exists, update quantity
-                    it.items[existingItemIndex].quantity += 1
-                } else {
-                    // New product, add to cart
-                    it.items.add(CartItem(productRef, 1))
+            if (stock > 0) {
+                val cartRef = db.collection("carts").document(cartId)
+                cartRef.get().addOnSuccessListener { document ->
+                    val cart = if (document.exists()) {
+                        document.toObject(Cart::class.java)
+                    } else {
+                        // If the cart does not exist, create a new one
+                        Cart(id = cartId, accountId = null, items = mutableListOf())
+                    }
+
+                    cart?.let {
+                        val existingItemIndex = it.items.indexOfFirst { item -> item.productId?.path == productRef.path }
+                        if (existingItemIndex >= 0) {
+                            // Product exists, update quantity
+                            it.items[existingItemIndex].quantity += 1
+                        } else {
+                            // New product, add to cart
+                            it.items.add(CartItem(productRef, 1))
+                        }
+
+                        // Save updated cart back to Firestore
+                        cartRef.set(it).addOnSuccessListener {
+                            Toast.makeText(context, "Added to cart successfully!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }.addOnFailureListener { exception ->
+                    Log.e("addProductToCart", "Error updating cart: ", exception)
+                    Toast.makeText(context, "Failed to add to cart.", Toast.LENGTH_SHORT).show()
                 }
-
-                // Save updated cart back to Firestore
-                cartRef.set(it)
+            } else {
+                Toast.makeText(context, "Product is out of stock.", Toast.LENGTH_SHORT).show()
             }
         }.addOnFailureListener { exception ->
-            Log.e("addProductToCart", "Error updating cart: ", exception)
+            Log.e("addProductToCart", "Error getting product: ", exception)
+            Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -111,7 +128,7 @@ class HomeFragment : Fragment(), HomeMVPView {
             openDetailProduct(product)
         }
         adapter.onAddButtonClick = { product ->
-            addProductToCart(product.id)
+            addProductToCart(requireContext(), product.id)
         }
         binding.productRcv1.adapter = adapter
     }
@@ -124,7 +141,7 @@ class HomeFragment : Fragment(), HomeMVPView {
             openDetailProduct(product)
         }
         adapter.onAddButtonClick = { product ->
-            addProductToCart(product.id)
+            addProductToCart(requireContext(), product.id)
         }
         binding.productRcv2.adapter = adapter
     }
