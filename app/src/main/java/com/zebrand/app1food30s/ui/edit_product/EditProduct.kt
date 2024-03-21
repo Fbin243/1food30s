@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
@@ -54,35 +55,30 @@ class EditProduct : AppCompatActivity() {
             fetchProductDetails(productId)
         }
 
-        nameEditText = findViewById(com.zebrand.app1food30s.R.id.input_name)
-        priceEditText = findViewById(com.zebrand.app1food30s.R.id.input_price)
-        stockEditText = findViewById(com.zebrand.app1food30s.R.id.input_stock)
-        descriptionEditText = findViewById(com.zebrand.app1food30s.R.id.input_description)
-        saveButton = findViewById(com.zebrand.app1food30s.R.id.save_btn)
-        productImageView = findViewById(com.zebrand.app1food30s.R.id.image_product)
-        categorySpinner = findViewById(com.zebrand.app1food30s.R.id.category_spinner)
-        offerSpinner = findViewById(com.zebrand.app1food30s.R.id.offer_spinner)
-//        loadOffersFromFirebase()
+        setupUI()
+    }
+
+    private fun setupUI() {
+        nameEditText = binding.inputName
+        priceEditText = binding.inputPrice
+        stockEditText = binding.inputStock
+        descriptionEditText = binding.inputDescription
+        saveButton = binding.saveBtn
+        productImageView = binding.imageProduct
+        categorySpinner = binding.categorySpinner
+        offerSpinner = binding.offerSpinner
 
         saveButton.setOnClickListener {
             val productId = intent.getStringExtra("PRODUCT_ID")
             productId?.let {
-                updateProductDetails(it)
+                saveProductToFirestore(it)
+            } ?: run {
+                Toast.makeText(this, "Error: Product ID is missing.", Toast.LENGTH_SHORT).show()
             }
         }
 
         productImageView.setOnClickListener {
             startImagePicker()
-        }
-    }
-
-    private fun setupListeners() {
-        // Đặt sự kiện cho nút lưu, hủy, hoặc bất kỳ hành động nào bạn muốn xử lý
-        binding.saveBtn.setOnClickListener {
-            val productId = intent.getStringExtra("PRODUCT_ID")
-            productId?.let {
-                updateProductDetails(it)
-            }
         }
     }
 
@@ -94,89 +90,82 @@ class EditProduct : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.data != null) {
             imageUri = data.data!!
-            productImageView.setImageURI(imageUri)
+            Picasso.get().load(imageUri).into(productImageView)
         }
     }
 
-    private fun saveProductToFirestore() {
+    private fun saveProductToFirestore(productId: String) {
         val productName = nameEditText.text.toString().trim()
-        val db = com.google.firebase.ktx.Firebase.firestore
 
         imageUri?.let { uri ->
-            val fileName = "product${UUID.randomUUID()}.png" // Tạo một tên file duy nhất
-            val storageReference = com.google.firebase.ktx.Firebase.storage.reference.child("images/product/$fileName")
+            val fileName = "product${UUID.randomUUID()}.png"
+            val storageReference = fireStorage.reference.child("images/product/$fileName")
             val uploadTask = storageReference.putFile(uri)
 
             uploadTask.addOnSuccessListener {
-                // Khi tải lên thành công, lưu đường dẫn cố định vào Firestore thay vì URL
-                val imagePath = "images/product/$fileName" // Đường dẫn này sẽ được lưu trong Firestore
-                createAndSaveProduct(imagePath)
+                val imagePath = "images/product/$fileName"
+                updateProductDetails(productId, imagePath)
             }.addOnFailureListener {
-                // Xử lý lỗi
+                Toast.makeText(this, "Image upload failed: ${it.message}", Toast.LENGTH_LONG).show()
             }
         } ?: run {
-            // Lưu sản phẩm mà không có hình ảnh
-            createAndSaveProduct("")
+            updateProductDetails(productId, "")
         }
     }
 
-    private fun updateProductDetails(imagePath: String) {
+    private fun updateProductDetails(productId: String, imagePath: String) {
         val productName = nameEditText.text.toString().trim()
         val productPrice = priceEditText.text.toString().toDoubleOrNull() ?: 0.0
         val productStock = stockEditText.text.toString().toIntOrNull() ?: 0
         val productDescription = descriptionEditText.text.toString().trim()
-        val db = com.google.firebase.ktx.Firebase.firestore
 
         val selectedCategoryName = categorySpinner.selectedItem.toString()
         val selectedOfferName = offerSpinner.selectedItem.toString()
 
-        db.collection("categories").whereEqualTo("name", selectedCategoryName).limit(1).get()
+        fireStore.collection("categories").whereEqualTo("name", selectedCategoryName).limit(1).get()
             .addOnSuccessListener { categoryDocuments ->
                 if (categoryDocuments.documents.isNotEmpty()) {
                     val categoryDocumentRef = categoryDocuments.documents.first().reference
 
-                    db.collection("offers").whereEqualTo("name", selectedOfferName).limit(1).get()
+                    fireStore.collection("offers").whereEqualTo("name", selectedOfferName).limit(1).get()
                         .addOnSuccessListener { offerDocuments ->
                             if (offerDocuments.documents.isNotEmpty()) {
                                 val offerDocumentRef = offerDocuments.documents.first().reference
 
-                                val newProductRef = db.collection("products").document()
-
-                                val newProduct = Product(
-                                    id = newProductRef.id,
-                                    name = productName,
-                                    idCategory = categoryDocumentRef,
-                                    idOffer =                                 offerDocumentRef,
-                                    price = productPrice,
-                                    description = productDescription,
-                                    stock = productStock,
-                                    image = imagePath, // Sử dụng URL của hình ảnh đã tải lên
-                                    date = Date()
+                                val productUpdate = hashMapOf<String, Any>(
+                                    "name" to productName,
+                                    "idCategory" to categoryDocumentRef,
+                                    "idOffer" to offerDocumentRef,
+                                    "price" to productPrice,
+                                    "description" to productDescription,
+                                    "stock" to productStock,
+                                    "image" to imagePath,
+                                    "date" to Date()
                                 )
 
-                                newProductRef.set(newProduct)
+                                fireStore.collection("products").document(productId).update(productUpdate)
                                     .addOnSuccessListener {
-                                        // Xử lý thành công, ví dụ: hiển thị thông báo thành công cho người dùng
+                                        Toast.makeText(this, "Product updated successfully", Toast.LENGTH_LONG).show()
+                                        finish() // Close the activity and return to the previous one
                                     }
                                     .addOnFailureListener { e ->
-                                        // Xử lý thất bại, ví dụ: hiển thị thông báo lỗi cho người dùng
+                                        Toast.makeText(this, "Error updating product: ${e.message}", Toast.LENGTH_LONG).show()
                                     }
                             } else {
-                                // Xử lý trường hợp không tìm thấy ưu đãi phù hợp
+                                Toast.makeText(this, "Offer not found", Toast.LENGTH_SHORT).show()
                             }
                         }
-                        .addOnFailureListener { exception ->
-                            // Xử lý lỗi khi tìm kiếm ưu đãi
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Error finding offer: ${e.message}", Toast.LENGTH_LONG).show()
                         }
                 } else {
-                    // Xử lý trường hợp không tìm thấy danh mục phù hợp
+                    Toast.makeText(this, "Category not found", Toast.LENGTH_SHORT).show()
                 }
             }
-            .addOnFailureListener { exception ->
-                // Xử lý lỗi khi tìm kiếm danh mục
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error finding category: ${e.message}", Toast.LENGTH_LONG).show()
             }
     }
 
@@ -278,28 +267,28 @@ class EditProduct : AppCompatActivity() {
         }
     }
 
-    private fun updateProductDetails(productId: String) {
-        val updatedName = binding.inputName.text.toString()
-        val updatedPrice = binding.inputPrice.text.toString().toDoubleOrNull()
-        val updatedStock = binding.inputStock.text.toString().toIntOrNull()
-        val updatedDescription = binding.inputDescription.text.toString()
-        // Lấy các giá trị cập nhật từ người dùng
-
-        lifecycleScope.launch {
-            try {
-                fireStore.collection("products").document(productId).update(
-                    mapOf(
-                        "name" to updatedName,
-                        "price" to updatedPrice,
-                        "stock" to updatedStock,
-                        "description" to updatedDescription
-                        // Cập nhật các trường khác tương tự như trên
-                    )
-                ).await()
-                // Xử lý sau khi cập nhật thành công, ví dụ: hiển thị thông báo, đóng màn hình
-            } catch (e: Exception) {
-                // Xử lý lỗi
-            }
-        }
-    }
+//    private fun updateProductDetails(productId: String) {
+//        val updatedName = binding.inputName.text.toString()
+//        val updatedPrice = binding.inputPrice.text.toString().toDoubleOrNull()
+//        val updatedStock = binding.inputStock.text.toString().toIntOrNull()
+//        val updatedDescription = binding.inputDescription.text.toString()
+//        // Lấy các giá trị cập nhật từ người dùng
+//
+//        lifecycleScope.launch {
+//            try {
+//                fireStore.collection("products").document(productId).update(
+//                    mapOf(
+//                        "name" to updatedName,
+//                        "price" to updatedPrice,
+//                        "stock" to updatedStock,
+//                        "description" to updatedDescription
+//                        // Cập nhật các trường khác tương tự như trên
+//                    )
+//                ).await()
+//                // Xử lý sau khi cập nhật thành công, ví dụ: hiển thị thông báo, đóng màn hình
+//            } catch (e: Exception) {
+//                // Xử lý lỗi
+//            }
+//        }
+//    }
 }
