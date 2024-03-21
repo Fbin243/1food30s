@@ -33,12 +33,10 @@ class MainActivity : AppCompatActivity() {
 
         if (intent.getBooleanExtra("loadProfileFragment", false)) {
             replaceFragment(ProfileAfterLoginFragment())
-        }
-        else if (intent.getBooleanExtra("showOrderConfirmation", false)) {
+        } else if (intent.getBooleanExtra("showOrderConfirmation", false)) {
             showOrderConfirmationToast()
             showOrderConfirmationDialog()
-        }
-        else {
+        } else {
             // Your default fragment to load
             replaceFragment(HomeFragment())
         }
@@ -60,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         dialog.show(supportFragmentManager, "OrderConfirmationDialog")
     }
 
-    private fun handleBottomNavigation() {
+
     private fun handleBottomNavigationForAdmin() {
         binding.bottomNavView.menu.clear()
         binding.icCart.visibility = View.GONE
@@ -104,4 +102,5 @@ class MainActivity : AppCompatActivity() {
         val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
         ft.replace(R.id.fragment_container, fragment).commit()
     }
+
 }

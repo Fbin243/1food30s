@@ -2,6 +2,7 @@ package com.zebrand.app1food30s.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
+import com.zebrand.app1food30s.data.Cart
+import com.zebrand.app1food30s.data.CartItem
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Offer
 import com.zebrand.app1food30s.data.Product
@@ -116,7 +119,6 @@ class HomeFragment : Fragment(), HomeMVPView {
         }.addOnFailureListener { exception ->
             Log.e("addProductToCart", "Error updating cart: ", exception)
         }
-        binding.productRcv1.adapter = adapter
     }
 
     override fun showProductsLatestDishes(products: List<Product>, offers: List<Offer>) {
