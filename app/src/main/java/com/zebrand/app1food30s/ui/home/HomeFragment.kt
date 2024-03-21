@@ -148,15 +148,13 @@ class HomeFragment : Fragment() {
     //         startActivity(intent)
     //     }
 
-    //     // addProductToCart
-
     //     recyclerView.adapter = adapter
     // }
 
     fun addProductToCart(productId: String, cartId: String = "mdXn8lvirHaAogStOY1K") {
         val db = FirebaseFirestore.getInstance()
         val cartRef = db.collection("carts").document(cartId)
-        val productRef = db.collection("products").document(productId) // Convert string ID to DocumentReference
+        val productRef = db.collection("products").document(productId)
 
         cartRef.get().addOnSuccessListener { document ->
             val cart = if (document.exists()) {

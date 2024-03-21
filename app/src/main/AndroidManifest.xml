@@ -99,7 +99,7 @@
         </activity> <!-- ADMIN -->
 
         <activity
-            android:name=".ui.admin_statistics.AdminStatisticsActivity"
+            android:name=".ui.admin_stats.AdminStatsActivity"
             android:exported="true" />
 
         <activity

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import androidx.fragment.app.DialogFragment
 import com.zebrand.app1food30s.R
 
@@ -23,6 +24,13 @@ class OrderConfirmationDialogFragment : DialogFragment() {
         // Set up button listeners and handle actions like 'Go to Details' and 'Pay Now'
         view.findViewById<Button>(R.id.btnGoToDetails).setOnClickListener {
             // Handle 'Go to Details' action
+        }
+
+        // Set up the click listener for the close button
+        val closeButton = view.findViewById<ImageView>(R.id.close_button)
+        closeButton.setOnClickListener {
+            // Dismiss the dialog
+            dismiss()
         }
     }
 

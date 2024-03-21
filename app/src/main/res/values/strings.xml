@@ -136,5 +136,6 @@
 
     <string name="product_price_number">$%.2f</string>
     <string name="close_button_description">Close button</string>
+    <string name="admin_statistics">Admin Statistics</string>
 
 </resources>
