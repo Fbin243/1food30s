@@ -51,6 +51,5 @@
         android:tint="@color/white"
         app:layout_anchor="@id/bottom_app_bar"
         app:maxImageSize="@dimen/spacing32"
-        style="@style/Widget.MaterialComponents.FloatingActionButton"
         />
  </androidx.coordinatorlayout.widget.CoordinatorLayout>
