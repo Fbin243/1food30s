@@ -42,6 +42,7 @@ class EditProduct : AppCompatActivity() {
     private lateinit var saveButton: Button
 
     private lateinit var productImageView: ImageView
+    private var currentImagePath: String? = null
 
     // Lưu URI của hình ảnh tạm thời
     private var imageUri: Uri? = null
@@ -112,7 +113,7 @@ class EditProduct : AppCompatActivity() {
                 Toast.makeText(this, "Image upload failed: ${it.message}", Toast.LENGTH_LONG).show()
             }
         } ?: run {
-            updateProductDetails(productId, "")
+            updateProductDetails(productId, currentImagePath!!)
         }
     }
 
@@ -230,6 +231,7 @@ class EditProduct : AppCompatActivity() {
                         inputDescription.setText(it.description)
                         val imageUrl = fireStorage.reference.child(it.image).downloadUrl.await().toString()
                         Picasso.get().load(imageUrl).into(imageProduct)
+                        currentImagePath = it.image
 
                         val offerId = it.idOffer?.id ?: "non"
                         val offersCollection = FirebaseFirestore.getInstance().collection("offers")

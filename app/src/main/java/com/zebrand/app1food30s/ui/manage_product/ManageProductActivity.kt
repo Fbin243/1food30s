@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.ui.manage_product
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.lifecycleScope
@@ -28,12 +29,21 @@ class ManageProductActivity : AppCompatActivity() {
     private lateinit var rcv: RecyclerView
     private val fireStore = FirebaseFirestore.getInstance()
     private val fireStorage = FirebaseStorage.getInstance()
+    private lateinit var addButton: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityManageProductBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
         handleDisplayProductList()
+
+        addButton = findViewById(R.id.add_product_btn)
+
+        addButton.setOnClickListener {
+            val intent = Intent(this, ManageProductDetailActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun handleDisplayProductList() {
@@ -57,7 +67,7 @@ class ManageProductActivity : AppCompatActivity() {
                 querySnapshot.documents.mapNotNull { document ->
                     val id = document.id
                     val name = document.getString("name") ?: ""
-                    val image = document.getString("image") ?: ""
+                    val image = document.getString("image") ?: "images/product/product3.png"
                     val imageUrl = fireStorage.reference.child(image).downloadUrl.await().toString()
                     val price = document.getDouble("price") ?: 0.0
                     val description = document.getString("description") ?: ""
