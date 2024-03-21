@@ -71,7 +71,7 @@ object FirebaseUtils {
                         null,
                         date
                     )
-                }.take(4)
+                }
             } catch (e: Exception) {
                 Log.e("getListProducts", "Error getting products", e)
                 emptyList()

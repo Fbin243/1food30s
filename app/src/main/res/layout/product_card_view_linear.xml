@@ -29,14 +29,25 @@
             android:orientation="vertical"
             android:padding="@dimen/spacing6">
 
-            <TextView
-                android:id="@+id/productTitle"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
-                android:text="Sweet &amp; Sour Chicken"
-                android:textSize="@dimen/font_default"
-                android:textStyle="bold" />
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/productTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="2"
+                    android:layout_weight="1"
+                    android:text="Sweet &amp; Sour Chicken"
+                    android:textSize="@dimen/font_default"
+                    android:textStyle="bold" />
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/ic_wishlist"/>
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/productDescription"

@@ -72,7 +72,7 @@ class HomeFragment : Fragment(), HomeMVPView {
 
     override fun showProductsLatestDishes(products: List<Product>, offers: List<Offer>) {
         binding.productRcv1.layoutManager = GridLayoutManager(requireContext(), 2)
-        val adapter = ProductAdapter(products, offers)
+        val adapter = ProductAdapter(products.take(4), offers)
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }
@@ -82,7 +82,7 @@ class HomeFragment : Fragment(), HomeMVPView {
     override fun showProductsBestSeller(products: List<Product>, offers: List<Offer>) {
         binding.productRcv2.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val adapter = ProductAdapter(products, offers, false)
+        val adapter = ProductAdapter(products.take(4), offers, false)
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }
