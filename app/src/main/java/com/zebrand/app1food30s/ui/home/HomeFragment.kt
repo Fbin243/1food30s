@@ -73,23 +73,6 @@ class HomeFragment : Fragment(), HomeMVPView {
         binding.cateRcv.adapter = CategoryAdapter(categories)
     }
 
-    // private fun setupRecyclerView(recyclerView: RecyclerView, isGrid: Boolean) {
-    //     val layoutManager = if (isGrid) {
-    //         GridLayoutManager(requireContext(), 2)
-    //     } else {
-    //         LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-    //     }
-    //     recyclerView.layoutManager = layoutManager
-
-    //     val adapter = ProductAdapter(getListProducts(), isGrid)
-    //     adapter.onItemClick = { product ->
-    //         val intent = Intent(requireContext(), ProductDetailActivity::class.java)
-    //         startActivity(intent)
-    //     }
-
-    //     recyclerView.adapter = adapter
-    // }
-
     fun addProductToCart(productId: String, cartId: String = "mdXn8lvirHaAogStOY1K") {
         val db = FirebaseFirestore.getInstance()
         val cartRef = db.collection("carts").document(cartId)
@@ -127,6 +110,9 @@ class HomeFragment : Fragment(), HomeMVPView {
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }
+        adapter.onAddButtonClick = { product ->
+            addProductToCart(product.id)
+        }
         binding.productRcv1.adapter = adapter
     }
     
@@ -136,6 +122,9 @@ class HomeFragment : Fragment(), HomeMVPView {
         val adapter = ProductAdapter(products.take(4), offers, false)
         adapter.onItemClick = { product ->
             openDetailProduct(product)
+        }
+        adapter.onAddButtonClick = { product ->
+            addProductToCart(product.id)
         }
         binding.productRcv2.adapter = adapter
     }
