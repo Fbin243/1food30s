@@ -1,18 +1,11 @@
 package com.zebrand.app1food30s.ui.main
 
-import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.google.android.material.snackbar.Snackbar
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.ActivityMainBinding
 import com.zebrand.app1food30s.ui.cart.CartFragment
@@ -47,9 +40,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showOrderConfirmationToast() {
-        val customSnackbarView = findViewById<LinearLayout>(R.id.snackbar)
+        val toastView = findViewById<LinearLayout>(R.id.toast)
 
-        customSnackbarView.visibility = View.VISIBLE
+        toastView.visibility = View.VISIBLE
 
         // Optionally, hide after some duration
 //        customSnackbarView.postDelayed({
