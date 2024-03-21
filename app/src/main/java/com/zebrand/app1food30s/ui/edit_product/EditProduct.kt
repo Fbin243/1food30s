@@ -21,6 +21,7 @@ import com.google.firebase.storage.ktx.storage
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.data.Product
 import com.zebrand.app1food30s.databinding.ActivityEditProductBinding
+import com.zebrand.app1food30s.ui.manage_product.ManageProductActivity
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.Date
@@ -148,7 +149,8 @@ class EditProduct : AppCompatActivity() {
                                 fireStore.collection("products").document(productId).update(productUpdate)
                                     .addOnSuccessListener {
                                         Toast.makeText(this, "Product updated successfully", Toast.LENGTH_LONG).show()
-                                        finish() // Close the activity and return to the previous one
+                                        val intent = Intent(this, ManageProductActivity::class.java)
+                                        startActivity(intent)
                                     }
                                     .addOnFailureListener { e ->
                                         Toast.makeText(this, "Error updating product: ${e.message}", Toast.LENGTH_LONG).show()
