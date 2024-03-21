@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
@@ -45,39 +46,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("RestrictedApi")
     private fun showOrderConfirmationToast() {
-        val snackbar = Snackbar.make(binding.snackbarAnchor, "", Snackbar.LENGTH_INDEFINITE)
-        val customView = layoutInflater.inflate(R.layout.snackbar_order_confirmation, null)
+        val customSnackbarView = findViewById<LinearLayout>(R.id.snackbar)
 
-        val snackbarLayout = snackbar.view as Snackbar.SnackbarLayout
+        customSnackbarView.visibility = View.VISIBLE
 
-        // Remove the default text
-        val textView = snackbarLayout.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
-        textView.visibility = View.INVISIBLE
-
-        // Add the custom layout
-        snackbarLayout.addView(customView, 0)
-
-        // Access the Snackbar's layout params
-        val layoutParams = snackbar.view.layoutParams as ViewGroup.MarginLayoutParams
-
-        layoutParams.width = FrameLayout.LayoutParams.MATCH_PARENT
-        layoutParams.setMargins(0, 0, 0, 0)
-
-        // Apply layout params
-        snackbar.view.layoutParams = layoutParams
-
-        // Force Snackbar to layout
-        snackbar.view.requestLayout()
-
-        snackbar.view.elevation = 0f
-
-        binding.bottomAppBar.post {
-            binding.bottomAppBar.elevation = 8f
-        }
-
-        snackbar.show()
+        // Optionally, hide after some duration
+//        customSnackbarView.postDelayed({
+//            customSnackbarView.visibility = View.GONE
+//        }, duration)
     }
 
     private fun showOrderConfirmationDialog() {

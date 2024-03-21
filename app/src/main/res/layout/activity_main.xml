@@ -11,11 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <View
-        android:id="@+id/snackbar_anchor"
+    <include
+        layout="@layout/snackbar_order_confirmation"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="bottom" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"/>
 
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottom_app_bar"
@@ -54,6 +54,5 @@
         app:tint="@color/white"
         app:maxImageSize="@dimen/spacing32"
         style="@style/Widget.MaterialComponents.FloatingActionButton"
-        android:elevation="12dp"
         />
  </androidx.coordinatorlayout.widget.CoordinatorLayout>
