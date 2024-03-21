@@ -134,6 +134,8 @@ class ManageProductDetailActivity : AppCompatActivity() {
                                 newProductRef.set(newProduct)
                                     .addOnSuccessListener {
                                         // Xử lý thành công, ví dụ: hiển thị thông báo thành công cho người dùng
+                                        val intent = Intent(this, ManageProductActivity::class.java)
+                                        startActivity(intent)
                                     }
                                     .addOnFailureListener { e ->
                                         // Xử lý thất bại, ví dụ: hiển thị thông báo lỗi cho người dùng
