@@ -72,6 +72,29 @@ class EditProduct : AppCompatActivity() {
             }
     }
 
+    private fun loadOffersFromFirebase(offerStr: String) {
+        val db = Firebase.firestore
+        val offerList = ArrayList<String>()
+
+        db.collection("offers").get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    offerList.add(document.getString("name") ?: "")
+                }
+                val adapter = ArrayAdapter(this, R.layout.simple_spinner_item, offerList)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                offerSpinner.adapter = adapter
+
+                val selectedPosition = offerList.indexOf(offerStr)
+                if (selectedPosition != -1) {
+                    offerSpinner.setSelection(selectedPosition)
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Xử lý lỗi ở đây
+            }
+    }
+
     private fun fetchProductDetails(productId: String) {
         lifecycleScope.launch {
             try {
@@ -85,6 +108,21 @@ class EditProduct : AppCompatActivity() {
                         inputDescription.setText(it.description)
                         val imageUrl = fireStorage.reference.child(it.image).downloadUrl.await().toString()
                         Picasso.get().load(imageUrl).into(imageProduct)
+
+                        val offerId = it.idOffer?.id ?: "non"
+                        val offersCollection = FirebaseFirestore.getInstance().collection("offers")
+                        offersCollection.document(offerId).get().addOnSuccessListener { document ->
+                            if (document != null && document.exists()) {
+//                val category = document.toObject(Category::class.java)
+//                                categorySpinner.text = document.getString("name") ?: ""
+                                val offerStr = document.getString("name") ?: ""
+                                loadOffersFromFirebase(offerStr)
+                            } else {
+                                loadOffersFromFirebase("")
+                            }
+                        }.addOnFailureListener {
+
+                        }
 
                         val categoryId = it.idCategory?.id ?: "non"
                         val categoriesCollection = FirebaseFirestore.getInstance().collection("categories")
