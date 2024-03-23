@@ -6,7 +6,6 @@ import com.google.firebase.firestore.ServerTimestamp
 import java.util.Date
 
 data class User(
-    @get:Exclude
     var id: String? = null,
     val firstName: String = "",
     val lastName: String = "",

@@ -154,6 +154,7 @@
     <string name="txt_invalid_email">"* Invalid email address"</string>
     <string name="txt_minimum_password">"* Minimum 6 character password"</string>
     <string name="txt_confirm_password_not_match">* Confirm password does not match</string>
+    <string name="txt_delete_email_not_match">* Email does not correct</string>
 
     <string-array name="delivery_array">
         <item>Pending</item>

@@ -21,7 +21,7 @@ import com.zebrand.app1food30s.ultis.ValidateInput
 
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
-    val mySharePreference = MySharedPreferences.getInstance(this)
+    private val mySharePreference = MySharedPreferences.getInstance(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

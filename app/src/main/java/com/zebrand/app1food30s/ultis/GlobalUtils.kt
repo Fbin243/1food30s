@@ -23,4 +23,13 @@ object GlobalUtils {
             context.finishAffinity()
         }
     }
+
+    fun resetMySharedPreferences(mySharedPreferences: MySharedPreferences){
+        mySharedPreferences.setBoolean(SingletonKey.KEY_LOGGED, false)
+        mySharedPreferences.setBoolean(SingletonKey.IS_ADMIN, false)
+        mySharedPreferences.setBoolean(SingletonKey.KEY_REMEMBER_ME, false)
+        mySharedPreferences.setString(SingletonKey.KEY_USER_ID, MySharedPreferences.defaultStringValue)
+        mySharedPreferences.setString(SingletonKey.KEY_EMAIL, MySharedPreferences.defaultStringValue)
+        mySharedPreferences.setString(SingletonKey.KEY_PASSWORD, MySharedPreferences.defaultStringValue)
+    }
 }

@@ -4,7 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.firestore.DocumentReference
+import com.zebrand.app1food30s.data.Cart
 import com.zebrand.app1food30s.data.User
 import com.zebrand.app1food30s.databinding.ActivitySignUpBinding
 import com.zebrand.app1food30s.ultis.FireStoreUtils
@@ -90,7 +93,16 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun setUserData(user: User) {
         val userRef = FireStoreUtils.mDBUserRef
+        val cartRef = FireStoreUtils.mDBCartRef
+//        userRef.add(user)
+        val userDoc: DocumentReference = userRef.document() // Automatically generates a unique document ID
+        val cartDoc: DocumentReference = cartRef.document() // Automatically generates a unique document ID
+
+        val cart = Cart(id = cartDoc.id, accountId = userDoc)
+        user.id = userDoc.id
+        
         userRef.add(user)
+        cartRef.add(cart)
     }
 
     private fun checkValid(): Boolean {

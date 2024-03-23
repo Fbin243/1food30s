@@ -71,15 +71,21 @@
             android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailContainer"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:boxStrokeColor="@color/primary"
+
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+
             app:cursorColor="@color/primary"
             app:hintTextColor="@color/primary"
             app:layout_constraintTop_toBottomOf="@+id/header_title">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tvEmail"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
                 android:inputType="textEmailAddress"
@@ -91,7 +97,6 @@
             android:id="@+id/confirmBtn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing60"
-            android:layout_marginTop="@dimen/spacing20"
             android:backgroundTint="@color/primary"
             android:text="@string/txt_confirm"
             android:textSize="@dimen/font_header"

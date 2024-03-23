@@ -124,4 +124,13 @@ object ValidateInput{
 
         return null
     }
+
+    fun validEmailDelete(context: Context, localDB: MySharedPreferences, editText: EditText): String? {
+        val emailText = editText.text.toString()
+        val emailStore = localDB.getString(SingletonKey.KEY_EMAIL)
+        if (emailText != emailStore) {
+            return context.resources.getString(R.string.txt_delete_email_not_match)
+        }
+        return null
+    }
 }
