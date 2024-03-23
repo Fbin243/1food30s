@@ -12,6 +12,8 @@ import com.zebrand.app1food30s.ui.menu.MenuFragment
 import com.zebrand.app1food30s.ui.offers.OffersFragment
 import com.zebrand.app1food30s.ui.profile.ProfileAfterLoginFragment
 import com.zebrand.app1food30s.ui.profile.ProfileFragment
+import com.zebrand.app1food30s.ultis.MySharedPreferences
+import com.zebrand.app1food30s.ultis.SingletonKey
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,11 +37,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleBottomNavigation() {
         binding.bottomNavView.setOnItemSelectedListener { menuItem ->
+            val mySharedPreferences = MySharedPreferences.getInstance(this)
+            val isLogin = mySharedPreferences.getBoolean(SingletonKey.KEY_LOGGED)
             when(menuItem.itemId) {
                 R.id.ic_home -> replaceFragment(HomeFragment())
                 R.id.ic_menu -> replaceFragment(MenuFragment())
                 R.id.ic_offers -> replaceFragment(OffersFragment())
-                R.id.ic_profile -> replaceFragment(ProfileFragment())
+                R.id.ic_profile -> {
+                    if (isLogin) {
+                        replaceFragment(ProfileAfterLoginFragment())
+                    } else {
+                        replaceFragment(ProfileFragment())
+                    }
+                }
 //                R.id.ic_cart -> replaceFragment(CartFragment())
             }
             true

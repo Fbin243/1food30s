@@ -149,6 +149,7 @@
     <string name="txt_default_date">01/01/2024</string>
     <string name="txt_delete_account">Delete account</string>
     <string name="txt_confirm_delete_account">Are you sure you want to delete your account?</string>
+    <string name="txt_confirm_forgot_password">Are you sure you want to reset your password?</string>
     <string name="txt_required">* Required</string>
     <string name="txt_invalid_email">"* Invalid email address"</string>
     <string name="txt_minimum_password">"* Minimum 6 character password"</string>

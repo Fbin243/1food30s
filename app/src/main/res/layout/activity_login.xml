@@ -119,6 +119,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical">
                 <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/rememberMe"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minHeight="0dp"

@@ -2,7 +2,10 @@ package com.zebrand.app1food30s.ultis
 
 
 object SingletonKey {
-    const val KEY_FIRST_LOGIN = "KEY_FIRST_LOGIN"
-    const val IS_ADMIN = "IS_ADMIN"
-    const val KEY_USER_ID = "KEY_USER_ID"
+    const val KEY_LOGGED = "KEY_LOGGED" //boolean
+    const val IS_ADMIN = "IS_ADMIN" // boolean
+    const val KEY_USER_ID = "KEY_USER_ID" //string
+    const val KEY_REMEMBER_ME = "KEY_REMEMBER_ME" //string
+    const val KEY_EMAIL = "KEY_EMAIL" //string
+    const val KEY_PASSWORD = "KEY_PASSWORD" //string
 }

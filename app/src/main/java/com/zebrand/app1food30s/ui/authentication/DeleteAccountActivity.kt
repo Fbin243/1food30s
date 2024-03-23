@@ -34,11 +34,11 @@ class DeleteAccountActivity : AppCompatActivity() {
 
     private fun events(){
         binding.confirmBtn.setOnClickListener {
-            showCustomConfirmDialgoBox()
+            showCustomConfirmDialogBox()
         }
     }
 
-    private fun showCustomConfirmDialgoBox() {
+    private fun showCustomConfirmDialogBox() {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setCancelable(false)

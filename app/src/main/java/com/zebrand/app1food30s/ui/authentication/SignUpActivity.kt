@@ -1,20 +1,13 @@
 package com.zebrand.app1food30s.ui.authentication
 
-import android.accounts.Account
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.User
 import com.zebrand.app1food30s.databinding.ActivitySignUpBinding
-import com.zebrand.app1food30s.ultis.FireStoreUltis
+import com.zebrand.app1food30s.ultis.FireStoreUtils
 import com.zebrand.app1food30s.ultis.FirebaseUtils
 import com.zebrand.app1food30s.ultis.ValidateInput
 
@@ -96,7 +89,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setUserData(user: User) {
-        val userRef = FireStoreUltis.mDBUserRef
+        val userRef = FireStoreUtils.mDBUserRef
         userRef.add(user)
     }
 

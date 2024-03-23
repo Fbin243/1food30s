@@ -14,11 +14,11 @@ import com.zebrand.app1food30s.data.User
 import com.zebrand.app1food30s.databinding.ActivitySplashBinding
 import com.zebrand.app1food30s.ui.main.AdminActivity
 import com.zebrand.app1food30s.ui.main.MainActivity
-import com.zebrand.app1food30s.ultis.FireStoreUltis
+import com.zebrand.app1food30s.ultis.FireStoreUtils
 import com.zebrand.app1food30s.ultis.FirebaseUtils
+import com.zebrand.app1food30s.ultis.GlobalUtils
 import com.zebrand.app1food30s.ultis.MySharedPreferences
 import com.zebrand.app1food30s.ultis.SingletonKey
-import java.util.logging.Handler
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
@@ -45,9 +45,11 @@ class SplashActivity : AppCompatActivity() {
 
     private fun nextActivity(ref: MySharedPreferences) {
         val user = FirebaseUtils.fireAuth.currentUser
-        if (user == null || !ref.getBoolean(SingletonKey.KEY_FIRST_LOGIN)) {
+        Log.d("userInfo", user.toString() + ref.getBoolean(SingletonKey.KEY_LOGGED).toString())
+        if (user == null || !ref.getBoolean(SingletonKey.KEY_LOGGED)) {
             // Not logged in
-            myStartActivity(LoginActivity::class.java)
+//            myStartActivity(LoginActivity::class.java)
+            GlobalUtils.myStartActivityFinishAffinity(this, MainActivity::class.java)
         } else {
             // Logged in
 //            authorization(user)
@@ -61,7 +63,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun authorization(user: FirebaseUser) {
-        val mUser = FireStoreUltis.mDBUserRef
+        val mUser = FireStoreUtils.mDBUserRef
 
         mUser.whereEqualTo("email", user.email)
             .get()

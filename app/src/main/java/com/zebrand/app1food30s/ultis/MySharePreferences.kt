@@ -24,9 +24,9 @@ class MySharedPreferences private constructor(context: Context) {
     }
 
     companion object {
-        private const val PREF_NAME = "MySharedPreferences"
-        private const val defaultStringValue = "DEFAULT"
-        private const val defaultBooleanValue = false
+        const val PREF_NAME = "MySharedPreferences"
+        const val defaultStringValue = "DEFAULT"
+        const val defaultBooleanValue = false
 
         @Volatile
         private var instance: MySharedPreferences? = null

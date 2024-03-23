@@ -4,20 +4,16 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
-import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.auth.FirebaseUser
-import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.User
 import com.zebrand.app1food30s.databinding.ActivityLoginBinding
 import com.zebrand.app1food30s.ui.main.AdminActivity
 import com.zebrand.app1food30s.ui.main.MainActivity
-import com.zebrand.app1food30s.ultis.FireStoreUltis
+import com.zebrand.app1food30s.ultis.FireStoreUtils
 import com.zebrand.app1food30s.ultis.FirebaseUtils
 import com.zebrand.app1food30s.ultis.MySharedPreferences
 import com.zebrand.app1food30s.ultis.SingletonKey
@@ -25,6 +21,7 @@ import com.zebrand.app1food30s.ultis.ValidateInput
 
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
+    val mySharePreference = MySharedPreferences.getInstance(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,8 +33,19 @@ class LoginActivity : AppCompatActivity() {
             }
         }
         setContentView(binding.root)
-
+        init()
         events()
+    }
+
+    private fun init(){
+        val rememberMe = mySharePreference.getBoolean(SingletonKey.KEY_REMEMBER_ME)
+        val email = mySharePreference.getString(SingletonKey.KEY_EMAIL)
+        val password = mySharePreference.getString(SingletonKey.KEY_PASSWORD)
+        binding.rememberMe.isChecked = rememberMe
+        if(rememberMe){
+            binding.tvEmail.setText(email)
+            binding.tvPassword.setText(password)
+        }
     }
 
     private fun events() {
@@ -55,6 +63,14 @@ class LoginActivity : AppCompatActivity() {
             onClickLogin()
         }
 
+        binding.backIcon.root.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
+        binding.rememberMe.setOnCheckedChangeListener { _, isChecked -> //buttonView, isChecked
+            mySharePreference.setBoolean(SingletonKey.KEY_REMEMBER_ME, isChecked)
+        }
+
         ValidateInput.emailFocusListener(this, binding.tvEmail, binding.emailContainer)
         ValidateInput.passwordFocusListener(this, binding.tvPassword, binding.passwordContainer)
     }
@@ -68,9 +84,8 @@ class LoginActivity : AppCompatActivity() {
         mAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Set KEY_FIRST_LOGIN
-                    val mySharePreference = MySharedPreferences.getInstance(this)
-                    setFirstLoginShareRef(mySharePreference)
+                    // Set KEY_LOGGED
+                    setKeyShareRef(email, password)
 
                     // Authorization
                     val user = mAuth.currentUser
@@ -85,7 +100,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun authorization(user: FirebaseUser?, mySharePreference: MySharedPreferences) {
-        val query = FireStoreUltis.mDBUserRef.whereEqualTo("email", user?.email).limit(1)
+        val query = FireStoreUtils.mDBUserRef.whereEqualTo("email", user?.email).limit(1)
         query.get().addOnSuccessListener { queryDocumentSnapshots ->
             for (documentSnapshot in queryDocumentSnapshots) {
                 val userInfo = documentSnapshot.toObject(User::class.java)
@@ -111,8 +126,10 @@ class LoginActivity : AppCompatActivity() {
         finishAffinity()
     }
 
-    private fun setFirstLoginShareRef(mySharePreference: MySharedPreferences) {
-        mySharePreference.setBoolean(SingletonKey.KEY_FIRST_LOGIN, true)
+    private fun setKeyShareRef(email: String, password: String) {
+        mySharePreference.setBoolean(SingletonKey.KEY_LOGGED, true)
+        mySharePreference.setString(SingletonKey.KEY_EMAIL, email)
+        mySharePreference.setString(SingletonKey.KEY_PASSWORD, password)
     }
 
     private fun checkValid(): Boolean {
