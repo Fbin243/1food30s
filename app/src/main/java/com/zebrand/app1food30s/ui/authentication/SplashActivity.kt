@@ -62,28 +62,28 @@ class SplashActivity : AppCompatActivity() {
         }
     }
 
-    private fun authorization(user: FirebaseUser) {
-        val mUser = FireStoreUtils.mDBUserRef
-
-        mUser.whereEqualTo("email", user.email)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                if (!querySnapshot.isEmpty) {
-                    val userObject = querySnapshot.documents[0].toObject(User::class.java)
-
-                    val mySharedPreferences = MySharedPreferences.getInstance(this)
-                    val firstLogin =
-
-                    Log.d("userInfo", user.toString())
-                } else {
-                    Log.d("userInfo", "User not found")
-                }
-            }
-            .addOnFailureListener { exception ->
-                // Handle errors
-                Log.e("Error", "Error getting user:", exception)
-            }
-    }
+//    private fun authorization(user: FirebaseUser) {
+//        val mUser = FireStoreUtils.mDBUserRef
+//
+//        mUser.whereEqualTo("email", user.email)
+//            .get()
+//            .addOnSuccessListener { querySnapshot ->
+//                if (!querySnapshot.isEmpty) {
+//                    val userObject = querySnapshot.documents[0].toObject(User::class.java)
+//
+//                    val mySharedPreferences = MySharedPreferences.getInstance(this)
+//                    val firstLogin =
+//
+//                    Log.d("userInfo", user.toString())
+//                } else {
+//                    Log.d("userInfo", "User not found")
+//                }
+//            }
+//            .addOnFailureListener { exception ->
+//                // Handle errors
+//                Log.e("Error", "Error getting user:", exception)
+//            }
+//    }
 
     private fun myStartActivity(cls: Class<*>) {
         val intent = Intent(this, cls)

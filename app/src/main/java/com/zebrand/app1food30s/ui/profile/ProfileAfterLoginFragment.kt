@@ -20,22 +20,6 @@ import com.zebrand.app1food30s.ultis.SingletonKey
 class ProfileAfterLoginFragment : Fragment() {
     private lateinit var binding: FragmentProfileAfterLoginBinding
 
-    companion object{
-        fun signOut(context: Context){
-            val mAuth = FirebaseUtils.fireAuth
-            val mySharedPreferences = MySharedPreferences.getInstance(context)
-
-//            Sign out
-            mAuth.signOut()
-
-//            Clear data in local DB
-            GlobalUtils.resetMySharedPreferences(mySharedPreferences)
-
-//            Start activity
-            GlobalUtils.myStartActivityFinishAffinity(context, MainActivity::class.java)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,12 +32,26 @@ class ProfileAfterLoginFragment : Fragment() {
 
     private fun events() {
         binding.btnLogout.setOnClickListener {
-            signOut(requireContext())
+            signOut()
         }
 
         binding.layoutDeleteAccount.setOnClickListener {
             GlobalUtils.myStartActivity(requireContext(), DeleteAccountActivity::class.java)
         }
+    }
+
+    fun signOut(){
+        val mAuth = FirebaseUtils.fireAuth
+        val mySharedPreferences = MySharedPreferences.getInstance(requireContext())
+
+//            Sign out
+        mAuth.signOut()
+
+//            Clear data in local DB
+        GlobalUtils.resetMySharedPreferences(mySharedPreferences)
+
+//            Start activity
+        GlobalUtils.myStartActivityFinishAffinity(requireContext(), MainActivity::class.java)
     }
 
 //    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

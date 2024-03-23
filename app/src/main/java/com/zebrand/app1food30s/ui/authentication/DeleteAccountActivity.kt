@@ -104,8 +104,7 @@ class DeleteAccountActivity : AppCompatActivity() {
                                 Toast.makeText(this, "Deleted account.", Toast.LENGTH_SHORT).show()
 
                                 android.os.Handler(Looper.getMainLooper()).postDelayed({
-                                    ProfileAfterLoginFragment.signOut(this)
-                                    deleteAccountCloud()
+                                    deleteAccountLogic()
                                 }, 2000)
                             }
                         }
@@ -113,10 +112,22 @@ class DeleteAccountActivity : AppCompatActivity() {
             }
     }
 
-    private fun deleteAccountCloud(){
+    private fun deleteAccountLogic(){
+        val mAuth = FirebaseUtils.fireAuth
+
+//            Sign out
+        mAuth.signOut()
+
+//        Init account
         val mDBUser = FireStoreUtils.mDBUserRef
         val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID)
+
+//        Init cart
+        val mDBCart = FireStoreUtils.mDBCartRef
+        val query = mDBCart.whereEqualTo("accountId", userId).limit(1)
+
         if (userId != null) {
+//            Delete account
             val userRef = mDBUser.document(userId)
             userRef.delete()
                 .addOnSuccessListener {
@@ -125,27 +136,30 @@ class DeleteAccountActivity : AppCompatActivity() {
                 .addOnFailureListener { e ->
                     Log.w("TAG", "Error deleting document", e)
                 }
+
+//            Delete cart
+            query.get().addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot) {
+                    document.reference.delete()
+                        .addOnSuccessListener {
+                            Log.d("TAG", "Document successfully deleted!")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w("TAG", "Error deleting document", e)
+                        }
+                }
+            }.addOnFailureListener { e ->
+                Log.w("TAG", "Error getting documents", e)
+            }
         } else {
             Log.d("TAG", "No user ID found in SharedPreferences")
         }
 
-        val mDBCart = FireStoreUtils.mDBCartRef
-        val query = mDBCart.whereEqualTo("accountId", userId)
+        //            Start activity
+        GlobalUtils.myStartActivityFinishAffinity(this, MainActivity::class.java)
 
-        query.get().addOnSuccessListener { querySnapshot ->
-            for (document in querySnapshot) {
-                document.reference.delete()
-                    .addOnSuccessListener {
-                        Log.d("TAG", "Document successfully deleted!")
-                    }
-                    .addOnFailureListener { e ->
-                        Log.w("TAG", "Error deleting document", e)
-                    }
-            }
-        }.addOnFailureListener { e ->
-            Log.w("TAG", "Error getting documents", e)
-        }
-
+        //            Clear data in local DB
+        GlobalUtils.resetMySharedPreferences(mySharePreference)
     }
 
     private fun checkValid(): Boolean {

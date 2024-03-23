@@ -2,11 +2,14 @@ package com.zebrand.app1food30s.ui.authentication
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.firestore
 import com.zebrand.app1food30s.data.Cart
 import com.zebrand.app1food30s.data.User
 import com.zebrand.app1food30s.databinding.ActivitySignUpBinding
@@ -98,11 +101,22 @@ class SignUpActivity : AppCompatActivity() {
         val userDoc: DocumentReference = userRef.document() // Automatically generates a unique document ID
         val cartDoc: DocumentReference = cartRef.document() // Automatically generates a unique document ID
 
-        val cart = Cart(id = cartDoc.id, accountId = userDoc)
-        user.id = userDoc.id
-        
-        userRef.add(user)
-        cartRef.add(cart)
+        val userId = userDoc.id
+        val cartId = cartDoc.id
+
+        val cart = Cart(id = cartId, accountId = userDoc)
+        user.id = userId
+
+        userDoc.set(user)
+        cartDoc.set(cart)
+            .addOnSuccessListener {
+                // Xử lý khi tài liệu được thêm thành công
+                println("Document added with ID: ${userDoc.id}")
+            }
+            .addOnFailureListener { e ->
+                // Xử lý lỗi nếu có
+                println("Error adding document: $e")
+            }
     }
 
     private fun checkValid(): Boolean {
