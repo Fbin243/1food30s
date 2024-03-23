@@ -7,23 +7,23 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.auth.FirebaseUser
-import com.zebrand.app1food30s.data.Account
+import com.zebrand.app1food30s.data.User
 import com.zebrand.app1food30s.databinding.ActivitySplashBinding
 import com.zebrand.app1food30s.ui.main.AdminActivity
 import com.zebrand.app1food30s.ui.main.MainActivity
 import com.zebrand.app1food30s.ultis.FireStoreUltis
 import com.zebrand.app1food30s.ultis.FirebaseUtils
 import com.zebrand.app1food30s.ultis.MySharedPreferences
+import com.zebrand.app1food30s.ultis.SingletonKey
 import java.util.logging.Handler
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
     lateinit var binding: ActivitySplashBinding
-    companion object {
-        const val KEY_FIRST_INSTALL = "KEY_FIRST_INSTALL"
-    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
@@ -39,33 +39,48 @@ class SplashActivity : AppCompatActivity() {
 
         android.os.Handler(Looper.getMainLooper()).postDelayed({
             nextActivity(mySharedPreferences)
-        }, 2000)
+        }, 1500)
 
     }
 
     private fun nextActivity(ref: MySharedPreferences) {
         val user = FirebaseUtils.fireAuth.currentUser
-        if (user == null || !ref.getBoolean(LoginActivity.KEY_FIRST_LOGIN)) {
+        if (user == null || !ref.getBoolean(SingletonKey.KEY_FIRST_LOGIN)) {
             // Not logged in
             myStartActivity(LoginActivity::class.java)
         } else {
             // Logged in
-            authorization(user)
+//            authorization(user)
+            val isAdmin = ref.getBoolean(SingletonKey.IS_ADMIN)
+            if (isAdmin) {
+                myStartActivity(AdminActivity::class.java)
+            } else {
+                myStartActivity(MainActivity::class.java)
+            }
         }
     }
 
     private fun authorization(user: FirebaseUser) {
-        val query = FireStoreUltis.mDBUserRef.whereEqualTo("email", user.email).limit(1)
-        query.get().addOnSuccessListener { queryDocumentSnapshots ->
-            for (documentSnapshot in queryDocumentSnapshots) {
-                val userInfo = documentSnapshot.toObject(Account::class.java)
-                if (userInfo.isAdmin) {
-                    myStartActivity(AdminActivity::class.java)
+        val mUser = FireStoreUltis.mDBUserRef
+
+        mUser.whereEqualTo("email", user.email)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    val userObject = querySnapshot.documents[0].toObject(User::class.java)
+
+                    val mySharedPreferences = MySharedPreferences.getInstance(this)
+                    val firstLogin =
+
+                    Log.d("userInfo", user.toString())
                 } else {
-                    myStartActivity(MainActivity::class.java)
+                    Log.d("userInfo", "User not found")
                 }
             }
-        }
+            .addOnFailureListener { exception ->
+                // Handle errors
+                Log.e("Error", "Error getting user:", exception)
+            }
     }
 
     private fun myStartActivity(cls: Class<*>) {
