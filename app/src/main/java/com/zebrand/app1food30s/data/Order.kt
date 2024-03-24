@@ -22,22 +22,11 @@ data class Order(
     val totalAmount: Double = 0.0,
     val orderStatus: String = "",
     val cancelReason: String = "",
+    val shippingAddress: String = "",
+    val paymentStatus: String = "",
+    val note: String = "",
     @get:ServerTimestamp
     val date: Date? = null
 )
-
-//data class Product(
-//    val id: String = "",
-//    val idCategory: DocumentReference? = null,
-//    val idOffer: DocumentReference? = null,
-//    val name: String = "",
-//    val image: String = "", // Firebase Storage
-//    val price: Double = 0.0,
-//    val description: String = "",
-//    val stock: Int = 0,
-//    val sold: Int = 0,
-//    val reviews: List<Review>? = emptyList(),
-//    val date: Date? = Date() // Date the product is created
-//)
 
 
