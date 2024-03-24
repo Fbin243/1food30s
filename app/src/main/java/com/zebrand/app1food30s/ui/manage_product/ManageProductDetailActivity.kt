@@ -166,7 +166,7 @@ class ManageProductDetailActivity : AppCompatActivity() {
                     categoriesList.add(document.getString("name") ?: "")
                 }
                 val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesList)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                adapter.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
                 categorySpinner.adapter = adapter
             }
             .addOnFailureListener { exception ->
@@ -184,7 +184,7 @@ class ManageProductDetailActivity : AppCompatActivity() {
                     offersList.add(document.getString("name") ?: "")
                 }
                 val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, offersList)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                adapter.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
                 offerSpinner.adapter = adapter
             }
             .addOnFailureListener { exception ->

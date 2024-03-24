@@ -1,6 +1,6 @@
 package com.zebrand.app1food30s.ui.edit_product
 
-import android.R
+import com.zebrand.app1food30s.R
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -181,8 +181,8 @@ class EditProduct : AppCompatActivity() {
                 for (document in documents) {
                     categoriesList.add(document.getString("name") ?: "")
                 }
-                val adapter = ArrayAdapter(this, R.layout.simple_spinner_item, categoriesList)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesList)
+                adapter.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
                 categorySpinner.adapter = adapter
 
                 val selectedPosition = categoriesList.indexOf(categoryStr)
@@ -204,8 +204,8 @@ class EditProduct : AppCompatActivity() {
                 for (document in documents) {
                     offerList.add(document.getString("name") ?: "")
                 }
-                val adapter = ArrayAdapter(this, R.layout.simple_spinner_item, offerList)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, offerList)
+                adapter.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
                 offerSpinner.adapter = adapter
 
                 val selectedPosition = offerList.indexOf(offerStr)

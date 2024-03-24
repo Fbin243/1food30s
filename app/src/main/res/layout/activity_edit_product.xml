@@ -107,7 +107,8 @@
             <Spinner
                 android:id="@+id/category_spinner"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:paddingHorizontal="@dimen/spacing8"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -169,7 +170,8 @@
             <Spinner
                 android:id="@+id/offer_spinner"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:paddingHorizontal="@dimen/spacing8"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -243,8 +245,8 @@
             android:id="@+id/image_product"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:paddingStart="@dimen/spacing20"
-            android:paddingTop="@dimen/spacing14"
+            android:paddingHorizontal="@dimen/spacing20"
+            android:paddingVertical="@dimen/spacing14"
             android:src="@drawable/upload"
             android:background="@drawable/dashed_border"
             app:layout_constraintTop_toBottomOf="@+id/description_layout"
