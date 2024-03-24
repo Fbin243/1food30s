@@ -1,6 +1,5 @@
 package com.zebrand.app1food30s.data
 
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.ServerTimestamp
 import java.util.Date
