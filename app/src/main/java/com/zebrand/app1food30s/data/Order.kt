@@ -21,7 +21,7 @@ data class Order(
     val items: MutableList<OrderItem> = mutableListOf(),
     val totalAmount: Double = 0.0,
     val orderStatus: String = "",
-    val cancelReason: String = "",
+    val cancelReason: String? = "",
     val shippingAddress: String = "",
     val paymentStatus: String = "",
     val note: String = "",

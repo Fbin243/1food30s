@@ -28,12 +28,10 @@ class ProfileAfterLoginFragment : Fragment() {
     ): View {
         binding = FragmentProfileAfterLoginBinding.inflate(inflater, container, false)
         events()
-        
-        TODO("Sửa code")
-        // ========== Code này ở branch Hai3 (có thể sửa lại dùng binding) =========
+
+        // ========== Code này ở branch Hai3 (đã sửa lại dùng binding) =========
         // Set up the click listener for the layoutMyOrders
-        val layoutMyOrders = view.findViewById<View>(R.id.layoutMyOrders)
-        layoutMyOrders.setOnClickListener {
+        binding.layoutMyOrders.setOnClickListener {
             // Navigate to AdminStatisticsActivity
             val intent = Intent(activity, AdminStatsActivity::class.java)
             startActivity(intent)
