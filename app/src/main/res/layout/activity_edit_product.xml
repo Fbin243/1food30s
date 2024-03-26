@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.authentication.LoginActivity">
+    tools:context=".ui.edit_product.EditProduct">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -258,11 +258,11 @@
 
 
         <Button
-            android:id="@+id/create_btn"
+            android:id="@+id/save_btn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing60"
             android:backgroundTint="@color/primary"
-            android:text="@string/txt_create"
+            android:text="@string/txt_save"
             android:textSize="@dimen/font_size16"
             android:textStyle="bold"
             android:layout_marginTop="@dimen/spacing50"

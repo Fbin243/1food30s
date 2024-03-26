@@ -35,7 +35,7 @@
                 android:id="@+id/productTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
+                android:maxLines="1"
                 android:text="Sweet &amp; Sour Chicken"
                 android:textSize="@dimen/font_default"
                 android:fontFamily="@font/rubik_semibold" />
@@ -55,6 +55,7 @@
                     android:id="@+id/productDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
                     android:text="Vegetable"
                     android:textSize="@dimen/font_size12"
                     />
