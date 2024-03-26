@@ -1,13 +1,24 @@
 package com.zebrand.app1food30s.ui.authentication
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.os.Looper
+import android.view.Window
+import android.widget.Button
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.ActivityForgotPasswordBinding
-import com.zebrand.app1food30s.databinding.ActivityLoginBinding
+import com.zebrand.app1food30s.databinding.DialogDeleteAccountBinding
+import com.zebrand.app1food30s.ultis.FirebaseUtils
+import com.zebrand.app1food30s.ultis.GlobalUtils
+import com.zebrand.app1food30s.ultis.ValidateInput
 
 class ForgotPasswordActivity : AppCompatActivity() {
-    lateinit var binding:ActivityForgotPasswordBinding
+    lateinit var binding: ActivityForgotPasswordBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityForgotPasswordBinding.inflate(layoutInflater)
@@ -16,7 +27,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
         events()
     }
 
-    private fun events(){
+    private fun events() {
         binding.tvLogin.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
@@ -24,5 +35,63 @@ class ForgotPasswordActivity : AppCompatActivity() {
         binding.backIcon.root.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
+
+        binding.confirmBtn.setOnClickListener {
+            if (checkValid()) {
+                showCustomConfirmDialogBox()
+            }
+        }
+
+        ValidateInput.emailFocusListener(this, binding.tvEmail, binding.emailContainer)
+    }
+
+    private fun checkValid(): Boolean {
+        binding.emailContainer.error = ValidateInput.validEmail(this, binding.tvEmail)
+
+        val validEmail = binding.emailContainer.error == null
+
+        return validEmail
+    }
+
+    private fun showCustomConfirmDialogBox() {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        val bindingSub: DialogDeleteAccountBinding =
+            DialogDeleteAccountBinding.inflate(layoutInflater)
+        dialog.setContentView(bindingSub.root)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        val acceptBtn: Button = dialog.findViewById(R.id.saveBtn)
+        val cancel: Button = dialog.findViewById(R.id.cancelBtn)
+
+        bindingSub.content = resources.getString(R.string.txt_confirm_forgot_password)
+
+        acceptBtn.setOnClickListener {
+            resetPassword()
+            dialog.dismiss()
+        }
+
+        cancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun resetPassword() {
+        val mAuth = FirebaseUtils.fireAuth
+        val email = binding.tvEmail.text.toString()
+
+        mAuth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(this, "Email sent.", Toast.LENGTH_SHORT).show()
+
+                    android.os.Handler(Looper.getMainLooper()).postDelayed({
+                        onBackPressedDispatcher.onBackPressed()
+                    }, 1500)
+                }
+            }
     }
 }

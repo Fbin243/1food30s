@@ -47,11 +47,15 @@
             />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_first_name"
+            android:id="@+id/firstNameContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/header_title"
             app:boxStrokeColor="@color/primary"
+
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+
             android:layout_marginTop="@dimen/spacing32"
             app:boxCornerRadiusTopStart="@dimen/radius8"
             app:boxCornerRadiusTopEnd="@dimen/radius8"
@@ -62,6 +66,7 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tvFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
                 android:hint="@string/txt_first_name"
@@ -70,12 +75,15 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_last_name"
+            android:id="@+id/lastNameContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/tf_first_name"
+            app:layout_constraintTop_toBottomOf="@+id/firstNameContainer"
             app:boxStrokeColor="@color/primary"
-            android:layout_marginTop="@dimen/spacing20"
+
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+
             app:boxCornerRadiusTopStart="@dimen/radius8"
             app:boxCornerRadiusTopEnd="@dimen/radius8"
             app:boxCornerRadiusBottomStart="@dimen/radius8"
@@ -85,6 +93,7 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tvLastName"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
                 android:hint="@string/txt_last_name"
@@ -93,12 +102,15 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_email"
+            android:id="@+id/emailContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/tf_last_name"
+            app:layout_constraintTop_toBottomOf="@+id/lastNameContainer"
             app:boxStrokeColor="@color/primary"
-            android:layout_marginTop="@dimen/spacing20"
+
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+
             app:boxCornerRadiusTopStart="@dimen/radius8"
             app:boxCornerRadiusTopEnd="@dimen/radius8"
             app:boxCornerRadiusBottomStart="@dimen/radius8"
@@ -108,6 +120,7 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tvEmail"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
                 android:hint="@string/txt_email"
@@ -117,12 +130,15 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_password"
+            android:id="@+id/passwordContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/tf_email"
+            app:layout_constraintTop_toBottomOf="@+id/emailContainer"
             app:boxStrokeColor="@color/primary"
-            android:layout_marginTop="@dimen/spacing20"
+
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+
             app:boxCornerRadiusTopStart="@dimen/radius8"
             app:boxCornerRadiusTopEnd="@dimen/radius8"
             app:boxCornerRadiusBottomStart="@dimen/radius8"
@@ -133,6 +149,7 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tvPassword"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
                 android:hint="@string/txt_password"
@@ -142,12 +159,15 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_retype_password"
+            android:id="@+id/rePasswordContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/tf_password"
+            app:layout_constraintTop_toBottomOf="@+id/passwordContainer"
             app:boxStrokeColor="@color/primary"
-            android:layout_marginTop="@dimen/spacing20"
+
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+
             app:boxCornerRadiusTopStart="@dimen/radius8"
             app:boxCornerRadiusTopEnd="@dimen/radius8"
             app:boxCornerRadiusBottomStart="@dimen/radius8"
@@ -158,6 +178,7 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tvRePassword"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
                 android:hint="@string/txt_confirm_password"
@@ -167,15 +188,14 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/login_btn"
+            android:id="@+id/signUpBtn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing60"
             android:text="@string/txt_sign_up"
             android:textSize="@dimen/font_size16"
             android:textStyle="bold"
             android:backgroundTint="@color/primary"
-            android:layout_marginTop="@dimen/spacing20"
-            app:layout_constraintTop_toBottomOf="@+id/tf_retype_password"
+            app:layout_constraintTop_toBottomOf="@+id/rePasswordContainer"
             app:layout_constraintLeft_toLeftOf="parent"
             />
 
@@ -183,7 +203,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/login_btn"
+            app:layout_constraintTop_toBottomOf="@+id/signUpBtn"
             app:layout_constraintLeft_toLeftOf="parent"
             android:gravity="center"
             android:layout_marginTop="@dimen/spacing16">

@@ -44,4 +44,37 @@
         <item name="boxStrokeWidthFocused">0dp</item>
     </style>
 
+<!--    Bottom sheet -->
+    <style name="BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@color/transparent</item>
+    </style>
+
+    <style name="BottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
+    </style>
+
+<!--   Border bottom sheet -->
+    <style name="CustomCardViewStyle" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
+
+    <style name="ShapeAppearanceOverlay_card_custom_corners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">@dimen/spacing16</item>
+        <item name="cornerSizeTopLeft">@dimen/spacing16</item>
+        <item name="cornerSizeBottomRight">@dimen/spacing0</item>
+        <item name="cornerSizeBottomLeft">@dimen/spacing0</item>
+    </style>
+
+<!--    Date picker filter-->
+    <style name="MyDatePickerDialogStyle" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="colorAccent">@color/primary</item>
+        <item name="minWidth">320dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/Widget.MaterialComponents.Button.TextButton.Dialog</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/Widget.MaterialComponents.Button.TextButton.Dialog</item>
+    </style>
+
 </resources>

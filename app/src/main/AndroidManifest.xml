@@ -18,6 +18,21 @@
             android:name=".ui.edit_product.EditProduct"
             android:exported="false" />
         <activity
+            android:name=".ui.main.AdminActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.authentication.SplashActivity"
+            android:exported="true">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+        <activity
+            android:name=".ui.authentication.DeleteAccountActivity"
+            android:exported="false"/>
+        <activity
             android:name=".ui.manage_category.ManageCategory"
             android:exported="false" />
         <activity
@@ -51,15 +66,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.manage_order.ManageOrderActivity"
-            android:exported="true">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+            android:exported="true"/>
         <activity
             android:name=".ui.review.ReviewActivity"
             android:exported="false" />
@@ -71,7 +78,13 @@
             android:exported="true" />
         <activity
             android:name=".ui.my_order.MyOrderActivity"
-            android:exported="true" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.my_order.MyOrderDetailsActivity"
             android:exported="false" />
@@ -84,15 +97,10 @@
         <activity
             android:name=".ui.authentication.LoginActivity"
             android:exported="true" />
+        <!-- ADMIN -->
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity> <!-- ADMIN -->
+            android:exported="true" />
         <activity
             android:name=".ui.admin_stats.AdminStatsActivity"
             android:exported="true" />

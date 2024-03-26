@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.ui.profile
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,15 +9,28 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.ui.admin_stats.AdminStatsActivity
+import com.zebrand.app1food30s.databinding.FragmentProfileAfterLoginBinding
+import com.zebrand.app1food30s.ui.authentication.DeleteAccountActivity
+import com.zebrand.app1food30s.ui.authentication.LoginActivity
+import com.zebrand.app1food30s.ui.main.MainActivity
+import com.zebrand.app1food30s.ultis.FirebaseUtils
+import com.zebrand.app1food30s.ultis.GlobalUtils
+import com.zebrand.app1food30s.ultis.MySharedPreferences
+import com.zebrand.app1food30s.ultis.SingletonKey
+
 
 class ProfileAfterLoginFragment : Fragment() {
+    private lateinit var binding: FragmentProfileAfterLoginBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_profile_after_login, container, false)
-
+    ): View {
+        binding = FragmentProfileAfterLoginBinding.inflate(inflater, container, false)
+        events()
+        
+        TODO("Sửa code")
+        // ========== Code này ở branch Hai3 (có thể sửa lại dùng binding) =========
         // Set up the click listener for the layoutMyOrders
         val layoutMyOrders = view.findViewById<View>(R.id.layoutMyOrders)
         layoutMyOrders.setOnClickListener {
@@ -24,7 +38,33 @@ class ProfileAfterLoginFragment : Fragment() {
             val intent = Intent(activity, AdminStatsActivity::class.java)
             startActivity(intent)
         }
+        // ================================================================
 
-        return view
+        return binding.root
     }
+
+    private fun events() {
+        binding.btnLogout.setOnClickListener {
+            signOut()
+        }
+
+        binding.layoutDeleteAccount.setOnClickListener {
+            GlobalUtils.myStartActivity(requireContext(), DeleteAccountActivity::class.java)
+        }
+    }
+
+    fun signOut(){
+        val mAuth = FirebaseUtils.fireAuth
+        val mySharedPreferences = MySharedPreferences.getInstance(requireContext())
+
+//            Sign out
+        mAuth.signOut()
+
+//            Clear data in local DB
+        GlobalUtils.resetMySharedPreferences(mySharedPreferences)
+
+//            Start activity
+        GlobalUtils.myStartActivityFinishAffinity(requireContext(), MainActivity::class.java)
+    }
+
 }

@@ -47,12 +47,15 @@
             />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_email"
+            android:id="@+id/emailContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/header_title"
             app:boxStrokeColor="@color/primary"
-            android:layout_marginTop="@dimen/spacing32"
+
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+
             app:boxCornerRadiusTopStart="@dimen/radius8"
             app:boxCornerRadiusTopEnd="@dimen/radius8"
             app:boxCornerRadiusBottomStart="@dimen/radius8"
@@ -62,6 +65,7 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tvEmail"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
                 android:hint="@string/txt_email"
@@ -71,12 +75,15 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_password"
+            android:id="@+id/passwordContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/tf_email"
+            app:layout_constraintTop_toBottomOf="@+id/emailContainer"
             app:boxStrokeColor="@color/primary"
-            android:layout_marginTop="@dimen/spacing20"
+
+            app:errorEnabled="true"
+            app:errorIconDrawable="@null"
+
             app:boxCornerRadiusTopStart="@dimen/radius8"
             app:boxCornerRadiusTopEnd="@dimen/radius8"
             app:boxCornerRadiusBottomStart="@dimen/radius8"
@@ -87,6 +94,7 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tvPassword"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
                 android:hint="@string/txt_password"
@@ -100,9 +108,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@+id/tf_password"
+            app:layout_constraintTop_toBottomOf="@+id/passwordContainer"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginTop="@dimen/spacing12"
             android:weightSum="2"
             android:gravity="center_vertical">
             <LinearLayout
@@ -112,6 +119,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical">
                 <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/rememberMe"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:minHeight="0dp"

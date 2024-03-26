@@ -26,4 +26,5 @@
     <color name="snackbar">#596A27</color>
     <color name="snackbar_background">#CBD5B0</color>
     <color name="admin_background">#EEF3E1</color>
+    <color name="splash_color">#B9D5AC63</color>
 </resources>
