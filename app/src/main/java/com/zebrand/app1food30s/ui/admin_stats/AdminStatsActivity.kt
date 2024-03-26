@@ -13,6 +13,12 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zebrand.app1food30s.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -26,22 +32,7 @@ class AdminStatsActivity : AppCompatActivity() {
 
         myGridRecyclerView = findViewById(R.id.my_grid_recycler_view)
 
-        getTotalNumberOfOrders { totalOrders ->
-            val myGridAdapter = MyGridAdapter(
-                arrayOf(
-                    MyGridAdapter.GridItem("Text 1", totalOrders, R.drawable.ic_total_orders),
-                    MyGridAdapter.GridItem("Text 2", 2, R.drawable.image),
-                    MyGridAdapter.GridItem("Text 3", 3, R.drawable.image),
-                    MyGridAdapter.GridItem("Text 4", 4, R.drawable.image),
-                )
-            )
-            myGridRecyclerView.adapter = myGridAdapter
-            val spanCount = 2 // Number of columns
-            myGridRecyclerView.layoutManager = GridLayoutManager(this@AdminStatsActivity, spanCount)
-            val spacing = 60 // Spacing in pixels
-            val includeEdge = false
-            myGridRecyclerView.addItemDecoration(GridSpacingItemDecoration(spanCount, spacing, includeEdge))
-        }
+        updateGridItems()
 
         val editTextNumberOfDays = findViewById<EditText>(R.id.editTextNumberOfDays)
         val textViewValue1 = findViewById<TextView>(R.id.textViewValue1)
@@ -56,13 +47,71 @@ class AdminStatsActivity : AppCompatActivity() {
         }
     }
 
-    private fun getTotalNumberOfOrders(callback: (Int) -> Unit) {
-        callback(1)
+    private fun updateGridItems() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val totalOrdersDeferred = async { getTotalNumberOfOrders() }
+            val totalPendingDeferred = async { getTotalOrdersWithStatus("Pending") }
+            val totalAcceptedDeferred = async { getTotalOrdersWithStatus("Order accepted") }
+            val totalDeliveringDeferred = async { getTotalOrdersWithStatus("On delivery") }
+            val totalDeliveredDeferred = async { getTotalOrdersWithStatus("Delivered") }
+
+            val totalOrders = totalOrdersDeferred.await()
+            val totalPending = totalPendingDeferred.await()
+            val totalAccepted = totalAcceptedDeferred.await()
+            val totalDelivering = totalDeliveringDeferred.await()
+            val totalDelivered = totalDeliveredDeferred.await()
+
+            // Now update the UI with totalOrders and totalPending
+            val myGridAdapter = MyGridAdapter(
+                arrayOf(
+                    MyGridAdapter.GridItem("Total Orders", totalOrders, R.drawable.ic_total_orders),
+                    MyGridAdapter.GridItem("Pending", totalPending, R.drawable.ic_box_pending),
+                    MyGridAdapter.GridItem("Accepted", totalAccepted, R.drawable.ic_box_accepted),
+                    MyGridAdapter.GridItem("On delivery", totalDelivering, R.drawable.ic_box_delivering),
+                    MyGridAdapter.GridItem("Delivered", totalDelivered, R.drawable.ic_box_delivered),
+                )
+            )
+            myGridRecyclerView.adapter = myGridAdapter
+            val spanCount = 2 // Number of columns
+            myGridRecyclerView.layoutManager = GridLayoutManager(this@AdminStatsActivity, spanCount)
+            val spacing = 60 // Spacing in pixels
+            val includeEdge = false
+            myGridRecyclerView.addItemDecoration(GridSpacingItemDecoration(spanCount, spacing, includeEdge))
+        }
     }
 
-    fun calculateRevenueAndDrawChart(days: Int, lineChart: LineChart, textViewValue1: TextView, textViewValue2: TextView) {
+    private suspend fun getTotalNumberOfOrders(): Int = withContext(Dispatchers.IO) {
         val db = FirebaseFirestore.getInstance()
-        val customersRef = db.collection("customers")
+        val ordersRef = db.collection("orders")
+        try {
+            val snapshot = ordersRef.get().await()
+            return@withContext snapshot.documents.size
+        } catch (e: Exception) {
+//            Log.e("Error", "Failed to fetch total number of orders", e)
+            return@withContext 0
+        }
+    }
+
+    private suspend fun getTotalOrdersWithStatus(orderStatus: String): Int = withContext(Dispatchers.IO) {
+        val db = FirebaseFirestore.getInstance()
+        val ordersRef = db.collection("orders")
+        try {
+            val snapshot = ordersRef.whereEqualTo("orderStatus", orderStatus).get().await()
+            return@withContext snapshot.documents.size
+        } catch (e: Exception) {
+//            Log.e("Error", "Failed to fetch orders with status $orderStatus", e)
+            return@withContext 0
+        }
+    }
+
+    private fun calculateRevenueAndDrawChart(
+        days: Int,
+        lineChart: LineChart,
+        textViewValue1: TextView,
+        textViewValue2: TextView
+    ) {
+        val db = FirebaseFirestore.getInstance()
+        val ordersRef = db.collection("orders")
 
         // Calculate the start date for the query
         val calendar = Calendar.getInstance()
@@ -75,45 +124,28 @@ class AdminStatsActivity : AppCompatActivity() {
         // Prepare to format dates
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-        customersRef.get().addOnSuccessListener { customerSnapshots ->
-            val customerCount = customerSnapshots.size()
-            var processedCustomers = 0
+        // Query orders that were created within the specified time frame
+        ordersRef.whereGreaterThan("date", startDate).get()
+            .addOnSuccessListener { orderSnapshots ->
+                if (orderSnapshots.isEmpty) {
+                    // No orders found, proceed to update the chart with no data
+                    updateChartAndTextViews(lineChart, revenuePerDay, days, textViewValue1, textViewValue2)
+                    return@addOnSuccessListener
+                }
 
-            if (customerCount == 0) {
-                // No customers found, proceed to update the chart with no data
+                orderSnapshots.forEach { orderDoc ->
+                    val totalAmount = orderDoc.getDouble("totalAmount") ?: 0.0
+                    val orderDate = orderDoc.getDate("date")
+                    val formattedDate = dateFormat.format(orderDate)
+                    revenuePerDay[formattedDate] = revenuePerDay.getOrDefault(formattedDate, 0.0) + totalAmount
+                }
+
+                // All orders processed, update the chart and TextViews
                 updateChartAndTextViews(lineChart, revenuePerDay, days, textViewValue1, textViewValue2)
-                return@addOnSuccessListener
             }
-
-            customerSnapshots.documents.forEach { customerDoc ->
-                val ordersRef = customerDoc.reference.collection("orders")
-                ordersRef.whereGreaterThan("date", startDate).get()
-                    .addOnSuccessListener { orderSnapshots ->
-                        orderSnapshots.forEach { orderDoc ->
-                            val totalAmount = orderDoc.getDouble("totalAmount") ?: 0.0
-                            val orderDate = orderDoc.getDate("date")
-                            val formattedDate = dateFormat.format(orderDate)
-                            revenuePerDay[formattedDate] = revenuePerDay.getOrDefault(formattedDate, 0.0) + totalAmount
-                        }
-                        processedCustomers++
-                        if (processedCustomers == customerCount) {
-                            // All customers processed, update the chart and TextViews
-                            updateChartAndTextViews(lineChart, revenuePerDay, days, textViewValue1, textViewValue2)
-                        }
-                    }
-                    .addOnFailureListener { e ->
-                        println("Error fetching orders: $e")
-                        processedCustomers++
-                        if (processedCustomers == customerCount) {
-                            // Handle partial failure scenario
-                            updateChartAndTextViews(lineChart, revenuePerDay, days, textViewValue1, textViewValue2)
-                        }
-                    }
-            }
-        }
             .addOnFailureListener { e ->
-                println("Error fetching customers: $e")
-                // Error fetching customers, update the chart with no data
+                println("Error fetching orders: $e")
+                // Error fetching orders, update the chart with no data
                 updateChartAndTextViews(lineChart, revenuePerDay, days, textViewValue1, textViewValue2)
             }
     }

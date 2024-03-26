@@ -1,22 +1,17 @@
 package com.zebrand.app1food30s.ui.cart
 
 import android.util.Log
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.data.Cart
-import com.zebrand.app1food30s.data.CartItem
 import com.zebrand.app1food30s.data.DetailedCartItem
-import com.zebrand.app1food30s.data.Product
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class CartPresenter(private val view: CartView) : CoroutineScope by CoroutineScope(Dispatchers.IO) {
+class CartPresenter(private val view: CartMVPView) : CoroutineScope by CoroutineScope(Dispatchers.IO) {
     private val db = FirebaseFirestore.getInstance()
     private val cartId = "mdXn8lvirHaAogStOY1K"
     private var detailedCartItems: List<DetailedCartItem> = emptyList()
