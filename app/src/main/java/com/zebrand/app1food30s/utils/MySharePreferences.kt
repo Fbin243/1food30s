@@ -1,4 +1,4 @@
-package com.zebrand.app1food30s.ultis
+package com.zebrand.app1food30s.utils
 
 import android.content.Context
 import android.content.SharedPreferences

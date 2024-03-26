@@ -1,22 +1,18 @@
 package com.zebrand.app1food30s.ui.profile
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.ui.admin_stats.AdminStatsActivity
 import com.zebrand.app1food30s.databinding.FragmentProfileAfterLoginBinding
 import com.zebrand.app1food30s.ui.authentication.DeleteAccountActivity
-import com.zebrand.app1food30s.ui.authentication.LoginActivity
 import com.zebrand.app1food30s.ui.main.MainActivity
-import com.zebrand.app1food30s.ultis.FirebaseUtils
-import com.zebrand.app1food30s.ultis.GlobalUtils
-import com.zebrand.app1food30s.ultis.MySharedPreferences
-import com.zebrand.app1food30s.ultis.SingletonKey
+import com.zebrand.app1food30s.utils.FirebaseUtils
+import com.zebrand.app1food30s.utils.GlobalUtils
+import com.zebrand.app1food30s.utils.MySharedPreferences
 
 
 class ProfileAfterLoginFragment : Fragment() {

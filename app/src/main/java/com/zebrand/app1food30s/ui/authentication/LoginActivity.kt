@@ -13,11 +13,11 @@ import com.zebrand.app1food30s.data.User
 import com.zebrand.app1food30s.databinding.ActivityLoginBinding
 import com.zebrand.app1food30s.ui.main.AdminActivity
 import com.zebrand.app1food30s.ui.main.MainActivity
-import com.zebrand.app1food30s.ultis.FireStoreUtils
-import com.zebrand.app1food30s.ultis.FirebaseUtils
-import com.zebrand.app1food30s.ultis.MySharedPreferences
-import com.zebrand.app1food30s.ultis.SingletonKey
-import com.zebrand.app1food30s.ultis.ValidateInput
+import com.zebrand.app1food30s.utils.FireStoreUtils
+import com.zebrand.app1food30s.utils.FirebaseUtils
+import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.SingletonKey
+import com.zebrand.app1food30s.utils.ValidateInput
 
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding

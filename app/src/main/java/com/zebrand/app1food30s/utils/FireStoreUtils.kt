@@ -1,6 +1,7 @@
-package com.zebrand.app1food30s.ultis
+package com.zebrand.app1food30s.utils
 
 import com.google.firebase.firestore.CollectionReference
+import com.zebrand.app1food30s.utils.FirebaseUtils
 
 object FireStoreUtils{
     val mDBUserRef:CollectionReference = FirebaseUtils.fireStore.collection("accounts")

@@ -9,13 +9,11 @@ import android.view.Window
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.ActivityForgotPasswordBinding
 import com.zebrand.app1food30s.databinding.DialogDeleteAccountBinding
-import com.zebrand.app1food30s.ultis.FirebaseUtils
-import com.zebrand.app1food30s.ultis.GlobalUtils
-import com.zebrand.app1food30s.ultis.ValidateInput
+import com.zebrand.app1food30s.utils.FirebaseUtils
+import com.zebrand.app1food30s.utils.ValidateInput
 
 class ForgotPasswordActivity : AppCompatActivity() {
     lateinit var binding: ActivityForgotPasswordBinding

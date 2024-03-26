@@ -9,16 +9,13 @@ import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
-import com.google.firebase.auth.FirebaseUser
-import com.zebrand.app1food30s.data.User
 import com.zebrand.app1food30s.databinding.ActivitySplashBinding
 import com.zebrand.app1food30s.ui.main.AdminActivity
 import com.zebrand.app1food30s.ui.main.MainActivity
-import com.zebrand.app1food30s.ultis.FireStoreUtils
-import com.zebrand.app1food30s.ultis.FirebaseUtils
-import com.zebrand.app1food30s.ultis.GlobalUtils
-import com.zebrand.app1food30s.ultis.MySharedPreferences
-import com.zebrand.app1food30s.ultis.SingletonKey
+import com.zebrand.app1food30s.utils.FirebaseUtils
+import com.zebrand.app1food30s.utils.GlobalUtils
+import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.SingletonKey
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {

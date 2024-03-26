@@ -15,8 +15,8 @@ import com.zebrand.app1food30s.ui.offers.OffersFragment
 import com.zebrand.app1food30s.ui.order_confirm.OrderConfirmationDialogFragment
 import com.zebrand.app1food30s.ui.profile.ProfileAfterLoginFragment
 import com.zebrand.app1food30s.ui.profile.ProfileFragment
-import com.zebrand.app1food30s.ultis.MySharedPreferences
-import com.zebrand.app1food30s.ultis.SingletonKey
+import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.SingletonKey
 
 class MainActivity : AppCompatActivity() {
 
