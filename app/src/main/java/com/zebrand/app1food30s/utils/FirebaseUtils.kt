@@ -44,14 +44,19 @@ object FirebaseUtils {
         return withContext(Dispatchers.IO) {
             try {
                 val querySnapshot = fireStore.collection("products").get().await()
-                Log.i("TAG", "getListProducts: T đã gọi xong products")
+                // Log.i("TAG", "getListProducts: T đã gọi xong products")
                 querySnapshot.documents.map { document ->
                     val id = document.getString("id") ?: ""
                     val idCategory = document.getDocumentReference("idCategory")
                     val idOffer = document.getDocumentReference("idOffer")
                     val name = document.getString("name") ?: ""
                     val image = document.getString("image") ?: ""
-                    val imageUrl = fireStorage.reference.child(image).downloadUrl.await().toString()
+                    val imageUrl = if (image.isNotEmpty()) {
+                        fireStorage.reference.child(image).downloadUrl.await().toString()
+                    } else {
+                        // Return a default image URL or handle the case of missing image differently
+                        fireStorage.reference.child("images/product/food_placeholder.png").downloadUrl.await().toString()
+                    }
                     val price = document.getDouble("price") ?: 0.0
                     val description = document.getString("description") ?: ""
                     val stock = document.getDouble("stock") ?: 0

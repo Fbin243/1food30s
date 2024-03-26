@@ -7,10 +7,13 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zebrand.app1food30s.R
 import kotlinx.coroutines.CoroutineScope
@@ -37,13 +40,14 @@ class AdminStatsActivity : AppCompatActivity() {
         val editTextNumberOfDays = findViewById<EditText>(R.id.editTextNumberOfDays)
         val textViewValue1 = findViewById<TextView>(R.id.textViewValue1)
         val textViewValue2 = findViewById<TextView>(R.id.textViewValue2)
-        val lineChart: LineChart = findViewById(R.id.lineChart)
+//        val lineChart: LineChart = findViewById(R.id.lineChart)
+        val barChart: BarChart = findViewById(R.id.barChart)
 
         // Example button to trigger the calculation
         val calculateButton = findViewById<Button>(R.id.calculateButton)
         calculateButton.setOnClickListener {
             val days = editTextNumberOfDays.text.toString().toIntOrNull() ?: 0
-            calculateRevenueAndDrawChart(days, lineChart, textViewValue1, textViewValue2)
+            calculateRevenueAndDrawChart(days, barChart, textViewValue1, textViewValue2)
         }
     }
 
@@ -106,7 +110,7 @@ class AdminStatsActivity : AppCompatActivity() {
 
     private fun calculateRevenueAndDrawChart(
         days: Int,
-        lineChart: LineChart,
+        barChart: BarChart,
         textViewValue1: TextView,
         textViewValue2: TextView
     ) {
@@ -121,59 +125,79 @@ class AdminStatsActivity : AppCompatActivity() {
         // Initialize a map to hold revenue per day
         val revenuePerDay = mutableMapOf<String, Double>()
 
-        // Prepare to format dates
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        // Prepare to format dates as "dd-MM"
+        val dateFormat = SimpleDateFormat("dd-MM", Locale.getDefault())
 
         // Query orders that were created within the specified time frame
         ordersRef.whereGreaterThan("date", startDate).get()
             .addOnSuccessListener { orderSnapshots ->
                 if (orderSnapshots.isEmpty) {
                     // No orders found, proceed to update the chart with no data
-                    updateChartAndTextViews(lineChart, revenuePerDay, days, textViewValue1, textViewValue2)
+                    updateBarChartAndTextViews(barChart, revenuePerDay, days, textViewValue1, textViewValue2)
                     return@addOnSuccessListener
                 }
 
                 orderSnapshots.forEach { orderDoc ->
                     val totalAmount = orderDoc.getDouble("totalAmount") ?: 0.0
                     val orderDate = orderDoc.getDate("date")
+                    // Use the new date format "dd-MM"
                     val formattedDate = dateFormat.format(orderDate)
                     revenuePerDay[formattedDate] = revenuePerDay.getOrDefault(formattedDate, 0.0) + totalAmount
                 }
 
                 // All orders processed, update the chart and TextViews
-                updateChartAndTextViews(lineChart, revenuePerDay, days, textViewValue1, textViewValue2)
+                updateBarChartAndTextViews(barChart, revenuePerDay, days, textViewValue1, textViewValue2)
             }
             .addOnFailureListener { e ->
                 println("Error fetching orders: $e")
                 // Error fetching orders, update the chart with no data
-                updateChartAndTextViews(lineChart, revenuePerDay, days, textViewValue1, textViewValue2)
+                updateBarChartAndTextViews(barChart, revenuePerDay, days, textViewValue1, textViewValue2)
             }
     }
 
-    private fun updateChartAndTextViews(lineChart: LineChart, revenuePerDay: Map<String, Double>, days: Int, textViewValue1: TextView, textViewValue2: TextView) {
-        val entries = ArrayList<Entry>()
+    private fun updateBarChartAndTextViews(
+        barChart: BarChart,
+        revenuePerDay: Map<String, Double>,
+        days: Int,
+        textViewValue1: TextView,
+        textViewValue2: TextView
+    ) {
+        val entries = ArrayList<BarEntry>()
+        val labels = ArrayList<String>()
 
         // Sort the map by date to ensure the data is plotted in chronological order
         val sortedRevenuePerDay = revenuePerDay.toSortedMap()
 
         // Convert the revenue per day into chart entries
         sortedRevenuePerDay.keys.forEachIndexed { index, date ->
-            entries.add(Entry(index.toFloat(), sortedRevenuePerDay[date]!!.toFloat()))
+            entries.add(BarEntry(index.toFloat(), sortedRevenuePerDay[date]!!.toFloat()))
+            labels.add(date)
         }
 
-        val dataSet = LineDataSet(entries, "Daily Revenue")
-        val lineData = LineData(dataSet)
-        lineChart.data = lineData
-        lineChart.invalidate() // Refresh the chart
+        val dataSet = BarDataSet(entries, "Daily Revenue")
+        val barData = BarData(dataSet)
+
+        // Set the labels to the XAxis
+        barChart.xAxis.apply {
+            valueFormatter = IndexAxisValueFormatter(labels)
+            position = XAxis.XAxisPosition.BOTTOM
+            setDrawGridLines(false)
+            granularity = 1f // Only show integer values
+        }
+
+        barChart.data = barData
+        barChart.axisLeft.axisMinimum = 0f // Start from zero
+        barChart.axisRight.isEnabled = false // Disable right axis
+        barChart.description.isEnabled = false // Disable the description
+        barChart.legend.isEnabled = true // Enable the legend if desired
+        barChart.invalidate() // Refresh the chart
 
         // Calculate total and average revenue
         val totalRevenue = sortedRevenuePerDay.values.sum()
         val averageRevenuePerDay = if (days > 0) totalRevenue / days else 0.0
 
-        // Update the TextViews on the UI thread
-        textViewValue1.post {
-            textViewValue1.text = "Total Revenue: ${"%.2f".format(totalRevenue)}"
-            textViewValue2.text = "Average Revenue/Day: ${"%.2f".format(averageRevenuePerDay)}"
-        }
+        // Update the TextViews
+        textViewValue1.text = "Total Revenue: ${"%.2f".format(totalRevenue)}"
+        textViewValue2.text = "Average Revenue/Day: ${"%.2f".format(averageRevenuePerDay)}"
     }
 }

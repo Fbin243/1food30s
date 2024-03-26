@@ -1,123 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="@color/admin_background">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clHeader"
+    android:fillViewport="true">
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:paddingBottom="16dp">
-
-        <include
-            android:id="@+id/ivBack"
-            layout="@layout/item_back"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tvHeader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:fontFamily="@font/rubik_extrabold"
-            android:text="@string/admin_statistics"
-            android:textSize="@dimen/font_header"
-            app:layout_constraintStart_toEndOf="@+id/ivBack"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/my_grid_recycler_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:minHeight="200dp"
-        android:paddingBottom="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/clHeader" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/infoBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
         android:padding="16dp"
-        android:background="@drawable/item_border"
-        app:layout_constraintTop_toBottomOf="@id/my_grid_recycler_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:background="@color/admin_background">
 
-        <EditText
-            android:id="@+id/editTextNumberOfDays"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
-            android:hint="Enter number of days"
-            android:inputType="number"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            android:paddingBottom="16dp">
 
-        <Button
-            android:id="@+id/calculateButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Calculate Revenue"
-            app:layout_constraintTop_toBottomOf="@id/editTextNumberOfDays"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <include
+                android:id="@+id/ivBack"
+                layout="@layout/item_back"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/textViewNumber1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total Revenue Last X Days: "
-            app:layout_constraintTop_toBottomOf="@id/calculateButton"
-            app:layout_constraintStart_toStartOf="parent" />
+            <TextView
+                android:id="@+id/tvHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/rubik_extrabold"
+                android:text="@string/admin_statistics"
+                android:textSize="@dimen/font_header"
+                app:layout_constraintStart_toEndOf="@+id/ivBack"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/textViewValue1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Value 1"
-            app:layout_constraintTop_toTopOf="@id/textViewNumber1"
-            app:layout_constraintStart_toEndOf="@id/textViewNumber1" />
-
-        <TextView
-            android:id="@+id/textViewNumber2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Average: "
-            app:layout_constraintTop_toBottomOf="@id/textViewNumber1"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
-            android:id="@+id/textViewValue2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Value 2"
-            app:layout_constraintTop_toBottomOf="@id/textViewValue1"
-            app:layout_constraintStart_toEndOf="@id/textViewNumber2" />
-
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/lineChart"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/my_grid_recycler_view"
             android:layout_width="0dp"
-            android:layout_height="200dp"
-            app:layout_constraintTop_toBottomOf="@id/textViewValue2"
+            android:layout_height="wrap_content"
+            android:minHeight="200dp"
+            android:paddingBottom="16dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/clHeader" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/infoBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:background="@drawable/item_border"
+            app:layout_constraintTop_toBottomOf="@id/my_grid_recycler_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <EditText
+                android:id="@+id/editTextNumberOfDays"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:hint="Enter number of days"
+                android:inputType="number"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <Button
+                android:id="@+id/calculateButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Calculate Revenue"
+                app:layout_constraintTop_toBottomOf="@id/editTextNumberOfDays"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/textViewNumber1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Revenue Last X Days: "
+                app:layout_constraintTop_toBottomOf="@id/calculateButton"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/textViewValue1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Value 1"
+                app:layout_constraintTop_toTopOf="@id/textViewNumber1"
+                app:layout_constraintStart_toEndOf="@id/textViewNumber1" />
+
+            <TextView
+                android:id="@+id/textViewNumber2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Average: "
+                app:layout_constraintTop_toBottomOf="@id/textViewNumber1"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/textViewValue2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Value 2"
+                app:layout_constraintTop_toBottomOf="@id/textViewValue1"
+                app:layout_constraintStart_toEndOf="@id/textViewNumber2" />
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/barChart"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                app:layout_constraintTop_toBottomOf="@id/textViewValue2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>
