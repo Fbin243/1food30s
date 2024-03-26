@@ -71,37 +71,6 @@ class CartRepository(private val db: FirebaseFirestore) {
         }
     }
 
-    // Function to place an order, clear the cart, and update product stock and sold count
-//    fun placeOrderAndClearCart(cartId: String, detailedCartItems: List<DetailedCartItem>, completion: (Boolean) -> Unit) {
-//        val batch = db.batch()
-//
-//        // Reference to the cart document
-//        val cartRef = db.collection("carts").document(cartId)
-//        batch.delete(cartRef) // Clear the cart
-//
-//        // Update each product based on the cart item details
-//        detailedCartItems.forEach { cartItem ->
-//            val productRef = cartItem.productId
-//            productRef?.get()?.addOnSuccessListener { documentSnapshot ->
-//                val product = documentSnapshot.toObject(Product::class.java)
-//                product?.let {
-//                    val newStock = it.stock - cartItem.quantity
-//                    val newSold = it.sold + cartItem.quantity
-//                    batch.update(productRef, "stock", newStock, "sold", newSold)
-//                }
-//            }?.addOnFailureListener {
-//                completion(false)
-//            }
-//        }
-//
-//        // Commit the batch operation
-//        batch.commit().addOnSuccessListener {
-//            completion(true)
-//        }.addOnFailureListener {
-//            completion(false)
-//        }
-//    }
-
     fun placeOrderAndClearCart(cartId: String, detailedCartItems: List<DetailedCartItem>, completion: (Boolean) -> Unit) {
         // Fetch each product document to prepare updates
         val productFetchTasks = detailedCartItems.mapNotNull { cartItem ->
