@@ -2,6 +2,7 @@ package com.zebrand.app1food30s.ui.checkout
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
@@ -37,23 +38,43 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView {
         handlePlaceOrderButton()
     }
 
-    private fun handlePlaceOrderButton() {
-        binding.btnPlaceOrder.setOnClickListener {
-            presenter.placeOrder(cartId) {
-                // Assuming that the order placement was successful
-                // and the presenter has a callback to notify us.
-
-                val intent = Intent(this, MainActivity::class.java)
-                intent.putExtra("showOrderConfirmation", true)
-                // Clear the task stack to prevent a back navigation to the checkout activity
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                startActivity(intent)
-
-                // Optionally, you can add a transition animation
-//                overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
-            }
+    override fun navigateToOrderConfirmation(showOrderConfirmation: Boolean) {
+        if (showOrderConfirmation) {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("showOrderConfirmation", true)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+        } else {
+            // Handle the failure case appropriately, maybe show an error message
         }
     }
+
+    // presenter.onPlaceOrderClicked(cartId)
+    private fun handlePlaceOrderButton() {
+        binding.btnPlaceOrder.setOnClickListener {
+            presenter.onPlaceOrderClicked(cartId)
+//            presenter.testCallback(object : CheckoutPresenter.SimpleCallback {
+//                override fun onSuccess() {
+//                    Log.d("Test00", "Test operation succeeded!")
+//                    // Success handling
+//                    runOnUiThread {
+//                        // Assuming you have a method in CheckoutActivity to handle success
+//                        navigateToOrderConfirmation(true)
+//                    }
+//                }
+//
+//                override fun onFailure(error: String) {
+//                    Log.d("Test00", "Test operation failed: $error")
+//                    // Error handling
+//                    runOnUiThread {
+//                        // Assuming you have a method in CheckoutActivity to handle error
+//                        displayError(error)
+//                    }
+//                }
+//            })
+        }
+    }
+
 
     private fun setupRecyclerView() {
         binding.checkoutItemsRecyclerView.layoutManager = LinearLayoutManager(this)
