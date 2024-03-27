@@ -65,7 +65,7 @@ class ManageProductActivity : AppCompatActivity() {
 
         filterButton.setOnClickListener {
 //            categoryArr = resources.getStringArray(R.array.delivery_array)
-            showBottomSheet()
+            showFilterProduct()
         }
     }
 
@@ -101,7 +101,7 @@ class ManageProductActivity : AppCompatActivity() {
     }
 
 
-    private fun showBottomSheet() {
+    private fun showFilterProduct() {
         val dialogView = layoutInflater.inflate(R.layout.pop_up_filter_manage_product, null)
         botDialog = BottomSheetDialog(this, R.style.BottomSheetDialogTheme)
         botDialog.setContentView(dialogView)
@@ -113,7 +113,7 @@ class ManageProductActivity : AppCompatActivity() {
 
         val adapterPrice = ArrayAdapter(this, android.R.layout.simple_spinner_item, priceArr)
         adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
-        categorySpinner.adapter = adapterPrice
+        priceSpinner.adapter = adapterPrice
 
         // date picker
         val datePickerText: TextInputEditText = dialogView.findViewById(R.id.datePicker)
