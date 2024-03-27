@@ -40,8 +40,8 @@ class ManageProductActivity : AppCompatActivity() {
     private lateinit var addButton: ImageView
     private lateinit var filterButton: ImageView
     private lateinit var botDialog: BottomSheetDialog
-    lateinit var statusArr: Array<String>
-    val customerArr = arrayOf("1- Bedroom", "2- Bedroom", "3- Bedroom")
+    lateinit var categoryArr: Array<String>
+    val priceArr = arrayOf("1$ to 10$", "11$ to 50$", "51$ to 100$", "More than 100$")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +59,7 @@ class ManageProductActivity : AppCompatActivity() {
         }
 
         filterButton.setOnClickListener {
+            categoryArr = resources.getStringArray(R.array.delivery_array)
             showBottomSheet()
         }
     }
@@ -77,13 +78,13 @@ class ManageProductActivity : AppCompatActivity() {
     }
 
     private fun showBottomSheet() {
-        val dialogView = layoutInflater.inflate(R.layout.bottom_sheet_manage_order, null)
+        val dialogView = layoutInflater.inflate(R.layout.pop_up_filter_manage_product, null)
         botDialog = BottomSheetDialog(this, R.style.BottomSheetDialogTheme)
         botDialog.setContentView(dialogView)
 
-        // status dropdown
-        val adapterStatus = ArrayAdapter(this, R.layout.item_drop_down_filter, statusArr)
-        val tv_autoStatus: AutoCompleteTextView = dialogView.findViewById(R.id.spinnerStatus)
+//         status dropdown
+        val adapterStatus = ArrayAdapter(this, R.layout.item_drop_down_filter, categoryArr)
+        val tv_autoStatus: AutoCompleteTextView = dialogView.findViewById(R.id.spinnerCategory)
         tv_autoStatus.setAdapter(adapterStatus)
         tv_autoStatus.setOnItemClickListener { _, _, position, _ ->
             val selectedText = adapterStatus.getItem(position)
@@ -91,8 +92,8 @@ class ManageProductActivity : AppCompatActivity() {
         }
 
         // customer dropdown
-        val adapterCus = ArrayAdapter(this, R.layout.item_drop_down_filter, customerArr)
-        val tv_autoCus: AutoCompleteTextView = dialogView.findViewById(R.id.spinnerCustomer)
+        val adapterCus = ArrayAdapter(this, R.layout.item_drop_down_filter, priceArr)
+        val tv_autoCus: AutoCompleteTextView = dialogView.findViewById(R.id.spinnerPrice)
         tv_autoCus.setAdapter(adapterCus)
         tv_autoCus.setOnItemClickListener { _, _, position, _ ->
             val selectedText = adapterCus.getItem(position)
