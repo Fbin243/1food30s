@@ -52,7 +52,7 @@ class ManageProductActivity : AppCompatActivity() {
     private lateinit var nameFilterEditText: TextInputEditText
     private lateinit var datePickerText: TextInputEditText
     lateinit var categoryArr: ArrayList<String>
-    val priceArr = arrayOf("1$ to 10$", "11$ to 50$", "51$ to 100$", "More than 100$")
+    val priceArr = arrayOf("Choose range of price","1$ to 10$", "11$ to 50$", "51$ to 100$", "More than 100$")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,6 +91,7 @@ class ManageProductActivity : AppCompatActivity() {
     private fun loadCategoriesFromFirebase() {
         val db = Firebase.firestore
         val categoriesList = ArrayList<String>()
+        categoriesList.add("Choose category")
 
         db.collection("categories").get()
             .addOnSuccessListener { documents ->
@@ -112,8 +113,6 @@ class ManageProductActivity : AppCompatActivity() {
         botDialog = BottomSheetDialog(this, R.style.BottomSheetDialogTheme)
         botDialog.setContentView(dialogView)
 
-        categorySpinner = dialogView.findViewById(R.id.spinnerCategory)
-        priceSpinner = dialogView.findViewById(R.id.spinnerPrice)
         nameFilterEditText = dialogView.findViewById(R.id.nameFilter)
         categorySpinner = dialogView.findViewById(R.id.spinnerCategory)
         priceSpinner = dialogView.findViewById(R.id.spinnerPrice)
@@ -170,16 +169,28 @@ class ManageProductActivity : AppCompatActivity() {
             val selectedPriceRange = priceSpinner.selectedItem.toString()
             val selectedDate = datePickerText.text.toString()
 
-            val allProducts = getListProducts() // Ensure this is your current method to fetch all products
+            val allProducts = getListProducts() // Giả định đây là phương thức của bạn để lấy tất cả sản phẩm
 
-            var filteredProducts = filterProductsByName(nameFilter, allProducts)
-            filteredProducts = filterProductsByCategory(selectedCategory, filteredProducts)
-            filteredProducts = filterProductsByPriceRange(selectedPriceRange, filteredProducts)
-            filteredProducts = filterProductsByDate(selectedDate, filteredProducts)
+            var filteredProducts = allProducts
+
+            // Chỉ áp dụng bộ lọc nếu giá trị không phải là "Choose ..."
+            if (nameFilter.isNotEmpty()) {
+                filteredProducts = filterProductsByName(nameFilter, filteredProducts)
+            }
+            if (selectedCategory != "Choose category") {
+                filteredProducts = filterProductsByCategory(selectedCategory, filteredProducts)
+            }
+            if (selectedPriceRange != "Choose range of price") {
+                filteredProducts = filterProductsByPriceRange(selectedPriceRange, filteredProducts)
+            }
+            if (selectedDate != "Choose date") {
+                filteredProducts = filterProductsByDate(selectedDate, filteredProducts)
+            }
 
             displayFilteredProducts(filteredProducts)
         }
     }
+
 
     private fun filterProductsByName(nameFilter: String, products: List<Product>): List<Product> {
         return products.filter { it.name.contains(nameFilter, ignoreCase = true) }

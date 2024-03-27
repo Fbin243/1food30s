@@ -164,6 +164,7 @@
     <string name="txt_delete_email_not_match">* Email does not correct</string>
     <string name="txt_name_product_filter">Name</string>
     <string name="txt_price">Price</string>
+    <string name="txt_default_filter_date">Choose date</string>
 
     <string-array name="delivery_array">
         <item>Pending</item>

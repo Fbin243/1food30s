@@ -137,7 +137,7 @@
                 android:layout_height="@dimen/spacing60"
                 android:inputType="none"
                 android:paddingHorizontal="@dimen/spacing16"
-                android:text="@string/txt_default_date"
+                android:text="@string/txt_default_filter_date"
                 android:focusable="false"
                 />
 
@@ -160,7 +160,7 @@
             android:layout_height="@dimen/spacing60"
             android:layout_weight="1"
             android:backgroundTint="@color/deep_orange"
-            android:text="@string/txt_clear"
+            android:text="@string/txt_cancel"
             android:textSize="@dimen/font_size16"
             android:textStyle="bold"
             app:icon="@drawable/ic_delete"
