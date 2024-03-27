@@ -1,9 +1,11 @@
 package com.zebrand.app1food30s.ui.wishlist
 
+import android.util.Log
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.zebrand.app1food30s.data.WishlistItem
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -16,28 +18,32 @@ class FirestoreWishlistRepository(private val userId: String) : WishlistReposito
         val db = FirebaseFirestore.getInstance()
         val wishlistRef = db.collection("wishlists").document(userId)
 
+        Log.d("WishlistToggle", "Attempting to toggle product in wishlist: $productId")
+
         db.runTransaction { transaction ->
             val snapshot = transaction.get(wishlistRef)
             val currentList: MutableList<String> = snapshot.get("productIds") as? MutableList<String> ?: mutableListOf()
 
-            val wasAdded: Boolean
-            if (currentList.contains(productId)) {
-                // Product is already in wishlist, remove it
+            val wasAdded: Boolean = if (currentList.contains(productId)) {
                 currentList.remove(productId)
-                wasAdded = false
+                Log.d("WishlistToggle", "Product removed from wishlist: $productId")
+                false
             } else {
-                // Product is not in wishlist, add it
                 currentList.add(productId)
-                wasAdded = true
+                Log.d("WishlistToggle", "Product added to wishlist: $productId")
+                true
             }
 
-            transaction.update(wishlistRef, "productIds", currentList)
-            // Return true if product was added, false if removed
+            // Instead of update, use set with merge option to create the document if it doesn't exist
+            val updateData = hashMapOf("productIds" to currentList)
+            transaction.set(wishlistRef, updateData, SetOptions.merge())
+
             wasAdded
         }.addOnSuccessListener { wasAdded ->
+            Log.d("WishlistToggle", "Wishlist updated successfully for product: $productId, added: $wasAdded")
             continuation.resume(wasAdded)
         }.addOnFailureListener { e ->
-            // Log error if needed
+            Log.e("WishlistToggle", "Failed to update wishlist for product: $productId", e)
             continuation.resume(false)
         }
     }

@@ -100,6 +100,7 @@ class ProductAdapter(
 
         // Wishlist
         val isProductWishlisted = product.id in wishlistedProductIds // Check if product's ID is in the set of wishlisted product IDs
+        Log.d("Test00", "$isProductWishlisted")
         holder.ivWishlist.setImageResource(
             if (isProductWishlisted) R.drawable.ic_wishlist_active else R.drawable.ic_wishlist
         )
