@@ -169,17 +169,16 @@ class ManageProductActivity : AppCompatActivity() {
             val selectedPriceRange = priceSpinner.selectedItem.toString()
             val selectedDate = datePickerText.text.toString()
 
-            getListProducts().let { allProducts ->
-                var filteredProducts = filterProductsByName(nameFilter, allProducts)
-                filteredProducts = filterProductsByCategory(selectedCategory, filteredProducts)
-                filteredProducts = filterProductsByPriceRange(selectedPriceRange, filteredProducts)
-                filteredProducts = filterProductsByDate(selectedDate, filteredProducts)
+            val allProducts = getListProducts() // Ensure this is your current method to fetch all products
 
-                displayFilteredProducts(filteredProducts)
-            }
+            var filteredProducts = filterProductsByName(nameFilter, allProducts)
+            filteredProducts = filterProductsByCategory(selectedCategory, filteredProducts)
+            filteredProducts = filterProductsByPriceRange(selectedPriceRange, filteredProducts)
+            filteredProducts = filterProductsByDate(selectedDate, filteredProducts)
+
+            displayFilteredProducts(filteredProducts)
         }
     }
-
 
     private fun filterProductsByName(nameFilter: String, products: List<Product>): List<Product> {
         return products.filter { it.name.contains(nameFilter, ignoreCase = true) }
@@ -230,7 +229,7 @@ class ManageProductActivity : AppCompatActivity() {
 
     private fun displayFilteredProducts(filteredProducts: List<Product>) {
         // Update RecyclerView with filteredProducts
-        val adapter = ManageProductAdapter(filteredProducts(), onProductClick = { product ->
+        val adapter = ManageProductAdapter(filteredProducts, onProductClick = { product ->
             val intent = Intent(this@ManageProductActivity, EditProduct::class.java).apply {
                 putExtra("PRODUCT_ID", product.id)
             }
@@ -239,6 +238,7 @@ class ManageProductActivity : AppCompatActivity() {
         binding.productRcv.layoutManager = LinearLayoutManager(this@ManageProductActivity)
         binding.productRcv.adapter = adapter
     }
+
 
 
 
