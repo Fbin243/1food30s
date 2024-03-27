@@ -135,7 +135,7 @@ class ManageProductActivity : AppCompatActivity() {
             val myFormat = "dd/MM/yyyy"
             val sdf = SimpleDateFormat(myFormat, Locale.UK)
             val formattedDate = sdf.format(myCalendar.time)
-//            Log.d("dateABC", formattedDate)
+            Log.d("dateABC", formattedDate)
             datePickerText.setText(formattedDate)
         }
 
@@ -171,10 +171,10 @@ class ManageProductActivity : AppCompatActivity() {
 
             val allProducts = getListProducts() // Ensure this is your current method to fetch all products
 
-            var filteredProducts = filterProductsByName(nameFilter, allProducts)
-            filteredProducts = filterProductsByCategory(selectedCategory, filteredProducts)
-            filteredProducts = filterProductsByPriceRange(selectedPriceRange, filteredProducts)
-            filteredProducts = filterProductsByDate(selectedDate, filteredProducts)
+//            var filteredProducts = filterProductsByName(nameFilter, allProducts)
+//            var filteredProducts = filterProductsByCategory(selectedCategory, allProducts)
+//            var filteredProducts = filterProductsByPriceRange(selectedPriceRange, allProducts)
+            var filteredProducts = filterProductsByDate(selectedDate, allProducts)
 
             displayFilteredProducts(filteredProducts)
         }
@@ -184,23 +184,27 @@ class ManageProductActivity : AppCompatActivity() {
         return products.filter { it.name.contains(nameFilter, ignoreCase = true) }
     }
 
-    private fun filterProductsByCategory(selectedCategory: String, products: List<Product>): List<Product> {
-        // This assumes you have a method to resolve category names to their IDs or directly filter by name
+    private suspend fun filterProductsByCategory(selectedCategory: String, products: List<Product>): List<Product> {
         val db = Firebase.firestore
-        db.collection("categories").whereEqualTo("name", selectedCategory).limit(1).get()
-            .addOnSuccessListener { categoryDocuments ->
-                if (categoryDocuments.documents.isNotEmpty()) {
-                    val categoryDocumentRef = categoryDocuments.documents.first().reference
-                    products.filter { it.idCategory == categoryDocumentRef }
-                } else {
-                    // Xử lý trường hợp không tìm thấy danh mục phù hợp
+        return try {
+            val categoriesSnapshot = db.collection("categories").whereEqualTo("name", selectedCategory).limit(1).get().await()
+            if (categoriesSnapshot.documents.isNotEmpty()) {
+                val categoryDocumentRef = categoriesSnapshot.documents.first().reference
+                products.filter { product ->
+                    // Giả sử `idCategory` là một tham chiếu đến document, chúng ta cần so sánh path của chúng
+                    product.idCategory?.path == categoryDocumentRef.path
                 }
+            } else {
+                // Xử lý trường hợp không tìm thấy danh mục phù hợp
+                // Ở đây, chúng ta trả về danh sách rỗng hoặc giữ nguyên danh sách sản phẩm tùy thuộc vào yêu cầu
+                products
             }
-            .addOnFailureListener { exception ->
-                // Xử lý lỗi khi tìm kiếm danh mục
-            }
-        return products
+        } catch (e: Exception) {
+            // Xử lý lỗi khi tìm kiếm danh mục
+            products // Trả về danh sách sản phẩm ban đầu nếu có lỗi
+        }
     }
+
 
     private fun filterProductsByPriceRange(selectedPriceRange: String, products: List<Product>): List<Product> {
         // Parse selectedPriceRange to min and max values, then filter
@@ -216,11 +220,12 @@ class ManageProductActivity : AppCompatActivity() {
 
     private fun filterProductsByDate(selectedDate: String, products: List<Product>): List<Product> {
         // Parse selectedDate and filter products based on this date
-        val sdf = SimpleDateFormat("MM/dd/yy", Locale.US)
+        val sdf = SimpleDateFormat("dd/MM/yy", Locale.US)
+
         return try {
-            val parsedDate = sdf.parse(selectedDate)
+            val dateTimeFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
             products.filter {
-                it.date == parsedDate
+                dateTimeFormat.format(it.date) == selectedDate
             }
         } catch (e: ParseException) {
             products // Trả về tất cả sản phẩm nếu có lỗi khi parse
