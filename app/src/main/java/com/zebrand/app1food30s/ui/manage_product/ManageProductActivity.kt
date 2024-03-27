@@ -17,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -171,10 +172,10 @@ class ManageProductActivity : AppCompatActivity() {
 
             val allProducts = getListProducts() // Ensure this is your current method to fetch all products
 
-//            var filteredProducts = filterProductsByName(nameFilter, allProducts)
-//            var filteredProducts = filterProductsByCategory(selectedCategory, allProducts)
-//            var filteredProducts = filterProductsByPriceRange(selectedPriceRange, allProducts)
-            var filteredProducts = filterProductsByDate(selectedDate, allProducts)
+            var filteredProducts = filterProductsByName(nameFilter, allProducts)
+            filteredProducts = filterProductsByCategory(selectedCategory, filteredProducts)
+            filteredProducts = filterProductsByPriceRange(selectedPriceRange, filteredProducts)
+            filteredProducts = filterProductsByDate(selectedDate, filteredProducts)
 
             displayFilteredProducts(filteredProducts)
         }
@@ -250,7 +251,7 @@ class ManageProductActivity : AppCompatActivity() {
     private suspend fun getListProducts(): List<Product> {
         return withContext(Dispatchers.IO) {
             try {
-                val querySnapshot = fireStore.collection("products").get().await()
+                val querySnapshot = fireStore.collection("products").orderBy("date", Query.Direction.DESCENDING).get().await()
                 querySnapshot.documents.mapNotNull { document ->
                     val id = document.id
                     val name = document.getString("name") ?: ""
