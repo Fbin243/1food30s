@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -31,8 +32,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class ManageProductActivity : AppCompatActivity() {
@@ -45,6 +48,8 @@ class ManageProductActivity : AppCompatActivity() {
     private lateinit var botDialog: BottomSheetDialog
     private lateinit var categorySpinner: Spinner
     private lateinit var priceSpinner: Spinner
+    private lateinit var nameFilterEditText: TextInputEditText
+    private lateinit var datePickerText: TextInputEditText
     lateinit var categoryArr: ArrayList<String>
     val priceArr = arrayOf("1$ to 10$", "11$ to 50$", "51$ to 100$", "More than 100$")
 
@@ -108,6 +113,10 @@ class ManageProductActivity : AppCompatActivity() {
 
         categorySpinner = dialogView.findViewById(R.id.spinnerCategory)
         priceSpinner = dialogView.findViewById(R.id.spinnerPrice)
+        nameFilterEditText = dialogView.findViewById(R.id.nameFilter)
+        categorySpinner = dialogView.findViewById(R.id.spinnerCategory)
+        priceSpinner = dialogView.findViewById(R.id.spinnerPrice)
+        datePickerText = dialogView.findViewById(R.id.datePicker)
 
         loadCategoriesFromFirebase()
 
@@ -138,8 +147,99 @@ class ManageProductActivity : AppCompatActivity() {
             ).show()
         }
 
+        // Setup for filter button
+        botDialog.findViewById<MaterialButton>(R.id.saveBtn)?.setOnClickListener {
+            filterProducts()
+        }
+
+        // Setup for cancel button
+        botDialog.findViewById<MaterialButton>(R.id.cancelBtn)?.setOnClickListener {
+            botDialog.dismiss()
+        }
+
         botDialog.show()
     }
+
+
+
+    private fun filterProducts() {
+        lifecycleScope.launch {
+            val nameFilter = nameFilterEditText.text.toString().trim()
+            val selectedCategory = categorySpinner.selectedItem.toString()
+            val selectedPriceRange = priceSpinner.selectedItem.toString()
+            val selectedDate = datePickerText.text.toString()
+
+            getListProducts().let { allProducts ->
+                var filteredProducts = filterProductsByName(nameFilter, allProducts)
+                filteredProducts = filterProductsByCategory(selectedCategory, filteredProducts)
+                filteredProducts = filterProductsByPriceRange(selectedPriceRange, filteredProducts)
+                filteredProducts = filterProductsByDate(selectedDate, filteredProducts)
+
+                displayFilteredProducts(filteredProducts)
+            }
+        }
+    }
+
+
+    private fun filterProductsByName(nameFilter: String, products: List<Product>): List<Product> {
+        return products.filter { it.name.contains(nameFilter, ignoreCase = true) }
+    }
+
+    private fun filterProductsByCategory(selectedCategory: String, products: List<Product>): List<Product> {
+        // This assumes you have a method to resolve category names to their IDs or directly filter by name
+        val db = Firebase.firestore
+        db.collection("categories").whereEqualTo("name", selectedCategory).limit(1).get()
+            .addOnSuccessListener { categoryDocuments ->
+                if (categoryDocuments.documents.isNotEmpty()) {
+                    val categoryDocumentRef = categoryDocuments.documents.first().reference
+                    products.filter { it.idCategory == categoryDocumentRef }
+                } else {
+                    // Xử lý trường hợp không tìm thấy danh mục phù hợp
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Xử lý lỗi khi tìm kiếm danh mục
+            }
+        return products
+    }
+
+    private fun filterProductsByPriceRange(selectedPriceRange: String, products: List<Product>): List<Product> {
+        // Parse selectedPriceRange to min and max values, then filter
+        // Ví dụ: chuyển đổi "1$ to 10$" thành một cặp giá trị (1.0, 10.0)
+        val range = selectedPriceRange.split(" to ").mapNotNull { it.filter { char -> char.isDigit() }.toDoubleOrNull() }
+        if (range.size == 2) {
+            return products.filter {
+                it.price >= range[0] && it.price <= range[1]
+            }
+        }
+        return products
+    }
+
+    private fun filterProductsByDate(selectedDate: String, products: List<Product>): List<Product> {
+        // Parse selectedDate and filter products based on this date
+        val sdf = SimpleDateFormat("MM/dd/yy", Locale.US)
+        return try {
+            val parsedDate = sdf.parse(selectedDate)
+            products.filter {
+                it.date == parsedDate
+            }
+        } catch (e: ParseException) {
+            products // Trả về tất cả sản phẩm nếu có lỗi khi parse
+        }
+    }
+
+    private fun displayFilteredProducts(filteredProducts: List<Product>) {
+        // Update RecyclerView with filteredProducts
+        val adapter = ManageProductAdapter(filteredProducts(), onProductClick = { product ->
+            val intent = Intent(this@ManageProductActivity, EditProduct::class.java).apply {
+                putExtra("PRODUCT_ID", product.id)
+            }
+            startActivity(intent)
+        })
+        binding.productRcv.layoutManager = LinearLayoutManager(this@ManageProductActivity)
+        binding.productRcv.adapter = adapter
+    }
+
 
 
     private suspend fun getListProducts(): List<Product> {

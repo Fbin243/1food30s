@@ -41,6 +41,7 @@
             app:layout_constraintTop_toBottomOf="@+id/header_title">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/nameFilter"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
                 android:inputType="textEmailAddress"
