@@ -52,4 +52,20 @@ class ProductDetailPresenter(
             Log.i("Error", "getRelatedProductsByCategory: ${e}")
         }
     }
+
+//    suspend fun fetchRelatedProductsAndOffers(idCategory: DocumentReference, idProduct: String, onResult: (List<Product>, List<Offer>) -> Unit) {
+//        try {
+//            val querySnapshot = FirebaseUtils.fireStore.collection("products")
+//                .whereEqualTo("idCategory", idCategory)
+//                .whereNotEqualTo("id", idProduct).get().await()
+//            val relatedProducts = querySnapshot.toObjects(Product::class.java).map { product ->
+//                product.image = FirebaseUtils.fireStorage.reference.child(product.image).downloadUrl.await().toString()
+//                product
+//            }
+//            val offers = FirebaseUtils.getListOffers()
+//            onResult(relatedProducts, offers)
+//        } catch (e: Exception) {
+//            Log.e("ProductDetailPresenter", "Error fetching related products or offers", e)
+//        }
+//    }
 }

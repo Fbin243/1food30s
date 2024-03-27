@@ -1,18 +1,31 @@
 package com.zebrand.app1food30s.ui.menu
 
+import com.zebrand.app1food30s.data.Offer
+import com.zebrand.app1food30s.data.Product
 import com.zebrand.app1food30s.utils.FirebaseUtils
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
 class MenuPresenter(private val view: MenuMVPView) {
+    // Properties to hold the current products and offers
+    var currentProducts: List<Product> = emptyList()
+    var currentOffers: List<Offer> = emptyList()
+
     suspend fun getDataAndDisplay() {
         coroutineScope {
-            val categories = async { FirebaseUtils.getListCategories() }.await()
-            val products = async { FirebaseUtils.getListProducts() }.await()
-            val offers = async { FirebaseUtils.getListOffers() }.await()
+            val categoriesDeferred = async { FirebaseUtils.getListCategories() }
+            val productsDeferred = async { FirebaseUtils.getListProducts() }
+            val offersDeferred = async { FirebaseUtils.getListOffers() }
+
+            // Await the results of the asynchronous operations
+            val categories = categoriesDeferred.await()
+            currentProducts = productsDeferred.await()
+            currentOffers = offersDeferred.await()
+
+            // Now use the fetched data to update the UI
             view.showCategories(categories)
-            view.showProducts(products, offers)
-            view.handleChangeLayout(products, offers)
+            view.showProducts(currentProducts, currentOffers)
+            view.handleChangeLayout(currentProducts, currentOffers)
         }
     }
 }

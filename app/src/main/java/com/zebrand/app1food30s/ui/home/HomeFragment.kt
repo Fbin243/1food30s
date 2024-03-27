@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
@@ -24,14 +23,21 @@ import com.zebrand.app1food30s.data.CartItem
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Offer
 import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.WishlistItem
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
+import com.zebrand.app1food30s.ui.wishlist.FirestoreWishlistRepository
+import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
+import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(), HomeMVPView {
+class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var homePresenter: HomePresenter
+    private lateinit var wishlistPresenter: WishlistPresenter
+    private var currentProducts: List<Product> = emptyList()
+    private var wishlistedProductIds: MutableSet<String> = mutableSetOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,9 +48,49 @@ class HomeFragment : Fragment(), HomeMVPView {
         homePresenter = HomePresenter(this)
         lifecycleScope.launch { homePresenter.getDataAndDisplay() }
 
+        val userId = "QXLiLOiPLaHhY5gu7ZdS" // TODO
+        wishlistPresenter = WishlistPresenter(this, FirestoreWishlistRepository(userId))
+
         handleOpenSearchScreen()
         return binding.root
     }
+
+    override fun showWishlistItems(items: List<WishlistItem>) {
+        // Here, you'd update your UI with the wishlist items.
+        // This might involve updating a RecyclerView adapter or similar.
+        // For example:
+        // wishlistAdapter.submitList(items)
+    }
+
+    override fun showRemoveSuccessMessage() {
+        Toast.makeText(context, "Product was removed from the wishlist", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showError(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+
+    // Implementation of WishlistMVPView methods
+    override fun showWishlistUpdated(product: Product, isAdded: Boolean) {
+        // Assuming currentProducts is a list of products currently displayed
+        val index = currentProducts.indexOfFirst { it.id == product.id }
+        if (index != -1) {
+            // Instead of modifying a property, you update your set of wishlisted product IDs
+            if (isAdded) {
+                wishlistedProductIds.add(product.id)
+            } else {
+                wishlistedProductIds.remove(product.id)
+            }
+
+            // Notify the adapter about the change in a specific item
+            // This assumes your adapter's `onBindViewHolder` uses wishlistedProductIds to determine wishlist status
+            binding.productRcv1.adapter?.notifyItemChanged(index)
+
+            // If you have more RecyclerViews displaying the same set of products, notify their adapters similarly
+        }
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -122,26 +168,34 @@ class HomeFragment : Fragment(), HomeMVPView {
     }
 
     override fun showProductsLatestDishes(products: List<Product>, offers: List<Offer>) {
+        currentProducts = products
         binding.productRcv1.layoutManager = GridLayoutManager(requireContext(), 2)
-        val adapter = ProductAdapter(products.take(4), offers)
+        val adapter = ProductAdapter(products.take(4), offers, true, wishlistedProductIds)
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }
         adapter.onAddButtonClick = { product ->
             addProductToCart(requireContext(), product.id)
+        }
+        adapter.onWishlistProductClick = { product ->
+            wishlistPresenter.toggleWishlist(product)
         }
         binding.productRcv1.adapter = adapter
     }
     
     override fun showProductsBestSeller(products: List<Product>, offers: List<Offer>) {
+        currentProducts = products
         binding.productRcv2.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val adapter = ProductAdapter(products.take(4), offers, false)
+        val adapter = ProductAdapter(products.take(4), offers, false, wishlistedProductIds)
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }
         adapter.onAddButtonClick = { product ->
             addProductToCart(requireContext(), product.id)
+        }
+        adapter.onWishlistProductClick = { product ->
+            wishlistPresenter.toggleWishlist(product)
         }
         binding.productRcv2.adapter = adapter
     }

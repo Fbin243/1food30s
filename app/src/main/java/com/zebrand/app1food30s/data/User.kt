@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.data
 
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.ServerTimestamp
 import java.util.Date
@@ -13,8 +14,8 @@ data class User(
     val phone: String = "",
     val address: String = "",
     val isAdmin: Boolean = false,
-    @get:Exclude
-    val cart: Cart? = null,
     @get:ServerTimestamp
-    val date: Date? = null
+    val date: Date? = null,
+    val wishlistRef: DocumentReference? = null,
+    val cartRef: DocumentReference? = null,
 )
