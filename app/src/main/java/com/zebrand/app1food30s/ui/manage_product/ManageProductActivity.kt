@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.ManageOfferAdapter
@@ -40,7 +43,9 @@ class ManageProductActivity : AppCompatActivity() {
     private lateinit var addButton: ImageView
     private lateinit var filterButton: ImageView
     private lateinit var botDialog: BottomSheetDialog
-    lateinit var categoryArr: Array<String>
+    private lateinit var categorySpinner: Spinner
+    private lateinit var priceSpinner: Spinner
+    lateinit var categoryArr: ArrayList<String>
     val priceArr = arrayOf("1$ to 10$", "11$ to 50$", "51$ to 100$", "More than 100$")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +64,7 @@ class ManageProductActivity : AppCompatActivity() {
         }
 
         filterButton.setOnClickListener {
-            categoryArr = resources.getStringArray(R.array.delivery_array)
+//            categoryArr = resources.getStringArray(R.array.delivery_array)
             showBottomSheet()
         }
     }
@@ -77,28 +82,38 @@ class ManageProductActivity : AppCompatActivity() {
         }
     }
 
+    private fun loadCategoriesFromFirebase() {
+        val db = Firebase.firestore
+        val categoriesList = ArrayList<String>()
+
+        db.collection("categories").get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    categoriesList.add(document.getString("name") ?: "")
+                }
+                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesList)
+                adapter.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
+                categorySpinner.adapter = adapter
+            }
+            .addOnFailureListener { exception ->
+                // Xử lý lỗi ở đây
+            }
+    }
+
+
     private fun showBottomSheet() {
         val dialogView = layoutInflater.inflate(R.layout.pop_up_filter_manage_product, null)
         botDialog = BottomSheetDialog(this, R.style.BottomSheetDialogTheme)
         botDialog.setContentView(dialogView)
 
-//         status dropdown
-        val adapterStatus = ArrayAdapter(this, R.layout.item_drop_down_filter, categoryArr)
-        val tv_autoStatus: AutoCompleteTextView = dialogView.findViewById(R.id.spinnerCategory)
-        tv_autoStatus.setAdapter(adapterStatus)
-        tv_autoStatus.setOnItemClickListener { _, _, position, _ ->
-            val selectedText = adapterStatus.getItem(position)
-//            Toast.makeText(this, selectedText, Toast.LENGTH_LONG).show()
-        }
+        categorySpinner = dialogView.findViewById(R.id.spinnerCategory)
+        priceSpinner = dialogView.findViewById(R.id.spinnerPrice)
 
-        // customer dropdown
-        val adapterCus = ArrayAdapter(this, R.layout.item_drop_down_filter, priceArr)
-        val tv_autoCus: AutoCompleteTextView = dialogView.findViewById(R.id.spinnerPrice)
-        tv_autoCus.setAdapter(adapterCus)
-        tv_autoCus.setOnItemClickListener { _, _, position, _ ->
-            val selectedText = adapterCus.getItem(position)
-//            Toast.makeText(this, selectedText, Toast.LENGTH_LONG).show()
-        }
+        loadCategoriesFromFirebase()
+
+        val adapterPrice = ArrayAdapter(this, android.R.layout.simple_spinner_item, priceArr)
+        adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
+        categorySpinner.adapter = adapterPrice
 
         // date picker
         val datePickerText: TextInputEditText = dialogView.findViewById(R.id.datePicker)
