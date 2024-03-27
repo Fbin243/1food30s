@@ -174,5 +174,6 @@
         <item>Paid</item>
         <item>Unpaid</item>
     </string-array>
+    <string name="formatted_currency">%.2f</string>
 
 </resources>

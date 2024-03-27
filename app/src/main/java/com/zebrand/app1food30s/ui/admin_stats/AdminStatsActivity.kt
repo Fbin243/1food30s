@@ -1,10 +1,13 @@
 package com.zebrand.app1food30s.ui.admin_stats
 
 import android.os.Bundle
-import android.widget.Button
+import android.util.Log
+import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.BarChart
@@ -13,9 +16,9 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.databinding.ActivityAdminStatisticsBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -24,32 +27,66 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 class AdminStatsActivity : AppCompatActivity() {
     private lateinit var myGridRecyclerView: RecyclerView
+    private lateinit var binding: ActivityAdminStatisticsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_admin_statistics)
+        binding = ActivityAdminStatisticsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         myGridRecyclerView = findViewById(R.id.my_grid_recycler_view)
 
         updateGridItems()
+        setupDaysChooser()
 
-        val editTextNumberOfDays = findViewById<EditText>(R.id.editTextNumberOfDays)
-        val textViewValue1 = findViewById<TextView>(R.id.textViewValue1)
-        val textViewValue2 = findViewById<TextView>(R.id.textViewValue2)
+        // val editTextNumberOfDays = findViewById<EditText>(R.id.editTextNumberOfDays)
+//        val textViewValue1 = findViewById<TextView>(R.id.textViewValue1)
+//        val textViewValue2 = findViewById<TextView>(R.id.textViewValue2)
 //        val lineChart: LineChart = findViewById(R.id.lineChart)
-        val barChart: BarChart = findViewById(R.id.barChart)
+//        val barChart: BarChart = findViewById(R.id.barChart)
 
         // Example button to trigger the calculation
-        val calculateButton = findViewById<Button>(R.id.calculateButton)
-        calculateButton.setOnClickListener {
-            val days = editTextNumberOfDays.text.toString().toIntOrNull() ?: 0
-            calculateRevenueAndDrawChart(days, barChart, textViewValue1, textViewValue2)
+        // val calculateButton = findViewById<Button>(R.id.calculateButton)
+//        calculateButton.setOnClickListener {
+//            val days = editTextNumberOfDays.text.toString().toIntOrNull() ?: 0
+//            calculateRevenueAndDrawChart(days, barChart, textViewValue1, textViewValue2)
+//        }
+
+        // Draw the bar chart with the last 30 days of revenue data on startup
+        calculateRevenueAndDrawChart(30, binding.barChart, binding.textViewValue1, binding.textViewValue2)
+    }
+
+    private fun setupDaysChooser() {
+        binding.containerDaysChooser.setOnClickListener {
+            showDaysInputPopup()
         }
     }
+
+    private fun showDaysInputPopup() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_days_chooser, null)
+        val editText = dialogView.findViewById<EditText>(R.id.editTextDialog)
+
+        AlertDialog.Builder(this)
+            .setTitle("Choose Number of Days")
+            .setView(dialogView)
+            .setPositiveButton("Update") { dialog, _ ->
+                val days = editText.text.toString().toIntOrNull() ?: 30
+                binding.tvDaysChooser.text = "Last $days Days"
+                calculateRevenueAndDrawChart(days, binding.barChart, binding.textViewValue1, binding.textViewValue2)
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }
+            .show()
+    }
+
 
     private fun updateGridItems() {
         CoroutineScope(Dispatchers.Main).launch {
@@ -117,10 +154,26 @@ class AdminStatsActivity : AppCompatActivity() {
         val db = FirebaseFirestore.getInstance()
         val ordersRef = db.collection("orders")
 
-        // Calculate the start date for the query
-        val calendar = Calendar.getInstance()
-        calendar.add(Calendar.DAY_OF_YEAR, -days)
-        val startDate = calendar.time
+        // Calculate the start and end date for the query
+        val startCalendar = Calendar.getInstance().apply {
+            add(Calendar.DAY_OF_YEAR, -days + 1) // Adjust to start from the beginning of the 'days' period
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        val startDate = startCalendar.time
+//        Log.d("calculateRevenue", "Start date: $startDate")
+
+        val endCalendar = Calendar.getInstance().apply {
+            // Set to the end of the current day, regardless of 'days' since we're including today
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 59)
+            set(Calendar.SECOND, 59)
+            set(Calendar.MILLISECOND, 999)
+        }
+        val endDate = endCalendar.time
+//        Log.d("calculateRevenue", "End date: $endDate")
 
         // Initialize a map to hold revenue per day
         val revenuePerDay = mutableMapOf<String, Double>()
@@ -129,8 +182,10 @@ class AdminStatsActivity : AppCompatActivity() {
         val dateFormat = SimpleDateFormat("dd-MM", Locale.getDefault())
 
         // Query orders that were created within the specified time frame
-        ordersRef.whereGreaterThan("date", startDate).get()
+        ordersRef.whereGreaterThanOrEqualTo("date", startDate)
+            .whereLessThanOrEqualTo("date", endDate).get()
             .addOnSuccessListener { orderSnapshots ->
+//                Log.d("calculateRevenue", "Number of orders: ${orderSnapshots.size()}")
                 if (orderSnapshots.isEmpty) {
                     // No orders found, proceed to update the chart with no data
                     updateBarChartAndTextViews(barChart, revenuePerDay, days, textViewValue1, textViewValue2)
@@ -140,7 +195,6 @@ class AdminStatsActivity : AppCompatActivity() {
                 orderSnapshots.forEach { orderDoc ->
                     val totalAmount = orderDoc.getDouble("totalAmount") ?: 0.0
                     val orderDate = orderDoc.getDate("date")
-                    // Use the new date format "dd-MM"
                     val formattedDate = dateFormat.format(orderDate)
                     revenuePerDay[formattedDate] = revenuePerDay.getOrDefault(formattedDate, 0.0) + totalAmount
                 }
@@ -149,11 +203,12 @@ class AdminStatsActivity : AppCompatActivity() {
                 updateBarChartAndTextViews(barChart, revenuePerDay, days, textViewValue1, textViewValue2)
             }
             .addOnFailureListener { e ->
-                println("Error fetching orders: $e")
+                Log.e("calculateRevenue", "Error fetching orders", e)
                 // Error fetching orders, update the chart with no data
                 updateBarChartAndTextViews(barChart, revenuePerDay, days, textViewValue1, textViewValue2)
             }
     }
+
 
     private fun updateBarChartAndTextViews(
         barChart: BarChart,
@@ -174,7 +229,8 @@ class AdminStatsActivity : AppCompatActivity() {
             labels.add(date)
         }
 
-        val dataSet = BarDataSet(entries, "Daily Revenue")
+        val dataSet = BarDataSet(entries, "Daily Total Sales")
+        dataSet.color = ContextCompat.getColor(this, R.color.primary)
         val barData = BarData(dataSet)
 
         // Set the labels to the XAxis
@@ -189,7 +245,11 @@ class AdminStatsActivity : AppCompatActivity() {
         barChart.axisLeft.axisMinimum = 0f // Start from zero
         barChart.axisRight.isEnabled = false // Disable right axis
         barChart.description.isEnabled = false // Disable the description
-        barChart.legend.isEnabled = true // Enable the legend if desired
+        barChart.legend.isEnabled = false // Enable the legend if desired
+//        barChart.legend.apply {
+//            // You can use yOffset to move the legend up or down (negative values to move up)
+//            yOffset = 10f
+//        }
         barChart.invalidate() // Refresh the chart
 
         // Calculate total and average revenue
@@ -197,7 +257,7 @@ class AdminStatsActivity : AppCompatActivity() {
         val averageRevenuePerDay = if (days > 0) totalRevenue / days else 0.0
 
         // Update the TextViews
-        textViewValue1.text = "Total Revenue: ${"%.2f".format(totalRevenue)}"
-        textViewValue2.text = "Average Revenue/Day: ${"%.2f".format(averageRevenuePerDay)}"
+        textViewValue1.text = getString(R.string.formatted_currency, totalRevenue)
+        textViewValue2.text = getString(R.string.formatted_currency, averageRevenuePerDay)
     }
 }

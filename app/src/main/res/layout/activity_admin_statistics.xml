@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
@@ -59,67 +59,134 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <EditText
-                android:id="@+id/editTextNumberOfDays"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clChartHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:hint="Enter number of days"
-                android:inputType="number"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                android:paddingBottom="10dp">
 
-            <Button
-                android:id="@+id/calculateButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Calculate Revenue"
-                app:layout_constraintTop_toBottomOf="@id/editTextNumberOfDays"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                <TextView
+                    android:id="@+id/tvChartHeader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/rubik_medium"
+                    android:text="Sales Summary"
+                    android:textSize="@dimen/font_size18"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <TextView
-                android:id="@+id/textViewNumber1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total Revenue Last X Days: "
-                app:layout_constraintTop_toBottomOf="@id/calculateButton"
-                app:layout_constraintStart_toStartOf="parent" />
+                <!-- Container for TextView and ImageView -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerDaysChooser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
 
-            <TextView
-                android:id="@+id/textViewValue1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Value 1"
-                app:layout_constraintTop_toTopOf="@id/textViewNumber1"
-                app:layout_constraintStart_toEndOf="@id/textViewNumber1" />
+                    <!-- ImageView for displaying the calendar icon -->
+                    <ImageView
+                        android:id="@+id/ivCalendarIcon"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:srcCompat="@drawable/ic_edit"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:tint="@color/primary" />
 
-            <TextView
-                android:id="@+id/textViewNumber2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Average: "
-                app:layout_constraintTop_toBottomOf="@id/textViewNumber1"
-                app:layout_constraintStart_toStartOf="parent" />
+                    <!-- TextView for displaying the text -->
+                    <TextView
+                        android:id="@+id/tvDaysChooser"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Last 30 Days"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/ivCalendarIcon"
+                        android:layout_marginStart="6dp"
+                        android:textColor="@color/primary"
+                        android:fontFamily="@font/rubik_medium"/>
 
-            <TextView
-                android:id="@+id/textViewValue2"
-                android:layout_width="wrap_content"
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clSalesNumbers"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Value 2"
-                app:layout_constraintTop_toBottomOf="@id/textViewValue1"
-                app:layout_constraintStart_toEndOf="@id/textViewNumber2" />
+                app:layout_constraintTop_toBottomOf="@id/clChartHeader"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/groupTotalSales"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/textViewValue1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_chart"
+                        android:drawablePadding="4dp"
+                        android:text="$0.00"
+                        android:textSize="24sp"
+                        android:textColor="#000000"
+                        android:fontFamily="@font/rubik_medium"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total Sales"
+                        android:textColor="@color/grey_80"
+                        android:fontFamily="@font/rubik_regular"/>
+                </LinearLayout>
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/groupAvgSales"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/textViewValue2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_chart"
+                        android:drawablePadding="4dp"
+                        android:text="$0.00"
+                        android:textSize="24sp"
+                        android:textColor="#000000"
+                        android:fontFamily="@font/rubik_medium"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Average Sales"
+                        android:textColor="@color/grey_80"
+                        android:fontFamily="@font/rubik_regular"/>
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/barChart"
                 android:layout_width="0dp"
                 android:layout_height="200dp"
-                app:layout_constraintTop_toBottomOf="@id/textViewValue2"
+                app:layout_constraintTop_toBottomOf="@id/clSalesNumbers"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 

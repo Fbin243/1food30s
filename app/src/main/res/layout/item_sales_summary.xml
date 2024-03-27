@@ -1,0 +1,24 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_chart"
+        android:drawablePadding="4dp"
+        android:text="$0.00"
+        android:textSize="24sp"
+        android:textColor="#000000"
+        android:fontFamily="@font/rubik_medium"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Sales"
+        android:textColor="@color/grey_80"
+        android:fontFamily="@font/rubik_regular"/>
+</LinearLayout>

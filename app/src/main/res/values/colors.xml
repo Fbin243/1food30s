@@ -8,8 +8,9 @@
     <color name="secondary">#FF9D46</color>
     <color name="secondary_20">#33FF9D46</color>
     <color name="grey">#FF3A3A4F</color>
-    <color name="grey_60">#993A3A4F</color>
     <color name="grey_80">#CC3A3A4F</color>
+    <color name="grey_60">#993A3A4F</color>
+    <color name="grey_50">#803A3A4F</color>
     <color name="grey_30">#4D3A3A4F</color>
     <color name="shimmer_color">#e7e7e7</color>
     <color name="divider">#F0F0F0</color>
