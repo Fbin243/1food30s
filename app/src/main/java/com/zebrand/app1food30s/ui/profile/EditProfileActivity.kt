@@ -19,10 +19,8 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import com.squareup.picasso.Picasso
-import com.zebrand.app1food30s.data.Product
-import com.zebrand.app1food30s.databinding.ActivityEditProductBinding
+import com.zebrand.app1food30s.data.User
 import com.zebrand.app1food30s.databinding.ActivityEditProfileBinding
-import com.zebrand.app1food30s.ui.manage_product.ManageProductActivity
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.Date
@@ -32,65 +30,46 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditProfileBinding
     private val fireStore = FirebaseFirestore.getInstance()
     private val fireStorage = FirebaseStorage.getInstance()
-    private lateinit var categorySpinner: Spinner
-    private lateinit var offerSpinner: Spinner
     private val PICK_IMAGE_REQUEST = 71 // Unique request code
 
-    private lateinit var nameEditText: TextInputEditText
-    private lateinit var priceEditText: TextInputEditText
-    private lateinit var stockEditText: TextInputEditText
-    private lateinit var descriptionEditText: TextInputEditText
+    private lateinit var firstNameEditText: TextInputEditText
+    private lateinit var lastNameEditText: TextInputEditText
+    private lateinit var emailEditText: TextInputEditText
+    private lateinit var addressEditText: TextInputEditText
+    private lateinit var phoneEditText: TextInputEditText
     private lateinit var saveButton: Button
-
-    private lateinit var productImageView: ImageView
-    private var currentImagePath: String? = null
-
-    // Lưu URI của hình ảnh tạm thời
-    private var imageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val productId = intent.getStringExtra("USER_ID")
-        if (productId != null) {
-            fetchProductDetails(productId)
+        val userId = intent.getStringExtra("USER_ID")
+        if (userId != null) {
+            fetchUserInformation(userId)
         }
 
         setupUI()
     }
 
     private fun setupUI() {
-        nameEditText = binding.inputName
-        priceEditText = binding.inputPrice
-        stockEditText = binding.inputStock
-        descriptionEditText = binding.inputDescription
+        firstNameEditText = binding.editFirstName
+        lastNameEditText = binding.editLastName
+        emailEditText = binding.editEmail
+        addressEditText = binding.editAddress
+        phoneEditText = binding.editPhone
         saveButton = binding.saveBtn
-        productImageView = binding.imageProduct
-        categorySpinner = binding.categorySpinner
-        offerSpinner = binding.offerSpinner
 
         saveButton.setOnClickListener {
-            val productId = intent.getStringExtra("USER_ID")
-            productId?.let {
-                saveProductToFirestore(it)
+            val userId = intent.getStringExtra("USER_ID")
+            userId?.let {
+                saveUserInforToFirestore(it)
             } ?: run {
-                Toast.makeText(this, "Error: Product ID is missing.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error: User ID is missing.", Toast.LENGTH_SHORT).show()
             }
         }
-
-        productImageView.setOnClickListener {
-            startImagePicker()
-        }
     }
-
-    private fun startImagePicker() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        startActivityForResult(intent, PICK_IMAGE_REQUEST)
-    }
-
+    
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.data != null) {
@@ -99,8 +78,8 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveProductToFirestore(productId: String) {
-        val productName = nameEditText.text.toString().trim()
+    private fun saveUserInforToFirestore(userId: String) {
+        val productName = firstNameEditText.text.toString().trim()
 
         imageUri?.let { uri ->
             val fileName = "product${UUID.randomUUID()}.png"
@@ -109,18 +88,18 @@ class EditProfileActivity : AppCompatActivity() {
 
             uploadTask.addOnSuccessListener {
                 val imagePath = "images/product/$fileName"
-                updateProductDetails(productId, imagePath)
+                updateProductDetails(userId, imagePath)
             }.addOnFailureListener {
                 Toast.makeText(this, "Image upload failed: ${it.message}", Toast.LENGTH_LONG).show()
             }
         } ?: run {
-            updateProductDetails(productId, currentImagePath!!)
+            updateProductDetails(userId, currentImagePath!!)
         }
     }
 
-    private fun updateProductDetails(productId: String, imagePath: String) {
-        val productName = nameEditText.text.toString().trim()
-        val productPrice = priceEditText.text.toString().toDoubleOrNull() ?: 0.0
+    private fun updateProductDetails(userId: String, imagePath: String) {
+        val productName = firstNameEditText.text.toString().trim()
+        val productPrice = lastNameEditText.text.toString().toDoubleOrNull() ?: 0.0
         val productStock = stockEditText.text.toString().toIntOrNull() ?: 0
         val productDescription = descriptionEditText.text.toString().trim()
 
@@ -148,7 +127,7 @@ class EditProfileActivity : AppCompatActivity() {
                                     "date" to Date()
                                 )
 
-                                fireStore.collection("products").document(productId).update(productUpdate)
+                                fireStore.collection("products").document(userId).update(productUpdate)
                                     .addOnSuccessListener {
                                         Toast.makeText(this, "Product updated successfully", Toast.LENGTH_LONG).show()
                                         val intent = Intent(this, ManageProductActivity::class.java)
@@ -219,14 +198,14 @@ class EditProfileActivity : AppCompatActivity() {
             }
     }
 
-    private fun fetchProductDetails(productId: String) {
+    private fun fetchUserInformation(userId: String) {
         lifecycleScope.launch {
             try {
-                val documentSnapshot = fireStore.collection("products").document(productId).get().await()
+                val documentSnapshot = fireStore.collection("products").document(userId).get().await()
                 val product = documentSnapshot.toObject(Product::class.java)
                 product?.let {
                     with(binding) {
-                        inputName.setText(it.name)
+                        edit_first_name.setText(it.name)
                         inputPrice.setText(it.price.toString())
                         inputStock.setText(it.stock.toString())
                         inputDescription.setText(it.description)
@@ -272,8 +251,8 @@ class EditProfileActivity : AppCompatActivity() {
         }
     }
 
-//    private fun updateProductDetails(productId: String) {
-//        val updatedName = binding.inputName.text.toString()
+//    private fun updateProductDetails(userId: String) {
+//        val updatedName = binding.edit_first_name.text.toString()
 //        val updatedPrice = binding.inputPrice.text.toString().toDoubleOrNull()
 //        val updatedStock = binding.inputStock.text.toString().toIntOrNull()
 //        val updatedDescription = binding.inputDescription.text.toString()
@@ -281,7 +260,7 @@ class EditProfileActivity : AppCompatActivity() {
 //
 //        lifecycleScope.launch {
 //            try {
-//                fireStore.collection("products").document(productId).update(
+//                fireStore.collection("products").document(userId).update(
 //                    mapOf(
 //                        "name" to updatedName,
 //                        "price" to updatedPrice,
