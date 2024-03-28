@@ -27,6 +27,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val idUser = intent.getStringExtra("USER_ID") ?: ""
+
         if (adminLogin) {
             handleBottomNavigationForAdmin()
         } else {
@@ -34,7 +36,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (intent.getBooleanExtra("loadProfileFragment", false)) {
-            replaceFragment(ProfileAfterLoginFragment())
+            val fragment = ProfileAfterLoginFragment().apply {
+                arguments = Bundle().apply {
+                    putString("USER_ID", idUser)
+                }
+            }
+            replaceFragment(fragment)
         } else if (intent.getBooleanExtra("showOrderConfirmation", false)) {
             showOrderConfirmationToast()
             showOrderConfirmationDialog()

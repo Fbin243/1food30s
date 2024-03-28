@@ -109,10 +109,10 @@ class LoginActivity : AppCompatActivity() {
                 // da login //changed
                 if (userInfo.isAdmin) {
                     mySharePreference.setBoolean(SingletonKey.IS_ADMIN, true)
-                    myStartActivity(AdminActivity::class.java)
+                    myStartActivity(AdminActivity::class.java, userInfo.id!!)
                 } else {
                     mySharePreference.setBoolean(SingletonKey.IS_ADMIN, false)
-                    myStartActivity(MainActivity::class.java)
+                    myStartActivity(MainActivity::class.java, userInfo.id!!)
                 }
 
                 mySharePreference.setString(SingletonKey.KEY_USER_ID, userInfo.id.toString())
@@ -120,8 +120,10 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun myStartActivity(cls: Class<*>) {
-        val intent = Intent(this, cls)
+    private fun myStartActivity(cls: Class<*>, idUser: String) {
+        val intent = Intent(this, cls).apply {
+            putExtra("USER_ID", idUser)
+        }
         startActivity(intent)
         finishAffinity()
     }

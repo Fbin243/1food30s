@@ -21,7 +21,14 @@ import com.zebrand.app1food30s.ultis.SingletonKey
 
 class ProfileAfterLoginFragment : Fragment() {
     private lateinit var binding: FragmentProfileAfterLoginBinding
+    private var idUser: String? = null
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Lấy idUser từ Bundle
+        idUser = arguments?.getString("USER_ID")
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,6 +44,13 @@ class ProfileAfterLoginFragment : Fragment() {
             startActivity(intent)
         }
         // ================================================================
+        binding.layoutEditProfile.setOnClickListener {
+            // Navigate to AdminStatisticsActivity
+            val intent = Intent(activity, EditProfileActivity::class.java).apply {
+                putExtra("USER_ID", idUser)
+            }
+            startActivity(intent)
+        }
 
         return binding.root
     }
