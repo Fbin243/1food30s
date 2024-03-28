@@ -4,6 +4,7 @@ import com.zebrand.app1food30s.R
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
@@ -43,11 +44,15 @@ class EditProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        firstNameEditText = binding.editFirstName
 
         val userId = intent.getStringExtra("USER_ID")
-        if (userId != null) {
-            fetchUserInformation(userId)
-        }
+        Log.d("MainActivity", "idUserInActivityEditProfile: $userId")
+//        firstNameEditText.setText(userId)
+//        if (userId == null) {
+////            fetchUserInformation(userId)
+//            firstNameEditText.setText("id null")
+//        }
 
         setupUI()
     }
@@ -103,11 +108,11 @@ class EditProfileActivity : AppCompatActivity() {
                 val user = documentSnapshot.toObject(User::class.java)
                 user?.let {
                     with(binding) {
-                        editFirstName.setText(it.firstName)
-                        editLastName.setText(it.lastName)
-                        editEmail.setText(it.email)
-                        editAddress.setText(it.address)
-                        editPhone.setText(it.phone)
+                        firstNameEditText.setText(it.firstName)
+                        lastNameEditText.setText(it.lastName)
+                        emailEditText.setText(it.email)
+                        addressEditText.setText(it.address)
+                        phoneEditText.setText(it.phone)
                     }
                 }
             } catch (e: Exception) {

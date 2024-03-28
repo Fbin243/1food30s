@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.ui.profile
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +28,9 @@ class ProfileAfterLoginFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Lấy idUser từ Bundle
-        idUser = arguments?.getString("USER_ID")
+//        idUser = arguments?.getString("USER_ID")
+        idUser = arguments?.getString("USER_ID", "")
+        Log.d("MainActivity", "idUserInFragmentProfile: $idUser")
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +47,7 @@ class ProfileAfterLoginFragment : Fragment() {
             startActivity(intent)
         }
         // ================================================================
+//        binding.username.setText(idUser)
         binding.layoutEditProfile.setOnClickListener {
             // Navigate to AdminStatisticsActivity
             val intent = Intent(activity, EditProfileActivity::class.java).apply {

@@ -1,6 +1,7 @@
 package com.zebrand.app1food30s.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val idUser = intent.getStringExtra("USER_ID") ?: ""
+        Log.d("MainActivity", "idUser: $idUser")
 
         if (adminLogin) {
             handleBottomNavigationForAdmin()
@@ -36,12 +38,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (intent.getBooleanExtra("loadProfileFragment", false)) {
-            val fragment = ProfileAfterLoginFragment().apply {
-                arguments = Bundle().apply {
-                    putString("USER_ID", idUser)
-                }
-            }
-            replaceFragment(fragment)
+//            val fragment = ProfileAfterLoginFragment().apply {
+//                arguments = Bundle().apply {
+//                    putString("USER_ID", idUser)
+//                }
+//            }
+            val profileFragment = ProfileAfterLoginFragment()
+            val bundle = Bundle()
+            bundle.putString("USER_ID", idUser) // Sử dụng putString cho idUser là String
+            profileFragment.arguments = bundle
+            replaceFragment(profileFragment)
         } else if (intent.getBooleanExtra("showOrderConfirmation", false)) {
             showOrderConfirmationToast()
             showOrderConfirmationDialog()
