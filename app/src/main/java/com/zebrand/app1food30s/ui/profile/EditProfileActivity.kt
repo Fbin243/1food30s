@@ -49,10 +49,9 @@ class EditProfileActivity : AppCompatActivity() {
         val userId = intent.getStringExtra("USER_ID")
         Log.d("MainActivity", "idUserInActivityEditProfile: $userId")
 //        firstNameEditText.setText(userId)
-//        if (userId == null) {
-////            fetchUserInformation(userId)
-//            firstNameEditText.setText("id null")
-//        }
+        if (userId != null) {
+            fetchUserInformation(userId)
+        }
 
         setupUI()
     }
@@ -91,7 +90,7 @@ class EditProfileActivity : AppCompatActivity() {
             "date" to Date()
         )
 
-        fireStore.collection("products").document(userId).update(userInforUpdate)
+        fireStore.collection("accounts").document(userId).update(userInforUpdate)
             .addOnSuccessListener {
                 Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_LONG).show()
                 finish()

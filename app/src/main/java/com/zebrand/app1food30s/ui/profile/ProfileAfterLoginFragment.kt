@@ -23,20 +23,13 @@ import com.zebrand.app1food30s.ultis.SingletonKey
 class ProfileAfterLoginFragment : Fragment() {
     private lateinit var binding: FragmentProfileAfterLoginBinding
     private var idUser: String? = null
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // Lấy idUser từ Bundle
-//        idUser = arguments?.getString("USER_ID")
-        idUser = arguments?.getString("USER_ID", "")
-        Log.d("MainActivity", "idUserInFragmentProfile: $idUser")
-    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProfileAfterLoginBinding.inflate(inflater, container, false)
+        idUser = arguments?.getString("USER_ID")
+        Log.d("MainActivity", "idUserProfileAfterLoginFragment: $idUser")
         events()
 
         // ========== Code này ở branch Hai3 (đã sửa lại dùng binding) =========

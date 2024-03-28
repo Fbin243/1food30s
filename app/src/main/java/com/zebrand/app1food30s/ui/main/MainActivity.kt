@@ -23,12 +23,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var adminLogin: Boolean = false
+    private var idUser: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val idUser = intent.getStringExtra("USER_ID") ?: ""
+        idUser = intent.getStringExtra("USER_ID") ?: ""
         Log.d("MainActivity", "idUser: $idUser")
 
         if (adminLogin) {
@@ -38,16 +39,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (intent.getBooleanExtra("loadProfileFragment", false)) {
-//            val fragment = ProfileAfterLoginFragment().apply {
-//                arguments = Bundle().apply {
-//                    putString("USER_ID", idUser)
-//                }
-//            }
-            val profileFragment = ProfileAfterLoginFragment()
-            val bundle = Bundle()
-            bundle.putString("USER_ID", idUser) // Sử dụng putString cho idUser là String
-            profileFragment.arguments = bundle
-            replaceFragment(profileFragment)
+            replaceFragment(ProfileAfterLoginFragment())
         } else if (intent.getBooleanExtra("showOrderConfirmation", false)) {
             showOrderConfirmationToast()
             showOrderConfirmationDialog()
@@ -102,7 +94,12 @@ class MainActivity : AppCompatActivity() {
                 R.id.ic_offers -> replaceFragment(OffersFragment())
                 R.id.ic_profile -> {
                     if (isLogin) {
-                        replaceFragment(ProfileAfterLoginFragment())
+                        val fragment = ProfileAfterLoginFragment().apply {
+                            arguments = Bundle().apply {
+                                putString("USER_ID", idUser)
+                            }
+                        }
+                        replaceFragment(fragment)
                     } else {
                         replaceFragment(ProfileFragment())
                     }
