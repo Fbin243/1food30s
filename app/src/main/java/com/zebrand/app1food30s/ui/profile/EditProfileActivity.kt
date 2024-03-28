@@ -63,186 +63,51 @@ class EditProfileActivity : AppCompatActivity() {
         saveButton.setOnClickListener {
             val userId = intent.getStringExtra("USER_ID")
             userId?.let {
-                saveUserInforToFirestore(it)
+                updateUserInformation(it)
             } ?: run {
                 Toast.makeText(this, "Error: User ID is missing.", Toast.LENGTH_SHORT).show()
             }
         }
     }
-    
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.data != null) {
-            imageUri = data.data!!
-            Picasso.get().load(imageUri).into(productImageView)
-        }
-    }
 
-    private fun saveUserInforToFirestore(userId: String) {
-        val productName = firstNameEditText.text.toString().trim()
+    private fun updateUserInformation(userId: String) {
+        val firstName = firstNameEditText.text.toString().trim()
+        val lastName = lastNameEditText.text.toString().trim()
+        val email = emailEditText.text.toString().trim()
+        val address = addressEditText.text.toString().trim()
+        val phone = phoneEditText.text.toString().trim()
 
-        imageUri?.let { uri ->
-            val fileName = "product${UUID.randomUUID()}.png"
-            val storageReference = fireStorage.reference.child("images/product/$fileName")
-            val uploadTask = storageReference.putFile(uri)
+        val userInforUpdate = hashMapOf<String, Any>(
+            "firstName" to firstName,
+            "lastName" to lastName,
+            "email" to email,
+            "address" to address,
+            "phone" to phone,
+            "date" to Date()
+        )
 
-            uploadTask.addOnSuccessListener {
-                val imagePath = "images/product/$fileName"
-                updateProductDetails(userId, imagePath)
-            }.addOnFailureListener {
-                Toast.makeText(this, "Image upload failed: ${it.message}", Toast.LENGTH_LONG).show()
-            }
-        } ?: run {
-            updateProductDetails(userId, currentImagePath!!)
-        }
-    }
-
-    private fun updateProductDetails(userId: String, imagePath: String) {
-        val productName = firstNameEditText.text.toString().trim()
-        val productPrice = lastNameEditText.text.toString().toDoubleOrNull() ?: 0.0
-        val productStock = stockEditText.text.toString().toIntOrNull() ?: 0
-        val productDescription = descriptionEditText.text.toString().trim()
-
-        val selectedCategoryName = categorySpinner.selectedItem.toString()
-        val selectedOfferName = offerSpinner.selectedItem.toString()
-
-        fireStore.collection("categories").whereEqualTo("name", selectedCategoryName).limit(1).get()
-            .addOnSuccessListener { categoryDocuments ->
-                if (categoryDocuments.documents.isNotEmpty()) {
-                    val categoryDocumentRef = categoryDocuments.documents.first().reference
-
-                    fireStore.collection("offers").whereEqualTo("name", selectedOfferName).limit(1).get()
-                        .addOnSuccessListener { offerDocuments ->
-                            if (offerDocuments.documents.isNotEmpty()) {
-                                val offerDocumentRef = offerDocuments.documents.first().reference
-
-                                val productUpdate = hashMapOf<String, Any>(
-                                    "name" to productName,
-                                    "idCategory" to categoryDocumentRef,
-                                    "idOffer" to offerDocumentRef,
-                                    "price" to productPrice,
-                                    "description" to productDescription,
-                                    "stock" to productStock,
-                                    "image" to imagePath,
-                                    "date" to Date()
-                                )
-
-                                fireStore.collection("products").document(userId).update(productUpdate)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(this, "Product updated successfully", Toast.LENGTH_LONG).show()
-                                        val intent = Intent(this, ManageProductActivity::class.java)
-                                        startActivity(intent)
-                                    }
-                                    .addOnFailureListener { e ->
-                                        Toast.makeText(this, "Error updating product: ${e.message}", Toast.LENGTH_LONG).show()
-                                    }
-                            } else {
-                                Toast.makeText(this, "Offer not found", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(this, "Error finding offer: ${e.message}", Toast.LENGTH_LONG).show()
-                        }
-                } else {
-                    Toast.makeText(this, "Category not found", Toast.LENGTH_SHORT).show()
-                }
+        fireStore.collection("products").document(userId).update(userInforUpdate)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_LONG).show()
+                finish()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Error finding category: ${e.message}", Toast.LENGTH_LONG).show()
-            }
-    }
-
-    private fun loadCategoriesFromFirebase(categoryStr: String) {
-        val db = Firebase.firestore
-        val categoriesList = ArrayList<String>()
-
-        db.collection("categories").get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    categoriesList.add(document.getString("name") ?: "")
-                }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesList)
-                adapter.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
-                categorySpinner.adapter = adapter
-
-                val selectedPosition = categoriesList.indexOf(categoryStr)
-                if (selectedPosition != -1) {
-                    categorySpinner.setSelection(selectedPosition)
-                }
-            }
-            .addOnFailureListener { exception ->
-                // Xử lý lỗi ở đây
-            }
-    }
-
-    private fun loadOffersFromFirebase(offerStr: String) {
-        val db = Firebase.firestore
-        val offerList = ArrayList<String>()
-
-        db.collection("offers").get()
-            .addOnSuccessListener { documents ->
-                for (document in documents) {
-                    offerList.add(document.getString("name") ?: "")
-                }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, offerList)
-                adapter.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
-                offerSpinner.adapter = adapter
-
-                val selectedPosition = offerList.indexOf(offerStr)
-                if (selectedPosition != -1) {
-                    offerSpinner.setSelection(selectedPosition)
-                }
-            }
-            .addOnFailureListener { exception ->
-                // Xử lý lỗi ở đây
+                Toast.makeText(this, "Error updating product: ${e.message}", Toast.LENGTH_LONG).show()
             }
     }
 
     private fun fetchUserInformation(userId: String) {
         lifecycleScope.launch {
             try {
-                val documentSnapshot = fireStore.collection("products").document(userId).get().await()
-                val product = documentSnapshot.toObject(Product::class.java)
-                product?.let {
+                val documentSnapshot = fireStore.collection("accounts").document(userId).get().await()
+                val user = documentSnapshot.toObject(User::class.java)
+                user?.let {
                     with(binding) {
-                        edit_first_name.setText(it.name)
-                        inputPrice.setText(it.price.toString())
-                        inputStock.setText(it.stock.toString())
-                        inputDescription.setText(it.description)
-                        val imageUrl = fireStorage.reference.child(it.image).downloadUrl.await().toString()
-                        Picasso.get().load(imageUrl).into(imageProduct)
-                        currentImagePath = it.image
-
-                        val offerId = it.idOffer?.id ?: "non"
-                        val offersCollection = FirebaseFirestore.getInstance().collection("offers")
-                        offersCollection.document(offerId).get().addOnSuccessListener { document ->
-                            if (document != null && document.exists()) {
-//                val category = document.toObject(Category::class.java)
-//                                categorySpinner.text = document.getString("name") ?: ""
-                                val offerStr = document.getString("name") ?: ""
-                                loadOffersFromFirebase(offerStr)
-                            } else {
-                                loadOffersFromFirebase("")
-                            }
-                        }.addOnFailureListener {
-
-                        }
-
-                        val categoryId = it.idCategory?.id ?: "non"
-                        val categoriesCollection = FirebaseFirestore.getInstance().collection("categories")
-                        categoriesCollection.document(categoryId).get().addOnSuccessListener { document ->
-                            if (document != null && document.exists()) {
-//                val category = document.toObject(Category::class.java)
-//                                categorySpinner.text = document.getString("name") ?: ""
-                                val categoryStr = document.getString("name") ?: ""
-                                loadCategoriesFromFirebase(categoryStr)
-                            } else {
-                                loadCategoriesFromFirebase("")
-                            }
-                        }.addOnFailureListener {
-
-                        }
-                        // Cập nhật các trường khác tương tự như trên
+                        editFirstName.setText(it.firstName)
+                        editLastName.setText(it.lastName)
+                        editEmail.setText(it.email)
+                        editAddress.setText(it.address)
+                        editPhone.setText(it.phone)
                     }
                 }
             } catch (e: Exception) {
@@ -250,29 +115,4 @@ class EditProfileActivity : AppCompatActivity() {
             }
         }
     }
-
-//    private fun updateProductDetails(userId: String) {
-//        val updatedName = binding.edit_first_name.text.toString()
-//        val updatedPrice = binding.inputPrice.text.toString().toDoubleOrNull()
-//        val updatedStock = binding.inputStock.text.toString().toIntOrNull()
-//        val updatedDescription = binding.inputDescription.text.toString()
-//        // Lấy các giá trị cập nhật từ người dùng
-//
-//        lifecycleScope.launch {
-//            try {
-//                fireStore.collection("products").document(userId).update(
-//                    mapOf(
-//                        "name" to updatedName,
-//                        "price" to updatedPrice,
-//                        "stock" to updatedStock,
-//                        "description" to updatedDescription
-//                        // Cập nhật các trường khác tương tự như trên
-//                    )
-//                ).await()
-//                // Xử lý sau khi cập nhật thành công, ví dụ: hiển thị thông báo, đóng màn hình
-//            } catch (e: Exception) {
-//                // Xử lý lỗi
-//            }
-//        }
-//    }
 }
