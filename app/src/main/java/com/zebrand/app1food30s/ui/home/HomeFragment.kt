@@ -29,6 +29,7 @@ import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
 import com.zebrand.app1food30s.ui.wishlist.FirestoreWishlistRepository
 import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
+import com.zebrand.app1food30s.ui.wishlist.WishlistManager
 import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
 import kotlinx.coroutines.launch
 
@@ -48,13 +49,37 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         homePresenter = HomePresenter(this)
         lifecycleScope.launch { homePresenter.getDataAndDisplay() }
 
-        val userId = "QXLiLOiPLaHhY5gu7ZdS" // TODO
-        wishlistPresenter = WishlistPresenter(this, FirestoreWishlistRepository(userId))
+        val userId = "QXLiLOiPLaHhY5gu7ZdS"
+        WishlistManager.initialize(userId)
+        wishlistPresenter = WishlistPresenter(this)
 
         handleOpenSearchScreen()
+        fetchAndUpdateWishlistState()
         return binding.root
     }
 
+    private fun fetchAndUpdateWishlistState() {
+        lifecycleScope.launch {
+            try {
+                // Assuming fetchWishlistForCurrentUser returns a list of product IDs
+                val wishlistItems = WishlistManager.fetchWishlistForCurrentUser()
+                wishlistedProductIds = wishlistItems.map { it.productId }.toSet() as MutableSet<String>
+                // Update UI based on fetched wishlist state
+                // This might involve refreshing RecyclerView adapters if they depend on wishlist state
+                updateAdaptersWithWishlistState()
+            } catch (e: Exception) {
+//                Log.e("HomeFragment", "Error fetching wishlist items", e)
+//                showError("Failed to fetch wishlist items.")
+            }
+        }
+    }
+
+    private fun updateAdaptersWithWishlistState() {
+        (binding.productRcv1.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
+        (binding.productRcv2.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
+    }
+
+    // TODO
     override fun showWishlistItems(items: List<WishlistItem>) {
         // Here, you'd update your UI with the wishlist items.
         // This might involve updating a RecyclerView adapter or similar.
@@ -70,30 +95,39 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-
     // Implementation of WishlistMVPView methods
     override fun showWishlistUpdated(product: Product, isAdded: Boolean) {
-        // Assuming currentProducts is a list of products currently displayed
-        val index = currentProducts.indexOfFirst { it.id == product.id }
-        if (index != -1) {
-            // Instead of modifying a property, you update your set of wishlisted product IDs
-            if (isAdded) {
-                wishlistedProductIds.add(product.id)
-            } else {
-                wishlistedProductIds.remove(product.id)
+        // Update the set of wishlisted product IDs based on the action
+        if (isAdded) {
+            wishlistedProductIds.add(product.id)
+        } else {
+            wishlistedProductIds.remove(product.id)
+        }
+
+        // Notify all adapters about the update
+        updateProductInAllAdapters(product.id, isAdded)
+    }
+
+    private fun updateProductInAllAdapters(productId: String, isWishlisted: Boolean) {
+        val adapters = listOfNotNull(
+            binding.productRcv1.adapter as? ProductAdapter,
+            binding.productRcv2.adapter as? ProductAdapter
+        )
+
+        adapters.forEach { adapter ->
+            val index = adapter.products.indexOfFirst { it.id == productId }
+            if (index != -1) {
+                // Update the wishlist status if your data model requires it
+                // e.g., adapter.products[index].isWishlisted = isWishlisted
+
+                adapter.notifyItemChanged(index)
             }
-
-            // Notify the adapter about the change in a specific item
-            // This assumes your adapter's `onBindViewHolder` uses wishlistedProductIds to determine wishlist status
-            binding.productRcv1.adapter?.notifyItemChanged(index)
-
-            // If you have more RecyclerViews displaying the same set of products, notify their adapters similarly
         }
     }
 
-
     override fun onResume() {
         super.onResume()
+        fetchAndUpdateWishlistState()
         binding.searchInput.clearFocus()
     }
 

@@ -6,6 +6,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.data.Category
 import com.zebrand.app1food30s.data.Offer
 import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.WishlistItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -127,6 +128,17 @@ object FirebaseUtils {
                 Log.e("getOneProductByID", "Error getting products", e)
                 null
             }
+        }
+    }
+
+    suspend fun getWishlistItemByProductId(idProduct: String): WishlistItem? {
+        return getOneProductByID(idProduct)?.let { product ->
+            WishlistItem(
+                productId = product.id,
+                name = product.name,
+                price = product.price,
+                image = product.image
+            )
         }
     }
 }

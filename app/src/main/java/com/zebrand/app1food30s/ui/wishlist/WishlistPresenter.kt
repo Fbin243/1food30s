@@ -1,6 +1,7 @@
 package com.zebrand.app1food30s.ui.wishlist
 
 import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.utils.FirebaseUtils.getWishlistItemByProductId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -8,52 +9,42 @@ import kotlinx.coroutines.withContext
 
 class WishlistPresenter(
     private val view: WishlistMVPView,
-    private val repository: WishlistRepository // Now, the repository is initialized with userId beforehand
 ) {
     fun loadWishlistItems() = CoroutineScope(Dispatchers.IO).launch {
-//        val items = repository.getWishlistItems() // 'userId' is managed within the repository
-//        withContext(Dispatchers.Main) {
-//            view.showWishlistItems(items)
-//        }
+        val items = WishlistManager.fetchWishlistForCurrentUser()
+        withContext(Dispatchers.Main) {
+            view.showWishlistItems(items)
+        }
     }
 
     fun addToWishlist(productId: String) = CoroutineScope(Dispatchers.IO).launch {
-        // Attempt to add product to wishlist
-        val added = repository.addToWishlist(productId)
+        // This would now update the local list and potentially sync with the backend
+        val item = getWishlistItemByProductId(productId)
+        if (item != null) {
+            WishlistManager.addToWishlist(item)
+        }
         withContext(Dispatchers.Main) {
-            if (added) {
-//                view.showAddSuccessMessage()
-            } else {
-                view.showError("Could not add item to wishlist.")
-            }
+            // Assuming we have a way to verify addition was successful
+            // view.showAddSuccessMessage() // Adjust as needed based on your application logic
         }
     }
 
     fun removeFromWishlist(productId: String) = CoroutineScope(Dispatchers.IO).launch {
-        // Attempt to remove product from wishlist
-        val removed = repository.removeFromWishlist(productId)
+        // This would now update the local list and potentially sync with the backend
+        WishlistManager.removeFromWishlist(productId)
         withContext(Dispatchers.Main) {
-            if (removed) {
-                view.showRemoveSuccessMessage()
-            } else {
-                view.showError("Could not remove item from wishlist.")
-            }
+            // Assuming we have a way to verify removal was successful
+            view.showRemoveSuccessMessage()
         }
     }
 
     fun toggleWishlist(product: Product) = CoroutineScope(Dispatchers.IO).launch {
-        val result = repository.toggleProductInWishlist(product.id)
+        val item = getWishlistItemByProductId(product.id)
+        val result = item?.let { WishlistManager.toggleProductInWishlist(it) }
         withContext(Dispatchers.Main) {
-            view.showWishlistUpdated(product, result)
-        }
-    }
-
-    // You might not need this method if your repository handles checking wishlist status directly
-    private fun checkProductInWishlist(productId: String) = CoroutineScope(Dispatchers.IO).launch {
-        // Check if product is in wishlist
-        val isInWishlist = repository.isProductInWishlist(productId)
-        withContext(Dispatchers.Main) {
-            // You could use this check to update UI or as part of other logic
+            if (result != null) {
+                view.showWishlistUpdated(product, result)
+            }
         }
     }
 }

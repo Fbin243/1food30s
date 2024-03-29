@@ -19,10 +19,10 @@ import com.zebrand.app1food30s.data.Product
 import com.zebrand.app1food30s.utils.Utils.formatPrice
 
 class ProductAdapter(
-    private val products: List<Product>,
+    val products: List<Product>,
     private val offers: List<Offer>,
     private val isGrid: Boolean = true,
-    private val wishlistedProductIds: Set<String>,
+    private var wishlistedProductIds: Set<String>,
 ) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
     var onItemClick: ((Product) -> Unit)? = null
@@ -104,5 +104,10 @@ class ProductAdapter(
         holder.ivWishlist.setImageResource(
             if (isProductWishlisted) R.drawable.ic_wishlist_active else R.drawable.ic_wishlist
         )
+    }
+
+    fun updateWishlistState(newWishlistedProductIds: Set<String>) {
+        this.wishlistedProductIds = newWishlistedProductIds
+        notifyDataSetChanged()
     }
 }

@@ -10,7 +10,7 @@ import kotlin.coroutines.suspendCoroutine
 
 object WishlistManager {
     private val db by lazy { FirebaseFirestore.getInstance() }
-    var wishlistedItems: List<WishlistItem> = emptyList()
+    var wishlistedItems: MutableList<WishlistItem> = mutableListOf() // Changed to mutable list for easier item addition/removal
     private lateinit var userId: String
 
     fun initialize(userId: String) {
@@ -20,16 +20,21 @@ object WishlistManager {
     suspend fun fetchWishlistForCurrentUser(): List<WishlistItem> = suspendCoroutine { continuation ->
         val wishlistRef = db.collection("wishlists").document(userId)
         wishlistRef.get().addOnSuccessListener { documentSnapshot ->
-            val productIds: List<String> = documentSnapshot.get("productIds") as? List<String> ?: listOf()
+            val productIds = documentSnapshot.get("productIds") as? List<String> ?: listOf()
             val tasks = productIds.map { productId ->
                 db.collection("products").document(productId).get()
             }
 
             Tasks.whenAllSuccess<DocumentSnapshot>(tasks).addOnSuccessListener { documents ->
                 val wishlistItems = documents.mapNotNull { document ->
-                    document.toObject(WishlistItem::class.java)?.apply { this.productId = document.id }
+                    WishlistItem(
+                        productId = document.id,
+                        name = document.getString("name") ?: "",
+                        price = document.getDouble("price") ?: 0.0,
+                        image = document.getString("image") ?: ""
+                    )
                 }
-                wishlistedItems = wishlistItems
+                this.wishlistedItems = wishlistItems.toMutableList()
                 continuation.resume(wishlistItems)
             }.addOnFailureListener { exception ->
                 continuation.resumeWithException(exception)
@@ -39,26 +44,26 @@ object WishlistManager {
         }
     }
 
-    fun isProductWishlisted(productId: String): Boolean {
-        return wishlistedItems.any { it.productId == productId }
-    }
+    fun isProductWishlisted(productId: String): Boolean =
+        wishlistedItems.any { it.productId == productId }
 
     fun setWishlist(items: List<WishlistItem>) {
-        wishlistedItems = items
+        wishlistedItems = items.toMutableList()
         notifyWishlistChanged()
     }
 
     fun addToWishlist(item: WishlistItem) {
-        wishlistedItems = wishlistedItems + item
-        notifyWishlistChanged()
+        if (!isProductWishlisted(item.productId)) {
+            wishlistedItems.add(item)
+            notifyWishlistChanged()
+        }
     }
 
     fun removeFromWishlist(productId: String) {
-        wishlistedItems = wishlistedItems.filterNot { it.productId == productId }
+        wishlistedItems.removeAll { it.productId == productId }
         notifyWishlistChanged()
     }
 
-    // Optionally, if you need to observe changes to the wishlist
     private var listeners: MutableList<WishlistChangeListener> = mutableListOf()
 
     fun addListener(listener: WishlistChangeListener) {
@@ -73,7 +78,18 @@ object WishlistManager {
         listeners.forEach { it.onWishlistChanged(wishlistedItems) }
     }
 
+    suspend fun toggleProductInWishlist(item: WishlistItem): Boolean {
+        val isWishlisted = isProductWishlisted(item.productId)
+        if (isWishlisted) {
+            removeFromWishlist(item.productId)
+        } else {
+            addToWishlist(item)
+        }
+        return !isWishlisted
+    }
+
     interface WishlistChangeListener {
         fun onWishlistChanged(wishlistedItems: List<WishlistItem>)
     }
 }
+
