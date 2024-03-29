@@ -25,7 +25,6 @@ class MenuFragment : Fragment(), MenuMVPView {
     private lateinit var binding: FragmentMenuBinding
     private lateinit var menuPresenter: MenuPresenter
     private var wishlistedProductIds: Set<String> = emptySet()
-    private lateinit var wishlistRepository: FirestoreWishlistRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,35 +32,31 @@ class MenuFragment : Fragment(), MenuMVPView {
     ): View {
         binding = FragmentMenuBinding.inflate(inflater)
 
-        val userId = "QXLiLOiPLaHhY5gu7ZdS"
-        wishlistRepository = FirestoreWishlistRepository(userId)
+        WishlistManager.initialize(userId = "QXLiLOiPLaHhY5gu7ZdS")
 
         menuPresenter = MenuPresenter(this)
         lifecycleScope.launch {
             menuPresenter.getDataAndDisplay()
-            fetchWishlistItemsWithDetails()
+            fetchAndUpdateWishlistState()
         }
 
         return binding.root
     }
 
-    private fun fetchWishlistItemsWithDetails() {
+    private fun fetchAndUpdateWishlistState() {
         lifecycleScope.launch {
             try {
-                // Fetch wishlist items
-                WishlistManager.initialize(userId = "QXLiLOiPLaHhY5gu7ZdS")
-                // Fetch wishlist items using the WishlistManager
-                WishlistManager.fetchWishlistForCurrentUser().let { wishlistItems ->
-                    // Update the wishlistedProductIds with the fetched data
-                    wishlistedProductIds = wishlistItems.map { it.productId }.toSet()
-
-                    // Now update the product display with the new set of wishlisted product IDs
-                    handleChangeLayout(menuPresenter.currentProducts, menuPresenter.currentOffers)
-                }
+                val wishlistItems = WishlistManager.fetchWishlistForCurrentUser()
+                wishlistedProductIds = wishlistItems.map { it.productId }.toSet()
+                updateAdapterWithWishlistState()
             } catch (e: Exception) {
                 // Handle errors appropriately
             }
         }
+    }
+
+    private fun updateAdapterWithWishlistState() {
+        (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
     }
 
     override fun handleChangeLayout(products: List<Product>, offers: List<Offer>) {

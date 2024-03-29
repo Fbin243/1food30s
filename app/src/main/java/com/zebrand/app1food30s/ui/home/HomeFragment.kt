@@ -61,15 +61,10 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
     private fun fetchAndUpdateWishlistState() {
         lifecycleScope.launch {
             try {
-                // Assuming fetchWishlistForCurrentUser returns a list of product IDs
                 val wishlistItems = WishlistManager.fetchWishlistForCurrentUser()
                 wishlistedProductIds = wishlistItems.map { it.productId }.toSet() as MutableSet<String>
-                // Update UI based on fetched wishlist state
-                // This might involve refreshing RecyclerView adapters if they depend on wishlist state
                 updateAdaptersWithWishlistState()
             } catch (e: Exception) {
-//                Log.e("HomeFragment", "Error fetching wishlist items", e)
-//                showError("Failed to fetch wishlist items.")
             }
         }
     }
