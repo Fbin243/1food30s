@@ -6,17 +6,18 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.zebrand.app1food30s.data.entity.Category
+import com.zebrand.app1food30s.data.entity.Offer
 
 @Dao
-interface CategoryDao {
-    @Query("SELECT * FROM categories ORDER BY date DESC")
-    fun getAll(): List<Category>
+interface OfferDao {
+    @Query("SELECT * FROM offers ORDER BY date DESC")
+    fun getAll(): List<Offer>
     @Insert
-    fun insert(category: Category)
+    fun insert(category: Offer)
     @Update
-    fun update(category: Category)
+    fun update(category: Offer)
     @Delete
-    fun delete(category: Category)
-    @Query("DELETE FROM categories")
+    fun delete(category: Offer)
+    @Query("DELETE FROM offers")
     fun deleteAll()
 }

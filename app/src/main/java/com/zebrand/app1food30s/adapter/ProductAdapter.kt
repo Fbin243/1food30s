@@ -75,7 +75,8 @@ class ProductAdapter(
         val oldPrice = product.price
         "$${formatPrice(oldPrice)}".also { holder.productPrice.text = it }
         if (product.idOffer != null) {
-            val offer = offers.find { it.id == product.idOffer.id }
+            val idOffer = product.idOffer!!.id
+            val offer = offers.find { it.id == idOffer }
             Log.i("Fix", "onBindViewHolder: $offer")
             val newPrice = oldPrice - offer!!.discountRate * oldPrice / 100
             "$${formatPrice(oldPrice)}".also { holder.productOldPrice.text = it }

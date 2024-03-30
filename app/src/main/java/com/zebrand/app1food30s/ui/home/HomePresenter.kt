@@ -1,8 +1,7 @@
 package com.zebrand.app1food30s.ui.home
 
 import com.zebrand.app1food30s.data.AppDatabase
-import com.zebrand.app1food30s.utils.FirebaseUtils
-import kotlinx.coroutines.async
+import com.zebrand.app1food30s.utils.FirebaseService
 import kotlinx.coroutines.coroutineScope
 
 class HomePresenter(
@@ -11,11 +10,13 @@ class HomePresenter(
     suspend fun getDataAndDisplay() {
         coroutineScope {
             view.showShimmerEffect()
-            val products =  FirebaseUtils.getListProducts()
-            val categories = FirebaseUtils.getListCategories(db)
-            val offers =  FirebaseUtils.getListOffers()
+
+            val products =  FirebaseService.getListProducts(db)
+            val categories = FirebaseService.getListCategories(db)
+            val offers =  FirebaseService.getListOffers(db)
 
             view.hideShimmerEffect()
+
             view.showCategories(categories)
             view.showProductsLatestDishes(products, offers)
             view.showProductsBestSeller(products, offers)

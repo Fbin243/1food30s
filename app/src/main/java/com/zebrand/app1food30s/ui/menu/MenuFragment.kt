@@ -51,7 +51,6 @@ class MenuFragment : Fragment(), MenuMVPView {
             binding.productRcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             binding.productRcv.adapter = ProductAdapter(products, offers, false)
         }
-
     }
 
     override fun showCategories(categories: List<Category>) {

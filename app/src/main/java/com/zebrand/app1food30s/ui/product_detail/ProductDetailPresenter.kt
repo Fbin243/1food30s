@@ -3,24 +3,27 @@ package com.zebrand.app1food30s.ui.product_detail
 import android.util.Log
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.toObject
+import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
+import com.zebrand.app1food30s.utils.FirebaseService
 import com.zebrand.app1food30s.utils.FirebaseUtils
 import kotlinx.coroutines.tasks.await
 
 class ProductDetailPresenter(
-    private val view: ProductDetailMVPView
+    private val view: ProductDetailMVPView, private val db: AppDatabase
 ) {
     suspend fun getProductDetail(idProduct: String) {
         try {
             view.showShimmerEffect()
-            val product = FirebaseUtils.getOneProductByID(idProduct)!!
+            val product = FirebaseService.getOneProductByID(idProduct)!!
             // Get category
             val category = product.idCategory!!.get().await().toObject<Category>()
             val offer = product.idOffer?.get()?.await()?.toObject<Offer>()
+            val idCategory = product.idCategory!!
             // Get related products
-            getRelatedProductsByCategory(product.idCategory, product.id)
+            getRelatedProductsByCategory(idCategory, product.id)
             // Finish get data
             view.showProductDetail(product, category!!, offer)
             view.hideShimmerEffect()
@@ -46,7 +49,7 @@ class ProductDetailPresenter(
                 product
             }
 
-            val offers = FirebaseUtils.getListOffers()
+            val offers = FirebaseService.getListOffers(db)
             view.showRelatedProducts(relatedProducts, offers)
         } catch (e: Exception) {
             Log.i("Error", "getRelatedProductsByCategory: ${e}")

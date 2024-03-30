@@ -6,14 +6,19 @@
     import androidx.room.RoomDatabase
     import androidx.room.TypeConverters
     import com.zebrand.app1food30s.data.dao.CategoryDao
+    import com.zebrand.app1food30s.data.dao.OfferDao
+    import com.zebrand.app1food30s.data.dao.ProductDao
     import com.zebrand.app1food30s.data.entity.Category
     import com.zebrand.app1food30s.data.entity.Converter
+    import com.zebrand.app1food30s.data.entity.Offer
+    import com.zebrand.app1food30s.data.entity.Product
 
-    @Database(entities = [Category::class], version = 1)
+    @Database(entities = [Category::class, Product::class, Offer::class], version = 1)
     @TypeConverters(Converter::class)
     abstract class AppDatabase: RoomDatabase() {
         abstract fun categoryDao(): CategoryDao
-    //    abstract fun productDAO(): ProductDAO
+        abstract fun productDao(): ProductDao
+        abstract fun offerDao(): OfferDao
         companion object {
             private const val DB_NAME = "DB_App1Food30s"
             private var instance: AppDatabase? = null
@@ -25,10 +30,5 @@
             private fun buildDatabase(context: Context) =
                 Room.databaseBuilder(context, AppDatabase::class.java, DB_NAME)
                     .allowMainThreadQueries().build()
-
-            fun deleteDatabase(context: Context) {
-                context.deleteDatabase(DB_NAME)
-                instance = null
-            }
         }
     }

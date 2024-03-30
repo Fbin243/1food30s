@@ -14,6 +14,7 @@ import com.facebook.shimmer.ShimmerFrameLayout
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.ProductAdapter
+import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
@@ -26,12 +27,13 @@ import kotlinx.coroutines.launch
 class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
     private lateinit var binding: ActivityProductDetailBinding
     private lateinit var productDetailPresenter: ProductDetailPresenter
+    private lateinit var db: AppDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProductDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        productDetailPresenter = ProductDetailPresenter(this)
+        db = AppDatabase.getInstance(this)
+        productDetailPresenter = ProductDetailPresenter(this, db)
         val idProduct = intent.getStringExtra("idProduct")
         lifecycleScope.launch {
             productDetailPresenter.getProductDetail(idProduct!!)
