@@ -1,10 +1,9 @@
 package com.zebrand.app1food30s.ui.checkout
 
-import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
-import com.zebrand.app1food30s.data.DetailedCartItem
-import com.zebrand.app1food30s.data.Order
-import com.zebrand.app1food30s.data.OrderItem
+import com.zebrand.app1food30s.data.entity.DetailedCartItem
+import com.zebrand.app1food30s.data.entity.Order
+import com.zebrand.app1food30s.data.entity.OrderItem
 import com.zebrand.app1food30s.ui.cart.CartRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

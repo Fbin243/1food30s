@@ -2,13 +2,12 @@ package com.zebrand.app1food30s.ui.checkout
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CheckoutItemsAdapter
-import com.zebrand.app1food30s.data.DetailedCartItem
+import com.zebrand.app1food30s.data.entity.DetailedCartItem
 import com.zebrand.app1food30s.databinding.ActivityCheckoutBinding
 import com.zebrand.app1food30s.ui.cart.CartRepository
 import com.zebrand.app1food30s.ui.main.MainActivity

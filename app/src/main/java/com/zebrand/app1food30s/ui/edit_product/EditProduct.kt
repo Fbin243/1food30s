@@ -15,11 +15,9 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
 import com.squareup.picasso.Picasso
-import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.ActivityEditProductBinding
 import com.zebrand.app1food30s.ui.manage_product.ManageProductActivity
 import kotlinx.coroutines.launch

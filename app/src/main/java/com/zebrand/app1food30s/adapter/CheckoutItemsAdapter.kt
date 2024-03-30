@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.data.DetailedCartItem
+import com.zebrand.app1food30s.data.entity.DetailedCartItem
 
 class CheckoutItemsAdapter : RecyclerView.Adapter<CheckoutItemsAdapter.CheckoutViewHolder>() {
 

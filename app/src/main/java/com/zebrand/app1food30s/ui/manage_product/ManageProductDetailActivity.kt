@@ -9,11 +9,9 @@ import android.widget.ImageView
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.zebrand.app1food30s.data.Category
-import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.R
 import java.util.Date
 import java.util.UUID

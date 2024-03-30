@@ -1,15 +1,14 @@
 package com.zebrand.app1food30s.ui.cart
 
-import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.zebrand.app1food30s.data.Cart
-import com.zebrand.app1food30s.data.CartItem
-import com.zebrand.app1food30s.data.DetailedCartItem
-import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.entity.Cart
+import com.zebrand.app1food30s.data.entity.CartItem
+import com.zebrand.app1food30s.data.entity.DetailedCartItem
+import com.zebrand.app1food30s.data.entity.Product
 
 class CartRepository(private val db: FirebaseFirestore) {
 

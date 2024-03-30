@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.auth.FirebaseUser
-import com.zebrand.app1food30s.data.User
+import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.databinding.ActivityLoginBinding
 import com.zebrand.app1food30s.ui.main.AdminActivity
 import com.zebrand.app1food30s.ui.main.MainActivity

@@ -10,9 +10,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Product
-import com.zebrand.app1food30s.data.Product
-import com.zebrand.app1food30s.data.Category
-import kotlinx.coroutines.tasks.await
 
 class ManageProductAdapter(private val products: List<Product>, private val onProductClick: (Product) -> Unit) :
     RecyclerView.Adapter<ManageProductAdapter.ProductViewHolder>() {

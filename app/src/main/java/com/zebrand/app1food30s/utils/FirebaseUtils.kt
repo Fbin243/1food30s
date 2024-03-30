@@ -17,6 +17,8 @@ import kotlinx.coroutines.withContext
 object FirebaseUtils {
     val fireStore: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
     val fireStorage: FirebaseStorage by lazy { FirebaseStorage.getInstance() }
+    val fireAuth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
+    
     suspend fun getListCategories(db: AppDatabase): List<Category> {
         return withContext(Dispatchers.IO) {
             try {

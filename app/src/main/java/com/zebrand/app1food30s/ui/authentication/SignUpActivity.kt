@@ -6,8 +6,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.firestore.DocumentReference
-import com.zebrand.app1food30s.data.Cart
-import com.zebrand.app1food30s.data.User
+import com.zebrand.app1food30s.data.entity.Cart
+import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.databinding.ActivitySignUpBinding
 import com.zebrand.app1food30s.utils.FireStoreUtils
 import com.zebrand.app1food30s.utils.FirebaseUtils
