@@ -24,12 +24,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var adminLogin: Boolean = false
     private var idUser: String? = null
+//    private val mySharePreference = MySharedPreferences.getInstance(this)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        idUser = intent.getStringExtra("USER_ID") ?: ""
+//        idUser = intent.getStringExtra("USER_ID") ?: ""
+        val mySharePreference = MySharedPreferences.getInstance(this)
+        idUser = mySharePreference.getString(SingletonKey.KEY_USER_ID)
         Log.d("MainActivity", "idUser: $idUser")
 
         if (adminLogin) {
