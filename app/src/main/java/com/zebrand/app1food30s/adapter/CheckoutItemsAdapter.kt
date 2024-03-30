@@ -8,12 +8,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.data.DetailedCartItem
 
 class CheckoutItemsAdapter : RecyclerView.Adapter<CheckoutItemsAdapter.CheckoutViewHolder>() {
 
-    private var items = listOf<String>()
+    private var items = listOf<DetailedCartItem>()
 
-    fun setItems(newItems: List<String>) {
+    fun setItems(newItems: List<DetailedCartItem>) {
         items = newItems
         notifyDataSetChanged()
     }
@@ -24,7 +25,8 @@ class CheckoutItemsAdapter : RecyclerView.Adapter<CheckoutItemsAdapter.CheckoutV
     }
 
     override fun onBindViewHolder(holder: CheckoutViewHolder, position: Int) {
-        holder.bind(items[position])
+        val item = items[position]
+        holder.bind(item)
     }
 
     override fun getItemCount(): Int = items.size
@@ -36,15 +38,12 @@ class CheckoutItemsAdapter : RecyclerView.Adapter<CheckoutItemsAdapter.CheckoutV
         private val productPrice: TextView = itemView.findViewById(R.id.productPrice)
         private val quantity: TextView = itemView.findViewById(R.id.itemQuantity)
 
-        fun bind(description: String) {
-            val parts = description.split(" - ")
-            if (parts.size == 5) {
-                Glide.with(itemView.context).load(parts[0]).into(productImage)
-                productName.text = parts[1]
-                productCategory.text = parts[2]
-                productPrice.text = parts[3]
-                quantity.text = parts[4]
-            }
+        fun bind(item: DetailedCartItem) {
+            productName.text = item.productName
+            productCategory.text = item.productCategory
+            Glide.with(itemView.context).load(item.productImage).into(productImage)
+            productPrice.text = itemView.context.getString(R.string.product_price_number, item.productPrice)
+            quantity.text = item.quantity.toString()
         }
     }
 }

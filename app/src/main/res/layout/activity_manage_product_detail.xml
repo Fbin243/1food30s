@@ -77,6 +77,7 @@
 
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_name"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
                 android:maxLines="1" />
@@ -95,7 +96,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/category"
-            style="@style/NoUnderlineDropdown"
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing60"
             app:boxBackgroundColor="@color/transparent"
@@ -104,16 +104,11 @@
             app:layout_constraintTop_toBottomOf="@id/text_category"
             app:layout_constraintStart_toStartOf="parent">
 
-            <AutoCompleteTextView
-                android:id="@+id/price_dropdown"
+            <Spinner
+                android:id="@+id/category_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="none"
-                android:paddingBottom="@dimen/spacing18"
-                android:background="@color/transparent"
-                android:maxLines="1"
-                android:textColor="@color/primary" />
-
+                android:paddingHorizontal="@dimen/spacing8"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -144,8 +139,10 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_price"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
+                android:inputType="numberDecimal"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -162,7 +159,6 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/offer"
-            style="@style/NoUnderlineDropdown"
             android:layout_width="match_parent"
             android:layout_marginTop="5dp"
             app:boxBackgroundColor="@color/transparent"
@@ -171,16 +167,11 @@
             app:layout_constraintTop_toBottomOf="@id/text_offer"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <AutoCompleteTextView
-                android:id="@+id/offer_dropdown"
+            <Spinner
+                android:id="@+id/offer_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="none"
-                android:background="@color/transparent"
-                android:paddingBottom="@dimen/spacing18"
-                android:maxLines="1"
-                android:textColor="@color/primary" />
-
+                android:paddingHorizontal="@dimen/spacing8"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -211,9 +202,11 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_stock"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
                 android:maxLines="1"
+                android:inputType="number"
                 android:gravity="start"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -239,7 +232,7 @@
             app:boxCornerRadiusBottomEnd="@dimen/radius8">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_description"
+                android:id="@+id/input_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
@@ -252,14 +245,16 @@
             android:id="@+id/image_product"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:paddingStart="@dimen/spacing20"
-            android:paddingTop="@dimen/spacing14"
+            android:paddingHorizontal="@dimen/spacing20"
+            android:paddingVertical="@dimen/spacing14"
             android:src="@drawable/upload"
             android:background="@drawable/dashed_border"
             app:layout_constraintTop_toBottomOf="@+id/description_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="@dimen/spacing20"/>
+            android:layout_marginTop="@dimen/spacing20"
+            android:clickable="true"
+            android:focusable="true"/>
 
 
         <Button

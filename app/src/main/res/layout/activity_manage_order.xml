@@ -17,7 +17,7 @@
             android:orientation="horizontal"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:paddingHorizontal="@dimen/spacing16"
+            android:paddingHorizontal="@dimen/spacing8"
             android:paddingTop="@dimen/spacing12">
 
             <ImageView
@@ -30,16 +30,35 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_active_orders"
+
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/txt_manage_order"
-            android:textSize="@dimen/font_header"
-            android:fontFamily="@font/rubik_semibold"
-            android:paddingHorizontal="@dimen/spacing20"
-            android:paddingBottom="@dimen/spacing4"
-            app:drawableEndCompat="@drawable/ic_filter" />
+            android:orientation="horizontal"
+            android:weightSum="10"
+            android:paddingHorizontal="@dimen/spacing16"
+            android:gravity="center_vertical">
+            <TextView
+                android:id="@+id/tv_active_orders"
+                android:layout_width="0dp"
+                android:layout_weight="10"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_manage_order"
+                android:textSize="@dimen/font_header"
+                android:fontFamily="@font/rubik_semibold"
+
+                android:paddingBottom="@dimen/spacing4"
+                 />
+
+            <ImageButton
+                android:id="@+id/filterBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_filter"
+                android:padding="@dimen/spacing4"
+                android:background="@color/transparent"/>
+        </LinearLayout>
 
         <ScrollView
             android:layout_width="match_parent"

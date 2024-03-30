@@ -59,7 +59,7 @@ class ManageOffer : AppCompatActivity() {
                         numProduct.toInt(),
                         date
                     )
-                }.take(2)
+                }
             } catch (e: Exception) {
                 Log.e("getListProducts", "Error getting products", e)
                 emptyList()

@@ -194,7 +194,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
-        android:id="@+id/btnCheckout"
+        android:id="@+id/btnPlaceOrder"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing60"
         android:text="@string/place_order"

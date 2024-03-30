@@ -1,6 +1,7 @@
 package com.zebrand.app1food30s.utils
 
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.data.AppDatabase
@@ -73,6 +74,7 @@ object FirebaseUtils {
                     val idOffer = document.getDocumentReference("idOffer")
                     val name = document.getString("name") ?: ""
                     val image = document.getString("image") ?: ""
+                    Log.i("Fix", "getListProducts: $image")
                     val imageUrl = fireStorage.reference.child(image).downloadUrl.await().toString()
                     val price = document.getDouble("price") ?: 0.0
                     val description = document.getString("description") ?: ""

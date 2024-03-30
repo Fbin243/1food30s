@@ -3,6 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="primary">#7F9839</color>
+    <color name="primary_50">#807F9839</color>
     <color name="primary_75">#BF7F9839</color>
     <color name="secondary">#FF9D46</color>
     <color name="secondary_20">#33FF9D46</color>
@@ -22,4 +23,8 @@
     <color name="kelly_green">#FF46C346</color>
     <color name="pressed_color">#E0E0E0</color>
     <color name="selected_color">#B2DFDB</color>
+    <color name="snackbar">#596A27</color>
+    <color name="snackbar_background">#CBD5B0</color>
+    <color name="admin_background">#EEF3E1</color>
+    <color name="splash_color">#B9D5AC63</color>
 </resources>

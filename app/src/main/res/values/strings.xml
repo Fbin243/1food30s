@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">app1food30s</string>
     <string name="txt_uni_address">227 Nguyễn Văn Cừ, phường 4, Quận 5, Thành phố Hồ Chí Minh</string>
 
@@ -65,7 +65,7 @@
     <string name="txt_payment_status">Status:&#160;</string>
     <string name="txt_order_details">Order details</string>
     <string name="txt_subtotal">Subtotal:&#160;</string>
-    <string name="txt_deals">Deals</string>
+    <string name="txt_deals">Discounts</string>
     <string name="txt_delivery_charge">Delivery charge</string>
     <string name="txt_total">Total:&#160;</string>
     <string name="txt_category">Category</string>
@@ -138,10 +138,41 @@
     </string-array>
 
     <string name="product_price_number">$%.2f</string>
+    <string name="close_button_description">Close button</string>
+    <string name="admin_statistics">Admin Statistics</string>
     <string name="txt_stock">"Stock: "</string>
     <string name="txt_dashboard">Dashboard\n</string>
     <string name="txt_orders">Orders</string>
     <string name="txt_products">Products</string>
     <string name="txt_manage">Manage</string>
+    <string name="txt_reason">Reason</string>
+    <string name="txt_cancel">Cancel</string>
+    <string name="txt_clear">Clear</string>
+    <string name="txt_filter">Filter</string>
+    <string name="txt_order_id_filter">Order ID</string>
+    <string name="txt_status">Status</string>
+    <string name="txt_customer">Customer</string>
+    <string name="txt_date_filter">Date</string>
+    <string name="txt_default_date">01/01/2024</string>
+    <string name="txt_delete_account">Delete account</string>
+    <string name="txt_confirm_delete_account">Are you sure you want to delete your account?</string>
+    <string name="txt_confirm_forgot_password">Are you sure you want to reset your password?</string>
+    <string name="txt_required">* Required</string>
+    <string name="txt_invalid_email">"* Invalid email address"</string>
+    <string name="txt_minimum_password">"* Minimum 6 character password"</string>
+    <string name="txt_confirm_password_not_match">* Confirm password does not match</string>
+    <string name="txt_delete_email_not_match">* Email does not correct</string>
+
+    <string-array name="delivery_array">
+        <item>Pending</item>
+        <item>Order accepted</item>
+        <item>On delivery</item>
+        <item>Delivered</item>
+    </string-array>
+
+    <string-array name="payment_array">
+        <item>Paid</item>
+        <item>Unpaid</item>
+    </string-array>
 
 </resources>

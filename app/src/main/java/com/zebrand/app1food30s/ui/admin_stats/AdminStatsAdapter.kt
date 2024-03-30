@@ -1,4 +1,4 @@
-package com.zebrand.app1food30s.ui.admin_statistics
+package com.zebrand.app1food30s.ui.admin_stats
 
 import android.graphics.Rect
 import android.view.LayoutInflater
@@ -24,7 +24,7 @@ class MyGridAdapter(private val mDataset: Array<GridItem>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         // Inflate the custom layout (item_card_view.xml) for the item
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_card_view, parent, false)
+            .inflate(R.layout.item_admin_stats, parent, false)
         // Return a new ViewHolder instance
         return MyViewHolder(view)
     }
@@ -48,26 +48,31 @@ class MyGridAdapter(private val mDataset: Array<GridItem>) :
     )
 }
 
-class GridSpacingItemDecoration(private val spanCount: Int, private val spacing: Int, private val includeEdge: Boolean) : RecyclerView.ItemDecoration() {
+class GridSpacingItemDecoration(
+    private val spanCount: Int,
+    private val spacing: Int,
+    private val includeEdge: Boolean
+) : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view) // item position
         val column = position % spanCount // item column
 
         if (includeEdge) {
-            outRect.left = spacing - column * spacing / spanCount
-            outRect.right = (column + 1) * spacing / spanCount
+            outRect.left = spacing - column * spacing / spanCount // spacing - column * ((1f / spanCount) * spacing)
+            outRect.right = (column + 1) * spacing / spanCount // (column + 1) * ((1f / spanCount) * spacing)
 
-            if (position < spanCount) { // top edge
-                outRect.top = spacing
+            if (position < spanCount) {
+                outRect.top = spacing // top edge
             }
             outRect.bottom = spacing // item bottom
         } else {
-            outRect.left = column * spacing / spanCount
-            outRect.right = spacing - (column + 1) * spacing / spanCount
+            outRect.left = column * spacing / spanCount // column * ((1f / spanCount) * spacing)
+            outRect.right = spacing - (column + 1) * spacing / spanCount // spacing - (column + 1) * ((1f / spanCount) * spacing)
             if (position >= spanCount) {
                 outRect.top = spacing // item top
             }
         }
     }
 }
+

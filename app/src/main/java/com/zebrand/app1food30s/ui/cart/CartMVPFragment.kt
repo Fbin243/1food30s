@@ -1,4 +1,4 @@
-package com.zebrand.app1food30s.ui.cart_checkout
+package com.zebrand.app1food30s.ui.cart
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,15 +12,15 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CartItemAdapter
 import com.zebrand.app1food30s.data.entity.DetailedCartItem
 import com.zebrand.app1food30s.databinding.FragmentCartBinding
-import com.google.gson.Gson
+import com.zebrand.app1food30s.ui.checkout.CheckoutActivity
 
-class CartFragment : Fragment(), CartView {
+class CartMVPFragment : Fragment(), CartMVPView {
 
     private var _binding: FragmentCartBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: CartItemAdapter
     private lateinit var presenter: CartPresenter
-
+    private val cartId = "mdXn8lvirHaAogStOY1K"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCartBinding.inflate(inflater, container, false)
@@ -76,11 +76,14 @@ class CartFragment : Fragment(), CartView {
 
     private fun handleCheckoutNavigation() {
         binding.btnCheckout.setOnClickListener {
-            val cartSummary = presenter.getCartSummary() // Pair<List<String>, Double>
+//            val cartSummary = presenter.getCartSummary() // Pair<List<String>, Double>
+//            val intent = Intent(context, CheckoutActivity::class.java).apply {
+//                val itemDescriptionsJson = Gson().toJson(cartSummary.first) // Convert list to JSON string
+//                putExtra("item_descriptions", itemDescriptionsJson)
+//                putExtra("total_price", cartSummary.second)
+//            }
             val intent = Intent(context, CheckoutActivity::class.java).apply {
-                val itemDescriptionsJson = Gson().toJson(cartSummary.first) // Convert list to JSON string
-                putExtra("item_descriptions", itemDescriptionsJson)
-                putExtra("total_price", cartSummary.second)
+                putExtra("cart_id", cartId) // Assume cartId is a String representing the cart's ID
             }
             startActivity(intent)
         }
