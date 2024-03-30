@@ -166,6 +166,8 @@
     <string name="txt_price">Price</string>
     <string name="txt_default_filter_date">Choose date</string>
     <string name="txt_current_password">Current password</string>
+    <string name="txt_change_password">Change password</string>
+    <string name="txt_let_reset_your_password">Let\'s reset password</string>
 
     <string-array name="delivery_array">
         <item>Pending</item>
