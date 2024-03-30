@@ -133,8 +133,11 @@ class ProfileAfterLoginFragment : Fragment() {
                 val documentSnapshot = fireStore.collection("accounts").document(userId).get().await()
                 val user = documentSnapshot.toObject(User::class.java)
                 user?.let {
-                    Picasso.get().load(it.avatar).into(avaImageView)
+                    val imageUrl = fireStorage.reference.child(it.avatar).downloadUrl.await().toString()
+                    Picasso.get().load(imageUrl).into(binding.ava)
                     currentImagePath = it.avatar
+                    binding.username.text = it.lastName
+                    binding.email.text = it.email
                     // Update other user info views
                 }
             } catch (e: Exception) {
