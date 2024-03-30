@@ -165,6 +165,7 @@
     <string name="txt_name_product_filter">Name</string>
     <string name="txt_price">Price</string>
     <string name="txt_default_filter_date">Choose date</string>
+    <string name="txt_current_password">Current password</string>
 
     <string-array name="delivery_array">
         <item>Pending</item>
