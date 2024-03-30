@@ -9,11 +9,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.data.User
 import com.zebrand.app1food30s.ui.admin_stats.AdminStatsActivity
 import com.zebrand.app1food30s.databinding.FragmentProfileAfterLoginBinding
 import com.zebrand.app1food30s.ui.authentication.DeleteAccountActivity
@@ -26,6 +32,8 @@ import com.zebrand.app1food30s.ultis.FirebaseUtils.fireStore
 import com.zebrand.app1food30s.ultis.GlobalUtils
 import com.zebrand.app1food30s.ultis.MySharedPreferences
 import com.zebrand.app1food30s.ultis.SingletonKey
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.util.Date
 import java.util.UUID
 
@@ -34,9 +42,19 @@ class ProfileAfterLoginFragment : Fragment() {
     private lateinit var binding: FragmentProfileAfterLoginBinding
     private var idUser: String? = null
     private lateinit var avaImageView: ImageView
-    private val PICK_IMAGE_REQUEST = 71 // Unique request code
     private var imageUri: Uri? = null
     private var currentImagePath: String? = null
+
+    // ResultLauncher for handling image picking result
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            imageUri = it
+            Picasso.get().load(it).into(binding.ava)
+            idUser?.let { userId ->
+                saveAvaUserToFirestore(userId)
+            }
+        }
+    }
 
 
     override fun onCreateView(
@@ -46,11 +64,14 @@ class ProfileAfterLoginFragment : Fragment() {
         binding = FragmentProfileAfterLoginBinding.inflate(inflater, container, false)
         idUser = arguments?.getString("USER_ID")
         Log.d("MainActivity", "idUserProfileAfterLoginFragment: $idUser")
+
+
+        fetchUserInformation(idUser.orEmpty())
         events()
 
         // ========== Code này ở branch Hai3 (đã sửa lại dùng binding) =========
         binding.ava.setOnClickListener {
-            startImagePicker()
+            pickImageLauncher.launch("image/*")
         }
         // Set up the click listener for the layoutMyOrders
         binding.layoutMyOrders.setOnClickListener {
@@ -79,51 +100,47 @@ class ProfileAfterLoginFragment : Fragment() {
         return binding.root
     }
 
-    private fun startImagePicker() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        startActivityForResult(intent, PICK_IMAGE_REQUEST)
-    }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == AppCompatActivity.RESULT_OK && data != null && data.data != null) {
-            imageUri = data.data!!
-            Picasso.get().load(imageUri).into(avaImageView)
-        }
 
-        idUser?.let { saveAvaUserToFirestore(it) }
-    }
+
 
     private fun saveAvaUserToFirestore(userId: String) {
         imageUri?.let { uri ->
             val fileName = "ava${UUID.randomUUID()}.png"
             val storageReference = fireStorage.reference.child("images/avatars/$fileName")
-            val uploadTask = storageReference.putFile(uri)
-
-            uploadTask.addOnSuccessListener {
+            storageReference.putFile(uri).addOnSuccessListener {
                 val imagePath = "images/avatars/$fileName"
                 updateUserAvatar(userId, imagePath)
-            }.addOnFailureListener {
-//                Toast.makeText(this, "Image upload failed: ${it.message}", Toast.LENGTH_LONG).show()
+            }.addOnFailureListener { exception ->
+                Toast.makeText(context, "Image upload failed: ${exception.message}", Toast.LENGTH_LONG).show()
             }
-        } ?: run {
-            updateUserAvatar(userId, currentImagePath!!)
         }
     }
 
     private fun updateUserAvatar(userId: String, imagePath: String) {
-        val userInforUpdate = hashMapOf<String, Any>(
-            "avatar" to imagePath
-        )
-        fireStore.collection("accounts").document(userId).update(userInforUpdate)
+        fireStore.collection("accounts").document(userId).update("avatar", imagePath)
             .addOnSuccessListener {
-//                Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_LONG).show()
-//                finish()
+                Snackbar.make(binding.root, "Profile updated successfully", Snackbar.LENGTH_LONG).show()
             }
             .addOnFailureListener { e ->
-//                Toast.makeText(this, "Error updating product: ${e.message}", Toast.LENGTH_LONG).show()
+                Snackbar.make(binding.root, "Error updating profile: ${e.message}", Snackbar.LENGTH_LONG).show()
             }
+    }
+
+    private fun fetchUserInformation(userId: String) {
+        lifecycleScope.launch {
+            try {
+                val documentSnapshot = fireStore.collection("accounts").document(userId).get().await()
+                val user = documentSnapshot.toObject(User::class.java)
+                user?.let {
+                    Picasso.get().load(it.avatar).into(avaImageView)
+                    currentImagePath = it.avatar
+                    // Update other user info views
+                }
+            } catch (e: Exception) {
+                Toast.makeText(context, "Error fetching user information", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun events() {
