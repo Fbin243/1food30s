@@ -1,4 +1,4 @@
-package com.zebrand.app1food30s.ui.my_order
+package com.zebrand.app1food30s.ui.my_order.my_order_details
 
 import android.animation.Animator
 import android.annotation.SuppressLint

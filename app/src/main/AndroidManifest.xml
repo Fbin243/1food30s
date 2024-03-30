@@ -23,11 +23,7 @@
         <activity
             android:name=".ui.authentication.SplashActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.authentication.DeleteAccountActivity"
@@ -44,13 +40,6 @@
         <activity
             android:name=".ui.manage_product.ManageProductDetailActivity"
             android:exported="true">
-
-<!--             <intent-filter>-->
-<!--             <action android:name="android.intent.action.MAIN" />-->
-
-
-<!--             <category android:name="android.intent.category.LAUNCHER" />-->
-<!--             </intent-filter>-->
         </activity>
         <activity
             android:name=".ui.manage_product.ManageProductActivity"
@@ -74,9 +63,14 @@
         <activity
             android:name=".ui.my_order.MyOrderActivity"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
-            android:name=".ui.my_order.MyOrderDetailsActivity"
+            android:name=".ui.my_order.my_order_details.MyOrderDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".ui.authentication.ForgotPasswordActivity"
@@ -91,11 +85,6 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ui.admin_stats.AdminStatsActivity"

@@ -28,5 +28,3 @@ data class Order(
     @get:ServerTimestamp
     val date: Date? = null
 )
-
-
