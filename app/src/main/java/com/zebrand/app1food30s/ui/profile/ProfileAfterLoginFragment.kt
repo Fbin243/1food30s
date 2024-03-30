@@ -13,6 +13,7 @@ import com.zebrand.app1food30s.ui.admin_stats.AdminStatsActivity
 import com.zebrand.app1food30s.databinding.FragmentProfileAfterLoginBinding
 import com.zebrand.app1food30s.ui.authentication.DeleteAccountActivity
 import com.zebrand.app1food30s.ui.authentication.LoginActivity
+import com.zebrand.app1food30s.ui.change_password.ChangePasswordActivity
 import com.zebrand.app1food30s.ui.main.MainActivity
 import com.zebrand.app1food30s.ultis.FirebaseUtils
 import com.zebrand.app1food30s.ultis.GlobalUtils
@@ -44,6 +45,14 @@ class ProfileAfterLoginFragment : Fragment() {
         binding.layoutEditProfile.setOnClickListener {
             // Navigate to AdminStatisticsActivity
             val intent = Intent(activity, EditProfileActivity::class.java).apply {
+                putExtra("USER_ID", idUser)
+            }
+            startActivity(intent)
+        }
+
+        binding.layoutChangePassword.setOnClickListener {
+            // Navigate to AdminStatisticsActivity
+            val intent = Intent(activity, ChangePasswordActivity::class.java).apply {
                 putExtra("USER_ID", idUser)
             }
             startActivity(intent)
