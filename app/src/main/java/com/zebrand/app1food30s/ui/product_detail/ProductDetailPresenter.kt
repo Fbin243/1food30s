@@ -3,9 +3,9 @@ package com.zebrand.app1food30s.ui.product_detail
 import android.util.Log
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.toObject
-import com.zebrand.app1food30s.data.Category
-import com.zebrand.app1food30s.data.Offer
-import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.entity.Category
+import com.zebrand.app1food30s.data.entity.Offer
+import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.utils.FirebaseUtils
 import kotlinx.coroutines.tasks.await
 

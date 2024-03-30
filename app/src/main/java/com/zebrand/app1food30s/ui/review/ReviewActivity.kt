@@ -4,12 +4,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.firestore
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.adapter.ReviewAdapter
-import com.zebrand.app1food30s.data.Review
+import com.zebrand.app1food30s.data.entity.Review
 import com.zebrand.app1food30s.databinding.ActivityReviewBinding
 
 class ReviewActivity : AppCompatActivity() {

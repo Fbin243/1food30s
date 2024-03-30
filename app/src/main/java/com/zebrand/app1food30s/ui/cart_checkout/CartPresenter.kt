@@ -6,10 +6,10 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.zebrand.app1food30s.data.Cart
-import com.zebrand.app1food30s.data.CartItem
-import com.zebrand.app1food30s.data.DetailedCartItem
-import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.entity.Cart
+import com.zebrand.app1food30s.data.entity.CartItem
+import com.zebrand.app1food30s.data.entity.DetailedCartItem
+import com.zebrand.app1food30s.data.entity.Product
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

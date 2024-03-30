@@ -6,8 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.adapter.ProductAdapter
-import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.ActivitySearchBinding
 
 class SearchActivity : AppCompatActivity() {

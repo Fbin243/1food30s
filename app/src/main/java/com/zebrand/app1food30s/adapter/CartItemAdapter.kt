@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.data.DetailedCartItem
+import com.zebrand.app1food30s.data.entity.DetailedCartItem
 
 class CartItemAdapter(
     private val context: Context,

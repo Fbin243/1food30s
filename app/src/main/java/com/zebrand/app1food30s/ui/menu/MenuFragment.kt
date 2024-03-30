@@ -13,22 +13,25 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
-import com.zebrand.app1food30s.data.Category
-import com.zebrand.app1food30s.data.Offer
-import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.AppDatabase
+import com.zebrand.app1food30s.data.entity.Category
+import com.zebrand.app1food30s.data.entity.Offer
+import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentMenuBinding
 import kotlinx.coroutines.launch
 
 class MenuFragment : Fragment(), MenuMVPView {
     private lateinit var binding: FragmentMenuBinding
     private lateinit var menuPresenter: MenuPresenter
+    private lateinit var db: AppDatabase
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMenuBinding.inflate(inflater)
-
-        menuPresenter = MenuPresenter(this)
+        db = AppDatabase.getInstance(requireContext())
+        menuPresenter = MenuPresenter(this, db)
         lifecycleScope.launch { menuPresenter.getDataAndDisplay()}
 
         return binding.root

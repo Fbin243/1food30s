@@ -1,8 +1,8 @@
-package com.zebrand.app1food30s.data
+package com.zebrand.app1food30s.data.entity
 
 import com.google.firebase.firestore.DocumentReference
-import com.zebrand.app1food30s.data.Review
 import java.util.Date
+
 
 data class Product(
     val id: String = "",

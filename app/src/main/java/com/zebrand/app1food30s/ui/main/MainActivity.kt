@@ -1,11 +1,14 @@
 package com.zebrand.app1food30s.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.lifecycleScope
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.databinding.ActivityMainBinding
 import com.zebrand.app1food30s.ui.cart_checkout.CartFragment
 import com.zebrand.app1food30s.ui.home.HomeFragment
@@ -13,15 +16,19 @@ import com.zebrand.app1food30s.ui.menu.MenuFragment
 import com.zebrand.app1food30s.ui.offers.OffersFragment
 import com.zebrand.app1food30s.ui.profile.ProfileAfterLoginFragment
 import com.zebrand.app1food30s.ui.profile.ProfileFragment
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private var adminLogin: Boolean = false
+    private lateinit var db: AppDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        db = AppDatabase.getInstance(this)
 
         if (adminLogin) {
             handleBottomNavigationForAdmin()
@@ -36,6 +43,12 @@ class MainActivity : AppCompatActivity() {
             // Your default fragment to load
             replaceFragment(HomeFragment())
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i("TAG123", "onDestroy: Xóa db")
+        db.clearAllTables()
     }
 
     private fun handleBottomNavigationForAdmin() {

@@ -11,7 +11,7 @@ import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerDrawable
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.data.Category
+import com.zebrand.app1food30s.data.entity.Category
 
 class CategoryAdapter(private val categories: List<Category>, private val underline: Boolean = false): RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
     var onItemClick: ((CategoryViewHolder) -> Unit)? = null

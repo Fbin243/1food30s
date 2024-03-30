@@ -3,15 +3,13 @@ package com.zebrand.app1food30s.ui.offers
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.ManageOfferAdapter
-import com.zebrand.app1food30s.data.Offer
+import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.databinding.ActivityManageOfferBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

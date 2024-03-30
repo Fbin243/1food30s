@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.data.Review
+import com.zebrand.app1food30s.data.entity.Review
 
 class ReviewAdapter(private val reviews: List<Review>): RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
     inner class ReviewViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView) {

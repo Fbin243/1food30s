@@ -11,30 +11,31 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
-import com.zebrand.app1food30s.data.Category
-import com.zebrand.app1food30s.data.Offer
-import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.AppDatabase
+import com.zebrand.app1food30s.data.entity.Category
+import com.zebrand.app1food30s.data.entity.Offer
+import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(), HomeMVPView {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var homePresenter: HomePresenter
+    private lateinit var db: AppDatabase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater)
-
-        homePresenter = HomePresenter(this)
+        db = AppDatabase.getInstance(requireContext())
+        homePresenter = HomePresenter(this, db)
         lifecycleScope.launch { homePresenter.getDataAndDisplay() }
 
         handleOpenSearchScreen()
@@ -46,10 +47,13 @@ class HomeFragment : Fragment(), HomeMVPView {
         binding.searchInput.clearFocus()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-//        binding = null
-    }
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+////        binding = null
+//        lifecycleScope.launch(Dispatchers.IO) {
+//            db.clearAllTables()
+//        }
+//    }
 
     private fun handleOpenSearchScreen() {
         binding.searchInput.setOnFocusChangeListener { _, focus ->

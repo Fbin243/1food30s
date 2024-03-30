@@ -1,4 +1,4 @@
-package com.zebrand.app1food30s.data
+package com.zebrand.app1food30s.data.entity
 
 import java.util.Date
 

@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.data.Offer
+import com.zebrand.app1food30s.data.entity.Offer
 
 class ManageOfferAdapter(private val offers: List<Offer>, private val isGrid: Boolean = true) :
     RecyclerView.Adapter<ManageOfferAdapter.OfferViewHolder>() {

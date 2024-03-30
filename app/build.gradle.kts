@@ -82,4 +82,9 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore:24.10.3")
     // Cloud storage
     implementation("com.google.firebase:firebase-storage")
+
+    // ================ ROOM Database =================
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+
 }

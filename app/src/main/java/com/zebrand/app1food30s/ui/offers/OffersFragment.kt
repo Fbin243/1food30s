@@ -7,9 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.OfferAdapter
-import com.zebrand.app1food30s.data.Offer
+import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.databinding.FragmentOffersBinding
 
 class OffersFragment : Fragment() {

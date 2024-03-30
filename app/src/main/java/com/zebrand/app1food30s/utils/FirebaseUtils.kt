@@ -3,36 +3,58 @@ package com.zebrand.app1food30s.utils
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.zebrand.app1food30s.data.Category
-import com.zebrand.app1food30s.data.Offer
-import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.AppDatabase
+import com.zebrand.app1food30s.data.entity.Category
+import com.zebrand.app1food30s.data.entity.Offer
+import com.zebrand.app1food30s.data.entity.Product
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 object FirebaseUtils {
     val fireStore: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
     val fireStorage: FirebaseStorage by lazy { FirebaseStorage.getInstance() }
-    suspend fun getListCategories(): List<Category> {
+    suspend fun getListCategories(db: AppDatabase): List<Category> {
         return withContext(Dispatchers.IO) {
             try {
-                val querySnapshot = fireStore.collection("categories").get().await()
-                Log.i("TAG", "getListCategories: T đã gọi xong categories")
-                querySnapshot.documents.map { document ->
-                    val id = document.getString("id") ?: ""
-                    val name = document.getString("name") ?: ""
-                    val date = document.getDate("date")
-                    val image = document.getString("image") ?: ""
-                    val imageUrl = fireStorage.reference.child(image).downloadUrl.await().toString()
+                var categories = db.categoryDao().getAll()
+                if (categories.isEmpty()) {
+                    val deferred = CompletableDeferred<List<Category>>()
+                    fireStore.collection("categories").addSnapshotListener { value, error ->
+                        if (error != null) {
+                            Log.e("getListCategories", "Error getting categories", error)
+                            return@addSnapshotListener
+                        }
+                        db.clearAllTables()
+                        value?.documents?.map { document ->
+                            val id = document.getString("id") ?: ""
+                            val name = document.getString("name") ?: ""
+                            val date = document.getDate("date")
+                            val image = document.getString("image") ?: ""
 
-                    Category(
-                        id,
-                        name,
-                        imageUrl,
-                        0,
-                        date
-                    )
+                            runBlocking {
+                                val imageUrl =
+                                    fireStorage.reference.child(image).downloadUrl.await()
+                                        .toString()
+                                val category = Category(
+                                    id,
+                                    name,
+                                    imageUrl,
+                                    0,
+                                    date
+                                )
+                                Log.i("TAG123", "getListCategories: ${category}")
+                                db.categoryDao().insert(category)
+                            }
+                        }
+                        categories = db.categoryDao().getAll()
+                        deferred.complete(categories)
+                    }
+                    categories = deferred.await()
                 }
+                categories
             } catch (e: Exception) {
                 Log.e("getListCategories", "Error getting products", e)
                 emptyList()

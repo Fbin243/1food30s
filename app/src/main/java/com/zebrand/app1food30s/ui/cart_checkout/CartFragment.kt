@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CartItemAdapter
-import com.zebrand.app1food30s.data.DetailedCartItem
+import com.zebrand.app1food30s.data.entity.DetailedCartItem
 import com.zebrand.app1food30s.databinding.FragmentCartBinding
 import com.google.gson.Gson
 

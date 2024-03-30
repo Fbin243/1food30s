@@ -13,8 +13,8 @@ import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerDrawable
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.data.Offer
-import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.entity.Offer
+import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.utils.Utils.formatPrice
 
 class ProductAdapter(

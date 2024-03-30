@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.adapter.ManageProductAdapter
-import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.ActivityManageProductBinding
 
 class ManageProductActivity : AppCompatActivity() {
