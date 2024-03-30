@@ -52,14 +52,6 @@ class HomeFragment : Fragment(), HomeMVPView {
         binding.searchInput.clearFocus()
     }
 
-//    override fun onDestroyView() {
-//        super.onDestroyView()
-////        binding = null
-//        lifecycleScope.launch(Dispatchers.IO) {
-//            db.clearAllTables()
-//        }
-//    }
-
     private fun handleOpenSearchScreen() {
         binding.searchInput.setOnFocusChangeListener { _, focus ->
             if (focus) {

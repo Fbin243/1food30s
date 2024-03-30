@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
@@ -69,5 +70,27 @@ class MenuFragment : Fragment(), MenuMVPView {
     override fun showProducts(products: List<Product>, offers: List<Offer>) {
         binding.productRcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         binding.productRcv.adapter = ProductAdapter(products, offers, false)
+    }
+
+    override fun showShimmerEffectForCategories() {
+        binding.cateShimmer.startShimmer()
+    }
+
+    override fun showShimmerEffectForProducts() {
+        binding.productShimmer.startShimmer()
+    }
+
+    override fun hideShimmerEffectForCategories() {
+        hideShimmerEffectForRcv(binding.cateShimmer, binding.cateRcv)
+    }
+
+    override fun hideShimmerEffectForProducts() {
+        hideShimmerEffectForRcv(binding.productShimmer, binding.productRcv)
+    }
+
+    private fun hideShimmerEffectForRcv(shimmer: ShimmerFrameLayout, recyclerView: RecyclerView) {
+        shimmer.stopShimmer()
+        shimmer.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
     }
 }

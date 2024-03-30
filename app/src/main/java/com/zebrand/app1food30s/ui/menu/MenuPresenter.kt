@@ -8,11 +8,17 @@ import kotlinx.coroutines.coroutineScope
 class MenuPresenter(private val view: MenuMVPView, private val db: AppDatabase) {
     suspend fun getDataAndDisplay() {
         coroutineScope {
+            view.showShimmerEffectForCategories()
             val categories = FirebaseService.getListCategories(db)
+            view.hideShimmerEffectForCategories()
+            view.showCategories(categories)
+
+            view.showShimmerEffectForProducts()
             val products = FirebaseService.getListProducts(db)
             val offers = FirebaseService.getListOffers(db)
-            view.showCategories(categories)
+            view.hideShimmerEffectForProducts()
             view.showProducts(products, offers)
+
             view.handleChangeLayout(products, offers)
         }
     }

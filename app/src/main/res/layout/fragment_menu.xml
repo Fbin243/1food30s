@@ -8,7 +8,7 @@
     android:paddingBottom="@dimen/spacing50">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/logoImage"
         android:layout_width="90dp"
         android:layout_height="20dp"
         android:layout_marginStart="12dp"
@@ -26,7 +26,7 @@
         android:layout_marginEnd="6dp"
         app:icon="@drawable/ic_search"
         app:iconSize="@dimen/spacing28"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintBottom_toBottomOf="@+id/logoImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,19 +40,51 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/logoImage"
+        android:visibility="gone"/>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/cateShimmer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="@dimen/spacing16"
+        android:layout_marginEnd="@dimen/spacing16"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logoImage">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <include layout="@layout/category_card_view_shimmer" />
+
+            <include layout="@layout/category_card_view_shimmer" />
+
+            <include layout="@layout/category_card_view_shimmer" />
+
+            <include layout="@layout/category_card_view_shimmer" />
+
+            <include layout="@layout/category_card_view_shimmer" />
+
+        </LinearLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
     <TextView
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing2"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="-10dp"
+        android:layout_marginTop="120dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/category_divider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cateRcv" />
+        app:layout_constraintTop_toBottomOf="@+id/logoImage" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -116,7 +148,35 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="-8dp"
                 android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintTop_toBottomOf="@+id/textView"
+                android:visibility="gone"/>
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/productShimmer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/product_card_view_linear_shimmer" />
+
+                    <include layout="@layout/product_card_view_linear_shimmer" />
+
+                    <include layout="@layout/product_card_view_linear_shimmer" />
+
+                    <include layout="@layout/product_card_view_linear_shimmer" />
+
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
