@@ -12,13 +12,13 @@ import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.DetailedCartItem
 
-class CartItemAdapter(
+class CartAdapter(
     private val context: Context,
     private var items: MutableList<DetailedCartItem>,
     private val onItemDeleted: (DetailedCartItem) -> Unit,
     private val onQuantityUpdated: (DetailedCartItem, Int) -> Unit,
     private val onUpdateTotalPrice: (Double) -> Unit
-) : RecyclerView.Adapter<CartItemAdapter.CartViewHolder>() {
+) : RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
 
     class CartViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val productCategory: TextView = view.findViewById(R.id.productCategory)
@@ -96,7 +96,7 @@ class CartItemAdapter(
     fun removeItemByRef(productRef: DocumentReference) {
         val indexToRemove = items.indexOfFirst { it.productId == productRef }
         if (indexToRemove != -1) {
-            (items as MutableList).removeAt(indexToRemove)
+            items.removeAt(indexToRemove)
             notifyItemRemoved(indexToRemove)
         }
     }

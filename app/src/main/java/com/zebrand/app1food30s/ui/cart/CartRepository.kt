@@ -13,10 +13,12 @@ import com.zebrand.app1food30s.data.Product
 
 class CartRepository(private val db: FirebaseFirestore) {
 
-    fun fetchProductDetailsForCartItems(cartId: String, callback: (List<DetailedCartItem>?, Double) -> Unit) {
-        db.collection("carts").document(cartId).get().addOnSuccessListener { documentSnapshot ->
-            val cart = documentSnapshot.toObject(Cart::class.java)
-            cart?.let { cart ->
+    fun fetchProductDetailsForCartItems(userId: String, callback: (List<DetailedCartItem>?, Double) -> Unit) {
+        db.collection("accounts").document(userId).collection("carts")
+            .document("default") // You might use a default or specific document name here
+            .get().addOnSuccessListener { documentSnapshot ->
+                val cart = documentSnapshot.toObject(Cart::class.java)
+                cart?.let { cart ->
                 val tasks = cart.items.map { cartItem ->
                     fetchProductDetailsForCartItem(cartItem)
                 }

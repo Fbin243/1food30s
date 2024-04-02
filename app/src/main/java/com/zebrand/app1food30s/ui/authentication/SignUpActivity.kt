@@ -2,14 +2,10 @@ package com.zebrand.app1food30s.ui.authentication
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.firestore
 import com.zebrand.app1food30s.data.Cart
 import com.zebrand.app1food30s.data.User
 import com.zebrand.app1food30s.databinding.ActivitySignUpBinding
@@ -104,7 +100,7 @@ class SignUpActivity : AppCompatActivity() {
         val userId = userDoc.id
         val cartId = cartDoc.id
 
-        val cart = Cart(id = cartId, accountId = userDoc)
+        val cart = Cart(id = cartId, userId = userDoc)
         user.id = userId
 
         userDoc.set(user)

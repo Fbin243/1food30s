@@ -27,10 +27,11 @@ import com.zebrand.app1food30s.data.WishlistItem
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
-import com.zebrand.app1food30s.ui.wishlist.FirestoreWishlistRepository
 import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
 import com.zebrand.app1food30s.ui.wishlist.WishlistManager
 import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
+import com.zebrand.app1food30s.ultis.MySharedPreferences
+import com.zebrand.app1food30s.ultis.SingletonKey
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
@@ -150,26 +151,30 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         binding.cateRcv.adapter = CategoryAdapter(categories)
     }
 
-    private fun addProductToCart(context: Context, productId: String, cartId: String = "mdXn8lvirHaAogStOY1K") {
+    private fun addProductToCart(context: Context, productId: String) {
         val db = FirebaseFirestore.getInstance()
-        val productRef = db.collection("products").document(productId)
+        val preferences = MySharedPreferences.getInstance(context)
+        val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
 
+        val cartRef = db.collection("carts").document(userId)
+
+        val productRef = db.collection("products").document(productId)
         productRef.get().addOnSuccessListener { productSnapshot ->
             val product = productSnapshot.toObject(Product::class.java)
             val stock = product?.stock ?: 0
 
             if (stock > 0) {
-                val cartRef = db.collection("carts").document(cartId)
                 cartRef.get().addOnSuccessListener { document ->
                     val cart = if (document.exists()) {
                         document.toObject(Cart::class.java)
                     } else {
                         // If the cart does not exist, create a new one
-                        Cart(id = cartId, accountId = null, items = mutableListOf())
+                        Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
                     }
+//                    Log.d("Test00", "addProductToCart: $cart")
 
                     cart?.let {
-                        val existingItemIndex = it.items.indexOfFirst { item -> item.productId?.path == productRef.path }
+                        val existingItemIndex = it.items.indexOfFirst { item -> item.productId == productRef }
                         if (existingItemIndex >= 0) {
                             // Product exists, update quantity
                             it.items[existingItemIndex].quantity += 1

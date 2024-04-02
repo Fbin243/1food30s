@@ -9,22 +9,28 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.adapter.CartItemAdapter
+import com.zebrand.app1food30s.adapter.CartAdapter
 import com.zebrand.app1food30s.data.DetailedCartItem
 import com.zebrand.app1food30s.databinding.FragmentCartBinding
 import com.zebrand.app1food30s.ui.checkout.CheckoutActivity
+import com.zebrand.app1food30s.ultis.MySharedPreferences
+import com.zebrand.app1food30s.ultis.SingletonKey
 
-class CartMVPFragment : Fragment(), CartMVPView {
+class CartFragment : Fragment(), CartMVPView {
 
     private var _binding: FragmentCartBinding? = null
     private val binding get() = _binding!!
-    private lateinit var adapter: CartItemAdapter
+    private lateinit var adapter: CartAdapter
     private lateinit var presenter: CartPresenter
-    private val cartId = "mdXn8lvirHaAogStOY1K"
+    private lateinit var preferences: MySharedPreferences
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        preferences = MySharedPreferences.getInstance(requireContext())
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCartBinding.inflate(inflater, container, false)
-        presenter = CartPresenter(this)
         return binding.root
     }
 
@@ -32,14 +38,21 @@ class CartMVPFragment : Fragment(), CartMVPView {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
-        presenter.listenToCartChanges()
-        handleCheckoutNavigation()
+
+        val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
+        if (userId.isNotBlank()) {
+            presenter = CartPresenter(this, userId)
+            presenter.listenToCartChanges()
+        }
+
+        handleCheckoutNavigation(userId)
+
         // TODO
 //        handleCloseCartScreen()
     }
 
     private fun setupRecyclerView() {
-        adapter = CartItemAdapter(
+        adapter = CartAdapter(
             context = requireContext(),
             items = mutableListOf(),
             onItemDeleted = { cartItem ->
@@ -74,16 +87,11 @@ class CartMVPFragment : Fragment(), CartMVPView {
         // Display error to user
     }
 
-    private fun handleCheckoutNavigation() {
+    private fun handleCheckoutNavigation(userId: String) {
         binding.btnCheckout.setOnClickListener {
-//            val cartSummary = presenter.getCartSummary() // Pair<List<String>, Double>
-//            val intent = Intent(context, CheckoutActivity::class.java).apply {
-//                val itemDescriptionsJson = Gson().toJson(cartSummary.first) // Convert list to JSON string
-//                putExtra("item_descriptions", itemDescriptionsJson)
-//                putExtra("total_price", cartSummary.second)
-//            }
             val intent = Intent(context, CheckoutActivity::class.java).apply {
-                putExtra("cart_id", cartId) // Assume cartId is a String representing the cart's ID
+                // Now we pass the userId instead of a static cartId
+                putExtra("user_id", userId)
             }
             startActivity(intent)
         }

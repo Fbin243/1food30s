@@ -9,7 +9,7 @@ data class CartItem(
 
 data class Cart(
     var id: String = "",
-    var accountId: DocumentReference? = null,
+    var userId: DocumentReference? = null,
     var items: MutableList<CartItem> = mutableListOf()
 )
 

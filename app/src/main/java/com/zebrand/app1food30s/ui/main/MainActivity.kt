@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.ActivityMainBinding
-import com.zebrand.app1food30s.ui.cart.CartMVPFragment
+import com.zebrand.app1food30s.ui.cart.CartFragment
 import com.zebrand.app1food30s.ui.home.HomeFragment
 import com.zebrand.app1food30s.ui.menu.MenuFragment
 import com.zebrand.app1food30s.ui.offers.OffersFragment
@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFloatingButton() {
         binding.icCart.setOnClickListener {
-            replaceFragment(CartMVPFragment())
+            replaceFragment(CartFragment())
             binding.bottomNavView.selectedItemId = R.id.placeholder
         }
     }
