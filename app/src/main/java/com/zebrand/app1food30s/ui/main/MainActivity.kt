@@ -27,12 +27,18 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var adminLogin: Boolean = false
     private lateinit var db: AppDatabase
+    private var idUser: String? = null
+//    private val mySharePreference = MySharedPreferences.getInstance(this)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         db = AppDatabase.getInstance(this)
+//        idUser = intent.getStringExtra("USER_ID") ?: ""
+        val mySharePreference = MySharedPreferences.getInstance(this)
+        idUser = mySharePreference.getString(SingletonKey.KEY_USER_ID)
+        Log.d("MainActivity", "idUser: $idUser")
 
         if (adminLogin) {
             handleBottomNavigationForAdmin()
@@ -108,7 +114,12 @@ class MainActivity : AppCompatActivity() {
                 R.id.ic_offers -> replaceFragment(OffersFragment())
                 R.id.ic_profile -> {
                     if (isLogin) {
-                        replaceFragment(ProfileAfterLoginFragment())
+                        val fragment = ProfileAfterLoginFragment().apply {
+                            arguments = Bundle().apply {
+                                putString("USER_ID", idUser)
+                            }
+                        }
+                        replaceFragment(fragment)
                     } else {
                         replaceFragment(ProfileFragment())
                     }

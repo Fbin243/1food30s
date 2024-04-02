@@ -47,7 +47,7 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <TextView
-            android:id="@+id/text_product_name"
+            android:id="@+id/text_first_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/txt_first_name"
@@ -66,11 +66,12 @@
             app:boxStrokeColor="@color/primary"
             app:cursorColor="@color/primary"
             app:hintTextColor="@color/primary"
-            app:layout_constraintTop_toBottomOf="@+id/text_product_name"
+            app:layout_constraintTop_toBottomOf="@+id/text_first_name"
             tools:layout_editor_absoluteX="16dp">
 
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_first_name"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing52"
                 android:maxLines="1" />
@@ -78,7 +79,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/text_category"
+            android:id="@+id/text_last_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/txt_last_name"
@@ -87,10 +88,10 @@
             tools:layout_editor_absoluteX="14dp" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/category"
+            android:id="@+id/last_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/text_category"
+            app:layout_constraintTop_toBottomOf="@+id/text_last_name"
             app:boxStrokeColor="@color/primary"
             app:boxCornerRadiusTopStart="@dimen/radius8"
             app:boxCornerRadiusTopEnd="@dimen/radius8"
@@ -101,6 +102,7 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_last_name"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing52"
                 android:maxLines="1" />
@@ -108,19 +110,19 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/text_stock"
+            android:id="@+id/text_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/txt_email"
             android:layout_marginTop="@dimen/spacing20"
-            app:layout_constraintTop_toBottomOf="@+id/category"
+            app:layout_constraintTop_toBottomOf="@+id/last_name"
             tools:layout_editor_absoluteX="14dp" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/stock"
+            android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/text_stock"
+            app:layout_constraintTop_toBottomOf="@+id/text_email"
             app:boxStrokeColor="@color/primary"
             app:boxCornerRadiusTopStart="@dimen/radius8"
             app:boxCornerRadiusTopEnd="@dimen/radius8"
@@ -131,6 +133,7 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_email"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing52"
                 android:maxLines="1"
@@ -144,7 +147,7 @@
             android:layout_height="wrap_content"
             android:text="@string/text_address"
             android:layout_marginTop="@dimen/spacing20"
-            app:layout_constraintTop_toBottomOf="@+id/stock"
+            app:layout_constraintTop_toBottomOf="@+id/email"
             tools:layout_editor_absoluteX="14dp" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -162,6 +165,7 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_address"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing52"
                 android:maxLines="1"
@@ -170,7 +174,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/text_price"
+            android:id="@+id/text_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing20"
@@ -180,11 +184,11 @@
             tools:layout_editor_absoluteX="3dp" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/price"
+            android:id="@+id/first_cell_phone"
             android:layout_width="0dp"
             app:layout_constraintWidth_percent="0.35"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/text_price"
+            app:layout_constraintTop_toBottomOf="@+id/text_phone"
             app:layout_constraintStart_toStartOf="parent"
             app:boxStrokeColor="@color/primary"
             app:boxCornerRadiusTopStart="@dimen/radius8"
@@ -199,12 +203,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing52"
                 android:inputType="textEmailAddress"
+                android:hint="+84"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/offer"
+            android:id="@+id/second_cell_phone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:boxCornerRadiusBottomEnd="@dimen/radius8"
@@ -215,11 +220,12 @@
             app:cursorColor="@color/primary"
             app:hintTextColor="@color/primary"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/text_price"
+            app:layout_constraintTop_toBottomOf="@id/text_phone"
             app:layout_constraintWidth_percent="0.62"
             tools:layout_editor_absoluteY="473dp">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edit_phone"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing52"
                 android:maxLines="1" />
@@ -227,7 +233,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/create_btn"
+            android:id="@+id/save_btn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing60"
             android:backgroundTint="@color/primary"

@@ -162,6 +162,12 @@
     <string name="txt_minimum_password">"* Minimum 6 character password"</string>
     <string name="txt_confirm_password_not_match">* Confirm password does not match</string>
     <string name="txt_delete_email_not_match">* Email does not correct</string>
+    <string name="txt_name_product_filter">Name</string>
+    <string name="txt_price">Price</string>
+    <string name="txt_default_filter_date">Choose date</string>
+    <string name="txt_current_password">Current password</string>
+    <string name="txt_change_password">Change password</string>
+    <string name="txt_let_reset_your_password">Let\'s reset password</string>
 
     <string-array name="delivery_array">
         <item>Pending</item>

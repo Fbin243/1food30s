@@ -1,10 +1,17 @@
 package com.zebrand.app1food30s.ui.profile
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.zebrand.app1food30s.ui.admin_stats.AdminStatsActivity
 import com.zebrand.app1food30s.databinding.FragmentProfileAfterLoginBinding
@@ -13,19 +20,65 @@ import com.zebrand.app1food30s.ui.main.MainActivity
 import com.zebrand.app1food30s.utils.FirebaseUtils
 import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
+import com.squareup.picasso.Picasso
+import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.data.User
+import com.zebrand.app1food30s.ui.admin_stats.AdminStatsActivity
+import com.zebrand.app1food30s.databinding.FragmentProfileAfterLoginBinding
+import com.zebrand.app1food30s.ui.authentication.DeleteAccountActivity
+import com.zebrand.app1food30s.ui.authentication.LoginActivity
+import com.zebrand.app1food30s.ui.change_password.ChangePasswordActivity
+import com.zebrand.app1food30s.ui.main.MainActivity
+import com.zebrand.app1food30s.ultis.FirebaseUtils
+import com.zebrand.app1food30s.ultis.FirebaseUtils.fireStorage
+import com.zebrand.app1food30s.ultis.FirebaseUtils.fireStore
+import com.zebrand.app1food30s.ultis.GlobalUtils
+import com.zebrand.app1food30s.ultis.MySharedPreferences
+import com.zebrand.app1food30s.ultis.SingletonKey
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import java.util.Date
+import java.util.UUID
 
 
 class ProfileAfterLoginFragment : Fragment() {
     private lateinit var binding: FragmentProfileAfterLoginBinding
+    private var idUser: String? = null
+    private lateinit var avaImageView: ImageView
+    private var imageUri: Uri? = null
+    private var currentImagePath: String? = null
+
+    // ResultLauncher for handling image picking result
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            imageUri = it
+            Picasso.get().load(it).into(binding.ava)
+            idUser?.let { userId ->
+                saveAvaUserToFirestore(userId)
+            }
+        }
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentProfileAfterLoginBinding.inflate(inflater, container, false)
+        idUser = arguments?.getString("USER_ID")
+        Log.d("MainActivity", "idUserProfileAfterLoginFragment: $idUser")
+
+
+        fetchUserInformation(idUser.orEmpty())
         events()
 
         // ========== Code này ở branch Hai3 (đã sửa lại dùng binding) =========
+        binding.ava.setOnClickListener {
+            pickImageLauncher.launch("image/*")
+        }
         // Set up the click listener for the layoutMyOrders
         binding.layoutMyOrders.setOnClickListener {
             // Navigate to AdminStatisticsActivity
@@ -33,8 +86,70 @@ class ProfileAfterLoginFragment : Fragment() {
             startActivity(intent)
         }
         // ================================================================
+//        binding.username.setText(idUser)
+        binding.layoutEditProfile.setOnClickListener {
+            // Navigate to AdminStatisticsActivity
+            val intent = Intent(activity, EditProfileActivity::class.java).apply {
+                putExtra("USER_ID", idUser)
+            }
+            startActivity(intent)
+        }
+
+        binding.layoutChangePassword.setOnClickListener {
+            // Navigate to AdminStatisticsActivity
+            val intent = Intent(activity, ChangePasswordActivity::class.java).apply {
+                putExtra("USER_ID", idUser)
+            }
+            startActivity(intent)
+        }
 
         return binding.root
+    }
+
+
+
+
+
+    private fun saveAvaUserToFirestore(userId: String) {
+        imageUri?.let { uri ->
+            val fileName = "ava${UUID.randomUUID()}.png"
+            val storageReference = fireStorage.reference.child("images/avatars/$fileName")
+            storageReference.putFile(uri).addOnSuccessListener {
+                val imagePath = "images/avatars/$fileName"
+                updateUserAvatar(userId, imagePath)
+            }.addOnFailureListener { exception ->
+                Toast.makeText(context, "Image upload failed: ${exception.message}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun updateUserAvatar(userId: String, imagePath: String) {
+        fireStore.collection("accounts").document(userId).update("avatar", imagePath)
+            .addOnSuccessListener {
+                Snackbar.make(binding.root, "Profile updated successfully", Snackbar.LENGTH_LONG).show()
+            }
+            .addOnFailureListener { e ->
+                Snackbar.make(binding.root, "Error updating profile: ${e.message}", Snackbar.LENGTH_LONG).show()
+            }
+    }
+
+    private fun fetchUserInformation(userId: String) {
+        lifecycleScope.launch {
+            try {
+                val documentSnapshot = fireStore.collection("accounts").document(userId).get().await()
+                val user = documentSnapshot.toObject(User::class.java)
+                user?.let {
+                    val imageUrl = fireStorage.reference.child(it.avatar).downloadUrl.await().toString()
+                    Picasso.get().load(imageUrl).into(binding.ava)
+                    currentImagePath = it.avatar
+                    binding.username.text = it.lastName
+                    binding.email.text = it.email
+                    // Update other user info views
+                }
+            } catch (e: Exception) {
+                Toast.makeText(context, "Error fetching user information", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun events() {
