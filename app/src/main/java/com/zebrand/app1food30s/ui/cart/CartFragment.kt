@@ -9,14 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.adapter.CartItemAdapter
 import com.zebrand.app1food30s.data.entity.DetailedCartItem
 import com.zebrand.app1food30s.adapter.CartAdapter
-import com.zebrand.app1food30s.data.DetailedCartItem
 import com.zebrand.app1food30s.databinding.FragmentCartBinding
 import com.zebrand.app1food30s.ui.checkout.CheckoutActivity
-import com.zebrand.app1food30s.ultis.MySharedPreferences
-import com.zebrand.app1food30s.ultis.SingletonKey
+import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.SingletonKey
 
 class CartFragment : Fragment(), CartMVPView {
 

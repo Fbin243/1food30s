@@ -4,7 +4,6 @@ import android.util.Log
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zebrand.app1food30s.data.entity.Cart
-import com.zebrand.app1food30s.data.entity.DetailedCartItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

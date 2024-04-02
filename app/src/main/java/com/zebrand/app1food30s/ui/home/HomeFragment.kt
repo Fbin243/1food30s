@@ -24,20 +24,15 @@ import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.data.entity.Cart
 import com.zebrand.app1food30s.data.entity.CartItem
-import com.zebrand.app1food30s.data.Cart
-import com.zebrand.app1food30s.data.CartItem
-import com.zebrand.app1food30s.data.Category
-import com.zebrand.app1food30s.data.Offer
-import com.zebrand.app1food30s.data.Product
-import com.zebrand.app1food30s.data.WishlistItem
+import com.zebrand.app1food30s.data.entity.WishlistItem
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
 import com.zebrand.app1food30s.ui.wishlist.WishlistManager
 import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
-import com.zebrand.app1food30s.ultis.MySharedPreferences
-import com.zebrand.app1food30s.ultis.SingletonKey
+import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.SingletonKey
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {

@@ -1,6 +1,6 @@
 package com.zebrand.app1food30s.ui.wishlist
 
-import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.utils.FirebaseUtils.getWishlistItemByProductId
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

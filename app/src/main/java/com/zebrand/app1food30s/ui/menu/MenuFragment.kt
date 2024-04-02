@@ -21,7 +21,6 @@ import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentMenuBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
-import com.zebrand.app1food30s.ui.wishlist.FirestoreWishlistRepository
 import com.zebrand.app1food30s.ui.wishlist.WishlistManager
 import kotlinx.coroutines.launch
 
@@ -38,12 +37,8 @@ class MenuFragment : Fragment(), MenuMVPView {
     ): View {
         binding = FragmentMenuBinding.inflate(inflater)
         db = AppDatabase.getInstance(requireContext())
-        menuPresenter = MenuPresenter(this, db)
-        lifecycleScope.launch { menuPresenter.getDataAndDisplay() }
-
         WishlistManager.initialize(userId = "QXLiLOiPLaHhY5gu7ZdS")
-
-        menuPresenter = MenuPresenter(this)
+        menuPresenter = MenuPresenter(this, db)
         lifecycleScope.launch {
             menuPresenter.getDataAndDisplay()
             fetchAndUpdateWishlistState()
@@ -90,7 +85,8 @@ class MenuFragment : Fragment(), MenuMVPView {
 
 
     override fun showCategories(categories: List<Category>) {
-        binding.cateRcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        binding.cateRcv.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         val adapter = CategoryAdapter(categories)
         val primaryColor = Color.parseColor("#7F9839")
         adapter.onItemClick = { holder ->
@@ -107,8 +103,11 @@ class MenuFragment : Fragment(), MenuMVPView {
         binding.productRcv.adapter = generateAdapterWithLayout(products, offers)
     }
 
-    private fun generateAdapterWithLayout(products: List<Product>, offers: List<Offer>): ProductAdapter {
-        val adapter = ProductAdapter(products, offers, isGrid)
+    private fun generateAdapterWithLayout(
+        products: List<Product>,
+        offers: List<Offer>
+    ): ProductAdapter {
+        val adapter = ProductAdapter(products, offers, isGrid, wishlistedProductIds)
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }
@@ -141,7 +140,5 @@ class MenuFragment : Fragment(), MenuMVPView {
         shimmer.stopShimmer()
         shimmer.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
-        binding.productRcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        binding.productRcv.adapter = ProductAdapter(products, offers, false, wishlistedProductIds)
     }
 }

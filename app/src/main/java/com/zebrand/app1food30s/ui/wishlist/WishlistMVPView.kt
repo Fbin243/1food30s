@@ -1,7 +1,7 @@
 package com.zebrand.app1food30s.ui.wishlist
 
-import com.zebrand.app1food30s.data.Product
-import com.zebrand.app1food30s.data.WishlistItem
+import com.zebrand.app1food30s.data.entity.Product
+import com.zebrand.app1food30s.data.entity.WishlistItem
 
 interface WishlistMVPView {
     // Shows the updated wishlist with the specific product added or removed

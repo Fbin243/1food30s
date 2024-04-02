@@ -8,9 +8,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.facebook.shimmer.Shimmer
-import com.facebook.shimmer.ShimmerDrawable
-import com.google.firebase.firestore.DocumentReference
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Offer
