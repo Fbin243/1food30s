@@ -51,11 +51,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         Log.i("TAG123", "onDestroy: Xóa db")
         db.clearAllTables()
     }
+
+//    override fun onStop() {
+//        super.onStop()
+//        Log.i("TAG123", "onDestroy: Xóa db")
+//        db.clearAllTables()
+//    }
 
     private fun showOrderConfirmationToast() {
         val toastView = findViewById<LinearLayout>(R.id.toast)

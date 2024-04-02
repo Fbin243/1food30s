@@ -7,9 +7,9 @@ import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -26,7 +26,7 @@ object FirebaseService {
                             if (error != null) {
                                 return@addSnapshotListener
                             }
-                            GlobalScope.launch(Dispatchers.IO) {
+                            CoroutineScope(Dispatchers.IO).launch {
                                 value?.documents?.map { document ->
                                     val category = document.toObject<Category>()!!
                                     category.image =
@@ -59,7 +59,7 @@ object FirebaseService {
                             if (error != null) {
                                 return@addSnapshotListener
                             }
-                            GlobalScope.launch(Dispatchers.IO) {
+                            CoroutineScope(Dispatchers.IO).launch {
                                 value?.documents?.map { document ->
                                     val product = document.toObject<Product>()!!
 
@@ -94,7 +94,7 @@ object FirebaseService {
                             if (error != null) {
                                 return@addSnapshotListener
                             }
-                            GlobalScope.launch(Dispatchers.IO) {
+                            CoroutineScope(Dispatchers.IO).launch {
                                 value?.documents?.map { document ->
                                     val offer = document.toObject<Offer>()!!
                                     offer.image =
@@ -117,17 +117,10 @@ object FirebaseService {
         }
     }
 
-    suspend fun getOneProductByID(idProduct: String): Product? {
+    suspend fun getOneProductByID(db: AppDatabase, idProduct: String): Product? {
         return withContext(Dispatchers.IO) {
             try {
-                val querySnapshot =
-                    FirebaseUtils.fireStore.collection("products").whereEqualTo("id", idProduct)
-                        .get().await()
-                val product = querySnapshot.toObjects(Product::class.java)[0]
-                product.image =
-                    FirebaseUtils.fireStorage.reference.child(product.image).downloadUrl.await()
-                        .toString()
-                product
+                db.productDao().getOneById(idProduct)
             } catch (e: Exception) {
                 Log.e("getOneProductByID", "Error getting products", e)
                 null

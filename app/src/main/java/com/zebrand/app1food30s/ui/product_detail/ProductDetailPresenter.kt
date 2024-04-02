@@ -17,7 +17,7 @@ class ProductDetailPresenter(
     suspend fun getProductDetail(idProduct: String) {
         try {
             view.showShimmerEffect()
-            val product = FirebaseService.getOneProductByID(idProduct)!!
+            val product = FirebaseService.getOneProductByID(db, idProduct)!!
             // Get category
             val category = product.idCategory!!.get().await().toObject<Category>()
             val offer = product.idOffer?.get()?.await()?.toObject<Offer>()

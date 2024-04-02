@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.ui.menu
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,12 +20,14 @@ import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentMenuBinding
+import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import kotlinx.coroutines.launch
 
 class MenuFragment : Fragment(), MenuMVPView {
     private lateinit var binding: FragmentMenuBinding
     private lateinit var menuPresenter: MenuPresenter
     private lateinit var db: AppDatabase
+    private var isGrid: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,24 +36,26 @@ class MenuFragment : Fragment(), MenuMVPView {
         binding = FragmentMenuBinding.inflate(inflater)
         db = AppDatabase.getInstance(requireContext())
         menuPresenter = MenuPresenter(this, db)
-        lifecycleScope.launch { menuPresenter.getDataAndDisplay()}
+        lifecycleScope.launch { menuPresenter.getDataAndDisplay() }
 
         return binding.root
     }
 
     override fun handleChangeLayout(products: List<Product>, offers: List<Offer>) {
         binding.gridBtn.setOnClickListener {
+            isGrid = true
             binding.gridBtn.setImageResource(R.drawable.ic_active_grid)
             binding.linearBtn.setImageResource(R.drawable.ic_linear)
             binding.productRcv.layoutManager = GridLayoutManager(requireContext(), 2)
-            binding.productRcv.adapter = ProductAdapter(products, offers, true)
+            binding.productRcv.adapter = generateAdapterWithLayout(products, offers)
         }
 
         binding.linearBtn.setOnClickListener {
+            isGrid = false
             binding.linearBtn.setImageResource(R.drawable.ic_active_linear)
             binding.gridBtn.setImageResource(R.drawable.ic_grid)
-            binding.productRcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            binding.productRcv.adapter = ProductAdapter(products, offers, false)
+            binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
+            binding.productRcv.adapter = generateAdapterWithLayout(products, offers)
         }
     }
 
@@ -68,8 +73,22 @@ class MenuFragment : Fragment(), MenuMVPView {
     }
 
     override fun showProducts(products: List<Product>, offers: List<Offer>) {
-        binding.productRcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        binding.productRcv.adapter = ProductAdapter(products, offers, false)
+        binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
+        binding.productRcv.adapter = generateAdapterWithLayout(products, offers)
+    }
+
+    private fun generateAdapterWithLayout(products: List<Product>, offers: List<Offer>): ProductAdapter {
+        val adapter = ProductAdapter(products, offers, isGrid)
+        adapter.onItemClick = { product ->
+            openDetailProduct(product)
+        }
+        return adapter
+    }
+
+    private fun openDetailProduct(product: Product) {
+        val intent = Intent(requireContext(), ProductDetailActivity::class.java)
+        intent.putExtra("idProduct", product.id)
+        startActivity(intent)
     }
 
     override fun showShimmerEffectForCategories() {

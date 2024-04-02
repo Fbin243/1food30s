@@ -14,12 +14,10 @@ class MenuPresenter(private val view: MenuMVPView, private val db: AppDatabase) 
             view.showCategories(categories)
 
             view.showShimmerEffectForProducts()
-            val products = FirebaseService.getListProducts(db)
-            val offers = FirebaseService.getListOffers(db)
+            FirebaseService.getListProducts(db)
+            FirebaseService.getListOffers(db)
             filterProductByCategory(categories[0].id)
             view.hideShimmerEffectForProducts()
-
-            view.handleChangeLayout(products, offers)
         }
     }
 
@@ -28,6 +26,7 @@ class MenuPresenter(private val view: MenuMVPView, private val db: AppDatabase) 
             val products = db.productDao().getByCategory("categories/${idCategory}")
             val offers = db.offerDao().getAll()
             view.showProducts(products, offers)
+            view.handleChangeLayout(products, offers)
         } catch (e: Exception) {
             Log.i("Error", "getRelatedProductsByCategory: ${e}")
         }

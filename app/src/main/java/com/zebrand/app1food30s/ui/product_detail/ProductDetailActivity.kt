@@ -50,7 +50,7 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
         "Sold: ${product.sold}".also { binding.productSold.text = it }
         product.description.also { binding.productDescription.text = it }
         "${product.stock}".also { binding.productStock.text = it }
-//        Hanlde price with offer
+//        Handle price with offer
         val oldPrice = product.price
         "$${formatPrice(oldPrice)}".also { binding.productPrice.text = it }
         if (offer != null) {
