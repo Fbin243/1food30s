@@ -61,16 +61,20 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_active_orders"
                 android:layout_margin="@dimen/spacing10"
                 >
-                <include
-                    android:id="@+id/testOrderStatus"
-                    layout="@layout/item_my_order"/>
-                <include layout="@layout/item_my_order"/>
-                <include layout="@layout/item_my_order"/>
-                <include layout="@layout/item_my_order"/>
-                <include layout="@layout/item_my_order"/>
-                <include layout="@layout/item_my_order"/>
-                <include layout="@layout/item_my_order"/>
-                <include layout="@layout/item_my_order"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcvMyOrder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+<!--                <include-->
+<!--                    android:id="@+id/testOrderStatus"-->
+<!--                    layout="@layout/item_my_order"/>-->
+<!--                <include layout="@layout/item_my_order"/>-->
+<!--                <include layout="@layout/item_my_order"/>-->
+<!--                <include layout="@layout/item_my_order"/>-->
+<!--                <include layout="@layout/item_my_order"/>-->
+<!--                <include layout="@layout/item_my_order"/>-->
+<!--                <include layout="@layout/item_my_order"/>-->
+<!--                <include layout="@layout/item_my_order"/>-->
             </LinearLayout>
 
             <TextView
