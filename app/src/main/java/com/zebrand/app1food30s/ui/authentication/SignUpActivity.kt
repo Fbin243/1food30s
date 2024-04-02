@@ -8,6 +8,8 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.data.entity.Cart
 import com.zebrand.app1food30s.data.entity.User
+import com.zebrand.app1food30s.data.Cart
+import com.zebrand.app1food30s.data.User
 import com.zebrand.app1food30s.databinding.ActivitySignUpBinding
 import com.zebrand.app1food30s.utils.FireStoreUtils
 import com.zebrand.app1food30s.utils.FirebaseUtils
@@ -100,7 +102,7 @@ class SignUpActivity : AppCompatActivity() {
         val userId = userDoc.id
         val cartId = cartDoc.id
 
-        val cart = Cart(id = cartId, accountId = userDoc)
+        val cart = Cart(id = cartId, userId = userDoc)
         user.id = userId
 
         userDoc.set(user)

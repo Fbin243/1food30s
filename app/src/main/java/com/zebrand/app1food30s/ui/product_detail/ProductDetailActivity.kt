@@ -21,6 +21,7 @@ import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.data.entity.Review
 import com.zebrand.app1food30s.databinding.ActivityProductDetailBinding
 import com.zebrand.app1food30s.ui.review.ReviewActivity
+import com.zebrand.app1food30s.ui.wishlist.WishlistManager
 import com.zebrand.app1food30s.utils.Utils.formatPrice
 import kotlinx.coroutines.launch
 
@@ -33,16 +34,31 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
         binding = ActivityProductDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
         db = AppDatabase.getInstance(this)
+        val userId = "QXLiLOiPLaHhY5gu7ZdS"
+        WishlistManager.initialize(userId)
         productDetailPresenter = ProductDetailPresenter(this, db)
         val idProduct = intent.getStringExtra("idProduct")
+
         lifecycleScope.launch {
             productDetailPresenter.getProductDetail(idProduct!!)
+//            fetchWishlistAndUpdateUI()
+//            productDetailPresenter.fetchRelatedProductsAndOffers(/* You need to provide idCategory and idProduct here */, { relatedProducts, offers ->
+//                // Use the fetched relatedProducts and offers here
+//                showRelatedProducts(relatedProducts, offers)
+//            })
         }
 
         handleDisplayReview()
         handleOpenReviewScreen()
         handleCloseDetailScreen()
     }
+
+//    private suspend fun fetchWishlistAndUpdateUI() {
+//        val wishlistItems = WishlistManager.fetchWishlistForCurrentUser()
+//        // Now you have the latest wishlistItems, you can use them to mark products as wishlisted in the UI
+//        // This step will depend on how you implement the display of related products
+//        showRelatedProducts(productDetailPresenter.relatedProducts, productDetailPresenter.offers)
+//    }
 
     override fun showProductDetail(product: Product, category: Category, offer: Offer?) {
         product.name.also { binding.productTitle.text = it }
@@ -62,13 +78,14 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
         Picasso.get().load(product.image).into(binding.productImage)
     }
 
+    // TODO
     override fun showRelatedProducts(relatedProducts: List<Product>, offers: List<Offer>) {
-        binding.relatedProductRcv.layoutManager = GridLayoutManager(this, 2)
-        val adapter = ProductAdapter(relatedProducts, offers)
-        adapter.onItemClick = { product ->
-            openDetailProduct(product)
-        }
-        binding.relatedProductRcv.adapter = adapter
+//        binding.relatedProductRcv.layoutManager = GridLayoutManager(this, 2)
+//        val adapter = ProductAdapter(relatedProducts, offers, WishlistManager.wishlistedItems.map { it.productId }.toSet())
+//        adapter.onItemClick = { product ->
+//            openDetailProduct(product)
+//        }
+//        binding.relatedProductRcv.adapter = adapter
     }
 
     private fun openDetailProduct(product: Product) {

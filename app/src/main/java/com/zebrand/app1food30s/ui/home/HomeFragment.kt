@@ -24,15 +24,29 @@ import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.data.entity.Cart
 import com.zebrand.app1food30s.data.entity.CartItem
+import com.zebrand.app1food30s.data.Cart
+import com.zebrand.app1food30s.data.CartItem
+import com.zebrand.app1food30s.data.Category
+import com.zebrand.app1food30s.data.Offer
+import com.zebrand.app1food30s.data.Product
+import com.zebrand.app1food30s.data.WishlistItem
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
+import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
+import com.zebrand.app1food30s.ui.wishlist.WishlistManager
+import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
+import com.zebrand.app1food30s.ultis.MySharedPreferences
+import com.zebrand.app1food30s.ultis.SingletonKey
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(), HomeMVPView {
+class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var homePresenter: HomePresenter
     private lateinit var db: AppDatabase
+    private lateinit var wishlistPresenter: WishlistPresenter
+    private var currentProducts: List<Product> = emptyList()
+    private var wishlistedProductIds: MutableSet<String> = mutableSetOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,12 +57,80 @@ class HomeFragment : Fragment(), HomeMVPView {
         homePresenter = HomePresenter(this, db)
         lifecycleScope.launch { homePresenter.getDataAndDisplay() }
 
+        val userId = "QXLiLOiPLaHhY5gu7ZdS"
+        WishlistManager.initialize(userId)
+        wishlistPresenter = WishlistPresenter(this)
+
         handleOpenSearchScreen()
+        fetchAndUpdateWishlistState()
         return binding.root
+    }
+
+    private fun fetchAndUpdateWishlistState() {
+        lifecycleScope.launch {
+            try {
+                val wishlistItems = WishlistManager.fetchWishlistForCurrentUser()
+                wishlistedProductIds = wishlistItems.map { it.productId }.toSet() as MutableSet<String>
+                updateAdaptersWithWishlistState()
+            } catch (e: Exception) {
+            }
+        }
+    }
+
+    private fun updateAdaptersWithWishlistState() {
+        (binding.productRcv1.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
+        (binding.productRcv2.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
+    }
+
+    // TODO
+    override fun showWishlistItems(items: List<WishlistItem>) {
+        // Here, you'd update your UI with the wishlist items.
+        // This might involve updating a RecyclerView adapter or similar.
+        // For example:
+        // wishlistAdapter.submitList(items)
+    }
+
+    override fun showRemoveSuccessMessage() {
+        Toast.makeText(context, "Product was removed from the wishlist", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun showError(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    // Implementation of WishlistMVPView methods
+    override fun showWishlistUpdated(product: Product, isAdded: Boolean) {
+        // Update the set of wishlisted product IDs based on the action
+        if (isAdded) {
+            wishlistedProductIds.add(product.id)
+        } else {
+            wishlistedProductIds.remove(product.id)
+        }
+
+        // Notify all adapters about the update
+        updateProductInAllAdapters(product.id, isAdded)
+    }
+
+    private fun updateProductInAllAdapters(productId: String, isWishlisted: Boolean) {
+        val adapters = listOfNotNull(
+            binding.productRcv1.adapter as? ProductAdapter,
+            binding.productRcv2.adapter as? ProductAdapter
+        )
+
+        adapters.forEach { adapter ->
+            val index = adapter.products.indexOfFirst { it.id == productId }
+            if (index != -1) {
+                // Update the wishlist status if your data model requires it
+                // e.g., adapter.products[index].isWishlisted = isWishlisted
+
+                adapter.notifyItemChanged(index)
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
+        fetchAndUpdateWishlistState()
         binding.searchInput.clearFocus()
     }
 
@@ -71,26 +153,30 @@ class HomeFragment : Fragment(), HomeMVPView {
         binding.cateRcv.adapter = CategoryAdapter(categories)
     }
 
-    private fun addProductToCart(context: Context, productId: String, cartId: String = "mdXn8lvirHaAogStOY1K") {
+    private fun addProductToCart(context: Context, productId: String) {
         val db = FirebaseFirestore.getInstance()
-        val productRef = db.collection("products").document(productId)
+        val preferences = MySharedPreferences.getInstance(context)
+        val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
 
+        val cartRef = db.collection("carts").document(userId)
+
+        val productRef = db.collection("products").document(productId)
         productRef.get().addOnSuccessListener { productSnapshot ->
             val product = productSnapshot.toObject(Product::class.java)
             val stock = product?.stock ?: 0
 
             if (stock > 0) {
-                val cartRef = db.collection("carts").document(cartId)
                 cartRef.get().addOnSuccessListener { document ->
                     val cart = if (document.exists()) {
                         document.toObject(Cart::class.java)
                     } else {
                         // If the cart does not exist, create a new one
-                        Cart(id = cartId, accountId = null, items = mutableListOf())
+                        Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
                     }
+//                    Log.d("Test00", "addProductToCart: $cart")
 
                     cart?.let {
-                        val existingItemIndex = it.items.indexOfFirst { item -> item.productId?.path == productRef.path }
+                        val existingItemIndex = it.items.indexOfFirst { item -> item.productId == productRef }
                         if (existingItemIndex >= 0) {
                             // Product exists, update quantity
                             it.items[existingItemIndex].quantity += 1
@@ -118,26 +204,34 @@ class HomeFragment : Fragment(), HomeMVPView {
     }
 
     override fun showProductsLatestDishes(products: List<Product>, offers: List<Offer>) {
+        currentProducts = products
         binding.productRcv1.layoutManager = GridLayoutManager(requireContext(), 2)
-        val adapter = ProductAdapter(products.take(4), offers)
+        val adapter = ProductAdapter(products.take(4), offers, true, wishlistedProductIds)
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }
         adapter.onAddButtonClick = { product ->
             addProductToCart(requireContext(), product.id)
+        }
+        adapter.onWishlistProductClick = { product ->
+            wishlistPresenter.toggleWishlist(product)
         }
         binding.productRcv1.adapter = adapter
     }
     
     override fun showProductsBestSeller(products: List<Product>, offers: List<Offer>) {
+        currentProducts = products
         binding.productRcv2.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val adapter = ProductAdapter(products.take(4), offers, false)
+        val adapter = ProductAdapter(products.take(4), offers, false, wishlistedProductIds)
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }
         adapter.onAddButtonClick = { product ->
             addProductToCart(requireContext(), product.id)
+        }
+        adapter.onWishlistProductClick = { product ->
+            wishlistPresenter.toggleWishlist(product)
         }
         binding.productRcv2.adapter = adapter
     }

@@ -174,5 +174,7 @@
         <item>Paid</item>
         <item>Unpaid</item>
     </string-array>
+    <string name="formatted_currency">%.2f</string>
+    <string name="wishlist_button">Wishlist button</string>
 
 </resources>

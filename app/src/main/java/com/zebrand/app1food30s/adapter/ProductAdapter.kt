@@ -8,6 +8,9 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.shimmer.Shimmer
+import com.facebook.shimmer.ShimmerDrawable
+import com.google.firebase.firestore.DocumentReference
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Offer
@@ -16,13 +19,15 @@ import com.zebrand.app1food30s.utils.Utils.formatPrice
 import com.zebrand.app1food30s.utils.Utils.getShimmerDrawable
 
 class ProductAdapter(
-    private val products: List<Product>,
+    val products: List<Product>,
     private val offers: List<Offer>,
-    private val isGrid: Boolean = true
+    private val isGrid: Boolean = true,
+    private var wishlistedProductIds: Set<String>,
 ) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
     var onItemClick: ((Product) -> Unit)? = null
     var onAddButtonClick: ((Product) -> Unit)? = null
+    var onWishlistProductClick: ((Product) -> Unit)? = null
 
     inner class ProductViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val productImg: ImageView = listItemView.findViewById(R.id.productImg)
@@ -31,12 +36,20 @@ class ProductAdapter(
         val productPrice: TextView = listItemView.findViewById(R.id.productPrice)
         val productOldPrice: TextView = listItemView.findViewById(R.id.productOldPrice)
         private val addButton: Button = listItemView.findViewById(R.id.addBtn)
+        val ivWishlist: ImageView = listItemView.findViewById(R.id.ivWishlist)
 
         init {
             addButton.setOnClickListener {
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     onAddButtonClick?.invoke(products[position])
+                }
+            }
+
+            ivWishlist.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onWishlistProductClick?.invoke(products[position])
                 }
             }
         }
@@ -78,5 +91,17 @@ class ProductAdapter(
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(product)
         }
+
+        // Wishlist
+        val isProductWishlisted = product.id in wishlistedProductIds // Check if product's ID is in the set of wishlisted product IDs
+//        Log.d("Test00", "$isProductWishlisted")
+        holder.ivWishlist.setImageResource(
+            if (isProductWishlisted) R.drawable.ic_wishlist_active else R.drawable.ic_wishlist
+        )
+    }
+
+    fun updateWishlistState(newWishlistedProductIds: Set<String>) {
+        this.wishlistedProductIds = newWishlistedProductIds
+        notifyDataSetChanged()
     }
 }

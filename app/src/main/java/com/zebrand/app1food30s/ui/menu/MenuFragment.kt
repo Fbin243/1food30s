@@ -21,6 +21,8 @@ import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentMenuBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
+import com.zebrand.app1food30s.ui.wishlist.FirestoreWishlistRepository
+import com.zebrand.app1food30s.ui.wishlist.WishlistManager
 import kotlinx.coroutines.launch
 
 class MenuFragment : Fragment(), MenuMVPView {
@@ -28,20 +30,47 @@ class MenuFragment : Fragment(), MenuMVPView {
     private lateinit var menuPresenter: MenuPresenter
     private lateinit var db: AppDatabase
     private var isGrid: Boolean = false
+    private var wishlistedProductIds: Set<String> = emptySet()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentMenuBinding.inflate(inflater)
         db = AppDatabase.getInstance(requireContext())
         menuPresenter = MenuPresenter(this, db)
         lifecycleScope.launch { menuPresenter.getDataAndDisplay() }
 
+        WishlistManager.initialize(userId = "QXLiLOiPLaHhY5gu7ZdS")
+
+        menuPresenter = MenuPresenter(this)
+        lifecycleScope.launch {
+            menuPresenter.getDataAndDisplay()
+            fetchAndUpdateWishlistState()
+        }
+
         return binding.root
     }
 
+    private fun fetchAndUpdateWishlistState() {
+        lifecycleScope.launch {
+            try {
+                val wishlistItems = WishlistManager.fetchWishlistForCurrentUser()
+                wishlistedProductIds = wishlistItems.map { it.productId }.toSet()
+                updateAdapterWithWishlistState()
+            } catch (e: Exception) {
+                // Handle errors appropriately
+            }
+        }
+    }
+
+    private fun updateAdapterWithWishlistState() {
+        (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
+    }
+
     override fun handleChangeLayout(products: List<Product>, offers: List<Offer>) {
+        // This assumes wishlistedProductIds are updated elsewhere and accessible here
+
         binding.gridBtn.setOnClickListener {
             isGrid = true
             binding.gridBtn.setImageResource(R.drawable.ic_active_grid)
@@ -58,6 +87,7 @@ class MenuFragment : Fragment(), MenuMVPView {
             binding.productRcv.adapter = generateAdapterWithLayout(products, offers)
         }
     }
+
 
     override fun showCategories(categories: List<Category>) {
         binding.cateRcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
@@ -111,5 +141,7 @@ class MenuFragment : Fragment(), MenuMVPView {
         shimmer.stopShimmer()
         shimmer.visibility = View.GONE
         recyclerView.visibility = View.VISIBLE
+        binding.productRcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        binding.productRcv.adapter = ProductAdapter(products, offers, false, wishlistedProductIds)
     }
 }
