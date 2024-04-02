@@ -11,10 +11,9 @@
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/offerImg"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:scaleType="centerCrop"
         app:shapeAppearanceOverlay="@style/RoundedImageView"
         android:src="@drawable/offer1" />
-
 
 </androidx.cardview.widget.CardView>

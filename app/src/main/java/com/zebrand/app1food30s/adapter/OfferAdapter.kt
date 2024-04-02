@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Offer
+import com.zebrand.app1food30s.utils.Utils.getShimmerDrawable
 
 class OfferAdapter(private val offers: List<Offer>): RecyclerView.Adapter<OfferAdapter.OfferViewHolder>() {
     inner class OfferViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView) {
@@ -25,6 +26,6 @@ class OfferAdapter(private val offers: List<Offer>): RecyclerView.Adapter<OfferA
 
     override fun onBindViewHolder(holder: OfferViewHolder, position: Int) {
         val offer = offers[position]
-        Picasso.get().load(offer.image).into(holder.offerImg)
+        Picasso.get().load(offer.image).placeholder(getShimmerDrawable()).into(holder.offerImg)
     }
 }

@@ -1,6 +1,5 @@
 package com.zebrand.app1food30s.adapter
 
-import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +8,12 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.facebook.shimmer.Shimmer
-import com.facebook.shimmer.ShimmerDrawable
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.utils.Utils.formatPrice
+import com.zebrand.app1food30s.utils.Utils.getShimmerDrawable
 
 class ProductAdapter(
     private val products: List<Product>,
@@ -60,14 +58,7 @@ class ProductAdapter(
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product: Product = products[position]
-        val shimmer: Shimmer =
-            Shimmer.ColorHighlightBuilder().setBaseColor(Color.parseColor("#f3f3f3"))
-                .setBaseAlpha(1.0f).setHighlightColor(Color.parseColor("#e7e7e7"))
-                .setHighlightAlpha(1.0f).setDropoff(50.0f).build()
-
-        val shimmerDrawable = ShimmerDrawable()
-        shimmerDrawable.setShimmer(shimmer)
-        Picasso.get().load(product.image).placeholder(shimmerDrawable).into(holder.productImg)
+        Picasso.get().load(product.image).placeholder(getShimmerDrawable()).into(holder.productImg)
         holder.productTitle.text = product.name
         holder.productDescription.text = product.description
 

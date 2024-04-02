@@ -159,7 +159,7 @@ class HomeFragment : Fragment(), HomeMVPView {
         binding.cateShimmer.startShimmer()
         binding.product1Shimmer.startShimmer()
         binding.offerShimmer.startShimmer()
-        binding.cateShimmer.startShimmer()
+        binding.product2Shimmer.startShimmer()
     }
 
     override fun hideShimmerEffect() {

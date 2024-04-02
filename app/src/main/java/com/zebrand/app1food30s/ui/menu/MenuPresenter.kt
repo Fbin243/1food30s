@@ -1,8 +1,8 @@
 package com.zebrand.app1food30s.ui.menu
 
+import android.util.Log
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.utils.FirebaseService
-import com.zebrand.app1food30s.utils.FirebaseUtils
 import kotlinx.coroutines.coroutineScope
 
 class MenuPresenter(private val view: MenuMVPView, private val db: AppDatabase) {
@@ -16,10 +16,20 @@ class MenuPresenter(private val view: MenuMVPView, private val db: AppDatabase) 
             view.showShimmerEffectForProducts()
             val products = FirebaseService.getListProducts(db)
             val offers = FirebaseService.getListOffers(db)
+            filterProductByCategory(categories[0].id)
             view.hideShimmerEffectForProducts()
-            view.showProducts(products, offers)
 
             view.handleChangeLayout(products, offers)
+        }
+    }
+
+    private fun filterProductByCategory(idCategory: String) {
+        try {
+            val products = db.productDao().getByCategory("categories/${idCategory}")
+            val offers = db.offerDao().getAll()
+            view.showProducts(products, offers)
+        } catch (e: Exception) {
+            Log.i("Error", "getRelatedProductsByCategory: ${e}")
         }
     }
 }

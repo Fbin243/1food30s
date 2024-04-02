@@ -3,8 +3,10 @@ package com.zebrand.app1food30s.data.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Product
 
@@ -12,7 +14,7 @@ import com.zebrand.app1food30s.data.entity.Product
 interface ProductDao {
     @Query("SELECT * FROM products ORDER BY date DESC")
     fun getAll(): List<Product>
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(category: Product)
     @Update
     fun update(category: Product)
@@ -20,4 +22,6 @@ interface ProductDao {
     fun delete(category: Product)
     @Query("DELETE FROM products")
     fun deleteAll()
+    @Query("SELECT * FROM products WHERE idCategory = :categoryId")
+    fun getByCategory(categoryId: String): List<Product>
 }

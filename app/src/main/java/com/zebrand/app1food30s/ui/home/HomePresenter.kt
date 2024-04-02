@@ -2,6 +2,7 @@ package com.zebrand.app1food30s.ui.home
 
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.utils.FirebaseService
+import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
 class HomePresenter(
