@@ -1,6 +1,5 @@
 package com.zebrand.app1food30s.ui.my_order
 
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -9,9 +8,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.adapter.MyOrderAdapter
-import com.zebrand.app1food30s.data.Order
+import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.databinding.ActivityMyOrderBinding
-import com.zebrand.app1food30s.ui.my_order.my_order_details.MyOrderDetailsActivity
 
 class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
     lateinit var binding: ActivityMyOrderBinding

@@ -8,10 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.zebrand.app1food30s.ui.admin_stats.AdminStatsActivity
 import com.zebrand.app1food30s.databinding.FragmentProfileAfterLoginBinding
@@ -22,25 +20,13 @@ import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
 import com.squareup.picasso.Picasso
-import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.data.User
-import com.zebrand.app1food30s.ui.admin_stats.AdminStatsActivity
-import com.zebrand.app1food30s.databinding.FragmentProfileAfterLoginBinding
-import com.zebrand.app1food30s.ui.authentication.DeleteAccountActivity
-import com.zebrand.app1food30s.ui.authentication.LoginActivity
+import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.ui.change_password.ChangePasswordActivity
-import com.zebrand.app1food30s.ui.main.MainActivity
-import com.zebrand.app1food30s.ultis.FirebaseUtils
-import com.zebrand.app1food30s.ultis.FirebaseUtils.fireStorage
-import com.zebrand.app1food30s.ultis.FirebaseUtils.fireStore
-import com.zebrand.app1food30s.ultis.GlobalUtils
-import com.zebrand.app1food30s.ultis.MySharedPreferences
-import com.zebrand.app1food30s.ultis.SingletonKey
+import com.zebrand.app1food30s.utils.FirebaseUtils.fireStorage
+import com.zebrand.app1food30s.utils.FirebaseUtils.fireStore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import java.util.Date
 import java.util.UUID
 
 

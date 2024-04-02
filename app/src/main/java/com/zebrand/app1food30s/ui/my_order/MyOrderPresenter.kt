@@ -6,7 +6,7 @@ import android.widget.Toast
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.Query
 import com.zebrand.app1food30s.adapter.MyOrderAdapter
-import com.zebrand.app1food30s.data.Order
+import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.utils.FireStoreUtils
 
 class MyOrderPresenter(
