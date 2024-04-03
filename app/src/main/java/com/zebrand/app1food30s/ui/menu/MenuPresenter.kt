@@ -1,6 +1,7 @@
 package com.zebrand.app1food30s.ui.menu
 
 import android.util.Log
+import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.utils.FirebaseService
@@ -21,6 +22,14 @@ class MenuPresenter(private val view: MenuMVPView, private val db: AppDatabase) 
             view.hideShimmerEffectForCategories()
             view.showCategories(categories)
         }
+    }
+
+    fun reloadData(productAdapter: ProductAdapter, categoryAdapter: CategoryAdapter) {
+        val categories = db.categoryDao().getAll()
+        filterProductByCategory(categories[0].id, productAdapter)
+        view.showShimmerEffectForCategories()
+        categoryAdapter.updateData(categories)
+        view.hideShimmerEffectForCategories()
     }
 
     fun filterProductByCategory(idCategory: String, adapter: ProductAdapter) {

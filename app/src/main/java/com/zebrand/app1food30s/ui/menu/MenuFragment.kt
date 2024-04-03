@@ -30,6 +30,8 @@ class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListen
     private lateinit var menuPresenter: MenuPresenter
     private lateinit var db: AppDatabase
     private var isGrid: Boolean = false
+    private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var gridLayoutManager: GridLayoutManager
     private var wishlistedProductIds: Set<String> = emptySet()
 
     override fun onCreateView(
@@ -38,6 +40,8 @@ class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListen
     ): View {
         binding = FragmentMenuBinding.inflate(inflater)
         db = AppDatabase.getInstance(requireContext())
+        linearLayoutManager = LinearLayoutManager(requireContext())
+        gridLayoutManager = GridLayoutManager(requireContext(), 2)
         WishlistManager.initialize(userId = "QXLiLOiPLaHhY5gu7ZdS")
         menuPresenter = MenuPresenter(this, db)
         lifecycleScope.launch {
@@ -58,10 +62,12 @@ class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListen
                 wishlistedProductIds = wishlistItems.map { it.productId }.toSet()
                 updateAdapterWithWishlistState()
             } catch (e: Exception) {
+
                 // Handle errors appropriately
             }
         }
     }
+
 
     private fun updateAdapterWithWishlistState() {
         (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
@@ -73,7 +79,7 @@ class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListen
             isGrid = true
             binding.gridBtn.setImageResource(R.drawable.ic_active_grid)
             binding.linearBtn.setImageResource(R.drawable.ic_linear)
-            binding.productRcv.layoutManager = GridLayoutManager(requireContext(), 2)
+            binding.productRcv.layoutManager = gridLayoutManager
             changeLayout(products)
         }
 
@@ -81,7 +87,7 @@ class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListen
             isGrid = false
             binding.linearBtn.setImageResource(R.drawable.ic_active_linear)
             binding.gridBtn.setImageResource(R.drawable.ic_grid)
-            binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
+            binding.productRcv.layoutManager = linearLayoutManager
             changeLayout(products)
         }
     }
@@ -101,17 +107,17 @@ class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListen
     override fun showCategories(categories: List<Category>) {
         binding.cateRcv.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        val adapter = CategoryAdapter(categories)
+        val adapter = CategoryAdapter(categories, true)
         menuPresenter.filterProductByCategory(
             categories[0].id,
             binding.productRcv.adapter as ProductAdapter
         )
-
         adapter.onItemClick = { holder ->
             adapter.lastItemClicked?.cateTitle?.setTextColor(resources.getColor(R.color.black))
             adapter.lastItemClicked?.cateUnderline?.setBackgroundResource(0)
             holder.cateUnderline.setBackgroundResource(R.drawable.category_underline)
             holder.cateTitle.setTextColor(resources.getColor(R.color.primary))
+            binding.textView.text = categories[holder.adapterPosition].name
             // Update UI by category
             menuPresenter.filterProductByCategory(
                 categories[holder.adapterPosition].id,
@@ -122,7 +128,7 @@ class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListen
     }
 
     override fun showProducts(products: List<Product>, offers: List<Offer>) {
-        binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
+        binding.productRcv.layoutManager = if (isGrid) gridLayoutManager else linearLayoutManager
         val adapter = ProductAdapter(products, offers, wishlistedProductIds)
         adapter.onItemClick = { product ->
             openDetailProduct(product)
@@ -154,8 +160,9 @@ class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListen
 
     override fun onRefresh() {
         lifecycleScope.launch {
-            menuPresenter.getDataAndDisplay()
+            menuPresenter.reloadData(binding.productRcv.adapter as ProductAdapter, binding.cateRcv.adapter as CategoryAdapter)
             fetchAndUpdateWishlistState()
+            binding.cateRcv.scrollToPosition(0)
             binding.swipeRefreshLayout.isRefreshing = false
         }
     }
