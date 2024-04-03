@@ -47,7 +47,15 @@
         </activity>
         <activity
             android:name=".ui.manage_product.ManageProductActivity"
-            android:exported="true"/>
+            android:exported="true">
+
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
+
+
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
+        </activity>
         <activity
             android:name=".ui.manage_order.ManageOrderDetailsActivity"
             android:exported="false" />
@@ -103,11 +111,11 @@
             android:name=".ui.main.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
     </application>
 

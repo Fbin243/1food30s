@@ -114,9 +114,11 @@ class ManageProductActivity : AppCompatActivity() {
 
         loadCategoriesFromFirebase()
 
-        val adapterPrice = ArrayAdapter(this, android.R.layout.simple_spinner_item, priceArr)
+        val adapterPrice = ArrayAdapter(this, R.layout.simple_spinner_customized, priceArr)
         adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
         priceSpinner.adapter = adapterPrice
+        priceSpinner.dropDownVerticalOffset = 200
+        categorySpinner.dropDownVerticalOffset = 200
 
         // date picker
         val datePickerText: TextInputEditText = dialogView.findViewById(R.id.datePicker)

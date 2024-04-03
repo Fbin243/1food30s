@@ -73,8 +73,10 @@
             <Spinner
                 android:id="@+id/spinnerCategory"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingHorizontal="@dimen/spacing8"/>
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="0dp"
+                android:paddingTop="@dimen/spacing8"
+                />
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
