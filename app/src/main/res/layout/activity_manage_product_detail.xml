@@ -97,19 +97,24 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/category"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing60"
-            app:boxBackgroundColor="@color/transparent"
-            android:background="@drawable/dropdown_background"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_marginTop="5dp"
             app:layout_constraintTop_toBottomOf="@id/text_category"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent" >
 
-            <Spinner
-                android:id="@+id/category_spinner"
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteCategory"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingHorizontal="@dimen/spacing8"/>
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:paddingHorizontal="@dimen/spacing8"
+                android:dropDownHeight="150dp"
+                android:text="@string/txt_choose_category"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"/>
         </com.google.android.material.textfield.TextInputLayout>
+
 
         <TextView
             android:id="@+id/text_price"
@@ -160,18 +165,22 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/offer"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_marginTop="5dp"
-            app:boxBackgroundColor="@color/transparent"
-            android:layout_height="61dp"
-            android:background="@drawable/dropdown_background"
             app:layout_constraintTop_toBottomOf="@id/text_offer"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintStart_toStartOf="parent" >
 
-            <Spinner
-                android:id="@+id/offer_spinner"
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteOffer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingHorizontal="@dimen/spacing8"/>
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:paddingHorizontal="@dimen/spacing8"
+                android:dropDownHeight="150dp"
+                android:text="@string/txt_choose_offer"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
