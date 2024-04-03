@@ -45,7 +45,7 @@ class ManageProductDetailActivity : AppCompatActivity() {
         descriptionEditText = findViewById(R.id.input_description)
         createButton = findViewById(R.id.create_btn)
         categoryAutoComplete = findViewById(R.id.autoCompleteCategory)
-        offerAutoComplete = findViewById(R.id.autoCompletePrice)
+        offerAutoComplete = findViewById(R.id.autoCompleteOffer)
         productImageView = findViewById(R.id.image_product)
         loadCategoriesFromFirebase()
         loadOffersFromFirebase()
