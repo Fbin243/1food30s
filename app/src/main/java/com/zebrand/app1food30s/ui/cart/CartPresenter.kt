@@ -33,6 +33,18 @@ class CartPresenter(private val view: CartMVPView, private val userId: String, p
         }
     }
 
+    fun loadCart() {
+        repository.loadCart(userId, onResult = { detailedCartItems, _ ->
+            if (detailedCartItems != null) {
+                view.loadCart(detailedCartItems)
+            } else {
+                view.displayError("Failed to fetch cart details.")
+            }
+        }, onError = { error ->
+            view.displayError(error)
+        })
+    }
+
     // TODO: totalPrice
     fun listenToCartChanges() {
         repository.listenToCartChanges(userId, onResult = { detailedCartItems, _ ->

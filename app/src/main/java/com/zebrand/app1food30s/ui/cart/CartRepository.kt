@@ -106,26 +106,6 @@ class CartRepository(private val firebaseDb: FirebaseFirestore, private val room
             }
     }
 
-//    private fun fetchFirestoreToLocal(userId: String, onDataReady: (Cart?) -> Unit) {
-//        mDBCartRef.document(userId).get()
-//            .addOnSuccessListener { document ->
-//                val cart = document.toObject(Cart::class.java)
-//                Log.d("Test00", "fetchFirestoreToLocal: $cart")
-//                cart?.let {
-//                    updateLocalCartData(userId, it)
-//                    onDataReady(it) // Now calling onDataReady with the fetched cart
-//                } ?: run {
-//                    // Handle the case where cart is null (document does not exist)
-//                    onDataReady(null)
-//                }
-//            }
-//            .addOnFailureListener { e ->
-//                // Handle error
-//                onDataReady(null) // In case of error, call onDataReady with null
-//            }
-//    }
-
-
     // convert Cart into cache
     private fun updateLocalCartData(userId: String, cart: Cart) {
         val cartEntity = CartEntity(userId = userId)
@@ -165,47 +145,65 @@ class CartRepository(private val firebaseDb: FirebaseFirestore, private val room
         }
     }
 
-    fun listenToCartChanges(userId: String, onResult: (List<CartItem>?, Double) -> Unit, onError: (String) -> Unit) {
-//        Log.d("Test00", "listenToCartChanges called for userId: $userId")
-        CoroutineScope(Dispatchers.IO).launch {
-            getCartData(userId) { cart ->
-                if (cart != null) {
-                    // Log success and details about the fetched cart
-//                    Log.d("Test00", "Successfully fetched cart for userId: $userId with ${cart.items.size} items.")
+//    fun listenToCartChanges(userId: String, onResult: (List<CartItem>?, Double) -> Unit, onError: (String) -> Unit) {
+////        Log.d("Test00", "listenToCartChanges called for userId: $userId")
+//        CoroutineScope(Dispatchers.IO).launch {
+//            getCartData(userId) { cart ->
+//                if (cart != null) {
+//                    // Log success and details about the fetched cart
+////                    Log.d("Test00", "Successfully fetched cart for userId: $userId with ${cart.items.size} items.")
+//
+//                    val totalPrice = cart.items.sumOf { it.productPrice * it.quantity }
+//                    onResult(cart.items, totalPrice)
+//
+//                    // Log the total price for additional debug information
+////                    Log.d("Test00", "Total price for userId: $userId is $totalPrice")
+//                } else {
+//                    // Log failure
+////                    Log.e("Test00", "Failed to fetch cart details for userId: $userId")
+//                    onError("Failed to fetch cart details.")
+//                }
+//            }
+//        }
+//    }
 
-                    val totalPrice = cart.items.sumOf { it.productPrice * it.quantity }
-                    onResult(cart.items, totalPrice)
+    fun loadCart(userId: String, onResult: (List<CartItem>?, Double) -> Unit, onError: (String) -> Unit) {
+        getCartRef(userId) { cartRef ->
+            cartRef?.addSnapshotListener { _, e ->
+                if (e != null) {
+                    onError(e.message ?: "Unknown error")
+                    return@addSnapshotListener
+                }
 
-                    // Log the total price for additional debug information
-//                    Log.d("Test00", "Total price for userId: $userId is $totalPrice")
-                } else {
-                    // Log failure
-//                    Log.e("Test00", "Failed to fetch cart details for userId: $userId")
-                    onError("Failed to fetch cart details.")
+                fetchProductDetailsForCartItems(userId) { detailedCartItems, totalPrice ->
+                    if (detailedCartItems != null) {
+                        onResult(detailedCartItems, totalPrice)
+                    } else {
+                        onError("Failed to fetch detailed cart items.")
+                    }
                 }
             }
         }
     }
 
+    fun listenToCartChanges(userId: String, onResult: (List<CartItem>?, Double) -> Unit, onError: (String) -> Unit) {
+        getCartRef(userId) { cartRef ->
+            cartRef?.addSnapshotListener { _, e ->
+                if (e != null) {
+                    onError(e.message ?: "Unknown error")
+                    return@addSnapshotListener
+                }
 
-//    fun listenToCartChanges(userId: String, onResult: (List<CartItem>?, Double) -> Unit, onError: (String) -> Unit) {
-//        getCartRef(userId) { cartRef ->
-//            cartRef?.addSnapshotListener { _, e ->
-//                if (e != null) {
-//                    onError(e.message ?: "Unknown error")
-//                    return@addSnapshotListener
-//                }
-//
-//                fetchProductDetailsForCartItems(userId) { detailedCartItems, totalPrice ->
-//                    if (detailedCartItems != null) {
-//                        onResult(detailedCartItems, totalPrice)
-//                    } else {
-//                        onError("Failed to fetch detailed cart items.")
-//                    }
-//                }
-//            }
-//        }
-//    }
+                fetchProductDetailsForCartItems(userId) { detailedCartItems, totalPrice ->
+                    if (detailedCartItems != null) {
+                        onResult(detailedCartItems, totalPrice)
+                    } else {
+                        onError("Failed to fetch detailed cart items.")
+                    }
+                }
+            }
+        }
+    }
 
     fun removeFromCart(cartRef: DocumentReference, productRef: DocumentReference, onComplete: (Boolean) -> Unit) {
         cartRef.get().addOnSuccessListener { documentSnapshot ->

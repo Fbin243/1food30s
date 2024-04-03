@@ -49,7 +49,8 @@ class CartFragment : Fragment(), CartMVPView {
         val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
         if (userId.isNotBlank()) {
             presenter = CartPresenter(this, userId, requireContext())
-            presenter.listenToCartChanges()
+//          presenter.listenToCartChanges()
+            presenter.loadCart()
         }
 
         handleCheckoutNavigation(userId)
@@ -69,7 +70,8 @@ class CartFragment : Fragment(), CartMVPView {
             },
             onQuantityUpdated = { detailedCartItem, newQuantity ->
                 detailedCartItem.productId?.let { productRef ->
-                    updateQuantityWithDebounce(productRef, newQuantity)
+//                    updateQuantityWithDebounce(productRef, newQuantity)
+                    presenter.updateCartItemQuantity(productRef, newQuantity)
                 }
             },
             onUpdateTotalPrice = { totalPrice ->
@@ -89,6 +91,14 @@ class CartFragment : Fragment(), CartMVPView {
         }
     }
 
+    // presenter: load cart
+    override fun loadCart(cartItems: List<CartItem>) {
+        _binding?.let {
+            adapter.loadItems(cartItems)
+        }
+    }
+
+    // presenter: listen to changes
     override fun displayCartItems(cartItems: List<CartItem>) {
         _binding?.let {
             adapter.updateItems(cartItems)
