@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Spinner
@@ -29,8 +30,8 @@ class EditProduct : AppCompatActivity() {
     private lateinit var binding: ActivityEditProductBinding
     private val fireStore = FirebaseFirestore.getInstance()
     private val fireStorage = FirebaseStorage.getInstance()
-    private lateinit var categorySpinner: Spinner
-    private lateinit var offerSpinner: Spinner
+    private lateinit var categoryAutoComplete: AutoCompleteTextView
+    private lateinit var offerAutoComplete: AutoCompleteTextView
     private val PICK_IMAGE_REQUEST = 71 // Unique request code
 
     private lateinit var nameEditText: TextInputEditText
@@ -65,8 +66,8 @@ class EditProduct : AppCompatActivity() {
         descriptionEditText = binding.inputDescription
         saveButton = binding.saveBtn
         productImageView = binding.imageProduct
-        categorySpinner = binding.categorySpinner
-        offerSpinner = binding.offerSpinner
+        categoryAutoComplete = binding.autoCompleteCategory
+        offerAutoComplete = binding.autoCompleteOffer
 
         saveButton.setOnClickListener {
             val productId = intent.getStringExtra("PRODUCT_ID")
@@ -121,8 +122,8 @@ class EditProduct : AppCompatActivity() {
         val productStock = stockEditText.text.toString().toIntOrNull() ?: 0
         val productDescription = descriptionEditText.text.toString().trim()
 
-        val selectedCategoryName = categorySpinner.selectedItem.toString()
-        val selectedOfferName = offerSpinner.selectedItem.toString()
+        val selectedCategoryName = categoryAutoComplete.text.toString()
+        val selectedOfferName = offerAutoComplete.text.toString()
 
         fireStore.collection("categories").whereEqualTo("name", selectedCategoryName).limit(1).get()
             .addOnSuccessListener { categoryDocuments ->
@@ -179,13 +180,11 @@ class EditProduct : AppCompatActivity() {
                 for (document in documents) {
                     categoriesList.add(document.getString("name") ?: "")
                 }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesList)
-                adapter.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
-                categorySpinner.adapter = adapter
+                val adapter = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, categoriesList)
+                categoryAutoComplete.setAdapter(adapter)
 
-                val selectedPosition = categoriesList.indexOf(categoryStr)
-                if (selectedPosition != -1) {
-                    categorySpinner.setSelection(selectedPosition)
+                if (categoryStr.isNotEmpty()) {
+                    categoryAutoComplete.setText(categoryStr, false) // Set text và không filter kết quả dựa trên text được set
                 }
             }
             .addOnFailureListener { exception ->
@@ -202,13 +201,11 @@ class EditProduct : AppCompatActivity() {
                 for (document in documents) {
                     offerList.add(document.getString("name") ?: "")
                 }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, offerList)
-                adapter.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
-                offerSpinner.adapter = adapter
+                val adapter = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, offerList)
+                offerAutoComplete.setAdapter(adapter)
 
-                val selectedPosition = offerList.indexOf(offerStr)
-                if (selectedPosition != -1) {
-                    offerSpinner.setSelection(selectedPosition)
+                if (offerStr.isNotEmpty()) {
+                    offerAutoComplete.setText(offerStr, false) // Set text và không filter kết quả dựa trên text được set
                 }
             }
             .addOnFailureListener { exception ->
@@ -236,7 +233,7 @@ class EditProduct : AppCompatActivity() {
                         offersCollection.document(offerId).get().addOnSuccessListener { document ->
                             if (document != null && document.exists()) {
 //                val category = document.toObject(Category::class.java)
-//                                categorySpinner.text = document.getString("name") ?: ""
+//                                categoryAutoComplete.text = document.getString("name") ?: ""
                                 val offerStr = document.getString("name") ?: ""
                                 loadOffersFromFirebase(offerStr)
                             } else {
@@ -251,7 +248,7 @@ class EditProduct : AppCompatActivity() {
                         categoriesCollection.document(categoryId).get().addOnSuccessListener { document ->
                             if (document != null && document.exists()) {
 //                val category = document.toObject(Category::class.java)
-//                                categorySpinner.text = document.getString("name") ?: ""
+//                                categoryAutoComplete.text = document.getString("name") ?: ""
                                 val categoryStr = document.getString("name") ?: ""
                                 loadCategoriesFromFirebase(categoryStr)
                             } else {
