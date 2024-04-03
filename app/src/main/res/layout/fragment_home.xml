@@ -55,287 +55,295 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="64dp"
-        android:orientation="vertical"
-        android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing4"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/spacing32">
+            android:scrollbars="none">
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/rubik_extrabold"
-                android:text="@string/txt_our_menu"
-                android:textSize="@dimen/font_header"
-                app:layout_constraintBaseline_toBaselineOf="@+id/btn"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <Button
-                android:id="@+id/btn"
-                android:layout_width="70dp"
-                android:layout_height="30dp"
-                android:backgroundTint="@color/secondary_20"
-                android:fontFamily="@font/rubik_bold"
-                android:lineHeight="@dimen/spacing1"
-                android:padding="0dp"
-                android:text="@string/txt_view_all"
-                android:textColor="@color/secondary"
-                android:textSize="@dimen/font_size12"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:strokeColor="@color/primary" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/cateRcv"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                android:layout_marginTop="@dimen/spacing4"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/spacing32">
 
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/cateShimmer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView">
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/rubik_extrabold"
+                    android:text="@string/txt_our_menu"
+                    android:textSize="@dimen/font_header"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/btn"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-                <LinearLayout
+                <Button
+                    android:id="@+id/btn"
+                    android:layout_width="70dp"
+                    android:layout_height="30dp"
+                    android:backgroundTint="@color/secondary_20"
+                    android:fontFamily="@font/rubik_bold"
+                    android:lineHeight="@dimen/spacing1"
+                    android:padding="0dp"
+                    android:text="@string/txt_view_all"
+                    android:textColor="@color/secondary"
+                    android:textSize="@dimen/font_size12"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:strokeColor="@color/primary" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/cateRcv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-                    <include layout="@layout/category_card_view_shimmer" />
-
-                    <include layout="@layout/category_card_view_shimmer" />
-
-                    <include layout="@layout/category_card_view_shimmer" />
-
-                    <include layout="@layout/category_card_view_shimmer" />
-
-                    <include layout="@layout/category_card_view_shimmer" />
-
-                </LinearLayout>
-
-            </com.facebook.shimmer.ShimmerFrameLayout>
-
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/rubik_extrabold"
-                android:text="@string/txt_latest_dishes"
-                android:textSize="@dimen/font_header"
-                app:layout_constraintBaseline_toBaselineOf="@+id/btn1"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <Button
-                android:id="@+id/btn1"
-                android:layout_width="70dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="120dp"
-                android:backgroundTint="@color/secondary_20"
-                android:fontFamily="@font/rubik_bold"
-                android:lineHeight="@dimen/spacing1"
-                android:padding="0dp"
-                android:text="@string/txt_view_all"
-                android:textColor="@color/secondary"
-                android:textSize="@dimen/font_size12"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn"
-                app:strokeColor="@color/primary" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/productRcv1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="-8dp"
-                android:nestedScrollingEnabled="false"
-                android:orientation="vertical"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView1" />
-
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/product1Shimmer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView1">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/cateShimmer"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView">
 
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                        android:orientation="horizontal">
 
-                        <include layout="@layout/product_card_view_grid_shimmer" />
+                        <include layout="@layout/category_card_view_shimmer" />
 
-                        <include layout="@layout/product_card_view_grid_shimmer" />
+                        <include layout="@layout/category_card_view_shimmer" />
+
+                        <include layout="@layout/category_card_view_shimmer" />
+
+                        <include layout="@layout/category_card_view_shimmer" />
+
+                        <include layout="@layout/category_card_view_shimmer" />
 
                     </LinearLayout>
 
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/rubik_extrabold"
+                    android:text="@string/txt_latest_dishes"
+                    android:textSize="@dimen/font_header"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/btn1"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <Button
+                    android:id="@+id/btn1"
+                    android:layout_width="70dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="120dp"
+                    android:backgroundTint="@color/secondary_20"
+                    android:fontFamily="@font/rubik_bold"
+                    android:lineHeight="@dimen/spacing1"
+                    android:padding="0dp"
+                    android:text="@string/txt_view_all"
+                    android:textColor="@color/secondary"
+                    android:textSize="@dimen/font_size12"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn"
+                    app:strokeColor="@color/primary" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/productRcv1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="-8dp"
+                    android:nestedScrollingEnabled="false"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView1" />
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/product1Shimmer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView1">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                            app:layout_constraintHorizontal_bias="0.0"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <include layout="@layout/product_card_view_grid_shimmer" />
+
+                            <include layout="@layout/product_card_view_grid_shimmer" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="-10dp"
+                            android:orientation="vertical"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/guideline3"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <include layout="@layout/product_card_view_grid_shimmer" />
+
+                            <include layout="@layout/product_card_view_grid_shimmer" />
+                        </LinearLayout>
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_percent="0.5" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/offerRcv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="460dp"
+                    android:nestedScrollingEnabled="false"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView1" />
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/offerShimmer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="460dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView1">
+
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="-10dp"
-                        android:orientation="vertical"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/guideline3"
-                        app:layout_constraintTop_toTopOf="parent">
+                        android:orientation="vertical">
 
-                        <include layout="@layout/product_card_view_grid_shimmer" />
+                        <include layout="@layout/offer_card_view_shimmer" />
 
-                        <include layout="@layout/product_card_view_grid_shimmer" />
+                        <include layout="@layout/offer_card_view_shimmer" />
                     </LinearLayout>
 
-                    <androidx.constraintlayout.widget.Guideline
-                        android:id="@+id/guideline3"
-                        android:layout_width="wrap_content"
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/rubik_extrabold"
+                    android:text="@string/txt_best_sellers"
+                    android:textSize="@dimen/font_header"
+                    app:layout_constraintBaseline_toBaselineOf="@+id/btn2"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <Button
+                    android:id="@+id/btn2"
+                    android:layout_width="70dp"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="650dp"
+                    android:backgroundTint="@color/secondary_20"
+                    android:fontFamily="@font/rubik_bold"
+                    android:lineHeight="@dimen/spacing1"
+                    android:padding="0dp"
+                    android:text="@string/txt_view_all"
+                    android:textColor="@color/secondary"
+                    android:textSize="@dimen/font_size12"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btn1"
+                    app:strokeColor="@color/primary" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/productRcv2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="-8dp"
+                    android:nestedScrollingEnabled="false"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/product2Shimmer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        app:layout_constraintGuide_percent="0.5" />
+                        android:orientation="vertical">
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        <include layout="@layout/product_card_view_linear_shimmer" />
 
-            </com.facebook.shimmer.ShimmerFrameLayout>
+                        <include layout="@layout/product_card_view_linear_shimmer" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/offerRcv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="460dp"
-                android:nestedScrollingEnabled="false"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView1"
-                android:visibility="gone"
-                />
+                        <include layout="@layout/product_card_view_linear_shimmer" />
 
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/offerShimmer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="460dp"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView1">
+                        <include layout="@layout/product_card_view_linear_shimmer" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    </LinearLayout>
 
-                    <include layout="@layout/offer_card_view_shimmer" />
+                </com.facebook.shimmer.ShimmerFrameLayout>
 
-                    <include layout="@layout/offer_card_view_shimmer" />
-                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </com.facebook.shimmer.ShimmerFrameLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/rubik_extrabold"
-                android:text="@string/txt_best_sellers"
-                android:textSize="@dimen/font_header"
-                app:layout_constraintBaseline_toBaselineOf="@+id/btn2"
-                app:layout_constraintStart_toStartOf="parent" />
 
-            <Button
-                android:id="@+id/btn2"
-                android:layout_width="70dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="650dp"
-                android:backgroundTint="@color/secondary_20"
-                android:fontFamily="@font/rubik_bold"
-                android:lineHeight="@dimen/spacing1"
-                android:padding="0dp"
-                android:text="@string/txt_view_all"
-                android:textColor="@color/secondary"
-                android:textSize="@dimen/font_size12"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn1"
-                app:strokeColor="@color/primary" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/productRcv2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="-8dp"
-                android:nestedScrollingEnabled="false"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView2"
-                android:visibility="gone"/>
-
-            <com.facebook.shimmer.ShimmerFrameLayout
-                android:id="@+id/product2Shimmer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView2">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <include layout="@layout/product_card_view_linear_shimmer" />
-
-                    <include layout="@layout/product_card_view_linear_shimmer" />
-
-                    <include layout="@layout/product_card_view_linear_shimmer" />
-
-                    <include layout="@layout/product_card_view_linear_shimmer" />
-
-                </LinearLayout>
-
-            </com.facebook.shimmer.ShimmerFrameLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

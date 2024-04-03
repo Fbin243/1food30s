@@ -13,17 +13,18 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.facebook.shimmer.ShimmerFrameLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.firestore.FirebaseFirestore
+import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.data.AppDatabase
+import com.zebrand.app1food30s.data.entity.Cart
+import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
-import com.zebrand.app1food30s.data.entity.Cart
-import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.data.entity.WishlistItem
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
@@ -33,9 +34,11 @@ import com.zebrand.app1food30s.ui.wishlist.WishlistManager
 import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
+import com.zebrand.app1food30s.utils.Utils.hideShimmerEffectForRcv
+import com.zebrand.app1food30s.utils.Utils.showShimmerEffectForRcv
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
+class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView, SwipeRefreshLayout.OnRefreshListener {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var homePresenter: HomePresenter
     private lateinit var db: AppDatabase
@@ -51,6 +54,11 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         db = AppDatabase.getInstance(requireContext())
         homePresenter = HomePresenter(this, db)
         lifecycleScope.launch { homePresenter.getDataAndDisplay() }
+
+        // Make function reloading data when swipe down
+        binding.swipeRefreshLayout.setOnRefreshListener(this)
+        binding.swipeRefreshLayout.setColorSchemeColors(resources.getColor(R.color.primary))
+
 
         val userId = "QXLiLOiPLaHhY5gu7ZdS"
         WishlistManager.initialize(userId)
@@ -213,7 +221,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         }
         binding.productRcv1.adapter = adapter
     }
-    
+
     override fun showProductsBestSeller(products: List<Product>, offers: List<Offer>) {
         currentProducts = products
         binding.productRcv2.layoutManager =
@@ -245,10 +253,10 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
     }
 
     override fun showShimmerEffect() {
-        binding.cateShimmer.startShimmer()
-        binding.product1Shimmer.startShimmer()
-        binding.offerShimmer.startShimmer()
-        binding.product2Shimmer.startShimmer()
+        showShimmerEffectForRcv(binding.cateShimmer, binding.cateRcv)
+        showShimmerEffectForRcv(binding.product1Shimmer, binding.productRcv1)
+        showShimmerEffectForRcv(binding.product2Shimmer, binding.productRcv2)
+        showShimmerEffectForRcv(binding.offerShimmer, binding.offerRcv)
     }
 
     override fun hideShimmerEffect() {
@@ -258,9 +266,10 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         hideShimmerEffectForRcv(binding.offerShimmer, binding.offerRcv)
     }
 
-    private fun hideShimmerEffectForRcv(shimmer: ShimmerFrameLayout, recyclerView: RecyclerView) {
-        shimmer.stopShimmer()
-        shimmer.visibility = View.GONE
-        recyclerView.visibility = View.VISIBLE
+    override fun onRefresh() {
+        lifecycleScope.launch {
+            homePresenter.getDataAndDisplay()
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
     }
 }

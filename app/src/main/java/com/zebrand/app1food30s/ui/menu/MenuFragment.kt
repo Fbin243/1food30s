@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CategoryAdapter
@@ -22,9 +23,11 @@ import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentMenuBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistManager
+import com.zebrand.app1food30s.utils.Utils.hideShimmerEffectForRcv
+import com.zebrand.app1food30s.utils.Utils.showShimmerEffectForRcv
 import kotlinx.coroutines.launch
 
-class MenuFragment : Fragment(), MenuMVPView {
+class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListener {
     private lateinit var binding: FragmentMenuBinding
     private lateinit var menuPresenter: MenuPresenter
     private lateinit var db: AppDatabase
@@ -43,6 +46,9 @@ class MenuFragment : Fragment(), MenuMVPView {
             menuPresenter.getDataAndDisplay()
             fetchAndUpdateWishlistState()
         }
+        // Make function reloading data when swipe down
+        binding.swipeRefreshLayout.setOnRefreshListener(this)
+        binding.swipeRefreshLayout.setColorSchemeColors(resources.getColor(R.color.primary))
 
         return binding.root
     }
@@ -121,11 +127,11 @@ class MenuFragment : Fragment(), MenuMVPView {
     }
 
     override fun showShimmerEffectForCategories() {
-        binding.cateShimmer.startShimmer()
+        showShimmerEffectForRcv(binding.cateShimmer, binding.cateRcv)
     }
 
     override fun showShimmerEffectForProducts() {
-        binding.productShimmer.startShimmer()
+        showShimmerEffectForRcv(binding.productShimmer, binding.productRcv)
     }
 
     override fun hideShimmerEffectForCategories() {
@@ -136,9 +142,11 @@ class MenuFragment : Fragment(), MenuMVPView {
         hideShimmerEffectForRcv(binding.productShimmer, binding.productRcv)
     }
 
-    private fun hideShimmerEffectForRcv(shimmer: ShimmerFrameLayout, recyclerView: RecyclerView) {
-        shimmer.stopShimmer()
-        shimmer.visibility = View.GONE
-        recyclerView.visibility = View.VISIBLE
+    override fun onRefresh() {
+        lifecycleScope.launch {
+            menuPresenter.getDataAndDisplay()
+            fetchAndUpdateWishlistState()
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
     }
 }
