@@ -1,7 +1,6 @@
 package com.zebrand.app1food30s.ui.menu
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.facebook.shimmer.ShimmerFrameLayout
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
@@ -70,14 +68,13 @@ class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListen
     }
 
     override fun handleChangeLayout(products: List<Product>, offers: List<Offer>) {
-        // This assumes wishlistedProductIds are updated elsewhere and accessible here
-
+        setTypeDisplay(products)
         binding.gridBtn.setOnClickListener {
             isGrid = true
             binding.gridBtn.setImageResource(R.drawable.ic_active_grid)
             binding.linearBtn.setImageResource(R.drawable.ic_linear)
             binding.productRcv.layoutManager = GridLayoutManager(requireContext(), 2)
-            binding.productRcv.adapter = generateAdapterWithLayout(products, offers)
+            changeLayout(products)
         }
 
         binding.linearBtn.setOnClickListener {
@@ -85,39 +82,52 @@ class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListen
             binding.linearBtn.setImageResource(R.drawable.ic_active_linear)
             binding.gridBtn.setImageResource(R.drawable.ic_grid)
             binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
-            binding.productRcv.adapter = generateAdapterWithLayout(products, offers)
+            changeLayout(products)
         }
     }
 
+
+    private fun changeLayout(products: List<Product>) {
+        setTypeDisplay(products)
+        binding.productRcv.adapter?.notifyDataSetChanged()
+    }
+
+    private fun setTypeDisplay(products: List<Product>) {
+        for (product in products) {
+            product.isGrid = isGrid
+        }
+    }
 
     override fun showCategories(categories: List<Category>) {
         binding.cateRcv.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
         val adapter = CategoryAdapter(categories)
-        val primaryColor = Color.parseColor("#7F9839")
+        menuPresenter.filterProductByCategory(
+            categories[0].id,
+            binding.productRcv.adapter as ProductAdapter
+        )
+
         adapter.onItemClick = { holder ->
-            adapter.lastItemClicked?.cateTitle?.setTextColor(Color.parseColor("#FF3A3A4F"))
+            adapter.lastItemClicked?.cateTitle?.setTextColor(resources.getColor(R.color.black))
             adapter.lastItemClicked?.cateUnderline?.setBackgroundResource(0)
             holder.cateUnderline.setBackgroundResource(R.drawable.category_underline)
-            holder.cateTitle.setTextColor(primaryColor)
+            holder.cateTitle.setTextColor(resources.getColor(R.color.primary))
+            // Update UI by category
+            menuPresenter.filterProductByCategory(
+                categories[holder.adapterPosition].id,
+                binding.productRcv.adapter as ProductAdapter
+            )
         }
         binding.cateRcv.adapter = adapter
     }
 
     override fun showProducts(products: List<Product>, offers: List<Offer>) {
         binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
-        binding.productRcv.adapter = generateAdapterWithLayout(products, offers)
-    }
-
-    private fun generateAdapterWithLayout(
-        products: List<Product>,
-        offers: List<Offer>
-    ): ProductAdapter {
-        val adapter = ProductAdapter(products, offers, isGrid, wishlistedProductIds)
+        val adapter = ProductAdapter(products, offers, wishlistedProductIds)
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }
-        return adapter
+        binding.productRcv.adapter = adapter
     }
 
     private fun openDetailProduct(product: Product) {

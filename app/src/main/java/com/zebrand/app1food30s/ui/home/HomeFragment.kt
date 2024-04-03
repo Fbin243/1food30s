@@ -207,18 +207,13 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView, SwipeRefreshLayou
     }
 
     override fun showProductsLatestDishes(products: List<Product>, offers: List<Offer>) {
+        for (product in products) {
+            product.isGrid = true
+        }
         currentProducts = products
         binding.productRcv1.layoutManager = GridLayoutManager(requireContext(), 2)
-        val adapter = ProductAdapter(products.take(4), offers, true, wishlistedProductIds)
-        adapter.onItemClick = { product ->
-            openDetailProduct(product)
-        }
-        adapter.onAddButtonClick = { product ->
-            addProductToCart(requireContext(), product.id)
-        }
-        adapter.onWishlistProductClick = { product ->
-            wishlistPresenter.toggleWishlist(product)
-        }
+        val adapter = ProductAdapter(products.take(4), offers, wishlistedProductIds)
+        addCallBacksForAdapter(adapter)
         binding.productRcv1.adapter = adapter
     }
 
@@ -226,7 +221,12 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView, SwipeRefreshLayou
         currentProducts = products
         binding.productRcv2.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val adapter = ProductAdapter(products.take(4), offers, false, wishlistedProductIds)
+        val adapter = ProductAdapter(products.take(6), offers, wishlistedProductIds)
+        addCallBacksForAdapter(adapter)
+        binding.productRcv2.adapter = adapter
+    }
+
+    private fun addCallBacksForAdapter(adapter: ProductAdapter) {
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }
@@ -236,7 +236,6 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView, SwipeRefreshLayou
         adapter.onWishlistProductClick = { product ->
             wishlistPresenter.toggleWishlist(product)
         }
-        binding.productRcv2.adapter = adapter
     }
 
     private fun openDetailProduct(product: Product) {

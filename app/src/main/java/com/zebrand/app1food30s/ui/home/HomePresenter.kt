@@ -13,6 +13,7 @@ class HomePresenter(
             view.showShimmerEffect()
 
             val products =  FirebaseService.getListProducts(db)
+            val products1 = FirebaseService.getListProducts(db)
             val categories = FirebaseService.getListCategories(db)
             val offers =  FirebaseService.getListOffers(db)
 
@@ -20,7 +21,7 @@ class HomePresenter(
 
             view.showCategories(categories)
             view.showProductsLatestDishes(products, offers)
-            view.showProductsBestSeller(products, offers)
+            view.showProductsBestSeller(products1, offers)
             view.showOffers(offers)
         }
     }
