@@ -2,6 +2,7 @@ package com.zebrand.app1food30s.ui.cart
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +10,17 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.data.entity.DetailedCartItem
+import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.adapter.CartAdapter
 import com.zebrand.app1food30s.databinding.FragmentCartBinding
 import com.zebrand.app1food30s.ui.checkout.CheckoutActivity
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class CartFragment : Fragment(), CartMVPView {
 
@@ -23,6 +29,7 @@ class CartFragment : Fragment(), CartMVPView {
     private lateinit var adapter: CartAdapter
     private lateinit var presenter: CartPresenter
     private lateinit var preferences: MySharedPreferences
+    private var debounceJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +48,7 @@ class CartFragment : Fragment(), CartMVPView {
 
         val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
         if (userId.isNotBlank()) {
-            presenter = CartPresenter(this, userId)
+            presenter = CartPresenter(this, userId, requireContext())
             presenter.listenToCartChanges()
         }
 
@@ -61,8 +68,8 @@ class CartFragment : Fragment(), CartMVPView {
                 }
             },
             onQuantityUpdated = { detailedCartItem, newQuantity ->
-                detailedCartItem.productId?.let {
-                    presenter.updateCartItemQuantity(it, newQuantity)
+                detailedCartItem.productId?.let { productRef ->
+                    updateQuantityWithDebounce(productRef, newQuantity)
                 }
             },
             onUpdateTotalPrice = { totalPrice ->
@@ -73,9 +80,18 @@ class CartFragment : Fragment(), CartMVPView {
         binding.cartItemsRecyclerView.adapter = adapter
     }
 
-    override fun displayCartItems(detailedCartItems: List<DetailedCartItem>) {
+    private fun updateQuantityWithDebounce(productRef: DocumentReference, newQuantity: Int) {
+        // Cancel any existing job to ensure only the last update within the debounce period is processed
+        debounceJob?.cancel()
+        debounceJob = CoroutineScope(Dispatchers.Main).launch {
+            delay(500) // Adjust the delay as needed
+            presenter.updateCartItemQuantity(productRef, newQuantity)
+        }
+    }
+
+    override fun displayCartItems(cartItems: List<CartItem>) {
         _binding?.let {
-            adapter.updateItems(detailedCartItems)
+            adapter.updateItems(cartItems)
         }
     }
 

@@ -1,7 +1,7 @@
 package com.zebrand.app1food30s.ui.checkout
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.zebrand.app1food30s.data.entity.DetailedCartItem
+import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.data.entity.OrderItem
 import com.zebrand.app1food30s.ui.cart.CartRepository
@@ -13,16 +13,16 @@ import java.util.Date
 import java.util.UUID
 
 class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepository: CartRepository) : CoroutineScope by CoroutineScope(Dispatchers.Main) {
-    private var detailedCartItems: List<DetailedCartItem> = emptyList()
+    private var cartItems: List<CartItem> = emptyList()
     private var totalPrice: Double = 0.0
 
     fun loadCartData(cartId: String) {
         launch {
             cartRepository.fetchProductDetailsForCartItems(cartId) { detailedCartItemsResult, totalPriceResult ->
                 if (detailedCartItemsResult != null) {
-                    detailedCartItems = detailedCartItemsResult
+                    cartItems = detailedCartItemsResult
                     totalPrice = totalPriceResult
-                    view.displayCartItems(detailedCartItems, totalPrice)
+                    view.displayCartItems(cartItems, totalPrice)
                 } else {
                     view.displayError("Failed to fetch cart details")
                 }
@@ -34,7 +34,7 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
         // Log.d("Test00", "placeOrder: Starting order placement.")
         // Assuming network/database operations might be needed
         launch {
-            val orderItems = detailedCartItems.map { cartItem ->
+            val orderItems = cartItems.map { cartItem ->
                 OrderItem(
                     productId = FirebaseFirestore.getInstance().document("products/${cartItem.productId?.id}"),
                     category = cartItem.productCategory,
@@ -68,7 +68,7 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
                 .set(order)
                 .addOnSuccessListener {
 //                    Log.d("Test00", "Order placement successful: ${order.id}")
-                    cartRepository.placeOrderAndClearCart(cartId, detailedCartItems) { success ->
+                    cartRepository.placeOrderAndClearCart(cartId, cartItems) { success ->
                         if (success) {
 //                            Log.d("Test00", "Cart cleared successfully for cartId: $cartId")
                             // Clear cart was successful

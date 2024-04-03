@@ -10,13 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.data.entity.DetailedCartItem
+import com.zebrand.app1food30s.data.entity.CartItem
 
 class CartAdapter(
     private val context: Context,
-    private var items: MutableList<DetailedCartItem>,
-    private val onItemDeleted: (DetailedCartItem) -> Unit,
-    private val onQuantityUpdated: (DetailedCartItem, Int) -> Unit,
+    private var items: MutableList<CartItem>,
+    private val onItemDeleted: (CartItem) -> Unit,
+    private val onQuantityUpdated: (CartItem, Int) -> Unit,
     private val onUpdateTotalPrice: (Double) -> Unit
 ) : RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
 
@@ -87,7 +87,7 @@ class CartAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    fun updateItems(newItems: List<DetailedCartItem>) {
+    fun updateItems(newItems: List<CartItem>) {
         items = newItems.toMutableList()
         notifyDataSetChanged()
         onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })

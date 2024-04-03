@@ -31,6 +31,8 @@ import com.zebrand.app1food30s.ui.search.SearchActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
 import com.zebrand.app1food30s.ui.wishlist.WishlistManager
 import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
+import com.zebrand.app1food30s.utils.FireStoreUtils.mDBCartRef
+import com.zebrand.app1food30s.utils.FireStoreUtils.mDBProductRef
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
 import kotlinx.coroutines.launch
@@ -153,9 +155,9 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         val preferences = MySharedPreferences.getInstance(context)
         val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
 
-        val cartRef = db.collection("carts").document(userId)
+        val cartRef = mDBCartRef.document(userId)
 
-        val productRef = db.collection("products").document(productId)
+        val productRef = mDBProductRef.document(productId)
         productRef.get().addOnSuccessListener { productSnapshot ->
             val product = productSnapshot.toObject(Product::class.java)
             val stock = product?.stock ?: 0
@@ -165,10 +167,8 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
                     val cart = if (document.exists()) {
                         document.toObject(Cart::class.java)
                     } else {
-                        // If the cart does not exist, create a new one
                         Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
                     }
-//                    Log.d("Test00", "addProductToCart: $cart")
 
                     cart?.let {
                         val existingItemIndex = it.items.indexOfFirst { item -> item.productId == productRef }
@@ -177,10 +177,10 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
                             it.items[existingItemIndex].quantity += 1
                         } else {
                             // New product, add to cart
-                            it.items.add(CartItem(productRef, 1))
+                            // TODO!
+                            it.items.add(CartItem(productRef, "", "", 0.0, "", 0, 1))
                         }
 
-                        // Save updated cart back to Firestore
                         cartRef.set(it).addOnSuccessListener {
                             Toast.makeText(context, "Added to cart successfully!", Toast.LENGTH_SHORT).show()
                         }
