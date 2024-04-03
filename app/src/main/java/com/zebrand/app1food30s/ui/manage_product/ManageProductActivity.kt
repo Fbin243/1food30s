@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
@@ -12,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -72,6 +74,7 @@ class ManageProductActivity : AppCompatActivity() {
 
     private fun handleDisplayProductList() {
         lifecycleScope.launch {
+            showShimmerEffectForProducts()
             val adapter = ManageProductAdapter(getListProducts(), onProductClick = { product ->
                 val intent = Intent(this@ManageProductActivity, EditProduct::class.java).apply {
                     putExtra("PRODUCT_ID", product.id)
@@ -80,7 +83,22 @@ class ManageProductActivity : AppCompatActivity() {
             })
             binding.productRcv.layoutManager = LinearLayoutManager(this@ManageProductActivity)
             binding.productRcv.adapter = adapter
+            hideShimmerEffectForProducts()
         }
+    }
+
+    fun showShimmerEffectForProducts() {
+        binding.productShimmer.startShimmer()
+    }
+
+    fun hideShimmerEffectForProducts() {
+        hideShimmerEffectForRcv(binding.productShimmer, binding.productRcv)
+    }
+
+    private fun hideShimmerEffectForRcv(shimmer: ShimmerFrameLayout, recyclerView: RecyclerView) {
+        shimmer.stopShimmer()
+        shimmer.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
     }
 
     private fun loadCategoriesFromFirebase() {
