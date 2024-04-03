@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
@@ -41,12 +42,12 @@ class ManageProductActivity : AppCompatActivity() {
     private lateinit var addButton: ImageView
     private lateinit var filterButton: ImageView
     private lateinit var botDialog: BottomSheetDialog
-    private lateinit var categorySpinner: Spinner
-    private lateinit var priceSpinner: Spinner
+    private lateinit var categoryAutoComplete: AutoCompleteTextView
+    private lateinit var priceAutoComplete: AutoCompleteTextView
     private lateinit var nameFilterEditText: TextInputEditText
     private lateinit var datePickerText: TextInputEditText
     lateinit var categoryArr: ArrayList<String>
-    val priceArr = arrayOf("Choose range of price","1$ to 10$", "11$ to 50$", "51$ to 100$", "More than 100$")
+    val priceArr = arrayOf("1$ to 10$", "11$ to 50$", "51$ to 100$", "More than 100$")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,19 +86,19 @@ class ManageProductActivity : AppCompatActivity() {
     private fun loadCategoriesFromFirebase() {
         val db = Firebase.firestore
         val categoriesList = ArrayList<String>()
-        categoriesList.add("Choose category")
+//        categoriesList.add("Choose category")
 
         db.collection("categories").get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     categoriesList.add(document.getString("name") ?: "")
                 }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesList)
-                adapter.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
-                categorySpinner.adapter = adapter
+                // Cập nhật ArrayAdapter và thiết lập nó cho categoryAutoCompleteTextView
+                val adapter = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, categoriesList)
+                categoryAutoComplete.setAdapter(adapter)
             }
             .addOnFailureListener { exception ->
-                // Xử lý lỗi ở đây
+                // Xử lý lỗi
             }
     }
 
@@ -108,17 +109,19 @@ class ManageProductActivity : AppCompatActivity() {
         botDialog.setContentView(dialogView)
 
         nameFilterEditText = dialogView.findViewById(R.id.nameFilter)
-        categorySpinner = dialogView.findViewById(R.id.spinnerCategory)
-        priceSpinner = dialogView.findViewById(R.id.spinnerPrice)
+        categoryAutoComplete = dialogView.findViewById(R.id.autoCompleteCategory)
+        priceAutoComplete = dialogView.findViewById(R.id.autoCompletePrice)
         datePickerText = dialogView.findViewById(R.id.datePicker)
 
         loadCategoriesFromFirebase()
 
-        val adapterPrice = ArrayAdapter(this, R.layout.simple_spinner_customized, priceArr)
-        adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
-        priceSpinner.adapter = adapterPrice
-        priceSpinner.dropDownVerticalOffset = 200
-        categorySpinner.dropDownVerticalOffset = 200
+//        val adapterPrice = ArrayAdapter(this, android.R.layout.simple_spinner_item, priceArr)
+//        adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
+//        priceAutoComplete.adapter = adapterPrice
+
+        val adapterPrice = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, priceArr)
+//        adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
+        priceAutoComplete.setAdapter(adapterPrice)
 
         // date picker
         val datePickerText: TextInputEditText = dialogView.findViewById(R.id.datePicker)
@@ -161,8 +164,8 @@ class ManageProductActivity : AppCompatActivity() {
     private fun filterProducts() {
         lifecycleScope.launch {
             val nameFilter = nameFilterEditText.text.toString().trim()
-            val selectedCategory = categorySpinner.selectedItem.toString()
-            val selectedPriceRange = priceSpinner.selectedItem.toString()
+            val selectedCategory = categoryAutoComplete.text.toString()
+            val selectedPriceRange = priceAutoComplete.text.toString()
             val selectedDate = datePickerText.text.toString()
 
             val allProducts = getListProducts() // Giả định đây là phương thức của bạn để lấy tất cả sản phẩm

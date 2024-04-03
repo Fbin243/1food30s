@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/CustomCardViewStyle"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:minWidth="320dp"
     android:orientation="vertical"
     android:paddingHorizontal="@dimen/spacing24"
@@ -65,18 +65,20 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/category"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing60"
-            app:boxBackgroundColor="@color/transparent"
-            android:background="@drawable/dropdown_background"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_marginTop="5dp">
 
-            <Spinner
-                android:id="@+id/spinnerCategory"
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="0dp"
-                android:paddingTop="@dimen/spacing8"
-                />
+                android:inputType="none"
+                android:paddingHorizontal="@dimen/spacing8"
+                android:dropDownHeight="150dp"
+                android:text="@string/txt_choose_category"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"/>
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
@@ -95,16 +97,20 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/filter_price"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spacing60"
-            app:boxBackgroundColor="@color/transparent"
-            android:background="@drawable/dropdown_background"
+            android:layout_height="wrap_content"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_marginTop="5dp">
 
-            <Spinner
-                android:id="@+id/spinnerPrice"
+            <AutoCompleteTextView
+                android:id="@+id/autoCompletePrice"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingHorizontal="@dimen/spacing8"/>
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:paddingHorizontal="@dimen/spacing8"
+                android:dropDownHeight="150dp"
+                android:text="@string/txt_choose_range_price"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"/>
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 

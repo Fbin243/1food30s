@@ -182,5 +182,7 @@
     </string-array>
     <string name="formatted_currency">%.2f</string>
     <string name="wishlist_button">Wishlist button</string>
+    <string name="txt_choose_range_price">Choose range of price</string>
+    <string name="txt_choose_category">Choose category</string>
 
 </resources>
