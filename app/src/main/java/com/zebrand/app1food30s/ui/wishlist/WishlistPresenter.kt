@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.ui.wishlist
 
+import android.util.Log
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.utils.FirebaseUtils.getWishlistItemByProductId
 import kotlinx.coroutines.CoroutineScope
@@ -30,34 +31,33 @@ class WishlistPresenter(
         }
     }
 
-    fun addToWishlist(productId: String) = CoroutineScope(Dispatchers.IO).launch {
-        // This would now update the local list and potentially sync with the backend
-        val item = getWishlistItemByProductId(productId)
-        if (item != null) {
-            WishlistManager.addToWishlist(item)
-        }
-        withContext(Dispatchers.Main) {
-            // Assuming we have a way to verify addition was successful
-            // view.showAddSuccessMessage() // Adjust as needed based on your application logic
-        }
-    }
-
-    fun removeFromWishlist(productId: String) = CoroutineScope(Dispatchers.IO).launch {
-        // This would now update the local list and potentially sync with the backend
-        WishlistManager.removeFromWishlist(productId)
-        withContext(Dispatchers.Main) {
-            // Assuming we have a way to verify removal was successful
-            view.showRemoveSuccessMessage()
-        }
-    }
+//    fun addToWishlist(productId: String) = CoroutineScope(Dispatchers.IO).launch {
+//        try {
+//            val success = repository.addToWishlist(productId)
+//            if (success) withContext(Dispatchers.Main) {
+////                view.showAddSuccessMessage()
+//            }
+//        } catch (e: Exception) {
+//            withContext(Dispatchers.Main) { view.showError(e.message ?: "An error occurred") }
+//        }
+//    }
+//
+//    fun removeFromWishlist(productId: String) = CoroutineScope(Dispatchers.IO).launch {
+//        try {
+//            val success = repository.removeFromWishlist(productId)
+//            if (success) withContext(Dispatchers.Main) { view.showRemoveSuccessMessage() }
+//        } catch (e: Exception) {
+//            withContext(Dispatchers.Main) { view.showError(e.message ?: "An error occurred") }
+//        }
+//    }
 
     fun toggleWishlist(product: Product) = CoroutineScope(Dispatchers.IO).launch {
-        val item = getWishlistItemByProductId(product.id)
-        val result = item?.let { WishlistManager.toggleProductInWishlist(it) }
-        withContext(Dispatchers.Main) {
-            if (result != null) {
-                view.showWishlistUpdated(product, result)
-            }
+        try {
+            val isNowWishlisted = repository.toggleWishlist(product.id)
+//            Log.d("Test00", "toggleWishlist: $isNowWishlisted")
+            withContext(Dispatchers.Main) { view.showWishlistUpdated(product, isNowWishlisted) }
+        } catch (e: Exception) {
+            withContext(Dispatchers.Main) { view.showError(e.message ?: "An error occurred") }
         }
     }
 }

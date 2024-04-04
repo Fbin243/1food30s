@@ -9,7 +9,4 @@ interface WishlistMVPView {
     fun showWishlistUpdated(product: Product, isAdded: Boolean)
     fun showRemoveSuccessMessage()
     fun showError(message: String)
-
-    // Displays a list of wishlist items to the user
-    fun showWishlistItems(items: List<WishlistItem>)
 }

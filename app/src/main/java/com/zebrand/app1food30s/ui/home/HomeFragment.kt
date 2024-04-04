@@ -68,6 +68,22 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         return binding.root
     }
 
+    override fun showProductsLatestDishes(products: List<Product>, offers: List<Offer>) {
+        currentProducts = products
+        binding.productRcv1.layoutManager = GridLayoutManager(requireContext(), 2)
+        val adapter = ProductAdapter(products.take(4), offers, true, wishlistedProductIds)
+        adapter.onItemClick = { product ->
+            openDetailProduct(product)
+        }
+        adapter.onAddButtonClick = { product ->
+            addProductToCart(requireContext(), product.id)
+        }
+        adapter.onWishlistProductClick = { product ->
+            wishlistPresenter.toggleWishlist(product)
+        }
+        binding.productRcv1.adapter = adapter
+    }
+
     private fun fetchAndUpdateWishlistState() {
         wishlistPresenter.fetchAndUpdateWishlistState()
     }
@@ -80,14 +96,6 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
     private fun updateAdaptersWithWishlistState() {
         (binding.productRcv1.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
         (binding.productRcv2.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
-    }
-
-    // TODO
-    override fun showWishlistItems(items: List<WishlistItem>) {
-        // Here, you'd update your UI with the wishlist items.
-        // This might involve updating a RecyclerView adapter or similar.
-        // For example:
-        // wishlistAdapter.submitList(items)
     }
 
     override fun showRemoveSuccessMessage() {
@@ -199,22 +207,6 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
 //            Log.e("addProductToCart", "Error getting product: ", exception)
             Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    override fun showProductsLatestDishes(products: List<Product>, offers: List<Offer>) {
-        currentProducts = products
-        binding.productRcv1.layoutManager = GridLayoutManager(requireContext(), 2)
-        val adapter = ProductAdapter(products.take(4), offers, true, wishlistedProductIds)
-        adapter.onItemClick = { product ->
-            openDetailProduct(product)
-        }
-        adapter.onAddButtonClick = { product ->
-            addProductToCart(requireContext(), product.id)
-        }
-        adapter.onWishlistProductClick = { product ->
-            wishlistPresenter.toggleWishlist(product)
-        }
-        binding.productRcv1.adapter = adapter
     }
     
     override fun showProductsBestSeller(products: List<Product>, offers: List<Offer>) {

@@ -3,18 +3,27 @@ package com.zebrand.app1food30s.ui.wishlist
 import android.util.Log
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.data.entity.Wishlist
 import com.zebrand.app1food30s.data.entity.WishlistItem
 import com.zebrand.app1food30s.utils.FireStoreUtils
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBProductRef
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBWishlistRef
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 class  WishlistRepository(private val userId: String) {
+    private val wishlistRef = mDBWishlistRef.document(userId)
 
     fun initialize() {
         // Check if a wishlist document exists for the current user
@@ -68,93 +77,35 @@ class  WishlistRepository(private val userId: String) {
         }
     }
 
-//    suspend fun toggleProductInWishlist(productId: String): Boolean = suspendCoroutine { continuation ->
-//        val db = FirebaseFirestore.getInstance()
-//        val wishlistRef = db.collection("wishlists").document(userId)
-//
-//        Log.d("WishlistToggle", "Attempting to toggle product in wishlist: $productId")
-//
-//        db.runTransaction { transaction ->
-//            val snapshot = transaction.get(wishlistRef)
-//            val currentList: MutableList<String> = snapshot.get("productIds") as? MutableList<String> ?: mutableListOf()
-//
-//            val wasAdded: Boolean = if (currentList.contains(productId)) {
-//                currentList.remove(productId)
-//                Log.d("WishlistToggle", "Product removed from wishlist: $productId")
-//                false
-//            } else {
-//                currentList.add(productId)
-//                Log.d("WishlistToggle", "Product added to wishlist: $productId")
-//                true
-//            }
-//
-//            // Instead of update, use set with merge option to create the document if it doesn't exist
-//            val updateData = hashMapOf("productIds" to currentList)
-//            transaction.set(wishlistRef, updateData, SetOptions.merge())
-//
-//            wasAdded
-//        }.addOnSuccessListener { wasAdded ->
-//            Log.d("WishlistToggle", "Wishlist updated successfully for product: $productId, added: $wasAdded")
-//            continuation.resume(wasAdded)
-//        }.addOnFailureListener { e ->
-//            Log.e("WishlistToggle", "Failed to update wishlist for product: $productId", e)
-//            continuation.resume(false)
-//        }
-//    }
-//
-//    suspend fun removeFromWishlist(productId: String): Boolean = suspendCoroutine { continuation ->
-//        val wishlistRef = mDBWishlistRef.document(userId)
-//
-//        db.runTransaction { transaction ->
-//            val snapshot = transaction.get(wishlistRef)
-//            val currentList: MutableList<String> = snapshot.get("productIds") as? MutableList<String> ?: mutableListOf()
-//
-//            if (currentList.contains(productId)) {
-//                // Product is in wishlist, remove it
-//                currentList.remove(productId)
-//                transaction.update(wishlistRef, "productIds", currentList)
-//                continuation.resume(true)
-//            } else {
-//                // Product was not in the wishlist
-//                continuation.resume(false)
-//            }
-//        }.addOnSuccessListener {
-//            continuation.resume(true)
-//        }.addOnFailureListener { e ->
-//            // Log error if needed
-//            continuation.resume(false)
-//        }
-//    }
-//
-//    suspend fun addToWishlist(productId: String): Boolean = suspendCoroutine { continuation ->
-//        val wishlistRef = db.collection("wishlists").document(userId)
-//
-//        db.runTransaction { transaction ->
-//            val snapshot = transaction.get(wishlistRef)
-//            val currentList: MutableList<String> = snapshot.get("productIds") as? MutableList<String> ?: mutableListOf()
-//
-//            // Check if product ID is not already in the wishlist
-//            if (!currentList.contains(productId)) {
-//                // Add the product ID to the list
-//                currentList.add(productId)
-//                transaction.update(wishlistRef, "productIds", currentList)
-//            }
-//        }.addOnSuccessListener {
-//            // Since we are inside the success listener, the operation was successful,
-//            // but we need to determine if the product was added or was already in the list.
-//            continuation.resume(true) // Assume wasAdded = true for successful transaction.
-//        }.addOnFailureListener { e ->
-//            continuation.resumeWithException(e) // Propagate the error.
-//        }
-//    }
-//
-//    suspend fun isProductInWishlist(productId: String): Boolean = suspendCoroutine { continuation ->
-//        val wishlistRef = db.collection("wishlists").document(userId)
-//        wishlistRef.get().addOnSuccessListener { documentSnapshot ->
-//            val currentList: List<String> = documentSnapshot.get("productIds") as? List<String> ?: listOf()
-//            continuation.resume(currentList.contains(productId))
-//        }.addOnFailureListener { exception ->
-//            continuation.resumeWithException(exception)
-//        }
-//    }
+    private suspend fun addToWishlist(productId: String): Boolean = suspendCancellableCoroutine { cont ->
+        wishlistRef.update("productIds", FieldValue.arrayUnion(productId))
+            .addOnSuccessListener { cont.resume(true) }
+            .addOnFailureListener { e -> cont.resumeWithException(e) }
+    }
+
+    private suspend fun removeFromWishlist(productId: String): Boolean = suspendCancellableCoroutine { cont ->
+        wishlistRef.update("productIds", FieldValue.arrayRemove(productId))
+            .addOnSuccessListener { cont.resume(true) }
+            .addOnFailureListener { e -> cont.resumeWithException(e) }
+    }
+
+    suspend fun toggleWishlist(productId: String): Boolean {
+        val document = wishlistRef.get().await()  // Assuming this is a call to Firebase Firestore.
+        val productIds = (document["productIds"] as? List<*>)?.filterIsInstance<String>() ?: listOf()
+
+        val isProductWishlisted = productId in productIds
+//        Log.d("Test00", "toggleWishlist: $isProductWishlisted")
+
+        // Perform the toggle operation.
+        return if (isProductWishlisted) {
+            // If the product is currently wishlisted, attempt to remove it.
+            val success = removeFromWishlist(productId)
+            !success
+        } else {
+            // If the product is not currently wishlisted, attempt to add it.
+            val success = addToWishlist(productId)
+            success
+        }
+    }
+
 }
