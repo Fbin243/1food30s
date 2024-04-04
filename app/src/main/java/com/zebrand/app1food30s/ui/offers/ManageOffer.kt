@@ -15,6 +15,7 @@ import com.zebrand.app1food30s.adapter.ManageOfferAdapter
 import com.zebrand.app1food30s.adapter.ManageProductAdapter
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.databinding.ActivityManageOfferBinding
+import com.zebrand.app1food30s.ui.edit_offer.EditOffer
 import com.zebrand.app1food30s.ui.edit_product.EditProduct
 import com.zebrand.app1food30s.ui.manage_product.ManageProductDetailActivity
 import kotlinx.coroutines.Dispatchers
@@ -60,8 +61,8 @@ class ManageOffer : AppCompatActivity() {
 //            showShimmerEffectForProducts()
 //            val db = AppDatabase.getInstance(applicationContext)
             val adapter = ManageOfferAdapter(getListOffers(), onOfferClick = { offer ->
-                val intent = Intent(this@ManageOffer, EditProduct::class.java).apply {
-                    putExtra("PRODUCT_ID", offer.id)
+                val intent = Intent(this@ManageOffer, EditOffer::class.java).apply {
+                    putExtra("OFFER_ID", offer.id)
                 }
                 startActivity(intent)
             })

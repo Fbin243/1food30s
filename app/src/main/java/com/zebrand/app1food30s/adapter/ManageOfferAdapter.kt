@@ -13,7 +13,6 @@ import com.zebrand.app1food30s.data.entity.Product
 
 class ManageOfferAdapter(private val offers: List<Offer>, private val onOfferClick: (Offer) -> Unit) :
     RecyclerView.Adapter<ManageOfferAdapter.OfferViewHolder>() {
-    var onItemClick: ((ManageOfferAdapter.OfferViewHolder) -> Unit)? = null
     inner class OfferViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val offerImg: ImageView = listItemView.findViewById(R.id.offerImg)
         val offerName: TextView = listItemView.findViewById(R.id.offerName)
@@ -48,8 +47,5 @@ class ManageOfferAdapter(private val offers: List<Offer>, private val onOfferCli
 
         holder.offerRate.text = "${offer.discountRate}%"
         holder.offerNumProduct.text = offer.numProduct.toString()
-        holder.itemView.setOnClickListener {
-            onItemClick?.invoke(holder)
-        }
     }
 }
