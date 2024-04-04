@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/CustomCardViewStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="320dp"
+    android:orientation="vertical"
+    android:paddingHorizontal="@dimen/spacing24"
+    android:paddingBottom="@dimen/spacing8"
+    android:background="@drawable/border_bottom_sheet">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing20"
+        android:text="@string/txt_filter"
+        android:textSize="@dimen/font_size22"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing12"
+            android:text="@string/txt_name_product_filter"
+            android:textSize="@dimen/font_size16" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxStrokeColor="@color/primary"
+            app:cursorColor="@color/primary"
+            app:hintTextColor="@color/primary"
+            app:layout_constraintTop_toBottomOf="@+id/header_title">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/nameFilter"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing60"
+                android:inputType="textEmailAddress"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing12"
+            android:text="@string/txt_name_product_filter"
+            android:textSize="@dimen/font_size16" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxStrokeColor="@color/primary"
+            app:cursorColor="@color/primary"
+            app:hintTextColor="@color/primary"
+            app:layout_constraintTop_toBottomOf="@+id/header_title">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/discountRateFilter"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing60"
+                android:inputType="number"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing12"
+            android:text="@string/txt_name_product_filter"
+            android:textSize="@dimen/font_size16" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxStrokeColor="@color/primary"
+            app:cursorColor="@color/primary"
+            app:hintTextColor="@color/primary"
+            app:layout_constraintTop_toBottomOf="@+id/header_title">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/numProductFilter"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing60"
+                android:inputType="number"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing12"
+            android:text="@string/txt_date_filter"
+            android:textSize="@dimen/font_size16" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutDatePicker"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:boxStrokeColor="@color/primary"
+            app:cursorColor="@color/primary"
+            app:hintTextColor="@color/primary"
+            app:endIconDrawable="@drawable/ic_calendar"
+            app:endIconMode="custom"
+            app:endIconTint="@color/grey_80"
+            app:layout_constraintTop_toBottomOf="@+id/header_title">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/datePicker"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spacing60"
+                android:inputType="none"
+                android:paddingHorizontal="@dimen/spacing16"
+                android:text="@string/txt_default_filter_date"
+                android:focusable="false"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing8"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/spacing8"
+        android:paddingBottom="@dimen/spacing20"
+        android:weightSum="2">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cancelBtn"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/spacing60"
+            android:layout_weight="1"
+            android:backgroundTint="@color/deep_orange"
+            android:text="@string/txt_cancel"
+            android:textSize="@dimen/font_size16"
+            android:textStyle="bold"
+            app:icon="@drawable/ic_delete"
+            app:iconGravity="textStart"
+            app:iconSize="@dimen/spacing24" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/saveBtn"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/spacing60"
+            android:layout_marginStart="@dimen/spacing24"
+            android:layout_weight="1"
+            android:backgroundTint="@color/primary"
+            android:text="@string/txt_search"
+            android:textAlignment="center"
+            android:textSize="@dimen/font_size16"
+            android:textStyle="bold"
+            app:icon="@drawable/ic_search"
+            app:iconGravity="textStart"
+            app:iconSize="@dimen/spacing24" />
+
+    </LinearLayout>
+</LinearLayout>
