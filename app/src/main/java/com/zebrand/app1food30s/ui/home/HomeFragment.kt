@@ -263,7 +263,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
     ) {
         view.setOnClickListener {
             val intent = Intent(requireContext(), ProductViewAllActivity::class.java)
-            intent.putExtra("isLatestDishes", isLatestDishes)
+            intent.putExtra("filterBy", "latestDishes")
             intent.putExtra("title", title)
             startActivity(intent)
         }

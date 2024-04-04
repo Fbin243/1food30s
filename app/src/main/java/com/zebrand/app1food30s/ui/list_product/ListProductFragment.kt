@@ -2,6 +2,8 @@ package com.zebrand.app1food30s.ui.list_product
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.textfield.TextInputEditText
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.data.AppDatabase
@@ -31,8 +34,9 @@ class ListProductFragment(
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var gridLayoutManager: GridLayoutManager
     private lateinit var title: String
-    private lateinit var idFilter: String
+    private var idFilter: String? = null
     private lateinit var filterBy: String
+    private lateinit var searchInput: TextInputEditText
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,25 +49,58 @@ class ListProductFragment(
 
         lifecycleScope.launch {
             listProductPresenter.getDataAndDisplay()
-            if(filterBy == "offer") {
-                listProductPresenter.filterProductsByOffer(idFilter, binding.productRcv.adapter as ProductAdapter)
+            if (filterBy == "offer") {
+                listProductPresenter.filterProductsByOffer(
+                    idFilter!!,
+                    binding.productRcv.adapter as ProductAdapter
+                )
+            } else if (filterBy == "search") {
+                searchProductsByName("")
+                Utils.hideShimmerEffect(binding.shimmerLayout, binding.textView)
+                handleSearchInput()
             }
         }
 
         return binding.root
     }
 
-    fun setInfo(title: String, idFilter: String, filterBy: String) {
+    // Hàm nhận dữ liệu từ các activity, fragment khác
+    fun setInfo(title: String, filterBy: String, idFilter: String? = null) {
         this.title = title
-        this.idFilter = idFilter
         this.filterBy = filterBy
+        this.idFilter = idFilter
         Log.i("TAG123", "setInfo: $title $idFilter")
         handleDisplayTitle()
+    }
+
+    fun setSearchInput(searchInput: TextInputEditText) {
+        this.searchInput = searchInput
+    }
+
+    private fun handleSearchInput() {
+        searchInput.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                searchProductsByName(s.toString())
+            }
+        })
+    }
+
+    private fun searchProductsByName(pattern: String) {
+        val searchResultNumber = listProductPresenter.searchProductsByName(
+            pattern,
+            binding.productRcv.adapter as ProductAdapter
+        )
+        binding.textView.text = "$searchResultNumber Items Available"
     }
 
     private fun handleDisplayTitle() {
         if (hasBackBtn) {
             binding.backBtn.root.visibility = View.VISIBLE
+            handleBackBtn()
         }
 
         if (hasTitle) {
@@ -73,7 +110,13 @@ class ListProductFragment(
         } else {
             Utils.showShimmerEffect(binding.shimmerLayout, binding.textView)
             binding.textView.text = title
-            Utils.hideShimmerEffect(binding.shimmerLayout, binding.textView)
+            if(title != "search") Utils.hideShimmerEffect(binding.shimmerLayout, binding.textView)
+        }
+    }
+
+    private fun handleBackBtn() {
+        binding.backBtn.root.setOnClickListener {
+            requireActivity().finish()
         }
     }
 

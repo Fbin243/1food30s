@@ -11,7 +11,7 @@
         android:id="@+id/textViewContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -21,6 +21,7 @@
             layout="@layout/item_back"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_marginEnd="4dp"
             android:visibility="gone" />
 
         <androidx.cardview.widget.CardView
@@ -91,7 +92,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="-8dp"
         android:orientation="vertical"
-        android:paddingBottom="100dp"
+        android:paddingBottom="80dp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/textViewContainer" />
 

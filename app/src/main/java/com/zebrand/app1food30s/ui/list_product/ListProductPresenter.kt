@@ -23,4 +23,12 @@ class ListProductPresenter(private val view: ListProductMVPView, private val db:
         view.handleChangeLayout(products)
         view.hideShimmerEffectForProducts()
     }
+
+    fun searchProductsByName(name: String, adapter: ProductAdapter): Int {
+        val products = db.productDao().searchByName(name)
+        val offers = db.offerDao().getAll()
+        adapter.updateData(products, offers)
+        view.handleChangeLayout(products)
+        return products.size
+    }
 }

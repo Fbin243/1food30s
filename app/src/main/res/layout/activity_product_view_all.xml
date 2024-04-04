@@ -8,93 +8,10 @@
     android:padding="@dimen/spacing16"
     tools:context=".ui.product_view_all.ProductViewAllActivity">
 
-    <include
-        android:id="@+id/backFromViewAll"
-        layout="@layout/item_back"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:fontFamily="@font/rubik_extrabold"
-        android:text="@string/txt_latest_dishes"
-        android:textSize="@dimen/font_header"
-        app:layout_constraintStart_toEndOf="@+id/backFromViewAll"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <ImageButton
-        android:id="@+id/gridBtn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:backgroundTint="@color/transparent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_grid"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
-
-    <ImageButton
-        android:id="@+id/linearBtn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="40dp"
-        android:backgroundTint="@color/transparent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_active_linear"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
-        app:layout_constraintEnd_toEndOf="@+id/gridBtn"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/productRcv"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="-8dp"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:paddingBottom="@dimen/spacing50"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/productShimmer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <include layout="@layout/product_card_view_linear_shimmer" />
-
-            <include layout="@layout/product_card_view_linear_shimmer" />
-
-            <include layout="@layout/product_card_view_linear_shimmer" />
-
-            <include layout="@layout/product_card_view_linear_shimmer" />
-
-            <include layout="@layout/product_card_view_linear_shimmer" />
-
-            <include layout="@layout/product_card_view_linear_shimmer" />
-
-            <include layout="@layout/product_card_view_linear_shimmer" />
-
-            <include layout="@layout/product_card_view_linear_shimmer" />
-
-        </LinearLayout>
-
-    </com.facebook.shimmer.ShimmerFrameLayout>
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
