@@ -20,7 +20,6 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.R
@@ -29,9 +28,7 @@ import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.ActivityManageProductBinding
 import com.zebrand.app1food30s.ui.edit_product.EditProduct
-import com.zebrand.app1food30s.utils.FirebaseUtils
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
+import com.zebrand.app1food30s.utils.FirebaseService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -46,7 +43,6 @@ class ManageProductActivity : AppCompatActivity() {
     private lateinit var rcv: RecyclerView
     private val fireStore = FirebaseFirestore.getInstance()
     private val fireStorage = FirebaseStorage.getInstance()
-    private lateinit var db: AppDatabase
     private lateinit var addButton: ImageView
     private lateinit var filterButton: ImageView
     private lateinit var botDialog: BottomSheetDialog
@@ -81,7 +77,8 @@ class ManageProductActivity : AppCompatActivity() {
     private fun handleDisplayProductList() {
         lifecycleScope.launch {
             showShimmerEffectForProducts()
-            val adapter = ManageProductAdapter(getListProducts(db), onProductClick = { product ->
+//            val db = AppDatabase.getInstance(applicationContext)
+            val adapter = ManageProductAdapter(getListProducts(), onProductClick = { product ->
                 val intent = Intent(this@ManageProductActivity, EditProduct::class.java).apply {
                     putExtra("PRODUCT_ID", product.id)
                 }
@@ -172,6 +169,7 @@ class ManageProductActivity : AppCompatActivity() {
 
         // Setup for filter button
         botDialog.findViewById<MaterialButton>(R.id.saveBtn)?.setOnClickListener {
+            botDialog.dismiss()
             filterProducts()
         }
 
@@ -192,7 +190,10 @@ class ManageProductActivity : AppCompatActivity() {
             val selectedPriceRange = priceAutoComplete.text.toString()
             val selectedDate = datePickerText.text.toString()
 
-            val allProducts = getListProducts(db) // Giả định đây là phương thức của bạn để lấy tất cả sản phẩm
+//            val allProducts = getListProducts() // Giả định đây là phương thức của bạn để lấy tất cả sản phẩm
+
+            val db = AppDatabase.getInstance(applicationContext)
+            val allProducts = FirebaseService.getListProducts(db)
 
             var filteredProducts = allProducts
 
@@ -282,64 +283,29 @@ class ManageProductActivity : AppCompatActivity() {
 
 
 
-    suspend fun getListProducts(db: AppDatabase): List<Product> {
+    private suspend fun getListProducts(): List<Product> {
         return withContext(Dispatchers.IO) {
             try {
-                var products = db.productDao().getAll()
-                if (products.isEmpty()) {
-                    val deferred = CompletableDeferred<List<Product>>()
-                    FirebaseUtils.fireStore.collection("products")
-                        .addSnapshotListener { value, error ->
-                            if (error != null) {
-                                return@addSnapshotListener
-                            }
-                            CoroutineScope(Dispatchers.IO).launch {
-                                value?.documents?.map { document ->
-                                    val product = document.toObject<Product>()!!
+                val querySnapshot = fireStore.collection("products").orderBy("date", Query.Direction.DESCENDING).get().await()
+                querySnapshot.documents.mapNotNull { document ->
+                    val id = document.id
+                    val name = document.getString("name") ?: ""
+                    val image = document.getString("image") ?: "images/product/product3.png"
+                    val imageUrl = fireStorage.reference.child(image).downloadUrl.await().toString()
+                    val price = document.getDouble("price") ?: 0.0
+                    val description = document.getString("description") ?: ""
+                    val stock = document.getLong("stock")?.toInt() ?: 0
+                    val sold = document.getLong("sold")?.toInt() ?: 0
+                    val idCategoryRef = document.getDocumentReference("idCategory")
+                    val idOfferRef = document.getDocumentReference("idOffer")
 
-                                    product.image =
-                                        FirebaseUtils.fireStorage.reference.child(product.image).downloadUrl.await()
-                                            .toString()
-                                    db.productDao().insert(product)
-
-                                }
-                                products = db.productDao().getAll()
-                                deferred.complete(products)
-                            }
-                        }
-                    products = deferred.await()
+                    Product(id, idCategoryRef, idOfferRef, name, imageUrl, price, description, stock, sold, null, document.getDate("date"))
                 }
-                products
             } catch (e: Exception) {
                 Log.e("getListProducts", "Error getting products", e)
                 emptyList()
             }
         }
     }
-
-//    private suspend fun getListProducts(): List<Product> {
-//        return withContext(Dispatchers.IO) {
-//            try {
-//                val querySnapshot = fireStore.collection("products").orderBy("date", Query.Direction.DESCENDING).get().await()
-//                querySnapshot.documents.mapNotNull { document ->
-//                    val id = document.id
-//                    val name = document.getString("name") ?: ""
-//                    val image = document.getString("image") ?: "images/product/product3.png"
-//                    val imageUrl = fireStorage.reference.child(image).downloadUrl.await().toString()
-//                    val price = document.getDouble("price") ?: 0.0
-//                    val description = document.getString("description") ?: ""
-//                    val stock = document.getLong("stock")?.toInt() ?: 0
-//                    val sold = document.getLong("sold")?.toInt() ?: 0
-//                    val idCategoryRef = document.getDocumentReference("idCategory")
-//                    val idOfferRef = document.getDocumentReference("idOffer")
-//
-//                    Product(id, idCategoryRef, idOfferRef, name, imageUrl, price, description, stock, sold, null, document.getDate("date"))
-//                }
-//            } catch (e: Exception) {
-//                Log.e("getListProducts", "Error getting products", e)
-//                emptyList()
-//            }
-//        }
-//    }
 
 }
