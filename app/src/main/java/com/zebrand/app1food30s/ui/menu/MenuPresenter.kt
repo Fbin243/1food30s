@@ -23,8 +23,8 @@ class MenuPresenter(private val view: MenuMVPView, private val db: AppDatabase) 
 
     private fun filterProductByCategory(idCategory: String) {
         try {
-            val products = db.productDao().getByCategory("categories/${idCategory}")
-            val offers = db.offerDao().getAll()
+            val products = db.productDao().getByCategory("categories/${idCategory}").toMutableList()
+            val offers = db.offerDao().getAll().toMutableList()
             view.showProducts(products, offers)
             view.handleChangeLayout(products, offers)
         } catch (e: Exception) {

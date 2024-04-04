@@ -3,7 +3,6 @@ package com.zebrand.app1food30s.ui.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,12 +23,10 @@ import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.data.entity.Cart
 import com.zebrand.app1food30s.data.entity.CartItem
-import com.zebrand.app1food30s.data.entity.WishlistItem
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
-import com.zebrand.app1food30s.ui.wishlist.WishlistManager
 import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
 import com.zebrand.app1food30s.ui.wishlist.WishlistRepository
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBCartRef
@@ -69,10 +66,10 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         return binding.root
     }
 
-    override fun showProductsLatestDishes(products: List<Product>, offers: List<Offer>) {
+    override fun showProductsLatestDishes(products: MutableList<Product>, offers: MutableList<Offer>) {
         currentProducts = products
         binding.productRcv1.layoutManager = GridLayoutManager(requireContext(), 2)
-        val adapter = ProductAdapter(products.take(4), offers, true, wishlistedProductIds)
+        val adapter = ProductAdapter(products.take(4).toMutableList(), offers, true, wishlistedProductIds)
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }
@@ -83,6 +80,23 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
             wishlistPresenter.toggleWishlist(product)
         }
         binding.productRcv1.adapter = adapter
+    }
+
+    override fun showProductsBestSeller(products: MutableList<Product>, offers: MutableList<Offer>) {
+        currentProducts = products
+        binding.productRcv2.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        val adapter = ProductAdapter(products.take(4).toMutableList(), offers, false, wishlistedProductIds)
+        adapter.onItemClick = { product ->
+            openDetailProduct(product)
+        }
+        adapter.onAddButtonClick = { product ->
+            addProductToCart(requireContext(), product.id)
+        }
+        adapter.onWishlistProductClick = { product ->
+            wishlistPresenter.toggleWishlist(product)
+        }
+        binding.productRcv2.adapter = adapter
     }
 
     private fun fetchAndUpdateWishlistState() {
@@ -208,23 +222,6 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
 //            Log.e("addProductToCart", "Error getting product: ", exception)
             Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
         }
-    }
-    
-    override fun showProductsBestSeller(products: List<Product>, offers: List<Offer>) {
-        currentProducts = products
-        binding.productRcv2.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val adapter = ProductAdapter(products.take(4), offers, false, wishlistedProductIds)
-        adapter.onItemClick = { product ->
-            openDetailProduct(product)
-        }
-        adapter.onAddButtonClick = { product ->
-            addProductToCart(requireContext(), product.id)
-        }
-        adapter.onWishlistProductClick = { product ->
-            wishlistPresenter.toggleWishlist(product)
-        }
-        binding.productRcv2.adapter = adapter
     }
 
     private fun openDetailProduct(product: Product) {

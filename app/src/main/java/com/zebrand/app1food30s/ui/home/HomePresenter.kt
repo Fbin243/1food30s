@@ -12,9 +12,9 @@ class HomePresenter(
         coroutineScope {
             view.showShimmerEffect()
 
-            val products =  FirebaseService.getListProducts(db)
-            val categories = FirebaseService.getListCategories(db)
-            val offers =  FirebaseService.getListOffers(db)
+            val products =  FirebaseService.getListProducts(db).toMutableList()
+            val categories = FirebaseService.getListCategories(db).toMutableList()
+            val offers =  FirebaseService.getListOffers(db).toMutableList()
 
             view.hideShimmerEffect()
 

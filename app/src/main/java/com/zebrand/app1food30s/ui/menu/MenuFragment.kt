@@ -3,7 +3,6 @@ package com.zebrand.app1food30s.ui.menu
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +22,6 @@ import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentMenuBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
-import com.zebrand.app1food30s.ui.wishlist.WishlistManager
 import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
 import com.zebrand.app1food30s.ui.wishlist.WishlistRepository
 import com.zebrand.app1food30s.utils.MySharedPreferences
@@ -59,6 +57,39 @@ class MenuFragment : Fragment(), MenuMVPView, WishlistMVPView {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // Initialize your adapter here but don't set data yet
+        setupInitialAdapter()
+
+        lifecycleScope.launch {
+            fetchAndUpdateWishlistState()
+            // After this completes, now set up or update your adapter with the products and wishlistedProductIds
+        }
+    }
+
+    private fun setupInitialAdapter() {
+        // Assuming isGrid and offers are known at this point, or use placeholders
+        val initialProducts: MutableList<Product> = mutableListOf()
+        val initialOffers: MutableList<Offer> = mutableListOf()
+        val initialWishlistedIds: Set<String> = emptySet() // Placeholder for wishlisted product IDs
+
+        binding.productRcv.layoutManager = if (isGrid) {
+            GridLayoutManager(requireContext(), 2)
+        } else {
+            LinearLayoutManager(requireContext())
+        }
+
+        // Initialize adapter with placeholders/empty lists
+        binding.productRcv.adapter = ProductAdapter(initialProducts, initialOffers, isGrid, initialWishlistedIds)
+    }
+
+    private fun updateAdapterWithData(products: List<Product>, offers: List<Offer>) {
+        // Here, wishlistedProductIds should already be updated from fetchAndUpdateWishlistState
+        val adapter = binding.productRcv.adapter as? ProductAdapter
+        adapter?.updateData(products, offers, wishlistedProductIds)
+    }
+
     override fun updateWishlistItemStatus(product: Product, isAdded: Boolean) {
         // Update the set of wishlisted product IDs based on the action
         if (isAdded) {
@@ -86,7 +117,7 @@ class MenuFragment : Fragment(), MenuMVPView, WishlistMVPView {
         (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
     }
 
-    override fun handleChangeLayout(products: List<Product>, offers: List<Offer>) {
+    override fun handleChangeLayout(products: MutableList<Product>, offers: MutableList<Offer>) {
         // This assumes wishlistedProductIds are updated elsewhere and accessible here
 
         binding.gridBtn.setOnClickListener {
@@ -122,14 +153,14 @@ class MenuFragment : Fragment(), MenuMVPView, WishlistMVPView {
     }
 
     // adapter
-    override fun showProducts(products: List<Product>, offers: List<Offer>) {
+    override fun showProducts(products: MutableList<Product>, offers: MutableList<Offer>) {
         binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
         binding.productRcv.adapter = generateAdapterWithLayout(products, offers)
     }
 
     private fun generateAdapterWithLayout(
-        products: List<Product>,
-        offers: List<Offer>
+        products: MutableList<Product>,
+        offers: MutableList<Offer>
     ): ProductAdapter {
         val adapter = ProductAdapter(products, offers, isGrid, wishlistedProductIds)
         adapter.onItemClick = { product ->

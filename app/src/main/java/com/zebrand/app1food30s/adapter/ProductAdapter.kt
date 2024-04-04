@@ -13,12 +13,13 @@ import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
+import com.zebrand.app1food30s.ui.menu.ProductDiffCallback
 import com.zebrand.app1food30s.utils.Utils.formatPrice
 import com.zebrand.app1food30s.utils.Utils.getShimmerDrawable
 
 class ProductAdapter(
-    val products: List<Product>,
-    private val offers: List<Offer>,
+    val products: MutableList<Product>,
+    private val offers: MutableList<Offer>,
     private val isGrid: Boolean = true,
     private var wishlistedProductIds: Set<String>,
 ) :
@@ -91,7 +92,7 @@ class ProductAdapter(
         }
 
         // Wishlist
-        val isProductWishlisted = product.id in wishlistedProductIds // Check if product's ID is in the set of wishlisted product IDs
+        val isProductWishlisted = product.id in wishlistedProductIds
 //        Log.d("Test00", "$isProductWishlisted")
         holder.ivWishlist.setImageResource(
             if (isProductWishlisted) R.drawable.ic_wishlist_active else R.drawable.ic_wishlist
@@ -101,6 +102,7 @@ class ProductAdapter(
     fun updateWishlistState(newWishlistedProductIds: Set<String>) {
         val oldWishlistedProductIds = wishlistedProductIds
         wishlistedProductIds = newWishlistedProductIds
+//        Log.d("Test00", "updateWishlistState: $wishlistedProductIds")
 
         val diffCallback = object : DiffUtil.Callback() {
             override fun getOldListSize(): Int = products.size
@@ -120,6 +122,19 @@ class ProductAdapter(
         }
 
         val diffResult = DiffUtil.calculateDiff(diffCallback)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun updateData(newProducts: List<Product>, newOffers: List<Offer>, newWishlistedIds: Set<String>) {
+        val diffCallback = ProductDiffCallback(this.products, newProducts, this.wishlistedProductIds, newWishlistedIds)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+
+        this.products.clear()
+        this.products.addAll(newProducts)
+        this.offers.clear()
+        this.offers.addAll(newOffers)
+        this.wishlistedProductIds = newWishlistedIds
+
         diffResult.dispatchUpdatesTo(this)
     }
 }

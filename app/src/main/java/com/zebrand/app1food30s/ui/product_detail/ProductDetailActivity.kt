@@ -80,7 +80,7 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
     }
 
     // TODO
-    override fun showRelatedProducts(relatedProducts: List<Product>, offers: List<Offer>) {
+    override fun showRelatedProducts(relatedProducts: MutableList<Product>, offers: MutableList<Offer>) {
         binding.relatedProductRcv.layoutManager = GridLayoutManager(this, 2)
         val adapter = ProductAdapter(relatedProducts, offers, true, WishlistManager.wishlistedItems.map { it.productId }.toSet())
         adapter.onItemClick = { product ->
