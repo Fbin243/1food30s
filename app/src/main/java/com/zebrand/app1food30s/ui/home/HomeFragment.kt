@@ -58,7 +58,8 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         // TODO
 //        val userId = SingletonKey.KEY_USER_ID
 //        Log.d("Test00", "onCreateView: $userId")
-        val userId = "fwmV1Ahq21FYD7MYOru1"
+        val mySharedPreferences = context?.let { MySharedPreferences.getInstance(it) }
+        val userId = mySharedPreferences?.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
         val wishlistRepository = WishlistRepository(userId)
         wishlistPresenter = WishlistPresenter(this, wishlistRepository)
         fetchAndUpdateWishlistState()
@@ -88,7 +89,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         wishlistPresenter.fetchAndUpdateWishlistState()
     }
 
-    override fun updateWishlist(wishlistedProductIds: Set<String>) {
+    override fun refreshWishlistState(wishlistedProductIds: Set<String>) {
         this.wishlistedProductIds = wishlistedProductIds.toMutableSet()
         updateAdaptersWithWishlistState() // Update your UI accordingly
     }
@@ -98,16 +99,16 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         (binding.productRcv2.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
     }
 
-    override fun showRemoveSuccessMessage() {
-        Toast.makeText(context, "Product was removed from the wishlist", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun showError(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
+//    override fun showRemoveSuccessMessage() {
+//        Toast.makeText(context, "Product was removed from the wishlist", Toast.LENGTH_SHORT).show()
+//    }
+//
+//    override fun showError(message: String) {
+//        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+//    }
 
     // Implementation of WishlistMVPView methods
-    override fun showWishlistUpdated(product: Product, isAdded: Boolean) {
+    override fun updateWishlistItemStatus(product: Product, isAdded: Boolean) {
         // Update the set of wishlisted product IDs based on the action
         if (isAdded) {
             wishlistedProductIds.add(product.id)

@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.ui.menu
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,46 +22,65 @@ import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentMenuBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
+import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
 import com.zebrand.app1food30s.ui.wishlist.WishlistManager
 import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
 import com.zebrand.app1food30s.ui.wishlist.WishlistRepository
+import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.SingletonKey
 import kotlinx.coroutines.launch
 
-class MenuFragment : Fragment(), MenuMVPView {
+class MenuFragment : Fragment(), MenuMVPView, WishlistMVPView {
     private lateinit var binding: FragmentMenuBinding
     private lateinit var menuPresenter: MenuPresenter
-    private lateinit var wishlistRepository: WishlistRepository
+    private lateinit var wishlistPresenter: WishlistPresenter
     private lateinit var db: AppDatabase
     private var isGrid: Boolean = false
-    private var wishlistedProductIds: Set<String> = emptySet()
+    private var wishlistedProductIds: MutableSet<String> = mutableSetOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMenuBinding.inflate(inflater)
+
+        val mySharedPreferences = context?.let { MySharedPreferences.getInstance(it) }
+        val userId = mySharedPreferences?.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
+        val wishlistRepository = WishlistRepository(userId)
+        wishlistPresenter = WishlistPresenter(this, wishlistRepository)
+
         db = AppDatabase.getInstance(requireContext())
         menuPresenter = MenuPresenter(this, db)
         lifecycleScope.launch {
             menuPresenter.getDataAndDisplay()
-            // TODO
-//            fetchAndUpdateWishlistState()
+            fetchAndUpdateWishlistState()
         }
 
         return binding.root
     }
 
-//    private fun fetchAndUpdateWishlistState() {
-//        lifecycleScope.launch {
-//            try {
-//                val wishlistItems = wishlistPresenter.fetchWishlistForCurrentUser()
-//                wishlistedProductIds = wishlistItems.map { it.productId }.toSet()
-//                updateAdapterWithWishlistState()
-//            } catch (e: Exception) {
-//                // Handle errors appropriately
-//            }
-//        }
-//    }
+    override fun updateWishlistItemStatus(product: Product, isAdded: Boolean) {
+        // Update the set of wishlisted product IDs based on the action
+        if (isAdded) {
+            wishlistedProductIds.add(product.id)
+        } else {
+            wishlistedProductIds.remove(product.id)
+        }
+
+        (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
+    }
+
+    private fun fetchAndUpdateWishlistState() {
+        lifecycleScope.launch {
+            wishlistPresenter.fetchAndUpdateWishlistState()
+        }
+    }
+
+    override fun refreshWishlistState(wishlistedProductIds: Set<String>) {
+        this.wishlistedProductIds = wishlistedProductIds as MutableSet<String>
+//        Log.d("Test00", "refreshWishlistState: $wishlistedProductIds")
+        updateAdapterWithWishlistState()
+    }
 
     private fun updateAdapterWithWishlistState() {
         (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
@@ -101,6 +121,7 @@ class MenuFragment : Fragment(), MenuMVPView {
         binding.cateRcv.adapter = adapter
     }
 
+    // adapter
     override fun showProducts(products: List<Product>, offers: List<Offer>) {
         binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
         binding.productRcv.adapter = generateAdapterWithLayout(products, offers)

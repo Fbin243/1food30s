@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
@@ -98,7 +99,27 @@ class ProductAdapter(
     }
 
     fun updateWishlistState(newWishlistedProductIds: Set<String>) {
-        this.wishlistedProductIds = newWishlistedProductIds
-        notifyDataSetChanged()
+        val oldWishlistedProductIds = wishlistedProductIds
+        wishlistedProductIds = newWishlistedProductIds
+
+        val diffCallback = object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = products.size
+            override fun getNewListSize(): Int = products.size
+
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                // Assuming each product has a unique ID
+                return products[oldItemPosition].id == products[newItemPosition].id
+            }
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                val oldProduct = products[oldItemPosition]
+                val newProduct = products[newItemPosition]
+                // Check if the wishlist state of the product has changed
+                return (oldProduct.id in oldWishlistedProductIds) == (newProduct.id in newWishlistedProductIds)
+            }
+        }
+
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        diffResult.dispatchUpdatesTo(this)
     }
 }
