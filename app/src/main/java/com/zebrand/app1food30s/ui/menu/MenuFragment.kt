@@ -51,7 +51,7 @@ class MenuFragment : Fragment(), MenuMVPView, WishlistMVPView {
         menuPresenter = MenuPresenter(this, db)
         lifecycleScope.launch {
             menuPresenter.getDataAndDisplay()
-            fetchAndUpdateWishlistState()
+//            fetchAndUpdateWishlistState()
         }
 
         return binding.root
@@ -64,7 +64,6 @@ class MenuFragment : Fragment(), MenuMVPView, WishlistMVPView {
 
         lifecycleScope.launch {
             fetchAndUpdateWishlistState()
-            // After this completes, now set up or update your adapter with the products and wishlistedProductIds
         }
     }
 
@@ -82,12 +81,6 @@ class MenuFragment : Fragment(), MenuMVPView, WishlistMVPView {
 
         // Initialize adapter with placeholders/empty lists
         binding.productRcv.adapter = ProductAdapter(initialProducts, initialOffers, isGrid, initialWishlistedIds)
-    }
-
-    private fun updateAdapterWithData(products: List<Product>, offers: List<Offer>) {
-        // Here, wishlistedProductIds should already be updated from fetchAndUpdateWishlistState
-        val adapter = binding.productRcv.adapter as? ProductAdapter
-        adapter?.updateData(products, offers, wishlistedProductIds)
     }
 
     override fun updateWishlistItemStatus(product: Product, isAdded: Boolean) {

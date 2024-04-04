@@ -6,6 +6,7 @@ import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
+import com.zebrand.app1food30s.utils.FireStoreUtils.mDBWishlistRef
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -123,6 +124,26 @@ object FirebaseService {
             } catch (e: Exception) {
                 Log.e("getOneProductByID", "Error getting products", e)
                 null
+            }
+        }
+    }
+
+    suspend fun getUserWishlist(userId: String): List<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val document = FirebaseUtils.fireStore.collection("wishlists").document(userId).get().await()
+                val productIdsRaw = document.get("productIds")
+
+                // Safely attempt to cast to List<String>
+                if (productIdsRaw is List<*>) {
+                    return@withContext productIdsRaw.filterIsInstance<String>()
+                } else {
+                    // If the field is not a list, return an empty list
+                    emptyList()
+                }
+            } catch (e: Exception) {
+                Log.e("getUserWishlist", "Error getting wishlist for user $userId", e)
+                emptyList()
             }
         }
     }
