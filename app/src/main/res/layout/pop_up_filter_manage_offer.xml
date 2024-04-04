@@ -76,7 +76,7 @@
                 android:inputType="none"
                 android:paddingHorizontal="@dimen/spacing8"
                 android:dropDownHeight="150dp"
-                android:text="@string/txt_choose_category"
+                android:text="@string/txt_choose_discount"
                 android:scrollbars="vertical"
                 android:fadeScrollbars="false"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -108,7 +108,7 @@
                 android:inputType="none"
                 android:paddingHorizontal="@dimen/spacing8"
                 android:dropDownHeight="150dp"
-                android:text="@string/txt_choose_range_price"
+                android:text="@string/txt_choose_num_product"
                 android:scrollbars="vertical"
                 android:fadeScrollbars="false"/>
         </com.google.android.material.textfield.TextInputLayout>

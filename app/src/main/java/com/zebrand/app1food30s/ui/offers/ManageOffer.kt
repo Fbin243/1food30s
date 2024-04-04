@@ -50,7 +50,7 @@ class ManageOffer : AppCompatActivity() {
     private lateinit var numProductAutoComplete: AutoCompleteTextView
     private lateinit var datePickerText: TextInputEditText
     val discountArray = arrayOf("1% to 10%", "11% to 50%", "More than 50%")
-    val numProductArray = arrayOf("1 to 10", "11 to 50", "51 to 100", "More than 100")
+    val numProductArray = arrayOf("0 to 1", "2 to 10", "11 to 50", "51 to 100", "More than 100")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -194,5 +194,7 @@
     <string name="txt_save_offer">Update offer</string>
     <string name="txt_discount_rate">Discount rate</string>
     <string name="txt_num_product">Number of product</string>
+    <string name="txt_choose_discount">Choose discount rate</string>
+    <string name="txt_choose_num_product">Choose number of product</string>
 
 </resources>
