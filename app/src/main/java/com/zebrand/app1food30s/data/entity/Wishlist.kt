@@ -9,5 +9,5 @@ data class WishlistItem(
     var productId: String,
     val name: String,
     val price: Double,
-    val image: String, // URL or resource identifier
+    val image: String,
 )

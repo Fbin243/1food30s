@@ -22,11 +22,14 @@ import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentMenuBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistManager
+import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
+import com.zebrand.app1food30s.ui.wishlist.WishlistRepository
 import kotlinx.coroutines.launch
 
 class MenuFragment : Fragment(), MenuMVPView {
     private lateinit var binding: FragmentMenuBinding
     private lateinit var menuPresenter: MenuPresenter
+    private lateinit var wishlistRepository: WishlistRepository
     private lateinit var db: AppDatabase
     private var isGrid: Boolean = false
     private var wishlistedProductIds: Set<String> = emptySet()
@@ -37,27 +40,27 @@ class MenuFragment : Fragment(), MenuMVPView {
     ): View {
         binding = FragmentMenuBinding.inflate(inflater)
         db = AppDatabase.getInstance(requireContext())
-        WishlistManager.initialize(userId = "QXLiLOiPLaHhY5gu7ZdS")
         menuPresenter = MenuPresenter(this, db)
         lifecycleScope.launch {
             menuPresenter.getDataAndDisplay()
-            fetchAndUpdateWishlistState()
+            // TODO
+//            fetchAndUpdateWishlistState()
         }
 
         return binding.root
     }
 
-    private fun fetchAndUpdateWishlistState() {
-        lifecycleScope.launch {
-            try {
-                val wishlistItems = WishlistManager.fetchWishlistForCurrentUser()
-                wishlistedProductIds = wishlistItems.map { it.productId }.toSet()
-                updateAdapterWithWishlistState()
-            } catch (e: Exception) {
-                // Handle errors appropriately
-            }
-        }
-    }
+//    private fun fetchAndUpdateWishlistState() {
+//        lifecycleScope.launch {
+//            try {
+//                val wishlistItems = wishlistPresenter.fetchWishlistForCurrentUser()
+//                wishlistedProductIds = wishlistItems.map { it.productId }.toSet()
+//                updateAdapterWithWishlistState()
+//            } catch (e: Exception) {
+//                // Handle errors appropriately
+//            }
+//        }
+//    }
 
     private fun updateAdapterWithWishlistState() {
         (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)

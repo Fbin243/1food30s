@@ -8,10 +8,12 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
@@ -33,7 +35,8 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
         setContentView(binding.root)
         db = AppDatabase.getInstance(this)
         val userId = "QXLiLOiPLaHhY5gu7ZdS"
-        WishlistManager.initialize(userId)
+        // TODO
+//        WishlistManager.initialize(userId)
         productDetailPresenter = ProductDetailPresenter(this, db)
         val idProduct = intent.getStringExtra("idProduct")
 
@@ -78,12 +81,12 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
 
     // TODO
     override fun showRelatedProducts(relatedProducts: List<Product>, offers: List<Offer>) {
-//        binding.relatedProductRcv.layoutManager = GridLayoutManager(this, 2)
-//        val adapter = ProductAdapter(relatedProducts, offers, WishlistManager.wishlistedItems.map { it.productId }.toSet())
-//        adapter.onItemClick = { product ->
-//            openDetailProduct(product)
-//        }
-//        binding.relatedProductRcv.adapter = adapter
+        binding.relatedProductRcv.layoutManager = GridLayoutManager(this, 2)
+        val adapter = ProductAdapter(relatedProducts, offers, true, WishlistManager.wishlistedItems.map { it.productId }.toSet())
+        adapter.onItemClick = { product ->
+            openDetailProduct(product)
+        }
+        binding.relatedProductRcv.adapter = adapter
     }
 
     private fun openDetailProduct(product: Product) {

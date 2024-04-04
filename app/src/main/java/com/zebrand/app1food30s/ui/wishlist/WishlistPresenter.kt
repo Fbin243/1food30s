@@ -9,11 +9,24 @@ import kotlinx.coroutines.withContext
 
 class WishlistPresenter(
     private val view: WishlistMVPView,
+    private val repository: WishlistRepository
 ) {
-    fun loadWishlistItems() = CoroutineScope(Dispatchers.IO).launch {
-        val items = WishlistManager.fetchWishlistForCurrentUser()
-        withContext(Dispatchers.Main) {
-            view.showWishlistItems(items)
+
+    init {
+        repository.initialize()
+    }
+
+    fun fetchAndUpdateWishlistState() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val wishlistItems = repository.fetchWishlistForCurrentUser()
+                val wishlistedProductIds = wishlistItems.map { it.productId }.toSet()
+                withContext(Dispatchers.Main) {
+                    view.updateWishlist(wishlistedProductIds)
+                }
+            } catch (e: Exception) {
+                // Handle error, potentially by informing the view of the failure
+            }
         }
     }
 

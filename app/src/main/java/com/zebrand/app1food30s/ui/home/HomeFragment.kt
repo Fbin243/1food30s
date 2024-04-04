@@ -31,6 +31,7 @@ import com.zebrand.app1food30s.ui.search.SearchActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
 import com.zebrand.app1food30s.ui.wishlist.WishlistManager
 import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
+import com.zebrand.app1food30s.ui.wishlist.WishlistRepository
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBCartRef
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBProductRef
 import com.zebrand.app1food30s.utils.MySharedPreferences
@@ -54,24 +55,26 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         homePresenter = HomePresenter(this, db)
         lifecycleScope.launch { homePresenter.getDataAndDisplay() }
 
-        val userId = "QXLiLOiPLaHhY5gu7ZdS"
-        WishlistManager.initialize(userId)
-        wishlistPresenter = WishlistPresenter(this)
+        // TODO
+//        val userId = SingletonKey.KEY_USER_ID
+//        Log.d("Test00", "onCreateView: $userId")
+        val userId = "fwmV1Ahq21FYD7MYOru1"
+        val wishlistRepository = WishlistRepository(userId)
+        wishlistPresenter = WishlistPresenter(this, wishlistRepository)
+        fetchAndUpdateWishlistState()
 
         handleOpenSearchScreen()
-        fetchAndUpdateWishlistState()
+
         return binding.root
     }
 
     private fun fetchAndUpdateWishlistState() {
-        lifecycleScope.launch {
-            try {
-                val wishlistItems = WishlistManager.fetchWishlistForCurrentUser()
-                wishlistedProductIds = wishlistItems.map { it.productId }.toSet() as MutableSet<String>
-                updateAdaptersWithWishlistState()
-            } catch (e: Exception) {
-            }
-        }
+        wishlistPresenter.fetchAndUpdateWishlistState()
+    }
+
+    override fun updateWishlist(wishlistedProductIds: Set<String>) {
+        this.wishlistedProductIds = wishlistedProductIds.toMutableSet()
+        updateAdaptersWithWishlistState() // Update your UI accordingly
     }
 
     private fun updateAdaptersWithWishlistState() {
@@ -186,14 +189,14 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
                         }
                     }
                 }.addOnFailureListener { exception ->
-                    Log.e("addProductToCart", "Error updating cart: ", exception)
+//                    Log.e("addProductToCart", "Error updating cart: ", exception)
                     Toast.makeText(context, "Failed to add to cart.", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 Toast.makeText(context, "Product is out of stock.", Toast.LENGTH_SHORT).show()
             }
         }.addOnFailureListener { exception ->
-            Log.e("addProductToCart", "Error getting product: ", exception)
+//            Log.e("addProductToCart", "Error getting product: ", exception)
             Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
         }
     }
