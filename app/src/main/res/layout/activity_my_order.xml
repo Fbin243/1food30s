@@ -20,6 +20,7 @@
         android:paddingHorizontal="@dimen/spacing16">
 
         <include
+            android:id="@+id/backIcon"
             layout="@layout/item_back"
             android:layout_width="30dp"
             android:layout_height="30dp" />
@@ -33,7 +34,7 @@
             android:textSize="@dimen/font_header" />
     </LinearLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -62,6 +63,7 @@
                 android:layout_margin="@dimen/spacing10"
                 >
                 <androidx.recyclerview.widget.RecyclerView
+                    android:nestedScrollingEnabled="false"
                     android:id="@+id/rcvMyOrder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
@@ -102,5 +104,5 @@
                 <include layout="@layout/item_my_order"/>
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

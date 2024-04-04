@@ -70,10 +70,18 @@
             android:exported="true" />
         <activity
             android:name=".ui.search.SearchActivity"
-            android:exported="true" />
+            android:exported="true">
+
+        </activity>
         <activity
             android:name=".ui.my_order.MyOrderActivity"
-            android:exported="true"/>
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.my_order.my_order_details.MyOrderDetailsActivity"
             android:exported="false" />
@@ -85,7 +93,14 @@
             android:exported="true" />
         <activity
             android:name=".ui.authentication.LoginActivity"
-            android:exported="true" /> <!-- ADMIN -->
+            android:exported="true">
+
+        </activity>
+        <!-- ADMIN -->
+<!--        <activity-->
+<!--            android:name=".ui.main.MainActivity"-->
+<!--            android:exported="true" >-->
+<!--        </activity>-->
         <activity
             android:name=".ui.admin_stats.AdminStatsActivity"
             android:exported="true">
@@ -103,11 +118,11 @@
             android:name=".ui.main.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
     </application>
 

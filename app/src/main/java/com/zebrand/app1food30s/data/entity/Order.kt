@@ -17,7 +17,7 @@ data class OrderItem(
 
 data class Order(
     val id: String = "",
-    val accountId: DocumentReference? = null,
+    val idAccount: DocumentReference? = null,
     val items: MutableList<OrderItem> = mutableListOf(),
     val totalAmount: Double = 0.0,
     val orderStatus: String = "",
@@ -26,5 +26,5 @@ data class Order(
     val paymentStatus: String = "",
     val note: String = "",
     @get:ServerTimestamp
-    val date: Date? = null
+    val date: Date = Date()
 )

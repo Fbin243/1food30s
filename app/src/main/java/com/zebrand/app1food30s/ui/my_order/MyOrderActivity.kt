@@ -10,13 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.adapter.MyOrderAdapter
 import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.databinding.ActivityMyOrderBinding
+import com.zebrand.app1food30s.utils.MySharedPreferences
 
 class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
     lateinit var binding: ActivityMyOrderBinding
+//    Chưa login nên không có đi qua local db để lấy data được
 //    private val mySharePreference = MySharedPreferences.getInstance(this)
     private lateinit var presenter: MyOrderPresenter
     private lateinit var myOrderAdapter: MyOrderAdapter
-    private var myOrderList: List<Order> = mutableListOf()
+    private var myOrderList: MutableList<Order> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +48,9 @@ class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
 //            val intent = Intent(this, MyOrderDetailsActivity::class.java)
 //            startActivity(intent)
 //        }
+        binding.backIcon.root.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     override fun getMyOrderList() {
@@ -58,6 +63,8 @@ class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
         binding.rcvMyOrder.adapter = myOrderAdapter
 
         //getData
-        presenter.getMyOrderList(userId, myOrderAdapter, myOrderList)
+        presenter.getActiveOrderList(userId, myOrderAdapter, myOrderList)
+
+
     }
 }

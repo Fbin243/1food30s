@@ -1,31 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<!--    <data>-->
-<!--        <variable-->
-<!--            name="status"-->
-<!--            type="java.lang.String" />-->
-<!--    </data>-->
+    <data>
+
+        <variable
+            name="orderStatusSpan"
+            type="java.lang.String" />
+    </data>
 
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:cardCornerRadius="15dp"
         app:cardElevation="0dp"
-        android:backgroundTint="@color/yellow_30"
+        android:backgroundTint="@{orderStatusSpan.equals(@string/txt_pending_status) ? @color/pending : (orderStatusSpan.equals(@string/txt_order_accepted_status) ? @color/order_accepted :(orderStatusSpan.equals(@string/txt_on_delivery_status) ? @color/on_delivery :@color/delivered))}"
         >
 
         <TextView
             android:id="@+id/statusSpan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/txt_pending_status"
-            android:paddingVertical="@dimen/spacing1"
             android:paddingHorizontal="@dimen/spacing6"
+            android:paddingTop="@dimen/spacing2"
+            android:paddingBottom="@dimen/spacing1"
+            android:text="@{orderStatusSpan}"
+            android:textFontWeight="600"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
             android:textSize="@dimen/font_size10"
-            android:textColor="@color/yellow"/>
+            android:textColor="@color/black"
+            />
 
     </androidx.cardview.widget.CardView>
 </layout>
