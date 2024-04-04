@@ -172,7 +172,7 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
                 binding.cateRcv.adapter as CategoryAdapter
             )[0]
             fetchAndUpdateWishlistState()
-            binding.cateRcv.scrollToPosition(5)
+            binding.cateRcv.scrollToPosition(0)
             binding.textView.text = firstCategory.name
             binding.swipeRefreshLayout.isRefreshing = false
         }
@@ -192,11 +192,12 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
     }
 
 
-    override fun filterAndScrollToCategory() {
+    override fun filterAndScrollToCategory(categories: List<Category>) {
         menuPresenter.filterProductByCategory(
             categoryId,
             binding.productRcv.adapter as ProductAdapter)
         binding.cateRcv.scrollToPosition(adapterPosition)
+        binding.textView.text = categories[adapterPosition].name
         hideShimmerEffectForCategories()
     }
 }
