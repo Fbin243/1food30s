@@ -23,8 +23,7 @@ class MenuPresenter(private val view: MenuMVPView, private val db: AppDatabase) 
             view.showShimmerEffectForCategories()
             val categories = FirebaseService.getListCategories(db)
             view.showCategories(categories)
-            if(!calledFromActivity) view.hideShimmerEffectForCategories()
-            else view.filterAndScrollToCategory(categories)
+            view.filterAndScrollToCategory(categories)
         }
     }
 

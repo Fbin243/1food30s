@@ -23,6 +23,7 @@ import com.zebrand.app1food30s.databinding.FragmentMenuBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistManager
+import com.zebrand.app1food30s.utils.Utils
 import com.zebrand.app1food30s.utils.Utils.hideShimmerEffect
 import com.zebrand.app1food30s.utils.Utils.showShimmerEffect
 import kotlinx.coroutines.launch
@@ -36,7 +37,7 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var gridLayoutManager: GridLayoutManager
     private var wishlistedProductIds: Set<String> = emptySet()
-    private lateinit var categoryId: String
+    private var categoryId: String? = null
     private var adapterPosition: Int = 0
 
     override fun onCreateView(
@@ -55,7 +56,9 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
         binding.swipeRefreshLayout.setColorSchemeColors(resources.getColor(R.color.primary))
 
         lifecycleScope.launch {
+            showShimmerEffect(binding.shimmerLayout, binding.textView)
             menuPresenter.getDataAndDisplay(calledFromActivity)
+            hideShimmerEffect(binding.shimmerLayout, binding.textView)
             fetchAndUpdateWishlistState()
         }
 
@@ -177,13 +180,12 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
 
     override fun onRefresh() {
         lifecycleScope.launch {
-            val firstCategory = menuPresenter.reloadData(
+            val categories = menuPresenter.reloadData(
                 binding.productRcv.adapter as ProductAdapter,
                 binding.cateRcv.adapter as CategoryAdapter
-            )[0]
+            )
             fetchAndUpdateWishlistState()
-            binding.cateRcv.scrollToPosition(0)
-            binding.textView.text = firstCategory.name
+            filterAndScrollToCategory(categories)
             binding.swipeRefreshLayout.isRefreshing = false
         }
     }
@@ -203,8 +205,9 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
 
 
     override fun filterAndScrollToCategory(categories: List<Category>) {
+        if(categoryId == null) categoryId = categories[0].id
         menuPresenter.filterProductByCategory(
-            categoryId,
+            categoryId!!,
             binding.productRcv.adapter as ProductAdapter)
         binding.cateRcv.scrollToPosition(adapterPosition)
         binding.textView.text = categories[adapterPosition].name

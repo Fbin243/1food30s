@@ -29,6 +29,7 @@ import com.zebrand.app1food30s.data.entity.WishlistItem
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.ui.menu.MenuActivity
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
+import com.zebrand.app1food30s.ui.product_view_all.ProductViewAllActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
 import com.zebrand.app1food30s.ui.wishlist.WishlistManager
@@ -38,8 +39,10 @@ import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.Utils.hideShimmerEffect
 import com.zebrand.app1food30s.utils.Utils.showShimmerEffect
 import kotlinx.coroutines.launch
+import okhttp3.internal.Util
 
-class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView, SwipeRefreshLayout.OnRefreshListener {
+class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
+    SwipeRefreshLayout.OnRefreshListener {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var homePresenter: HomePresenter
     private lateinit var db: AppDatabase
@@ -54,18 +57,20 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView, SwipeRefreshLayou
         binding = FragmentHomeBinding.inflate(inflater)
         db = AppDatabase.getInstance(requireContext())
         homePresenter = HomePresenter(this, db)
-        lifecycleScope.launch { homePresenter.getDataAndDisplay() }
+        lifecycleScope.launch {
+            homePresenter.getDataAndDisplay()
+            handleOpenSearchScreen()
+        }
 
         // Make function reloading data when swipe down
         binding.swipeRefreshLayout.setOnRefreshListener(this)
         binding.swipeRefreshLayout.setColorSchemeColors(resources.getColor(R.color.primary))
 
-
         val userId = "QXLiLOiPLaHhY5gu7ZdS"
         WishlistManager.initialize(userId)
         wishlistPresenter = WishlistPresenter(this)
 
-        handleOpenSearchScreen()
+
         fetchAndUpdateWishlistState()
         return binding.root
     }
@@ -74,7 +79,8 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView, SwipeRefreshLayou
         lifecycleScope.launch {
             try {
                 val wishlistItems = WishlistManager.fetchWishlistForCurrentUser()
-                wishlistedProductIds = wishlistItems.map { it.productId }.toSet() as MutableSet<String>
+                wishlistedProductIds =
+                    wishlistItems.map { it.productId }.toSet() as MutableSet<String>
                 updateAdaptersWithWishlistState()
             } catch (e: Exception) {
             }
@@ -162,19 +168,19 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView, SwipeRefreshLayou
     override fun showCategories(categories: List<Category>) {
         binding.cateRcv.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        val adapter =  CategoryAdapter(categories)
+        val adapter = CategoryAdapter(categories)
         adapter.onItemClick = { holder ->
-            openMenuActivityWithCategory(categories[holder.adapterPosition].id, holder.adapterPosition)
+            openMenuActivityWithCategory(
+                categories[holder.adapterPosition].id,
+                holder.adapterPosition
+            )
         }
         binding.cateRcv.adapter = adapter
         binding.btn.setOnClickListener {
-            handleClickViewAllBtn(categories)
+            openMenuActivityWithCategory(categories[0].id, 0)
         }
     }
 
-    private fun handleClickViewAllBtn(categories: List<Category>) {
-        openMenuActivityWithCategory(categories[0].id, 0)
-    }
 
     private fun addProductToCart(context: Context, productId: String) {
         val db = FirebaseFirestore.getInstance()
@@ -199,7 +205,8 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView, SwipeRefreshLayou
 //                    Log.d("Test00", "addProductToCart: $cart")
 
                     cart?.let {
-                        val existingItemIndex = it.items.indexOfFirst { item -> item.productId == productRef }
+                        val existingItemIndex =
+                            it.items.indexOfFirst { item -> item.productId == productRef }
                         if (existingItemIndex >= 0) {
                             // Product exists, update quantity
                             it.items[existingItemIndex].quantity += 1
@@ -210,7 +217,11 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView, SwipeRefreshLayou
 
                         // Save updated cart back to Firestore
                         cartRef.set(it).addOnSuccessListener {
-                            Toast.makeText(context, "Added to cart successfully!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Added to cart successfully!",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 }.addOnFailureListener { exception ->
@@ -235,6 +246,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView, SwipeRefreshLayou
         val adapter = ProductAdapter(products.take(4), offers, wishlistedProductIds)
         addCallBacksForAdapter(adapter)
         binding.productRcv1.adapter = adapter
+        handleOpenProductViewAll(binding.btn1, true, binding.textView1.text.toString())
     }
 
     override fun showProductsBestSeller(products: List<Product>, offers: List<Offer>) {
@@ -244,6 +256,16 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView, SwipeRefreshLayou
         val adapter = ProductAdapter(products.take(4), offers, wishlistedProductIds)
         addCallBacksForAdapter(adapter)
         binding.productRcv2.adapter = adapter
+        handleOpenProductViewAll(binding.btn2, false, binding.textView2.text.toString())
+    }
+
+    private fun handleOpenProductViewAll(view: View, isLatestDishes: Boolean = false, title: String) {
+        view.setOnClickListener {
+            val intent = Intent(requireContext(), ProductViewAllActivity::class.java)
+            intent.putExtra("isLatestDishes", isLatestDishes)
+            intent.putExtra("title", title)
+            startActivity(intent)
+        }
     }
 
     private fun addCallBacksForAdapter(adapter: ProductAdapter) {
