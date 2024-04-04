@@ -11,7 +11,7 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.utils.Utils.getShimmerDrawable
 
-class CategoryAdapter(private var categories: List<Category>, private val hasUnderline: Boolean = false, private val initialPosition: Int = 0): RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+class CategoryAdapter(private var categories: List<Category>, private val hasUnderline: Boolean = false, private var initialPosition: Int = 0): RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
     var onItemClick: ((CategoryViewHolder) -> Unit)? = null
     var lastItemClicked: CategoryViewHolder? = null
 
@@ -54,5 +54,9 @@ class CategoryAdapter(private var categories: List<Category>, private val hasUnd
     fun updateData(newCategories: List<Category>) {
         categories = newCategories
         notifyDataSetChanged()
+    }
+
+    fun updateInitialPosition(newPosition: Int) {
+        initialPosition = newPosition
     }
 }

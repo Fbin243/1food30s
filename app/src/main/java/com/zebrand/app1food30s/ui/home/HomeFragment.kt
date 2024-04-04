@@ -35,8 +35,8 @@ import com.zebrand.app1food30s.ui.wishlist.WishlistManager
 import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
-import com.zebrand.app1food30s.utils.Utils.hideShimmerEffectForRcv
-import com.zebrand.app1food30s.utils.Utils.showShimmerEffectForRcv
+import com.zebrand.app1food30s.utils.Utils.hideShimmerEffect
+import com.zebrand.app1food30s.utils.Utils.showShimmerEffect
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView, SwipeRefreshLayout.OnRefreshListener {
@@ -241,7 +241,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView, SwipeRefreshLayou
         currentProducts = products
         binding.productRcv2.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val adapter = ProductAdapter(products.take(6), offers, wishlistedProductIds)
+        val adapter = ProductAdapter(products.take(4), offers, wishlistedProductIds)
         addCallBacksForAdapter(adapter)
         binding.productRcv2.adapter = adapter
     }
@@ -272,17 +272,17 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView, SwipeRefreshLayou
     }
 
     override fun showShimmerEffect() {
-        showShimmerEffectForRcv(binding.cateShimmer, binding.cateRcv)
-        showShimmerEffectForRcv(binding.product1Shimmer, binding.productRcv1)
-        showShimmerEffectForRcv(binding.product2Shimmer, binding.productRcv2)
-        showShimmerEffectForRcv(binding.offerShimmer, binding.offerRcv)
+        showShimmerEffect(binding.cateShimmer, binding.cateRcv)
+        showShimmerEffect(binding.product1Shimmer, binding.productRcv1)
+        showShimmerEffect(binding.product2Shimmer, binding.productRcv2)
+        showShimmerEffect(binding.offerShimmer, binding.offerRcv)
     }
 
     override fun hideShimmerEffect() {
-        hideShimmerEffectForRcv(binding.cateShimmer, binding.cateRcv)
-        hideShimmerEffectForRcv(binding.product1Shimmer, binding.productRcv1)
-        hideShimmerEffectForRcv(binding.product2Shimmer, binding.productRcv2)
-        hideShimmerEffectForRcv(binding.offerShimmer, binding.offerRcv)
+        hideShimmerEffect(binding.cateShimmer, binding.cateRcv)
+        hideShimmerEffect(binding.product1Shimmer, binding.productRcv1)
+        hideShimmerEffect(binding.product2Shimmer, binding.productRcv2)
+        hideShimmerEffect(binding.offerShimmer, binding.offerRcv)
     }
 
     override fun onRefresh() {

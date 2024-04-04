@@ -21,9 +21,10 @@ import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentMenuBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
+import com.zebrand.app1food30s.ui.search.SearchActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistManager
-import com.zebrand.app1food30s.utils.Utils.hideShimmerEffectForRcv
-import com.zebrand.app1food30s.utils.Utils.showShimmerEffectForRcv
+import com.zebrand.app1food30s.utils.Utils.hideShimmerEffect
+import com.zebrand.app1food30s.utils.Utils.showShimmerEffect
 import kotlinx.coroutines.launch
 
 class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment(), MenuMVPView,
@@ -58,6 +59,8 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
             fetchAndUpdateWishlistState()
         }
 
+        handleOpenSearchScreen()
+
         return binding.root
     }
 
@@ -74,12 +77,19 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
         }
     }
 
+    private fun handleOpenSearchScreen() {
+        binding.searchButton.setOnClickListener {
+            val intent = Intent(requireContext(), SearchActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
 
     private fun updateAdapterWithWishlistState() {
         (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
     }
 
-    override fun handleChangeLayout(products: List<Product>, offers: List<Offer>) {
+    override fun handleChangeLayout(products: List<Product>) {
         setTypeDisplay(products)
         binding.gridBtn.setOnClickListener {
             isGrid = true
@@ -150,19 +160,19 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
     }
 
     override fun showShimmerEffectForCategories() {
-        showShimmerEffectForRcv(binding.cateShimmer, binding.cateRcv)
+        showShimmerEffect(binding.cateShimmer, binding.cateRcv)
     }
 
     override fun showShimmerEffectForProducts() {
-        showShimmerEffectForRcv(binding.productShimmer, binding.productRcv)
+        showShimmerEffect(binding.productShimmer, binding.productRcv)
     }
 
     override fun hideShimmerEffectForCategories() {
-        hideShimmerEffectForRcv(binding.cateShimmer, binding.cateRcv)
+        hideShimmerEffect(binding.cateShimmer, binding.cateRcv)
     }
 
     override fun hideShimmerEffectForProducts() {
-        hideShimmerEffectForRcv(binding.productShimmer, binding.productRcv)
+        hideShimmerEffect(binding.productShimmer, binding.productRcv)
     }
 
     override fun onRefresh() {

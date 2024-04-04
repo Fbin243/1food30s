@@ -15,7 +15,7 @@ class MenuPresenter(private val view: MenuMVPView, private val db: AppDatabase) 
             val products = FirebaseService.getListProducts(db)
             val offers = FirebaseService.getListOffers(db)
             view.showProducts(products, offers)
-            view.handleChangeLayout(products, offers)
+            view.handleChangeLayout(products)
             if(!calledFromActivity) {
                 view.hideShimmerEffectForProducts()
             }
@@ -33,6 +33,7 @@ class MenuPresenter(private val view: MenuMVPView, private val db: AppDatabase) 
         filterProductByCategory(categories[0].id, productAdapter)
         view.showShimmerEffectForCategories()
         categoryAdapter.updateData(categories)
+        categoryAdapter.updateInitialPosition(0)
         view.hideShimmerEffectForCategories()
         return categories
     }
@@ -43,7 +44,7 @@ class MenuPresenter(private val view: MenuMVPView, private val db: AppDatabase) 
             val offers = db.offerDao().getAll()
             view.showShimmerEffectForProducts()
             adapter.updateData(products, offers)
-            view.handleChangeLayout(products, offers)
+            view.handleChangeLayout(products)
             view.hideShimmerEffectForProducts()
         } catch (e: Exception) {
             Log.i("Error", "getRelatedProductsByCategory: ${e}")
