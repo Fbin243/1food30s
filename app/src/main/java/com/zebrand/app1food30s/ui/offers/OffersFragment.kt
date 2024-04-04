@@ -19,12 +19,11 @@ class OffersFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentOffersBinding.inflate(inflater)
-        val view = binding.root
         rcv = binding.offerRcv
         rcv.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         rcv.adapter = OfferAdapter(getListOffers())
 
-        return view
+        return binding.root
     }
 
     private fun getListOffers(): List<Offer> {

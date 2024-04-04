@@ -2,6 +2,7 @@ package com.zebrand.app1food30s.ui.menu
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +26,8 @@ import com.zebrand.app1food30s.utils.Utils.hideShimmerEffectForRcv
 import com.zebrand.app1food30s.utils.Utils.showShimmerEffectForRcv
 import kotlinx.coroutines.launch
 
-class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListener {
+class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment(), MenuMVPView,
+    SwipeRefreshLayout.OnRefreshListener {
     private lateinit var binding: FragmentMenuBinding
     private lateinit var menuPresenter: MenuPresenter
     private lateinit var db: AppDatabase
@@ -33,6 +35,8 @@ class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListen
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var gridLayoutManager: GridLayoutManager
     private var wishlistedProductIds: Set<String> = emptySet()
+    private lateinit var categoryId: String
+    private var adapterPosition: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,13 +48,15 @@ class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListen
         gridLayoutManager = GridLayoutManager(requireContext(), 2)
         WishlistManager.initialize(userId = "QXLiLOiPLaHhY5gu7ZdS")
         menuPresenter = MenuPresenter(this, db)
-        lifecycleScope.launch {
-            menuPresenter.getDataAndDisplay()
-            fetchAndUpdateWishlistState()
-        }
+
         // Make function reloading data when swipe down
         binding.swipeRefreshLayout.setOnRefreshListener(this)
         binding.swipeRefreshLayout.setColorSchemeColors(resources.getColor(R.color.primary))
+
+        lifecycleScope.launch {
+            menuPresenter.getDataAndDisplay(calledFromActivity)
+            fetchAndUpdateWishlistState()
+        }
 
         return binding.root
     }
@@ -107,7 +113,7 @@ class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListen
     override fun showCategories(categories: List<Category>) {
         binding.cateRcv.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        val adapter = CategoryAdapter(categories, true)
+        val adapter = CategoryAdapter(categories, true, adapterPosition)
         menuPresenter.filterProductByCategory(
             categories[0].id,
             binding.productRcv.adapter as ProductAdapter
@@ -128,6 +134,7 @@ class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListen
     }
 
     override fun showProducts(products: List<Product>, offers: List<Offer>) {
+        Log.i("TAG123", "showProducts: TAO PRODUCT")
         binding.productRcv.layoutManager = if (isGrid) gridLayoutManager else linearLayoutManager
         val adapter = ProductAdapter(products, offers, wishlistedProductIds)
         adapter.onItemClick = { product ->
@@ -160,10 +167,36 @@ class MenuFragment : Fragment(), MenuMVPView, SwipeRefreshLayout.OnRefreshListen
 
     override fun onRefresh() {
         lifecycleScope.launch {
-            menuPresenter.reloadData(binding.productRcv.adapter as ProductAdapter, binding.cateRcv.adapter as CategoryAdapter)
+            val firstCategory = menuPresenter.reloadData(
+                binding.productRcv.adapter as ProductAdapter,
+                binding.cateRcv.adapter as CategoryAdapter
+            )[0]
             fetchAndUpdateWishlistState()
-            binding.cateRcv.scrollToPosition(0)
+            binding.cateRcv.scrollToPosition(5)
+            binding.textView.text = firstCategory.name
             binding.swipeRefreshLayout.isRefreshing = false
         }
+    }
+
+    fun changeHeaderOfFragment() {
+        binding.backFromMenu.visibility = View.VISIBLE
+        binding.backFromMenu.setOnClickListener {
+            Log.i("TAG123", "changeHeaderOfFragment: DA BAM NUT BACK")
+            requireActivity().finish()
+        }
+    }
+
+    fun saveCategoryIdAndAdapterPosition(categoryId: String, adapterPosition: Int) {
+        this.categoryId = categoryId
+        this.adapterPosition = adapterPosition
+    }
+
+
+    override fun filterAndScrollToCategory() {
+        menuPresenter.filterProductByCategory(
+            categoryId,
+            binding.productRcv.adapter as ProductAdapter)
+        binding.cateRcv.scrollToPosition(adapterPosition)
+        hideShimmerEffectForCategories()
     }
 }

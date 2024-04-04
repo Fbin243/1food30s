@@ -4,32 +4,37 @@ import android.util.Log
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.data.AppDatabase
+import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.utils.FirebaseService
 import kotlinx.coroutines.coroutineScope
 
 class MenuPresenter(private val view: MenuMVPView, private val db: AppDatabase) {
-    suspend fun getDataAndDisplay() {
+    suspend fun getDataAndDisplay(calledFromActivity: Boolean = false) {
         coroutineScope {
             view.showShimmerEffectForProducts()
             val products = FirebaseService.getListProducts(db)
             val offers = FirebaseService.getListOffers(db)
             view.showProducts(products, offers)
             view.handleChangeLayout(products, offers)
-            view.hideShimmerEffectForProducts()
+            if(!calledFromActivity) {
+                view.hideShimmerEffectForProducts()
+            }
 
             view.showShimmerEffectForCategories()
             val categories = FirebaseService.getListCategories(db)
-            view.hideShimmerEffectForCategories()
             view.showCategories(categories)
+            if(!calledFromActivity) view.hideShimmerEffectForCategories()
+            else view.filterAndScrollToCategory()
         }
     }
 
-    fun reloadData(productAdapter: ProductAdapter, categoryAdapter: CategoryAdapter) {
+    fun reloadData(productAdapter: ProductAdapter, categoryAdapter: CategoryAdapter): List<Category> {
         val categories = db.categoryDao().getAll()
         filterProductByCategory(categories[0].id, productAdapter)
         view.showShimmerEffectForCategories()
         categoryAdapter.updateData(categories)
         view.hideShimmerEffectForCategories()
+        return categories
     }
 
     fun filterProductByCategory(idCategory: String, adapter: ProductAdapter) {

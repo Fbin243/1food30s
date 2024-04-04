@@ -27,6 +27,8 @@ import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.data.entity.WishlistItem
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
+import com.zebrand.app1food30s.ui.menu.MenuActivity
+import com.zebrand.app1food30s.ui.menu.MenuFragment
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
@@ -150,10 +152,22 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView, SwipeRefreshLayou
         }
     }
 
+    private fun openProductMenuWithCategory(categoryId: String, adapterPosition: Int) {
+        val intent = Intent(requireContext(), MenuActivity::class.java)
+        intent.putExtra("categoryId", categoryId)
+        intent.putExtra("adapterPosition", adapterPosition)
+        startActivity(intent)
+    }
+
     override fun showCategories(categories: List<Category>) {
         binding.cateRcv.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        binding.cateRcv.adapter = CategoryAdapter(categories)
+        val adapter =  CategoryAdapter(categories)
+        adapter.onItemClick = { holder ->
+            openProductMenuWithCategory(categories[holder.adapterPosition].id, holder.adapterPosition)
+        }
+
+        binding.cateRcv.adapter = adapter
     }
 
     private fun addProductToCart(context: Context, productId: String) {

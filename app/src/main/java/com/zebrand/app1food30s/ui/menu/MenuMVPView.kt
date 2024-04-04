@@ -12,4 +12,5 @@ interface MenuMVPView {
     fun showShimmerEffectForProducts()
     fun hideShimmerEffectForCategories()
     fun hideShimmerEffectForProducts()
+    fun filterAndScrollToCategory()
 }

@@ -11,7 +11,7 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.utils.Utils.getShimmerDrawable
 
-class CategoryAdapter(private var categories: List<Category>, private val hasUnderline: Boolean = false): RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+class CategoryAdapter(private var categories: List<Category>, private val hasUnderline: Boolean = false, private val initialPosition: Int = 0): RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
     var onItemClick: ((CategoryViewHolder) -> Unit)? = null
     var lastItemClicked: CategoryViewHolder? = null
 
@@ -34,7 +34,7 @@ class CategoryAdapter(private var categories: List<Category>, private val hasUnd
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val category: Category = categories[position]
-        if(position == 0 && hasUnderline) {
+        if(position == initialPosition && hasUnderline) {
             if(lastItemClicked != null) {
                 lastItemClicked?.cateUnderline?.setBackgroundResource(0)
                 lastItemClicked?.cateTitle?.setTextColor(lastItemClicked!!.itemView.resources.getColor(R.color.black))
