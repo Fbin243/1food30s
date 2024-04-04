@@ -17,6 +17,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/offerShimmer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/offer_card_view_shimmer" />
+
+            <include layout="@layout/offer_card_view_shimmer" />
+
+            <include layout="@layout/offer_card_view_shimmer" />
+
+            <include layout="@layout/offer_card_view_shimmer" />
+
+            <include layout="@layout/offer_card_view_shimmer" />
+        </LinearLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/offerRcv"
         android:layout_width="match_parent"

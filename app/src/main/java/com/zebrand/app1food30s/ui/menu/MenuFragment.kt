@@ -24,8 +24,6 @@ import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistManager
 import com.zebrand.app1food30s.utils.Utils
-import com.zebrand.app1food30s.utils.Utils.hideShimmerEffect
-import com.zebrand.app1food30s.utils.Utils.showShimmerEffect
 import kotlinx.coroutines.launch
 
 class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment(), MenuMVPView,
@@ -52,13 +50,12 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
         menuPresenter = MenuPresenter(this, db)
 
         // Make function reloading data when swipe down
-        binding.swipeRefreshLayout.setOnRefreshListener(this)
-        binding.swipeRefreshLayout.setColorSchemeColors(resources.getColor(R.color.primary))
+        Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
 
         lifecycleScope.launch {
-            showShimmerEffect(binding.shimmerLayout, binding.textView)
+            Utils.showShimmerEffect(binding.shimmerLayout, binding.textView)
             menuPresenter.getDataAndDisplay(calledFromActivity)
-            hideShimmerEffect(binding.shimmerLayout, binding.textView)
+            Utils.hideShimmerEffect(binding.shimmerLayout, binding.textView)
             fetchAndUpdateWishlistState()
         }
 
@@ -163,19 +160,19 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
     }
 
     override fun showShimmerEffectForCategories() {
-        showShimmerEffect(binding.cateShimmer, binding.cateRcv)
+        Utils.showShimmerEffect(binding.cateShimmer, binding.cateRcv)
     }
 
     override fun showShimmerEffectForProducts() {
-        showShimmerEffect(binding.productShimmer, binding.productRcv)
+        Utils.showShimmerEffect(binding.productShimmer, binding.productRcv)
     }
 
     override fun hideShimmerEffectForCategories() {
-        hideShimmerEffect(binding.cateShimmer, binding.cateRcv)
+        Utils.hideShimmerEffect(binding.cateShimmer, binding.cateRcv)
     }
 
     override fun hideShimmerEffectForProducts() {
-        hideShimmerEffect(binding.productShimmer, binding.productRcv)
+        Utils.hideShimmerEffect(binding.productShimmer, binding.productRcv)
     }
 
     override fun onRefresh() {

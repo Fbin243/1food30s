@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.databinding.ActivityMenuBinding
+import com.zebrand.app1food30s.utils.Utils
 
 class MenuActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMenuBinding
@@ -23,11 +24,9 @@ class MenuActivity : AppCompatActivity() {
 
         setContentView(binding.root)
         val menuFragment = MenuFragment(true)
-        replaceFragment(menuFragment)
+        Utils.replaceFragment(menuFragment, supportFragmentManager, R.id.fragment_container)
         categoryId = intent.getStringExtra("categoryId").toString()
         adapterPosition = intent.getIntExtra("adapterPosition", 0)
-
-        Log.i("TAG123", "onCreate: $categoryId")
         // Listen for changes in the fragment lifecycle
         supportFragmentManager.registerFragmentLifecycleCallbacks(
             object : FragmentManager.FragmentLifecycleCallbacks() {
@@ -44,11 +43,6 @@ class MenuActivity : AppCompatActivity() {
                 }
             }, false
         )
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
-        ft.replace(R.id.fragment_container, fragment).commit()
     }
 }
 

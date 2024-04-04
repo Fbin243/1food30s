@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.firestore.FirebaseFirestore
-import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
@@ -36,10 +35,10 @@ import com.zebrand.app1food30s.ui.wishlist.WishlistManager
 import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
+import com.zebrand.app1food30s.utils.Utils
 import com.zebrand.app1food30s.utils.Utils.hideShimmerEffect
 import com.zebrand.app1food30s.utils.Utils.showShimmerEffect
 import kotlinx.coroutines.launch
-import okhttp3.internal.Util
 
 class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
     SwipeRefreshLayout.OnRefreshListener {
@@ -63,15 +62,13 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         }
 
         // Make function reloading data when swipe down
-        binding.swipeRefreshLayout.setOnRefreshListener(this)
-        binding.swipeRefreshLayout.setColorSchemeColors(resources.getColor(R.color.primary))
+        Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
 
         val userId = "QXLiLOiPLaHhY5gu7ZdS"
         WishlistManager.initialize(userId)
         wishlistPresenter = WishlistPresenter(this)
-
-
         fetchAndUpdateWishlistState()
+
         return binding.root
     }
 
@@ -259,7 +256,11 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         handleOpenProductViewAll(binding.btn2, false, binding.textView2.text.toString())
     }
 
-    private fun handleOpenProductViewAll(view: View, isLatestDishes: Boolean = false, title: String) {
+    private fun handleOpenProductViewAll(
+        view: View,
+        isLatestDishes: Boolean = false,
+        title: String
+    ) {
         view.setOnClickListener {
             val intent = Intent(requireContext(), ProductViewAllActivity::class.java)
             intent.putExtra("isLatestDishes", isLatestDishes)
@@ -290,7 +291,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         // Offer
         binding.offerRcv.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        binding.offerRcv.adapter = OfferAdapter(offers)
+        binding.offerRcv.adapter = OfferAdapter(offers.take(2))
     }
 
     override fun showShimmerEffect() {
