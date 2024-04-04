@@ -187,5 +187,8 @@
     <string name="txt_choose_offer">Choose offer</string>
     <string name="txt_edit_product">Edit product</string>
     <string name="txt_new_offer">New offer</string>
+    <string name="title_discount_rate">Discount rate</string>
+    <string name="text_num_product">Number of product</string>
+    <string name="txt_create_offer">Create offer</string>
 
 </resources>

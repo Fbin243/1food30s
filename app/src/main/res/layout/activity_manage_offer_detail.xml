@@ -90,7 +90,7 @@
             android:layout_width="0dp"
             app:layout_constraintWidth_percent="0.55"
             android:layout_height="wrap_content"
-            android:text="@string/title_price"
+            android:text="@string/title_discount_rate"
             android:layout_marginTop="@dimen/spacing20"
             app:layout_constraintTop_toBottomOf="@+id/edit_name"
             app:layout_constraintStart_toStartOf="parent"
@@ -126,7 +126,7 @@
             android:layout_width="0dp"
             app:layout_constraintWidth_percent="0.4"
             android:layout_height="wrap_content"
-            android:text="@string/text_stock"
+            android:text="@string/text_num_product"
             android:layout_marginTop="@dimen/spacing20"
             app:layout_constraintTop_toBottomOf="@+id/edit_name"
             app:layout_constraintEnd_toEndOf="parent"
@@ -154,6 +154,8 @@
                 android:layout_height="@dimen/spacing60"
                 android:maxLines="1"
                 android:inputType="number"
+                android:text="0"
+                android:focusable="false"
                 android:gravity="start"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -179,7 +181,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing60"
             android:backgroundTint="@color/primary"
-            android:text="@string/txt_create"
+            android:text="@string/txt_create_offer"
             android:textSize="@dimen/font_size16"
             android:textStyle="bold"
             android:layout_marginTop="@dimen/spacing50"
