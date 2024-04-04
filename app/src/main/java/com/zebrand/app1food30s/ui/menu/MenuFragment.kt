@@ -103,7 +103,7 @@ class MenuFragment : Fragment(), MenuMVPView, WishlistMVPView {
 
 //        (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
         val adapter = binding.productRcv.adapter as? ProductAdapter
-//        Log.d("Test00", "updateWishlistItemStatus: $adapter")
+//        Log.d("Test00", "updateWishlistItemStatus: $adapter wishlisted IDs: $wishlistedProductIds")
         adapter?.updateWishlistState(wishlistedProductIds)
     }
 
@@ -170,7 +170,7 @@ class MenuFragment : Fragment(), MenuMVPView, WishlistMVPView {
         products: MutableList<Product>,
         offers: MutableList<Offer>
     ): ProductAdapter {
-        val adapter = ProductAdapter(products, offers, isGrid, wishlistedProductIds)
+        val adapter = ProductAdapter(products, offers, isGrid, wishlistedProductIds.toMutableSet())
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }
@@ -178,7 +178,7 @@ class MenuFragment : Fragment(), MenuMVPView, WishlistMVPView {
 //            Log.d("Test00", "setupInitialAdapter: ")
             wishlistPresenter.toggleWishlist(product)
         }
-        Log.d("Test00", "generateAdapterWithLayout: $adapter")
+//        Log.d("Test00", "generateAdapterWithLayout: $adapter with wishlisted IDs: $wishlistedProductIds")
         return adapter
     }
 
