@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
@@ -42,6 +43,8 @@ class EditProduct : AppCompatActivity() {
 
     private lateinit var productImageView: ImageView
     private var currentImagePath: String? = null
+    private var currentCategory: String? = null
+    private var currentOffer: String? = null
 
     // Lưu URI của hình ảnh tạm thời
     private var imageUri: Uri? = null
@@ -147,10 +150,45 @@ class EditProduct : AppCompatActivity() {
                                 )
 
                                 fireStore.collection("products").document(productId).update(productUpdate)
+//                                    .addOnSuccessListener {
+//                                        Toast.makeText(this, "Product updated successfully", Toast.LENGTH_LONG).show()
+//                                        val intent = Intent(this, ManageProductActivity::class.java)
+//                                        startActivity(intent)
+//                                    }
                                     .addOnSuccessListener {
-                                        Toast.makeText(this, "Product updated successfully", Toast.LENGTH_LONG).show()
-                                        val intent = Intent(this, ManageProductActivity::class.java)
-                                        startActivity(intent)
+                                        categoryDocumentRef.get()
+                                            .addOnSuccessListener { documentSnapshot ->
+                                                val currentNumProductCategory = documentSnapshot.getLong("numProduct") ?: 0
+                                                val newNumProductCategory = currentNumProductCategory + 1
+                                                categoryDocumentRef.update("numProduct", newNumProductCategory)
+                                                    .addOnSuccessListener {
+                                                        offerDocumentRef.get()
+                                                            .addOnSuccessListener { offerSnapshot ->
+                                                                val currentNumProductOffer = offerSnapshot.getLong("numProduct") ?: 0
+                                                                val newNumProductOffer = currentNumProductOffer + 1
+                                                                offerDocumentRef.update("numProduct", newNumProductOffer)
+                                                                    .addOnSuccessListener {
+                                                                        Toast.makeText(this, "Product updated successfully", Toast.LENGTH_SHORT).show()
+                                                                        val intent = Intent(this, ManageProductActivity::class.java)
+                                                                        startActivity(intent)
+                                                                    }
+                                                                    .addOnFailureListener { e ->
+                                                                        Toast.makeText(this, "Failed to update offer count: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                                    }
+                                                            }
+                                                            .addOnFailureListener { e ->
+                                                                Toast.makeText(this, "Failed to get current offer count: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                            }
+                                                    }
+                                                    .addOnFailureListener { e ->
+                                                        // Handle failure for updating the category
+                                                        Toast.makeText(this, "Failed to update category count: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                    }
+                                            }
+                                            .addOnFailureListener { e ->
+                                                // Handle failure for getting the current category count
+                                                Toast.makeText(this, "Failed to get current category count: ${e.message}", Toast.LENGTH_SHORT).show()
+                                            }
                                     }
                                     .addOnFailureListener { e ->
                                         Toast.makeText(this, "Error updating product: ${e.message}", Toast.LENGTH_LONG).show()
@@ -235,6 +273,7 @@ class EditProduct : AppCompatActivity() {
 //                val category = document.toObject(Category::class.java)
 //                                categoryAutoComplete.text = document.getString("name") ?: ""
                                 val offerStr = document.getString("name") ?: ""
+                                offersCollection.document(offerId).update("numProduct", FieldValue.increment(-1))
                                 loadOffersFromFirebase(offerStr)
                             } else {
                                 loadOffersFromFirebase("")
@@ -249,6 +288,7 @@ class EditProduct : AppCompatActivity() {
                             if (document != null && document.exists()) {
 //                val category = document.toObject(Category::class.java)
 //                                categoryAutoComplete.text = document.getString("name") ?: ""
+                                categoriesCollection.document(categoryId).update("numProduct", FieldValue.increment(-1))
                                 val categoryStr = document.getString("name") ?: ""
                                 loadCategoriesFromFirebase(categoryStr)
                             } else {
