@@ -46,9 +46,12 @@ class ManageOffer : AppCompatActivity() {
     private lateinit var filterButton: ImageView
     private lateinit var botDialog: BottomSheetDialog
     private lateinit var nameFilterEditText: TextInputEditText
-    private lateinit var discountRateFilterEditText: TextInputEditText
-    private lateinit var numProductFilterEditText: TextInputEditText
+    private lateinit var discountRateAutoComplete: AutoCompleteTextView
+    private lateinit var numProductAutoComplete: AutoCompleteTextView
     private lateinit var datePickerText: TextInputEditText
+    val discountArray = arrayOf("1% to 10%", "11% to 50%", "More than 50%")
+    val numProductArray = arrayOf("1 to 10", "11 to 50", "51 to 100", "More than 100")
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,9 +79,17 @@ class ManageOffer : AppCompatActivity() {
         botDialog.setContentView(dialogView)
 
         nameFilterEditText = dialogView.findViewById(R.id.nameFilter)
-        discountRateFilterEditText = dialogView.findViewById(R.id.discountRateFilter)
-        numProductFilterEditText = dialogView.findViewById(R.id.numProductFilter)
+        discountRateAutoComplete = dialogView.findViewById(R.id.autoCompleteDiscountRate)
+        numProductAutoComplete = dialogView.findViewById(R.id.autoCompleteNumProduct)
         datePickerText = dialogView.findViewById(R.id.datePicker)
+
+        val adapterDiscount = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, discountArray)
+//        adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
+        discountRateAutoComplete.setAdapter(adapterDiscount)
+
+        val adapterNumProduct = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, numProductArray)
+//        adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
+        numProductAutoComplete.setAdapter(adapterNumProduct)
 
         // date picker
         val datePickerText: TextInputEditText = dialogView.findViewById(R.id.datePicker)
@@ -121,8 +132,8 @@ class ManageOffer : AppCompatActivity() {
     private fun filterOffers() {
         lifecycleScope.launch {
             val nameFilter = nameFilterEditText.text.toString().trim()
-            val discountFilter = discountRateFilterEditText.text.toString().toIntOrNull() ?: 0
-            val numProduct = numProductFilterEditText.text.toString().toIntOrNull() ?: 0
+            val selectedDiscount = discountRateAutoComplete.text.toString()
+            val selectedNumProduct = numProductAutoComplete.text.toString()
             val selectedDate = datePickerText.text.toString()
 
             val allOffers = getListOffers() // Giả định đây là phương thức của bạn để lấy tất cả sản phẩm
@@ -135,6 +146,12 @@ class ManageOffer : AppCompatActivity() {
             // Chỉ áp dụng bộ lọc nếu giá trị không phải là "Choose ..."
             if (nameFilter.isNotEmpty()) {
                 filteredOffers = filterOffersByName(nameFilter, filteredOffers)
+            }
+            if (selectedDiscount != "Choose discount rate") {
+                filteredOffers = filterOffersByDiscount(selectedDiscount, filteredOffers)
+            }
+            if (selectedNumProduct != "Choose number of product") {
+                filteredOffers = filterOffersByNumProduct(selectedNumProduct, filteredOffers)
             }
             if (selectedDate != "Choose date") {
                 filteredOffers = filterOffersByDate(selectedDate, filteredOffers)
@@ -162,8 +179,32 @@ class ManageOffer : AppCompatActivity() {
         return offers.filter { it.name.contains(nameFilter, ignoreCase = true) }
     }
 
+    private fun filterOffersByDiscount(selectedDiscount: String, offers: List<Offer>): List<Offer> {
+        // Parse selectedPriceRange to min and max values, then filter
+        // Ví dụ: chuyển đổi "1$ to 10$" thành một cặp giá trị (1.0, 10.0)
+        val range = selectedDiscount.split(" to ").mapNotNull { it.filter { char -> char.isDigit() }.toIntOrNull() }
+        if (range.size == 2) {
+            return offers.filter {
+                it.discountRate >= range[0] && it.discountRate <= range[1]
+            }
+        }
+        return offers
+    }
+
+    private fun filterOffersByNumProduct(selectedNumProduct: String, offers: List<Offer>): List<Offer> {
+        // Parse selectedPriceRange to min and max values, then filter
+        // Ví dụ: chuyển đổi "1$ to 10$" thành một cặp giá trị (1.0, 10.0)
+        val range = selectedNumProduct.split(" to ").mapNotNull { it.filter { char -> char.isDigit() }.toIntOrNull() }
+        if (range.size == 2) {
+            return offers.filter {
+                it.numProduct >= range[0] && it.numProduct <= range[1]
+            }
+        }
+        return offers
+    }
+
     private fun displayFilteredOffers(filteredOffers: List<Offer>) {
-        // Update RecyclerView with filteredProducts
+        // Update RecyclerView with filteredOffers
         val adapter = ManageOfferAdapter(filteredOffers, onOfferClick = { offer ->
             val intent = Intent(this@ManageOffer, EditOffer::class.java).apply {
                 putExtra("OFFER_ID", offer.id)

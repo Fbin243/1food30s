@@ -59,25 +59,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing12"
-            android:text="@string/txt_name_product_filter"
+            android:text="@string/txt_discount_rate"
             android:textSize="@dimen/font_size16" />
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
+            android:id="@+id/discountRate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:boxStrokeColor="@color/primary"
-            app:cursorColor="@color/primary"
-            app:hintTextColor="@color/primary"
-            app:layout_constraintTop_toBottomOf="@+id/header_title">
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_marginTop="5dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/discountRateFilter"
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteDiscountRate"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing60"
-                android:inputType="number"
-                android:maxLines="1" />
-
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:paddingHorizontal="@dimen/spacing8"
+                android:dropDownHeight="150dp"
+                android:text="@string/txt_choose_category"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"/>
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
@@ -90,25 +91,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing12"
-            android:text="@string/txt_name_product_filter"
+            android:text="@string/txt_num_product"
             android:textSize="@dimen/font_size16" />
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
+            android:id="@+id/filter_num_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:boxStrokeColor="@color/primary"
-            app:cursorColor="@color/primary"
-            app:hintTextColor="@color/primary"
-            app:layout_constraintTop_toBottomOf="@+id/header_title">
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_marginTop="5dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/numProductFilter"
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteNumProduct"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing60"
-                android:inputType="number"
-                android:maxLines="1" />
-
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:paddingHorizontal="@dimen/spacing8"
+                android:dropDownHeight="150dp"
+                android:text="@string/txt_choose_range_price"
+                android:scrollbars="vertical"
+                android:fadeScrollbars="false"/>
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
