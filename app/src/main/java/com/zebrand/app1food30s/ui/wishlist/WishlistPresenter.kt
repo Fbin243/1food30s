@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.ui.wishlist
 
+import android.util.Log
 import com.zebrand.app1food30s.data.entity.Product
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +31,7 @@ class WishlistPresenter(
     }
 
     fun toggleWishlist(product: Product) = CoroutineScope(Dispatchers.IO).launch {
+//        Log.d("Test00", "toggleWishlist: ")
         try {
             val isNowWishlisted = repository.toggleWishlist(product.id)
 //            Log.d("Test00", "toggleWishlist: $isNowWishlisted")

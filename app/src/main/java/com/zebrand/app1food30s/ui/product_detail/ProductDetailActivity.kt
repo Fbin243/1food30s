@@ -81,12 +81,12 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
 
     // TODO
     override fun showRelatedProducts(relatedProducts: MutableList<Product>, offers: MutableList<Offer>) {
-        binding.relatedProductRcv.layoutManager = GridLayoutManager(this, 2)
-        val adapter = ProductAdapter(relatedProducts, offers, true, WishlistManager.wishlistedItems.map { it.productId }.toSet())
-        adapter.onItemClick = { product ->
-            openDetailProduct(product)
-        }
-        binding.relatedProductRcv.adapter = adapter
+//        binding.relatedProductRcv.layoutManager = GridLayoutManager(this, 2)
+//        val adapter = ProductAdapter(relatedProducts, offers, true, WishlistManager.wishlistedItems.map { it.productId }.toSet())
+//        adapter.onItemClick = { product ->
+//            openDetailProduct(product)
+//        }
+//        binding.relatedProductRcv.adapter = adapter
     }
 
     private fun openDetailProduct(product: Product) {

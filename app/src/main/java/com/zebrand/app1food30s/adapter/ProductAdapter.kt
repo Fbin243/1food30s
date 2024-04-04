@@ -21,7 +21,7 @@ class ProductAdapter(
     val products: MutableList<Product>,
     private val offers: MutableList<Offer>,
     private val isGrid: Boolean = true,
-    private var wishlistedProductIds: Set<String>,
+    private var wishlistedProductIds: MutableSet<String>,
 ) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
     var onItemClick: ((Product) -> Unit)? = null
@@ -46,6 +46,7 @@ class ProductAdapter(
             }
 
             ivWishlist.setOnClickListener {
+//                Log.d("Test00", "ivWishlist: ")
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     onWishlistProductClick?.invoke(products[position])
@@ -99,42 +100,40 @@ class ProductAdapter(
         )
     }
 
+    // last thing called to update UI
     fun updateWishlistState(newWishlistedProductIds: Set<String>) {
-        val oldWishlistedProductIds = wishlistedProductIds
-        wishlistedProductIds = newWishlistedProductIds
-//        Log.d("Test00", "updateWishlistState: $wishlistedProductIds")
+        // Immediately capture the current state as the old state before any changes
+        val oldWishlistedProductIds = HashSet(wishlistedProductIds)
+
+//        Log.d("Test00", "old: $oldWishlistedProductIds")
+        // Update the adapter's state to the new state
+        wishlistedProductIds.clear()
+        wishlistedProductIds.addAll(newWishlistedProductIds)
+//        Log.d("Test00", "new: $wishlistedProductIds")
+
+//        // Create a copy of the current state for comparison
+//        val oldWishlistedProductIds = wishlistedProductIds.toSet()
+//        Log.d("Test00", "old: $oldWishlistedProductIds")
+//        // Update the adapter's state with the new set
+//        wishlistedProductIds = newWishlistedProductIds
+//        Log.d("Test00", "new: $wishlistedProductIds")
 
         val diffCallback = object : DiffUtil.Callback() {
             override fun getOldListSize(): Int = products.size
             override fun getNewListSize(): Int = products.size
 
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                // Assuming each product has a unique ID
                 return products[oldItemPosition].id == products[newItemPosition].id
             }
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                // Now correctly compares old and new state
                 val oldProduct = products[oldItemPosition]
-                val newProduct = products[newItemPosition]
-                // Check if the wishlist state of the product has changed
-                return (oldProduct.id in oldWishlistedProductIds) == (newProduct.id in newWishlistedProductIds)
+                return oldProduct.id in oldWishlistedProductIds == oldProduct.id in wishlistedProductIds
             }
         }
 
         val diffResult = DiffUtil.calculateDiff(diffCallback)
-        diffResult.dispatchUpdatesTo(this)
-    }
-
-    fun updateData(newProducts: List<Product>, newOffers: List<Offer>, newWishlistedIds: Set<String>) {
-        val diffCallback = ProductDiffCallback(this.products, newProducts, this.wishlistedProductIds, newWishlistedIds)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-
-        this.products.clear()
-        this.products.addAll(newProducts)
-        this.offers.clear()
-        this.offers.addAll(newOffers)
-        this.wishlistedProductIds = newWishlistedIds
-
         diffResult.dispatchUpdatesTo(this)
     }
 }

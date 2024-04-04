@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.ui.menu
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -60,38 +61,50 @@ class MenuFragment : Fragment(), MenuMVPView, WishlistMVPView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Initialize your adapter here but don't set data yet
-        setupInitialAdapter()
+//        setupInitialAdapter()
 
         lifecycleScope.launch {
             fetchAndUpdateWishlistState()
         }
     }
 
-    private fun setupInitialAdapter() {
-        // Assuming isGrid and offers are known at this point, or use placeholders
-        val initialProducts: MutableList<Product> = mutableListOf()
-        val initialOffers: MutableList<Offer> = mutableListOf()
-        val initialWishlistedIds: Set<String> = emptySet() // Placeholder for wishlisted product IDs
-
-        binding.productRcv.layoutManager = if (isGrid) {
-            GridLayoutManager(requireContext(), 2)
-        } else {
-            LinearLayoutManager(requireContext())
-        }
-
-        // Initialize adapter with placeholders/empty lists
-        binding.productRcv.adapter = ProductAdapter(initialProducts, initialOffers, isGrid, initialWishlistedIds)
-    }
+//    private fun setupInitialAdapter() {
+//        // Assuming isGrid and offers are known at this point, or use placeholders
+//        val initialProducts: MutableList<Product> = mutableListOf()
+//        val initialOffers: MutableList<Offer> = mutableListOf()
+//        val initialWishlistedIds: Set<String> = emptySet() // Placeholder for wishlisted product IDs
+//
+//        binding.productRcv.layoutManager = if (isGrid) {
+//            GridLayoutManager(requireContext(), 2)
+//        } else {
+//            LinearLayoutManager(requireContext())
+//        }
+//
+//        // Initialize adapter with placeholders/empty lists
+//        val adapter = ProductAdapter(initialProducts, initialOffers, isGrid, initialWishlistedIds)
+//
+//        adapter.onWishlistProductClick = { product ->
+//            Log.d("Test00", "setupInitialAdapter: ")
+//            wishlistPresenter.toggleWishlist(product)
+//        }
+//
+//        binding.productRcv.adapter = adapter
+//    }
 
     override fun updateWishlistItemStatus(product: Product, isAdded: Boolean) {
+//        Log.d("Test00", "updateWishlistItemStatus: $product, $isAdded")
         // Update the set of wishlisted product IDs based on the action
         if (isAdded) {
             wishlistedProductIds.add(product.id)
         } else {
             wishlistedProductIds.remove(product.id)
         }
+//        Log.d("Test00", "updateWishlistItemStatus: $wishlistedProductIds")
 
-        (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
+//        (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
+        val adapter = binding.productRcv.adapter as? ProductAdapter
+//        Log.d("Test00", "updateWishlistItemStatus: $adapter")
+        adapter?.updateWishlistState(wishlistedProductIds)
     }
 
     private fun fetchAndUpdateWishlistState() {
@@ -100,6 +113,7 @@ class MenuFragment : Fragment(), MenuMVPView, WishlistMVPView {
         }
     }
 
+    // called after wishlistPresenter.fetchAndUpdateWishlistState()
     override fun refreshWishlistState(wishlistedProductIds: Set<String>) {
         this.wishlistedProductIds = wishlistedProductIds as MutableSet<String>
 //        Log.d("Test00", "refreshWishlistState: $wishlistedProductIds")
@@ -107,6 +121,7 @@ class MenuFragment : Fragment(), MenuMVPView, WishlistMVPView {
     }
 
     private fun updateAdapterWithWishlistState() {
+//        Log.d("Test00", "updateAdapterWithWishlistState: $wishlistedProductIds")
         (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
     }
 
@@ -159,6 +174,11 @@ class MenuFragment : Fragment(), MenuMVPView, WishlistMVPView {
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }
+        adapter.onWishlistProductClick = { product ->
+//            Log.d("Test00", "setupInitialAdapter: ")
+            wishlistPresenter.toggleWishlist(product)
+        }
+        Log.d("Test00", "generateAdapterWithLayout: $adapter")
         return adapter
     }
 
