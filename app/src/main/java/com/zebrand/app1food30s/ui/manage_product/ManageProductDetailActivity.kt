@@ -8,6 +8,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.ktx.firestore
@@ -130,15 +131,57 @@ class ManageProductDetailActivity : AppCompatActivity() {
                                     date = Date()
                                 )
 
+//                                newProductRef.set(newProduct)
+//                                    .addOnSuccessListener {
+//                                        // Xử lý thành công, ví dụ: hiển thị thông báo thành công cho người dùng
+//                                        val intent = Intent(this, ManageProductActivity::class.java)
+//                                        startActivity(intent)
+//                                    }
+//                                    .addOnFailureListener { e ->
+//                                        // Xử lý thất bại, ví dụ: hiển thị thông báo lỗi cho người dùng
+//                                    }
+
                                 newProductRef.set(newProduct)
                                     .addOnSuccessListener {
-                                        // Xử lý thành công, ví dụ: hiển thị thông báo thành công cho người dùng
-                                        val intent = Intent(this, ManageProductActivity::class.java)
-                                        startActivity(intent)
+                                        categoryDocumentRef.get()
+                                            .addOnSuccessListener { documentSnapshot ->
+                                                val currentNumProductCategory = documentSnapshot.getLong("numProduct") ?: 0
+                                                val newNumProductCategory = currentNumProductCategory + 1
+                                                categoryDocumentRef.update("numProduct", newNumProductCategory)
+                                                    .addOnSuccessListener {
+                                                        offerDocumentRef.get()
+                                                            .addOnSuccessListener { offerSnapshot ->
+                                                                val currentNumProductOffer = offerSnapshot.getLong("numProduct") ?: 0
+                                                                val newNumProductOffer = currentNumProductOffer + 1
+                                                                offerDocumentRef.update("numProduct", newNumProductOffer)
+                                                                    .addOnSuccessListener {
+                                                                        Toast.makeText(this, "Product and counts updated successfully", Toast.LENGTH_SHORT).show()
+                                                                        val intent = Intent(this, ManageProductActivity::class.java)
+                                                                        startActivity(intent)
+                                                                    }
+                                                                    .addOnFailureListener { e ->
+                                                                        Toast.makeText(this, "Failed to update offer count: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                                    }
+                                                            }
+                                                            .addOnFailureListener { e ->
+                                                                Toast.makeText(this, "Failed to get current offer count: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                            }
+                                                    }
+                                                    .addOnFailureListener { e ->
+                                                        // Handle failure for updating the category
+                                                        Toast.makeText(this, "Failed to update category count: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                    }
+                                            }
+                                            .addOnFailureListener { e ->
+                                                // Handle failure for getting the current category count
+                                                Toast.makeText(this, "Failed to get current category count: ${e.message}", Toast.LENGTH_SHORT).show()
+                                            }
                                     }
                                     .addOnFailureListener { e ->
-                                        // Xử lý thất bại, ví dụ: hiển thị thông báo lỗi cho người dùng
+                                        // Handle failure for creating the new product
+                                        Toast.makeText(this, "Failed to create product: ${e.message}", Toast.LENGTH_SHORT).show()
                                     }
+
                             } else {
                                 // Xử lý trường hợp không tìm thấy ưu đãi phù hợp
                             }

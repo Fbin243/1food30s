@@ -186,5 +186,6 @@
     <string name="txt_choose_category">Choose category</string>
     <string name="txt_choose_offer">Choose offer</string>
     <string name="txt_edit_product">Edit product</string>
+    <string name="txt_new_offer">New offer</string>
 
 </resources>
