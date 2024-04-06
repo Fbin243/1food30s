@@ -142,7 +142,7 @@ class CartFragment : Fragment(), CartMVPView {
     private fun handleCheckoutNavigation(userId: String) {
         binding.btnCheckout.setOnClickListener {
             val intent = Intent(context, CheckoutActivity::class.java).apply {
-                // Now we pass the userId instead of a static cartId
+                // TODO
                 putExtra("user_id", userId)
             }
             startActivity(intent)

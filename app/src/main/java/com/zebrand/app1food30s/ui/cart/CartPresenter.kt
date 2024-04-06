@@ -16,7 +16,7 @@ import kotlinx.coroutines.withContext
 
 class CartPresenter(private val view: CartMVPView, private val userId: String, context: Context) : CoroutineScope by CoroutineScope(Dispatchers.IO) {
     private var cartRef: DocumentReference? = null
-    private val repository = CartRepository(FirebaseFirestore.getInstance(), AppDatabase.getInstance(context))
+    private val repository = CartRepository(FirebaseFirestore.getInstance())
 
     init {
         setUpCart()
@@ -37,6 +37,7 @@ class CartPresenter(private val view: CartMVPView, private val userId: String, c
                     if (detailedCartItems.isNotEmpty()) {
                         view.loadCart(detailedCartItems)
                     } else {
+                        // TODO: this is called when checkout clears cart
                         view.displayError("Cart is empty.")
                     }
                 }

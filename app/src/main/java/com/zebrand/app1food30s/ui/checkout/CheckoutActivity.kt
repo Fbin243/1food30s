@@ -27,13 +27,13 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView {
         setContentView(binding.root)
 
         // TODO: pass from cart fragment?
-        cartRepository = CartRepository(FirebaseFirestore.getInstance(), AppDatabase.getInstance(this))
+        cartRepository = CartRepository(FirebaseFirestore.getInstance())
         presenter = CheckoutPresenter(this, cartRepository)
 
         setupRecyclerView()
         handleCloseCheckoutScreen()
 
-        cartId = intent.getStringExtra("cart_id") ?: return
+        cartId = intent.getStringExtra("user_id") ?: return
         presenter.loadCartData(cartId)
 
         handlePlaceOrderButton()

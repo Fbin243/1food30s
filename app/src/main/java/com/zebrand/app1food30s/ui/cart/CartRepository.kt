@@ -22,119 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class CartRepository(private val firebaseDb: FirebaseFirestore, private val roomDb: AppDatabase) {
-
-    private suspend fun getCartData(userId: String, onDataReady: (Cart?) -> Unit) {
-        // First, try to get the cart data from the local cache
-        val cachedCart = roomDb.cartDao().getCartByUserId(userId)
-
-        if (cachedCart != null) {
-            // If the cart is available in the local cache, return it
-            val cart = convertCartEntityToCart(userId, roomDb)
-//            Log.d("Test00", "getCartData: cached. $cart")
-            withContext(Dispatchers.Main) {
-                onDataReady(cart) // Ensure UI updates happen on the main thread
-            }
-        } else {
-            // If the cart is not available locally, fetch it from Firestore
-//            Log.d("Test00", "getCartData: firebase")
-            fetchFirestoreToLocal(userId, onDataReady)
-        }
-    }
-
-    private suspend fun convertCartEntityToCart(userId: String, db: AppDatabase): Cart {
-        // Retrieve all CartItemEntities associated with the userId
-        val cartItemEntities = db.cartItemDao().getCartItemsForUser(userId)
-
-        // Convert each CartItemEntity to a CartItem
-        val items = cartItemEntities.map { cartItemEntity ->
-            CartItem(
-                productId = mDBProductRef.document(cartItemEntity.productId),
-                productName = cartItemEntity.productName,
-                quantity = cartItemEntity.quantity,
-                productCategory = cartItemEntity.productCategory,
-                productImage = cartItemEntity.productImage,
-                productPrice = cartItemEntity.productPrice,
-                productStock = cartItemEntity.productStock
-            )
-        }
-
-        return Cart("", mDBUserRef.document(userId), items.toMutableList())
-    }
-
-    private fun fetchFirestoreToLocal(userId: String, onDataReady: (Cart?) -> Unit) {
-        mDBCartRef.document(userId).get()
-            .addOnSuccessListener { document ->
-                val cart = document.toObject(Cart::class.java)
-                if (cart != null && cart.items.isNotEmpty()) {
-//                    Log.d("Test00", "fetchFirestoreToLocal: $cart")
-
-                    // Fetch details for each cart item
-                    val fetchTasks = cart.items.map { cartItem ->
-                        fetchProductDetailsForCartItem(cartItem).continueWith { task ->
-                            if (task.isSuccessful) {
-                                task.result
-                            } else {
-                                null // Handle failure to fetch product details
-                            }
-                        }
-                    }
-
-                    Tasks.whenAllSuccess<CartItem?>(fetchTasks).addOnSuccessListener { detailedCartItems ->
-                        // Filter out nulls if any task failed
-                        val filteredItems = detailedCartItems.filterNotNull()
-
-                        // Update the cart's items with detailed items
-                        cart.items = filteredItems.toMutableList()
-
-                        // Update local cache with detailed cart
-                        updateLocalCartData(userId, cart)
-
-                        onDataReady(cart)
-                    }.addOnFailureListener { e ->
-//                        Log.e("Test00", "Failed to fetch cart item details", e)
-                        onDataReady(null)
-                    }
-                } else {
-//                    Log.d("Test00", "Cart is empty or null")
-                    onDataReady(null)
-                }
-            }
-            .addOnFailureListener { e ->
-//                Log.e("Test00", "Failed to fetch cart from Firestore", e)
-                onDataReady(null)
-            }
-    }
-
-    // convert Cart into cache
-    private fun updateLocalCartData(userId: String, cart: Cart) {
-        val cartEntity = CartEntity(userId = userId)
-        val cartItemEntities = cart.items.map { item ->
-            item.productId?.let {
-                CartItemEntity(
-                    cartUserId = userId,
-                    productId = it.id,
-                    productCategory = item.productCategory,
-                    productName = item.productName,
-                    productPrice = item.productPrice,
-                    productImage = item.productImage,
-                    productStock = item.productStock,
-                    quantity = item.quantity
-                )
-            }
-        }
-
-        CoroutineScope(Dispatchers.IO).launch {
-            // Insert or update the cart
-            roomDb.cartDao().insertCart(cartEntity)
-            // Insert or update cart items
-            cartItemEntities.forEach { item ->
-                if (item != null) {
-                    roomDb.cartItemDao().insertCartItem(item)
-                }
-            }
-        }
-    }
+class CartRepository(private val firebaseDb: FirebaseFirestore) {
 
     fun getCartRef(userId: String, callback: (DocumentReference) -> Unit) {
         val cartRef = mDBCartRef.document(userId)
@@ -176,35 +64,28 @@ class CartRepository(private val firebaseDb: FirebaseFirestore, private val room
 //    }
 
     fun loadCart(cartRef: DocumentReference, onResult: (List<CartItem>?) -> Unit, onError: (String) -> Unit) {
-//        Log.d("Test00", "Attempting to load cart for User ID: $userId")
         cartRef.addSnapshotListener { snapshot, e ->
             if (e != null) {
-//                    Log.e("Test00", "Snapshot listener error for User ID: $userId", e)
                 onError(e.message ?: "Unknown error")
                 return@addSnapshotListener
             }
 
             if (snapshot == null || !snapshot.exists()) {
-//                    Log.e("Test00", "Snapshot is null or does not exist for User ID: $userId")
+                // called by CheckoutPresenter?
                 onError("Cart does not exist.")
                 return@addSnapshotListener
             }
 
-//                Log.d("Test00", "Snapshot listener retrieved data for User ID: $userId")
-
             // used to be userId
             fetchProductDetailsForCartItems(cartRef) { detailedCartItems ->
                 if (detailedCartItems != null) {
-//                        Log.d("Test00", "Fetched product details for cart items successfully for User ID: $userId")
                     onResult(detailedCartItems)
                 } else {
-//                        Log.e("Test00", "Failed to fetch detailed cart items for User ID: $userId")
                     onError("Failed to fetch detailed cart items.")
                 }
             }
         }
     }
-
 
 //    fun listenToCartChanges(userId: String, onResult: (List<CartItem>?, Double) -> Unit, onError: (String) -> Unit) {
 //        getCartRef(userId) { cartRef ->
@@ -402,6 +283,7 @@ class CartRepository(private val firebaseDb: FirebaseFirestore, private val room
         }
     }
 
+    // called by CheckoutPresenter
     fun placeOrderAndClearCart(cartId: String, cartItems: List<CartItem>, completion: (Boolean) -> Unit) {
         // Fetch each product document to prepare updates
         val productFetchTasks = cartItems.mapNotNull { cartItem ->
@@ -411,7 +293,9 @@ class CartRepository(private val firebaseDb: FirebaseFirestore, private val room
         Tasks.whenAllSuccess<DocumentSnapshot>(productFetchTasks).addOnSuccessListener { documentSnapshots ->
             val batch = firebaseDb.batch()
             val cartRef = mDBCartRef.document(cartId)
-            batch.delete(cartRef) // Prepare to clear the cart
+
+            // Update the cart to have no items, effectively clearing it
+            batch.update(cartRef, "items", emptyList<CartItem>())
 
             // Prepare to update each product based on the cart item details
             documentSnapshots.forEach { documentSnapshot ->
@@ -420,23 +304,136 @@ class CartRepository(private val firebaseDb: FirebaseFirestore, private val room
                 if (product != null && cartItem != null) {
                     val newStock = product.stock - cartItem.quantity
                     val newSold = product.sold + cartItem.quantity
-                    batch.update(documentSnapshot.reference, "stock", newStock, "sold", newSold) // Prepare product update
+                    // Prepare product updates
+                    batch.update(documentSnapshot.reference, mapOf("stock" to newStock, "sold" to newSold))
                 }
             }
 
             // Commit all prepared operations in the batch
             batch.commit().addOnSuccessListener {
-//                Log.d("Checkout", "Order placed and cart cleared successfully.")
+                // Log success or notify UI
                 completion(true)
             }.addOnFailureListener { e ->
-//                Log.e("Checkout", "Failed to place order and clear cart.", e)
+                // Log error or notify UI
                 completion(false)
             }
         }.addOnFailureListener { e ->
-//            Log.e("Checkout", "Failed to fetch products for order.", e)
+            // Log error or notify UI
             completion(false)
         }
     }
 
+
+    //    private suspend fun getCartData(userId: String, onDataReady: (Cart?) -> Unit) {
+//        // First, try to get the cart data from the local cache
+//        val cachedCart = roomDb.cartDao().getCartByUserId(userId)
+//
+//        if (cachedCart != null) {
+//            // If the cart is available in the local cache, return it
+//            val cart = convertCartEntityToCart(userId, roomDb)
+////            Log.d("Test00", "getCartData: cached. $cart")
+//            withContext(Dispatchers.Main) {
+//                onDataReady(cart) // Ensure UI updates happen on the main thread
+//            }
+//        } else {
+//            // If the cart is not available locally, fetch it from Firestore
+////            Log.d("Test00", "getCartData: firebase")
+//            fetchFirestoreToLocal(userId, onDataReady)
+//        }
+//    }
+
+//    private suspend fun convertCartEntityToCart(userId: String, db: AppDatabase): Cart {
+//        // Retrieve all CartItemEntities associated with the userId
+//        val cartItemEntities = db.cartItemDao().getCartItemsForUser(userId)
+//
+//        // Convert each CartItemEntity to a CartItem
+//        val items = cartItemEntities.map { cartItemEntity ->
+//            CartItem(
+//                productId = mDBProductRef.document(cartItemEntity.productId),
+//                productName = cartItemEntity.productName,
+//                quantity = cartItemEntity.quantity,
+//                productCategory = cartItemEntity.productCategory,
+//                productImage = cartItemEntity.productImage,
+//                productPrice = cartItemEntity.productPrice,
+//                productStock = cartItemEntity.productStock
+//            )
+//        }
+//
+//        return Cart("", mDBUserRef.document(userId), items.toMutableList())
+//    }
+
+//    private fun fetchFirestoreToLocal(userId: String, onDataReady: (Cart?) -> Unit) {
+//        mDBCartRef.document(userId).get()
+//            .addOnSuccessListener { document ->
+//                val cart = document.toObject(Cart::class.java)
+//                if (cart != null && cart.items.isNotEmpty()) {
+////                    Log.d("Test00", "fetchFirestoreToLocal: $cart")
+//
+//                    // Fetch details for each cart item
+//                    val fetchTasks = cart.items.map { cartItem ->
+//                        fetchProductDetailsForCartItem(cartItem).continueWith { task ->
+//                            if (task.isSuccessful) {
+//                                task.result
+//                            } else {
+//                                null // Handle failure to fetch product details
+//                            }
+//                        }
+//                    }
+//
+//                    Tasks.whenAllSuccess<CartItem?>(fetchTasks).addOnSuccessListener { detailedCartItems ->
+//                        // Filter out nulls if any task failed
+//                        val filteredItems = detailedCartItems.filterNotNull()
+//
+//                        // Update the cart's items with detailed items
+//                        cart.items = filteredItems.toMutableList()
+//
+//                        // Update local cache with detailed cart
+//                        updateLocalCartData(userId, cart)
+//
+//                        onDataReady(cart)
+//                    }.addOnFailureListener { e ->
+////                        Log.e("Test00", "Failed to fetch cart item details", e)
+//                        onDataReady(null)
+//                    }
+//                } else {
+////                    Log.d("Test00", "Cart is empty or null")
+//                    onDataReady(null)
+//                }
+//            }
+//            .addOnFailureListener { e ->
+////                Log.e("Test00", "Failed to fetch cart from Firestore", e)
+//                onDataReady(null)
+//            }
+//    }
+
+    // convert Cart into cache
+//    private fun updateLocalCartData(userId: String, cart: Cart) {
+//        val cartEntity = CartEntity(userId = userId)
+//        val cartItemEntities = cart.items.map { item ->
+//            item.productId?.let {
+//                CartItemEntity(
+//                    cartUserId = userId,
+//                    productId = it.id,
+//                    productCategory = item.productCategory,
+//                    productName = item.productName,
+//                    productPrice = item.productPrice,
+//                    productImage = item.productImage,
+//                    productStock = item.productStock,
+//                    quantity = item.quantity
+//                )
+//            }
+//        }
+//
+//        CoroutineScope(Dispatchers.IO).launch {
+//            // Insert or update the cart
+//            roomDb.cartDao().insertCart(cartEntity)
+//            // Insert or update cart items
+//            cartItemEntities.forEach { item ->
+//                if (item != null) {
+//                    roomDb.cartItemDao().insertCartItem(item)
+//                }
+//            }
+//        }
+//    }
 }
 
