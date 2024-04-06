@@ -184,5 +184,6 @@
     <string name="wishlist_button">Wishlist button</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="cart_button">Cart button</string>
 
 </resources>

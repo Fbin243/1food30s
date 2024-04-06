@@ -39,6 +39,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView {
         handlePlaceOrderButton()
     }
 
+    // TODO: fix snackbar top to bottom of container
     override fun navigateToOrderConfirmation(showOrderConfirmation: Boolean) {
         if (showOrderConfirmation) {
             val intent = Intent(this, MainActivity::class.java)
