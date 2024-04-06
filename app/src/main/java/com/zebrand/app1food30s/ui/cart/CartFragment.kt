@@ -73,7 +73,8 @@ class CartFragment : Fragment(), CartMVPView {
         if (userId.isNotBlank()) {
             presenter = CartPresenter(this, userId, requireContext())
 //          presenter.listenToCartChanges()
-            presenter.loadCart()
+//            Log.d("Test00", "onViewCreated: loadCart()")
+//            presenter.loadCart()
         }
 
         handleCheckoutNavigation(userId)

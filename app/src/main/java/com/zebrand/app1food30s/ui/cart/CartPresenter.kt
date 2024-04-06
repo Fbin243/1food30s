@@ -14,50 +14,40 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class CartPresenter(private val view: CartMVPView, private val userId: String, private val context: Context) : CoroutineScope by CoroutineScope(Dispatchers.IO) {
+class CartPresenter(private val view: CartMVPView, private val userId: String, context: Context) : CoroutineScope by CoroutineScope(Dispatchers.IO) {
     private var cartRef: DocumentReference? = null
     private val repository = CartRepository(FirebaseFirestore.getInstance(), AppDatabase.getInstance(context))
 
     init {
-        fetchCartReference()
+        setUpCart()
     }
 
-    private fun fetchCartReference() {
+    private fun setUpCart() {
         repository.getCartRef(userId) { ref ->
             cartRef = ref
-            if (cartRef != null) {
-                listenToCartChanges()
-            } else {
-                view.displayError("Cart not found")
-            }
+            loadCart()
         }
     }
 
-    fun loadCart() {
-        repository.loadCart(userId, onResult = { detailedCartItems, _ ->
-            if (detailedCartItems != null) {
-                Log.d("Test00", "loadCart: $detailedCartItems")
-                view.loadCart(detailedCartItems)
-            } else {
-                view.displayError("Failed to fetch cart details.")
-            }
-        }, onError = { error ->
-            view.displayError(error)
-        })
+
+    private fun loadCart() {
+        cartRef?.let { ref ->
+            repository.loadCart(ref, onResult = { detailedCartItems ->
+                if (detailedCartItems != null) {
+                    if (detailedCartItems.isNotEmpty()) {
+                        view.loadCart(detailedCartItems)
+                    } else {
+                        view.displayError("Cart is empty.")
+                    }
+                }
+            }, onError = { error ->
+                view.displayError(error)
+            })
+        } ?: run {
+            view.displayError("Cart reference not found.")
+        }
     }
 
-    // TODO: totalPrice
-    private fun listenToCartChanges() {
-        repository.listenToCartChanges(userId, onResult = { detailedCartItems, _ ->
-            if (detailedCartItems != null) {
-                view.displayCartItems(detailedCartItems)
-            } else {
-                view.displayError("Failed to fetch cart details.")
-            }
-        }, onError = { error ->
-            view.displayError(error)
-        })
-    }
 
     fun removeFromCart(productRef: DocumentReference) {
         cartRef?.let { ref ->
@@ -84,4 +74,16 @@ class CartPresenter(private val view: CartMVPView, private val userId: String, p
             }
         }
     }
+
+//    private fun listenToCartChanges() {
+//        repository.listenToCartChanges(userId, onResult = { detailedCartItems, _ ->
+//            if (detailedCartItems != null) {
+//                view.displayCartItems(detailedCartItems)
+//            } else {
+//                view.displayError("Failed to fetch cart details.")
+//            }
+//        }, onError = { error ->
+//            view.displayError(error)
+//        })
+//    }
 }

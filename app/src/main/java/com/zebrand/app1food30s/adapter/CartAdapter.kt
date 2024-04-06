@@ -122,17 +122,16 @@ class CartAdapter(
         }
     }
 
-    fun removeItem(position: Int) {
-        items.removeAt(position)
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(position, items.size) // Update positions of remaining items
-        onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
-    }
-
-    fun addItem(item: CartItem) {
-        items.add(item)
-        notifyItemInserted(items.size - 1)
-        onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
-    }
-
+//    fun removeItem(position: Int) {
+//        items.removeAt(position)
+//        notifyItemRemoved(position)
+//        notifyItemRangeChanged(position, items.size) // Update positions of remaining items
+//        onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
+//    }
+//
+//    fun addItem(item: CartItem) {
+//        items.add(item)
+//        notifyItemInserted(items.size - 1)
+//        onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
+//    }
 }

@@ -136,12 +136,20 @@ class CartRepository(private val firebaseDb: FirebaseFirestore, private val room
         }
     }
 
-    fun getCartRef(userId: String, callback: (DocumentReference?) -> Unit) {
-        mDBUserRef.document(userId).get().addOnSuccessListener { document ->
-            val cartRef = document["cartRef"] as? DocumentReference
-            callback(cartRef)
-        }.addOnFailureListener {
-            callback(null)
+    fun getCartRef(userId: String, callback: (DocumentReference) -> Unit) {
+        val cartRef = mDBCartRef.document(userId)
+//        Log.d("Test00", "Attempting to get cart reference for user ID: $userId")
+
+        cartRef.get().addOnSuccessListener { document ->
+            if (document.exists()) {
+//                Log.d("Test00", "Successfully retrieved cart document for user ID: $cartRef")
+                callback(cartRef) // Here we use cartRef directly
+            } else {
+//                Log.d("Test00", "Cart document does not exist for user ID: $userId. Creating a new one.")
+                // Handle creating a new cart document for the user if necessary
+            }
+        }.addOnFailureListener { exception ->
+//            Log.d("Test00", "Failed to get cart document for user ID: $userId", exception)
         }
     }
 
@@ -167,43 +175,55 @@ class CartRepository(private val firebaseDb: FirebaseFirestore, private val room
 //        }
 //    }
 
-    fun loadCart(userId: String, onResult: (List<CartItem>?, Double) -> Unit, onError: (String) -> Unit) {
-        getCartRef(userId) { cartRef ->
-            cartRef?.addSnapshotListener { _, e ->
-                if (e != null) {
-                    onError(e.message ?: "Unknown error")
-                    return@addSnapshotListener
-                }
+    fun loadCart(cartRef: DocumentReference, onResult: (List<CartItem>?) -> Unit, onError: (String) -> Unit) {
+//        Log.d("Test00", "Attempting to load cart for User ID: $userId")
+        cartRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+//                    Log.e("Test00", "Snapshot listener error for User ID: $userId", e)
+                onError(e.message ?: "Unknown error")
+                return@addSnapshotListener
+            }
 
-                fetchProductDetailsForCartItems(userId) { detailedCartItems, totalPrice ->
-                    if (detailedCartItems != null) {
-                        onResult(detailedCartItems, totalPrice)
-                    } else {
-                        onError("Failed to fetch detailed cart items.")
-                    }
+            if (snapshot == null || !snapshot.exists()) {
+//                    Log.e("Test00", "Snapshot is null or does not exist for User ID: $userId")
+                onError("Cart does not exist.")
+                return@addSnapshotListener
+            }
+
+//                Log.d("Test00", "Snapshot listener retrieved data for User ID: $userId")
+
+            // used to be userId
+            fetchProductDetailsForCartItems(cartRef) { detailedCartItems ->
+                if (detailedCartItems != null) {
+//                        Log.d("Test00", "Fetched product details for cart items successfully for User ID: $userId")
+                    onResult(detailedCartItems)
+                } else {
+//                        Log.e("Test00", "Failed to fetch detailed cart items for User ID: $userId")
+                    onError("Failed to fetch detailed cart items.")
                 }
             }
         }
     }
 
-    fun listenToCartChanges(userId: String, onResult: (List<CartItem>?, Double) -> Unit, onError: (String) -> Unit) {
-        getCartRef(userId) { cartRef ->
-            cartRef?.addSnapshotListener { _, e ->
-                if (e != null) {
-                    onError(e.message ?: "Unknown error")
-                    return@addSnapshotListener
-                }
 
-                fetchProductDetailsForCartItems(userId) { detailedCartItems, totalPrice ->
-                    if (detailedCartItems != null) {
-                        onResult(detailedCartItems, totalPrice)
-                    } else {
-                        onError("Failed to fetch detailed cart items.")
-                    }
-                }
-            }
-        }
-    }
+//    fun listenToCartChanges(userId: String, onResult: (List<CartItem>?, Double) -> Unit, onError: (String) -> Unit) {
+//        getCartRef(userId) { cartRef ->
+//            cartRef.addSnapshotListener { _, e ->
+//                if (e != null) {
+//                    onError(e.message ?: "Unknown error")
+//                    return@addSnapshotListener
+//                }
+//
+//                fetchProductDetailsForCartItems(cartRef) { detailedCartItems, totalPrice ->
+//                    if (detailedCartItems != null) {
+//                        onResult(detailedCartItems, totalPrice)
+//                    } else {
+//                        onError("Failed to fetch detailed cart items.")
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     fun removeFromCart(cartRef: DocumentReference, productRef: DocumentReference, onComplete: (Boolean) -> Unit) {
         cartRef.get().addOnSuccessListener { documentSnapshot ->
@@ -233,48 +253,129 @@ class CartRepository(private val firebaseDb: FirebaseFirestore, private val room
         }
     }
 
-    fun fetchProductDetailsForCartItems(userId: String, callback: (List<CartItem>?, Double) -> Unit) {
-        mDBUserRef.document(userId).get().addOnSuccessListener { userSnapshot ->
-            val cartRef: DocumentReference = userSnapshot.get("cartRef") as? DocumentReference
-                ?: return@addOnSuccessListener Unit
-            cartRef.get().addOnSuccessListener { documentSnapshot ->
-                val cart = documentSnapshot.toObject(Cart::class.java)
-                if (cart != null) {
-                    val tasks = cart.items.map { cartItem ->
-                        fetchProductDetailsForCartItem(cartItem)
-                    }
-                    Tasks.whenAllSuccess<CartItem>(tasks).addOnSuccessListener { detailedCartItems ->
-                        val totalPrice = detailedCartItems.sumOf { item -> item.productPrice * item.quantity }
-                        callback(detailedCartItems, totalPrice)
-                    }.addOnFailureListener { e ->
-                        callback(null, 0.0)
-                    }
-                } else {
-                    callback(null, 0.0)
-                }
-            }.addOnFailureListener {
-                callback(null, 0.0)
+    // fetching from user
+//    fun fetchProductDetailsForCartItems(cartRef: DocumentReference, callback: (List<CartItem>?, Double) -> Unit) {
+////        mDBUserRef.document(userId).get().addOnSuccessListener { userSnapshot ->
+////            val cartRef = userSnapshot.get("cartRef") as? DocumentReference
+////            if (cartRef == null) {
+////                Log.e("Test00", "No cartRef found in user's document for User ID: $userId")
+////                callback(null, 0.0)
+////                return@addOnSuccessListener
+////            }
+////
+////            Log.d("Test00", "Found cartRef, proceeding to fetch cart for User ID: $userId")
+//        cartRef.get().addOnSuccessListener { documentSnapshot ->
+//            val cart = documentSnapshot.toObject(Cart::class.java)
+//            if (cart == null) {
+//                callback(null, 0.0)
+//                return@addOnSuccessListener
+//            }
+//
+//            val tasks = cart.items.map { cartItem ->
+//                fetchProductDetailsForCartItem(cartItem)
+//            }
+//
+//            Tasks.whenAllSuccess<CartItem>(tasks).addOnSuccessListener { detailedCartItems ->
+//                val totalPrice = detailedCartItems.sumOf { item -> item.productPrice * item.quantity }
+//                callback(detailedCartItems, totalPrice)
+//            }.addOnFailureListener { e ->
+//                callback(null, 0.0)
+//            }
+//        }.addOnFailureListener { e ->
+//            callback(null, 0.0)
+//        }
+//    }
+
+    fun fetchProductDetailsForCartItems(cartRef: DocumentReference, callback: (List<CartItem>?) -> Unit) {
+        cartRef.get().addOnSuccessListener { documentSnapshot ->
+            val cart = documentSnapshot.toObject(Cart::class.java)
+            val cartItems = cart?.items
+//            Log.d("Test00", "fetchProductDetailsForCartItems: $cartItems")
+            if (cart == null) {
+                callback(null)
+                return@addOnSuccessListener
             }
-        }.addOnFailureListener {
+
+            // Ensure cart.items is not null or empty before proceeding
+            if (cartItems != null) {
+                if (cartItems.isEmpty()) {
+                    callback(emptyList()) // No items to process, return empty list and zero total price
+                    return@addOnSuccessListener
+                }
+            }
+
+            val tasks = cartItems?.map { cartItem ->
+                // Skip null items, if any, to prevent NullPointerException
+//                Log.d("Test00", "fetchProductDetailsForCartItems: $cartItem")
+                fetchProductDetailsForCartItem(cartItem)
+            }
+
+            Tasks.whenAllSuccess<CartItem?>(tasks).addOnSuccessListener { result ->
+                val detailedCartItems = result.filterNotNull() // Remove any nulls that may have slipped through
+//                Log.d("Test00", "fetchProductDetailsForCartItems: $detailedCartItems")
+//                val totalPrice = detailedCartItems.sumOf { item -> item.productPrice * item.quantity }
+                callback(detailedCartItems)
+            }.addOnFailureListener { e ->
+                callback(null)
+            }
+        }.addOnFailureListener { e ->
+            callback(null)
         }
     }
 
+//    fun fetchProductDetailsForCartItems(userId: String, callback: (List<CartItem>?, Double) -> Unit) {
+//
+//        mDBCartRef.document(userId).get().addOnSuccessListener { documentSnapshot ->
+//            val cart = documentSnapshot.toObject(Cart::class.java)
+//            if (cart == null) {
+//                Log.e("Test00", "Cart object is null for Cart ID: $userId")
+//                callback(null, 0.0)
+//                return@addOnSuccessListener
+//            }
+//
+//            val tasks = cart.items.map { cartItem ->
+//                fetchProductDetailsForCartItem(cartItem)
+//            }
+//
+//            // Correctly wait for all tasks to complete and process their results
+//            Tasks.whenAllSuccess<CartItem?>(tasks).addOnSuccessListener { detailedCartItems ->
+//                // Filter out null values from the detailedCartItems
+//                val nonNullDetailedCartItems = detailedCartItems.filterNotNull()
+//
+//                val totalPrice = nonNullDetailedCartItems.sumOf { it.productPrice * it.quantity }
+//                Log.d("Test00", "fetchProductDetailsForCartItems: $nonNullDetailedCartItems")
+//                callback(nonNullDetailedCartItems, totalPrice)
+//            }.addOnFailureListener { e ->
+//                Log.e("Test00", "Error fetching cart items details for Cart ID: $userId", e)
+//                callback(null, 0.0)
+//            }
+//        }.addOnFailureListener { e ->
+//            Log.e("Test00", "Error fetching cart for Cart ID: $userId", e)
+//            callback(null, 0.0)
+//        }
+//    }
 
     private fun fetchProductDetailsForCartItem(cartItem: CartItem): Task<CartItem?> {
+//        Log.d("Test00", "fetchProductDetailsForCartItem: ")
+
         if (cartItem.productId == null) {
+//            Log.d("Test00", "fetchProductDetailsForCartItem: fail")
             return Tasks.forResult(null) // Early return if productId is null
         }
 
         return cartItem.productId.get().continueWithTask { task ->
             if (task.isSuccessful) {
+//                Log.d("Test00", "fetchProductDetailsForCartItem: successful")
                 val product = task.result.toObject(Product::class.java)
                 if (product != null) {
+//                    Log.d("Test00", "fetchProductDetailsForCartItem: product not null")
                     val storageReference = FirebaseStorage.getInstance().reference.child(product.image)
                     return@continueWithTask storageReference.downloadUrl.continueWithTask { urlTask ->
                         if (urlTask.isSuccessful) {
                             val imageUrl = urlTask.result.toString()
                             val cartItem = CartItem(
                                 productId = cartItem.productId, // Use DocumentReference's ID as a string
+                                // TODO
                                 productCategory = "Food", // Example category, adjust as necessary
                                 productName = product.name,
                                 productPrice = product.price,
@@ -282,15 +383,18 @@ class CartRepository(private val firebaseDb: FirebaseFirestore, private val room
                                 productStock = product.stock,
                                 quantity = cartItem.quantity
                             )
+//                            Log.d("Test00", "fetchProductDetailsForCartItem: $cartItem")
                             Tasks.forResult(cartItem)
                         } else {
                             Tasks.forException<CartItem?>(urlTask.exception ?: Exception("Failed to fetch image URL"))
                         }
                     }
                 } else {
+//                    Log.d("Test00", "fetchProductDetailsForCartItem: product null")
                     return@continueWithTask Tasks.forResult(null)
                 }
             } else {
+//                Log.d("Test00", "fetchProductDetailsForCartItem: task fails")
                 task.exception?.let { exception ->
                     return@continueWithTask Tasks.forException<CartItem?>(exception)
                 }

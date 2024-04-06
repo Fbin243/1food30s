@@ -18,15 +18,16 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
 
     fun loadCartData(cartId: String) {
         launch {
-            cartRepository.fetchProductDetailsForCartItems(cartId) { detailedCartItemsResult, totalPriceResult ->
-                if (detailedCartItemsResult != null) {
-                    cartItems = detailedCartItemsResult
-                    totalPrice = totalPriceResult
-                    view.displayCartItems(cartItems, totalPrice)
-                } else {
-                    view.displayError("Failed to fetch cart details")
-                }
-            }
+            // TODO
+//            cartRepository.fetchProductDetailsForCartItems(cartId) { detailedCartItemsResult, totalPriceResult ->
+//                if (detailedCartItemsResult != null) {
+//                    cartItems = detailedCartItemsResult
+//                    totalPrice = totalPriceResult
+//                    view.displayCartItems(cartItems, totalPrice)
+//                } else {
+//                    view.displayError("Failed to fetch cart details")
+//                }
+//            }
         }
     }
 
