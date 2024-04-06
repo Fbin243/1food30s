@@ -122,6 +122,27 @@ class EditProduct : AppCompatActivity() {
         fireStore.collection("products").document(productId)
             .delete()
             .addOnSuccessListener {
+                val offersCollection = FirebaseFirestore.getInstance().collection("offers")
+                currentOffer?.let { it1 ->
+                    offersCollection.document(it1).get().addOnSuccessListener { document ->
+                        if (document != null && document.exists()) {
+                            offersCollection.document(currentOffer!!).update("numProduct", FieldValue.increment(-1))
+                        }
+                    }.addOnFailureListener {
+
+                    }
+                }
+
+                val categoriesCollection = FirebaseFirestore.getInstance().collection("categories")
+                currentCategory?.let { it1 ->
+                    categoriesCollection.document(it1).get().addOnSuccessListener { document ->
+                        if (document != null && document.exists()) {
+                            categoriesCollection.document(currentCategory!!).update("numProduct", FieldValue.increment(-1))
+                        }
+                    }.addOnFailureListener {
+
+                    }
+                }
                 Toast.makeText(this, "Product deleted successfully", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, ManageProductActivity::class.java)
                 startActivity(intent)
