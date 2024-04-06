@@ -20,7 +20,7 @@ import com.zebrand.app1food30s.utils.Utils.getShimmerDrawable
 class ProductAdapter(
     var products: List<Product>,
     private var offers: List<Offer>,
-    private var wishlistedProductIds: Set<String>,
+    private var wishlistedProductIds: MutableSet<String>,
 ) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
     var onItemClick: ((Product) -> Unit)? = null

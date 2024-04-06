@@ -23,9 +23,6 @@ import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
-import com.zebrand.app1food30s.data.entity.Cart
-import com.zebrand.app1food30s.data.entity.CartItem
-import com.zebrand.app1food30s.data.entity.WishlistItem
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.ui.menu.MenuActivity
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
@@ -79,39 +76,6 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         handleOpenSearchScreen()
 
         return binding.root
-    }
-
-    override fun showProductsLatestDishes(products: MutableList<Product>, offers: MutableList<Offer>) {
-        currentProducts = products
-        binding.productRcv1.layoutManager = GridLayoutManager(requireContext(), 2)
-        val adapter = ProductAdapter(products.take(4).toMutableList(), offers, true, wishlistedProductIds)
-        adapter.onItemClick = { product ->
-            openDetailProduct(product)
-        }
-        adapter.onAddButtonClick = { product ->
-            addProductToCart(requireContext(), product.id)
-        }
-        adapter.onWishlistProductClick = { product ->
-            wishlistPresenter.toggleWishlist(product)
-        }
-        binding.productRcv1.adapter = adapter
-    }
-
-    override fun showProductsBestSeller(products: MutableList<Product>, offers: MutableList<Offer>) {
-        currentProducts = products
-        binding.productRcv2.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val adapter = ProductAdapter(products.take(4).toMutableList(), offers, false, wishlistedProductIds)
-        adapter.onItemClick = { product ->
-            openDetailProduct(product)
-        }
-        adapter.onAddButtonClick = { product ->
-            addProductToCart(requireContext(), product.id)
-        }
-        adapter.onWishlistProductClick = { product ->
-            wishlistPresenter.toggleWishlist(product)
-        }
-        binding.productRcv2.adapter = adapter
     }
 
     private fun fetchAndUpdateWishlistState() {
@@ -172,43 +136,6 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         binding.searchInput.clearFocus()
     }
 
-    private fun handleOpenSearchScreen() {
-        binding.searchInput.setOnFocusChangeListener { _, focus ->
-            if (focus) {
-                val intent = Intent(requireContext(), SearchActivity::class.java)
-                startActivity(intent)
-            }
-        }
-        binding.searchInput.setOnClickListener {
-            val intent = Intent(requireContext(), SearchActivity::class.java)
-            startActivity(intent)
-        }
-    }
-
-    private fun openMenuActivityWithCategory(categoryId: String, adapterPosition: Int) {
-        Log.i("TAG123", "openMenuActivityWithCategory: DA GOI HAM NAY")
-        val intent = Intent(requireContext(), MenuActivity::class.java)
-        intent.putExtra("categoryId", categoryId)
-        intent.putExtra("adapterPosition", adapterPosition)
-        startActivity(intent)
-    }
-
-    override fun showCategories(categories: List<Category>) {
-        binding.cateRcv.layoutManager =
-            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        val adapter = CategoryAdapter(categories)
-        adapter.onItemClick = { holder ->
-            openMenuActivityWithCategory(
-                categories[holder.adapterPosition].id,
-                holder.adapterPosition
-            )
-        }
-        binding.cateRcv.adapter = adapter
-        binding.btn.setOnClickListener {
-            openMenuActivityWithCategory(categories[0].id, 0)
-        }
-    }
-
 
     private fun addProductToCart(context: Context, productId: String) {
         val db = FirebaseFirestore.getInstance()
@@ -263,26 +190,76 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         }
     }
 
-    override fun showProductsLatestDishes(products: List<Product>, offers: List<Offer>) {
+
+    // ============= DƯỚI NÀY LÀ HÀM CỦA T
+    private fun handleOpenSearchScreen() {
+        binding.searchInput.setOnFocusChangeListener { _, focus ->
+            if (focus) {
+                val intent = Intent(requireContext(), SearchActivity::class.java)
+                startActivity(intent)
+            }
+        }
+        binding.searchInput.setOnClickListener {
+            val intent = Intent(requireContext(), SearchActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun openMenuActivityWithCategory(categoryId: String, adapterPosition: Int) {
+        val intent = Intent(requireContext(), MenuActivity::class.java)
+        intent.putExtra("categoryId", categoryId)
+        intent.putExtra("adapterPosition", adapterPosition)
+        startActivity(intent)
+    }
+
+    override fun showCategories(categories: List<Category>) {
+        binding.cateRcv.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        val adapter = CategoryAdapter(categories)
+        adapter.onItemClick = { holder ->
+            openMenuActivityWithCategory(
+                categories[holder.adapterPosition].id,
+                holder.adapterPosition
+            )
+        }
+        binding.cateRcv.adapter = adapter
+        binding.btn.setOnClickListener {
+            openMenuActivityWithCategory(categories[0].id, 0)
+        }
+    }
+
+    override fun showProductsLatestDishes(products: MutableList<Product>, offers: MutableList<Offer>) {
         for (product in products) {
             product.isGrid = true
         }
         currentProducts = products
         binding.productRcv1.layoutManager = GridLayoutManager(requireContext(), 2)
-        val adapter = ProductAdapter(products.take(4), offers, wishlistedProductIds)
+        val adapter = ProductAdapter(products.take(4).toMutableList(), offers, wishlistedProductIds)
         addCallBacksForAdapter(adapter)
         binding.productRcv1.adapter = adapter
         handleOpenProductViewAll(binding.btn1, true, binding.textView1.text.toString())
     }
 
-    override fun showProductsBestSeller(products: List<Product>, offers: List<Offer>) {
+    override fun showProductsBestSeller(products: MutableList<Product>, offers: MutableList<Offer>) {
         currentProducts = products
         binding.productRcv2.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val adapter = ProductAdapter(products.take(4), offers, wishlistedProductIds)
+        val adapter = ProductAdapter(products.take(4).toMutableList(), offers, wishlistedProductIds)
         addCallBacksForAdapter(adapter)
         binding.productRcv2.adapter = adapter
         handleOpenProductViewAll(binding.btn2, false, binding.textView2.text.toString())
+    }
+
+    private fun addCallBacksForAdapter(adapter: ProductAdapter) {
+        adapter.onItemClick = { product ->
+            openDetailProduct(product)
+        }
+        adapter.onAddButtonClick = { product ->
+            addProductToCart(requireContext(), product.id)
+        }
+        adapter.onWishlistProductClick = { product ->
+            wishlistPresenter.toggleWishlist(product)
+        }
     }
 
     private fun handleOpenProductViewAll(
@@ -295,18 +272,6 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
             intent.putExtra("filterBy", "latestDishes")
             intent.putExtra("title", title)
             startActivity(intent)
-        }
-    }
-
-    private fun addCallBacksForAdapter(adapter: ProductAdapter) {
-        adapter.onItemClick = { product ->
-            openDetailProduct(product)
-        }
-        adapter.onAddButtonClick = { product ->
-            addProductToCart(requireContext(), product.id)
-        }
-        adapter.onWishlistProductClick = { product ->
-            wishlistPresenter.toggleWishlist(product)
         }
     }
 

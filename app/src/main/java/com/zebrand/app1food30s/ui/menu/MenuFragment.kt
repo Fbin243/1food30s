@@ -16,6 +16,7 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Category
+import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentMenuBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
@@ -30,12 +31,11 @@ import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 
 class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment(), MenuMVPView,
-    SwipeRefreshLayout.OnRefreshListener {
+    SwipeRefreshLayout.OnRefreshListener, WishlistMVPView {
     private lateinit var binding: FragmentMenuBinding
     private lateinit var menuPresenter: MenuPresenter
     private lateinit var wishlistPresenter: WishlistPresenter
     private lateinit var db: AppDatabase
-    private var isGrid: Boolean = false
     private var wishlistedProductIds: MutableSet<String> = mutableSetOf()
     private var categoryId: String? = null
     private var adapterPosition: Int = 0
@@ -121,18 +121,18 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
 
     override fun updateWishlistItemStatus(product: Product, isAdded: Boolean) {
 //        Log.d("Test00", "updateWishlistItemStatus: $product, $isAdded")
-        // Update the set of wishlisted product IDs based on the action
-        if (isAdded) {
-            wishlistedProductIds.add(product.id)
-        } else {
-            wishlistedProductIds.remove(product.id)
-        }
+//         Update the set of wishlisted product IDs based on the action
+//        if (isAdded) {
+//            wishlistedProductIds.add(product.id)
+//        } else {
+//            wishlistedProductIds.remove(product.id)
+//        }
 //        Log.d("Test00", "updateWishlistItemStatus: $wishlistedProductIds")
-
+//
 //        (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
-        val adapter = binding.productRcv.adapter as? ProductAdapter
+//        val adapter = binding.productRcv.adapter as? ProductAdapter
 //        Log.d("Test00", "updateWishlistItemStatus: $adapter wishlisted IDs: $wishlistedProductIds")
-        adapter?.updateWishlistState(wishlistedProductIds)
+//        adapter?.updateWishlistState(wishlistedProductIds)
     }
 
     private fun fetchAndUpdateWishlistState() {
@@ -145,13 +145,13 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
     override fun refreshWishlistState(wishlistedProductIds: Set<String>) {
         this.wishlistedProductIds = wishlistedProductIds as MutableSet<String>
 //        Log.d("Test00", "refreshWishlistState: $wishlistedProductIds")
-        updateAdapterWithWishlistState()
+//        updateAdapterWithWishlistState()
     }
 
-    private fun updateAdapterWithWishlistState() {
+//    private fun updateAdapterWithWishlistState() {
 //        Log.d("Test00", "updateAdapterWithWishlistState: $wishlistedProductIds")
-        (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
-    }
+//        (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
+//    }
 
     // ============ DƯỚI NÀY LÀ HÀM CỦA T
     override fun showCategories(categories: List<Category>) {
