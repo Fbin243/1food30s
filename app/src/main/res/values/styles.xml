@@ -82,4 +82,7 @@
         <item name="android:buttonBarNegativeButtonStyle">@style/Widget.MaterialComponents.Button.TextButton.Dialog</item>
     </style>
 
+    <style name="CircularShapeAppearance" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

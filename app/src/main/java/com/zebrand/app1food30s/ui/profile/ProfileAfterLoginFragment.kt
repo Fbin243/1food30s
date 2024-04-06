@@ -21,9 +21,11 @@ import com.zebrand.app1food30s.utils.MySharedPreferences
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
+import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.ui.change_password.ChangePasswordActivity
 import com.zebrand.app1food30s.ui.my_order.MyOrderActivity
+import com.zebrand.app1food30s.utils.FireStoreUtils
 import com.zebrand.app1food30s.utils.FirebaseUtils.fireStorage
 import com.zebrand.app1food30s.utils.FirebaseUtils.fireStore
 import kotlinx.coroutines.launch
@@ -56,7 +58,7 @@ class ProfileAfterLoginFragment : Fragment() {
     ): View {
         binding = FragmentProfileAfterLoginBinding.inflate(inflater, container, false)
         idUser = arguments?.getString("USER_ID")
-        Log.d("MainActivity", "idUserProfileAfterLoginFragment: $idUser")
+//        Log.d("MainActivity", "idUserProfileAfterLoginFragment: $idUser")
 
 
         fetchUserInformation(idUser.orEmpty())
@@ -123,15 +125,28 @@ class ProfileAfterLoginFragment : Fragment() {
     private fun fetchUserInformation(userId: String) {
         lifecycleScope.launch {
             try {
-                val documentSnapshot = fireStore.collection("accounts").document(userId).get().await()
+                val documentSnapshot = FireStoreUtils.mDBUserRef.document(userId).get().await()
                 val user = documentSnapshot.toObject(User::class.java)
                 user?.let {
-                    val imageUrl = fireStorage.reference.child(it.avatar).downloadUrl.await().toString()
-                    Picasso.get().load(imageUrl).into(binding.ava)
-                    currentImagePath = it.avatar
-                    binding.username.text = it.lastName
+                    val ava = binding.ava
+                    // Check if user's avatar is not null and not empty
+                    if (it.avatar.isNotEmpty()) {
+                        // Fetch and set the user's avatar with resizing
+                        val imageUrl = fireStorage.reference.child(it.avatar).downloadUrl.await().toString()
+                        Picasso.get().load(imageUrl)
+                            .resize(200, 200) // Resize the image
+                            .centerCrop() // Adjust cropping to maintain aspect ratio
+                            .into(ava)
+                    } else {
+                        // Load a default image when avatar is null or empty, also with resizing
+                        Picasso.get().load(R.drawable.default_avatar)
+                            .resize(200, 200) // Resize the image
+                            .centerCrop() // Adjust cropping to maintain aspect ratio
+                            .into(ava)
+                    }
+                    binding.username.text = it.firstName
                     binding.email.text = it.email
-                    // Update other user info views
+                    // Update other user info views as necessary
                 }
             } catch (e: Exception) {
                 Toast.makeText(context, "Error fetching user information", Toast.LENGTH_LONG).show()
@@ -149,7 +164,7 @@ class ProfileAfterLoginFragment : Fragment() {
         }
     }
 
-    fun signOut(){
+    private fun signOut(){
         val mAuth = FirebaseUtils.fireAuth
         val mySharedPreferences = MySharedPreferences.getInstance(requireContext())
 

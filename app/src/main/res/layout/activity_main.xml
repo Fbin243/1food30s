@@ -51,5 +51,5 @@
         android:tint="@color/white"
         app:layout_anchor="@id/bottom_app_bar"
         app:maxImageSize="@dimen/spacing32"
-        />
+        android:contentDescription="@string/cart_button" />
  </androidx.coordinatorlayout.widget.CoordinatorLayout>

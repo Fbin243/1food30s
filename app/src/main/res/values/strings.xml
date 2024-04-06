@@ -207,6 +207,7 @@
     <string name="txt_create_category">Create category</string>
     <string name="txt_edi_category">Edit category</string>
     <string name="txt_save_category">Update category</string>
+    <string name="cart_button">Cart button</string>
 
     <string name="txt_category_item_order">Category: </string>
     <string name="txt_payment">Payment</string>
