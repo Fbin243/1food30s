@@ -135,6 +135,7 @@
                         </TextView>
 
                         <include
+                            android:id="@+id/timeLineView"
                             layout="@layout/timeline"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
