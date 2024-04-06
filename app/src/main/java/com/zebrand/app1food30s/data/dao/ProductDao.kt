@@ -14,7 +14,7 @@ interface ProductDao {
     fun getAll(): List<Product>
 
     @Query("SELECT * FROM products WHERE id = :id")
-    fun getOneById(id: String): Product
+    fun getOneById(id: String?): Product?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(category: Product)

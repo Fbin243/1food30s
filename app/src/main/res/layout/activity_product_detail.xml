@@ -1,414 +1,426 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     tools:context=".ui.product_detail.ProductDetailActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/constraintLayout"
-        android:paddingBottom="@dimen/spacing50">
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-        <include
-            android:id="@+id/backFromDetail"
-            layout="@layout/item_back"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:fontFamily="@font/rubik_extrabold"
-            android:text="@string/txt_details"
-            android:textSize="@dimen/font_header"
-            app:layout_constraintStart_toEndOf="@+id/backFromDetail"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="2dp"
-            app:cardCornerRadius="@dimen/spacing24"
-            app:cardElevation="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/backFromDetail"
-            android:visibility="gone">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/spacing50">
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <include
+                    android:id="@+id/backFromDetail"
+                    layout="@layout/item_back"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:fontFamily="@font/rubik_extrabold"
+                    android:text="@string/txt_details"
+                    android:textSize="@dimen/font_header"
+                    app:layout_constraintStart_toEndOf="@+id/backFromDetail"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="2dp"
+                android:visibility="visible"
+                app:cardCornerRadius="@dimen/spacing24"
+                app:cardElevation="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/backFromDetail">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/productImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/product1" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/spacing10">
+
+                        <TextView
+                            android:id="@+id/productTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing10"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/rubik_bold"
+                            android:maxLines="1"
+                            android:text="Sweet &amp; Sour Chicken"
+                            android:textSize="@dimen/font_header" />
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="@dimen/spacing10"
+                                android:src="@drawable/ic_star"
+                                app:tint="@color/secondary" />
+
+                            <TextView
+                                android:id="@+id/productRating"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginEnd="@dimen/spacing10"
+                                android:text="5 / 5"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/productCategory"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:ellipsize="end"
+                                android:maxLength="25"
+                                android:text="| Food | "
+                                android:textColor="@color/grey_60" />
+
+                            <TextView
+                                android:id="@+id/productSold"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:text="Sold: 113"
+                                android:textColor="@color/grey_60" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/productOldPrice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:layout_marginEnd="@dimen/spacing4"
+                                android:background="@drawable/strikethrough"
+                                android:text="$5.20"
+                                android:textColor="@color/grey_60"
+                                android:textSize="@dimen/font_default"
+                                android:textStyle="bold"
+                                android:visibility="gone" />
+
+                            <TextView
+                                android:id="@+id/productPrice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:fontFamily="@font/rubik_bold"
+                                android:text="$6.54"
+                                android:textColor="@color/accent"
+                                android:textSize="@dimen/font_header" />
+
+                        </LinearLayout>
+
+
+                        <com.borjabravo.readmoretextview.ReadMoreTextView
+                            android:id="@+id/productDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing10"
+                            android:ellipsize="end"
+                            android:text="Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce."
+                            android:textColor="@color/grey_60"
+                            android:textSize="@dimen/font_default"
+                            app:colorClickableText="#039BE5"
+                            app:trimCollapsedText="@string/read_more"
+                            app:trimExpandedText="@string/read_less"
+                            app:trimLength="150"
+                            app:trimMode="trimModeLength" />
+
+                        <LinearLayout
+                            android:id="@+id/categoryContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginTop="@dimen/spacing10"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/rubik_medium"
+                                android:text="@string/txt_stock"
+                                android:textSize="@dimen/font_size16" />
+
+                            <TextView
+                                android:id="@+id/productStock"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="100"
+                                android:textColor="@color/grey_60"
+                                android:textSize="@dimen/font_default" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/quantityContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing10"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/rubik_medium"
+                                android:maxLines="2"
+                                android:text="@string/txt_quantity"
+                                android:textSize="@dimen/font_size16" />
+
+                            <LinearLayout
+                                android:layout_width="100dp"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center_vertical"
+                                android:background="@drawable/adjust_quantity_background"
+                                android:orientation="horizontal"
+                                android:paddingStart="@dimen/spacing4"
+                                android:paddingEnd="@dimen/spacing4">
+
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:src="@drawable/ic_minus"
+                                    app:tint="@color/primary" />
+
+                                <TextView
+                                    android:id="@+id/productQuantity"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/spacing2"
+                                    android:layout_weight="1"
+                                    android:text="7"
+                                    android:textAlignment="center"
+                                    android:textSize="@dimen/font_header"
+                                    android:textStyle="bold" />
+
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:padding="1dp"
+                                    android:src="@drawable/ic_plus"
+                                    app:tint="@color/primary" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/addToCartBtn"
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:layout_marginTop="20dp"
+                            android:paddingStart="70dp"
+                            android:paddingEnd="70dp"
+                            android:text="Add to cart"
+                            android:textAlignment="center"
+                            android:textAllCaps="true"
+                            android:textStyle="bold"
+                            app:icon="@drawable/ic_cart"
+                            app:iconPadding="-10dp"
+                            app:iconSize="24dp" />
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/productShimmer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layout_editor_absoluteY="30dp">
+
+                <include layout="@layout/activity_product_detail_shimmer" />
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginTop="@dimen/spacing20"
+                android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/productImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/product1" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing10">
-
-                    <TextView
-                        android:id="@+id/productTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing10"
-                        android:fontFamily="@font/rubik_bold"
-                        android:maxLines="2"
-                        android:text="Sweet &amp; Sour Chicken"
-                        android:textSize="@dimen/font_header" />
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="@dimen/spacing10"
-                            android:src="@drawable/ic_star"
-                            app:tint="@color/secondary" />
-
-                        <TextView
-                            android:id="@+id/productRating"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="@dimen/spacing10"
-                            android:text="5 / 5"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/productCategory"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="| Food | "
-                            android:textColor="@color/grey_60" />
-
-                        <TextView
-                            android:id="@+id/productSold"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:text="Sold: 113"
-                            android:textColor="@color/grey_60" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="10dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/productOldPrice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_marginEnd="@dimen/spacing4"
-                            android:background="@drawable/strikethrough"
-                            android:text="$5.20"
-                            android:textColor="@color/grey_60"
-                            android:textSize="@dimen/font_default"
-                            android:textStyle="bold"
-                            android:visibility="gone"/>
-
-                        <TextView
-                            android:id="@+id/productPrice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/rubik_bold"
-                            android:layout_gravity="bottom"
-                            android:text="$6.54"
-                            android:textColor="@color/accent"
-                            android:textSize="@dimen/font_header" />
-
-                    </LinearLayout>
-
-
-
-
-                    <com.borjabravo.readmoretextview.ReadMoreTextView
-                        android:id="@+id/productDescription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing10"
-                        android:ellipsize="end"
-                        android:text="Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce."
-                        android:textColor="@color/grey_60"
-                        android:textSize="@dimen/font_default"
-                        app:colorClickableText="#039BE5"
-                        app:trimCollapsedText="@string/read_more"
-                        app:trimExpandedText="@string/read_less"
-                        app:trimLength="150"
-                        app:trimMode="trimModeLength" />
-
-                    <LinearLayout
-                        android:id="@+id/categoryContainer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginTop="@dimen/spacing10"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/rubik_medium"
-                            android:text="@string/txt_stock"
-                            android:textSize="@dimen/font_size16" />
-
-                        <TextView
-                            android:id="@+id/productStock"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="100"
-                            android:textColor="@color/grey_60"
-                            android:textSize="@dimen/font_default" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/quantityContainer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing10"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/rubik_medium"
-                            android:maxLines="2"
-                            android:text="@string/txt_quantity"
-                            android:textSize="@dimen/font_size16" />
-
-                        <LinearLayout
-                            android:layout_width="100dp"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center_vertical"
-                            android:background="@drawable/adjust_quantity_background"
-                            android:orientation="horizontal"
-                            android:paddingStart="@dimen/spacing4"
-                            android:paddingEnd="@dimen/spacing4">
-
-                            <ImageView
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_gravity="center_vertical"
-                                android:src="@drawable/ic_minus"
-                                app:tint="@color/primary" />
-
-                            <TextView
-                                android:id="@+id/productQuantity"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/spacing2"
-                                android:layout_weight="1"
-                                android:text="7"
-                                android:textAlignment="center"
-                                android:textSize="@dimen/font_header"
-                                android:textStyle="bold" />
-
-                            <ImageView
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_gravity="center_vertical"
-                                android:padding="1dp"
-                                android:src="@drawable/ic_plus"
-                                app:tint="@color/primary" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <Button
-                        android:id="@+id/addToCartBtn"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="20dp"
-                        android:paddingStart="70dp"
-                        android:paddingEnd="70dp"
-                        android:text="Add to cart"
-                        android:textAlignment="center"
-                        android:textAllCaps="true"
-                        android:textStyle="bold"
-                        app:icon="@drawable/ic_cart"
-                        app:iconPadding="-10dp"
-                        app:iconSize="24dp" />
-
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/productShimmer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/backFromDetail">
-
-            <include layout="@layout/activity_product_detail_shimmer" />
-
-        </com.facebook.shimmer.ShimmerFrameLayout>
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="6 Reviews"
-            android:textSize="@dimen/font_size16"
-            android:textStyle="bold"
-            app:layout_constraintBaseline_toBaselineOf="@+id/viewAllBtn"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <Button
-            android:id="@+id/viewAllBtn"
-            android:layout_width="70dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="460dp"
-            android:backgroundTint="@color/secondary_20"
-            android:fontFamily="@font/rubik_bold"
-            android:lineHeight="@dimen/spacing1"
-            android:padding="0dp"
-            android:text="@string/txt_view_all"
-            android:textColor="@color/secondary"
-            android:textSize="@dimen/font_size12"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
-            app:strokeColor="@color/primary" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/reviewRcv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
-        <LinearLayout
-            android:id="@+id/relatedProductTitleContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/reviewRcv">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/spacing10"
-                android:src="@drawable/ic_cook_hat" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="May be you'll like too"
-                android:textSize="@dimen/font_size16"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/relatedProductRcv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="-8dp"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/relatedProductTitleContainer"
-            android:visibility="gone"/>
-
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/relatedProductShimmer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/relatedProductTitleContainer">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toStartOf="@+id/guideline3"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <include layout="@layout/product_card_view_grid_shimmer" />
-
-                    <include layout="@layout/product_card_view_grid_shimmer" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="-10dp"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/guideline3"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <include layout="@layout/product_card_view_grid_shimmer" />
-
-                    <include layout="@layout/product_card_view_grid_shimmer" />
-                </LinearLayout>
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guideline3"
+                <TextView
+                    android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.5" />
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:text="6 Reviews"
+                    android:textSize="@dimen/font_size16"
+                    android:textStyle="bold" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                <Button
+                    android:id="@+id/viewAllBtn"
+                    android:layout_width="70dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:backgroundTint="@color/secondary_20"
+                    android:fontFamily="@font/rubik_bold"
+                    android:lineHeight="@dimen/spacing1"
+                    android:padding="0dp"
+                    android:text="@string/txt_view_all"
+                    android:textColor="@color/secondary"
+                    android:textSize="@dimen/font_size12"
+                    app:strokeColor="@color/primary" />
+            </LinearLayout>
 
-        </com.facebook.shimmer.ShimmerFrameLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/reviewRcv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:id="@+id/relatedProductTitleContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-</androidx.core.widget.NestedScrollView>
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/spacing10"
+                    android:src="@drawable/ic_cook_hat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="May be you'll like too"
+                    android:textSize="@dimen/font_size16"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/relatedProductRcv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="-8dp"
+                android:orientation="vertical"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/relatedProductTitleContainer" />
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/relatedProductShimmer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/relatedProductTitleContainer">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <include layout="@layout/product_card_view_grid_shimmer" />
+
+                        <include layout="@layout/product_card_view_grid_shimmer" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="-10dp"
+                        android:orientation="vertical"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/guideline3"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <include layout="@layout/product_card_view_grid_shimmer" />
+
+                        <include layout="@layout/product_card_view_grid_shimmer" />
+                    </LinearLayout>
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guideline3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.5" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

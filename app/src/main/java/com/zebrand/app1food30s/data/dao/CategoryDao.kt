@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.data.entity.Category
 
 @Dao
@@ -20,4 +21,7 @@ interface CategoryDao {
     fun delete(category: Category)
     @Query("DELETE FROM categories")
     fun deleteAll()
+
+    @Query ("SELECT * FROM categories WHERE id = :categoryId")
+    fun getOneById(categoryId: String?): Category?
 }

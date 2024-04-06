@@ -15,6 +15,7 @@ class ReviewAdapter(private val reviews: List<Review>): RecyclerView.Adapter<Rev
         val name: TextView = listItemView.findViewById(R.id.username)
         val rating: ViewGroup = listItemView.findViewById(R.id.rating)
         val content: TextView = listItemView.findViewById(R.id.content)
+        val date: TextView = listItemView.findViewById(R.id.date)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {

@@ -1,18 +1,12 @@
 package com.zebrand.app1food30s.data.entity
 
-//import java.util.Date
+import com.google.firebase.firestore.DocumentReference
+import java.util.Date
 
-class Review(
-    var avatar: Int,
-    var name: String,
-    var rating: Int,
-    var content: String,
-    var date: String
+data class Review(
+    var idAccount: DocumentReference? = null,
+    var rating: Number = 0,
+    var content: String = "",
+    var date: Date = Date(),
+    var avatar: String = ""
 )
-
-//data class Review(
-//    val idAccount: String,
-//    val rating: Double,
-//    val content: String,
-//    val date: Date
-//)

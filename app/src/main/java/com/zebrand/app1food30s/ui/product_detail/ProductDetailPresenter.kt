@@ -5,8 +5,8 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.toObject
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Category
-import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
+import com.zebrand.app1food30s.utils.FireStoreUtils
 import com.zebrand.app1food30s.utils.FirebaseService
 import com.zebrand.app1food30s.utils.FirebaseUtils
 import kotlinx.coroutines.tasks.await
@@ -14,21 +14,23 @@ import kotlinx.coroutines.tasks.await
 class ProductDetailPresenter(
     private val view: ProductDetailMVPView, private val db: AppDatabase
 ) {
-    suspend fun getProductDetail(idProduct: String) {
+    suspend fun getProductDetail(idProduct: String): Boolean {
         try {
-            view.showShimmerEffect()
-            val product = FirebaseService.getOneProductByID(db, idProduct)!!
+            view.showShimmerEffects()
+            val product = FirebaseService.getOneProductByID(db, idProduct)
+                ?: throw Exception("Product not found")
             // Get category
             val category = product.idCategory!!.get().await().toObject<Category>()
-            val offer = product.idOffer?.get()?.await()?.toObject<Offer>()
-            val idCategory = product.idCategory!!
+            val offer = db.offerDao().getOneById(product.idOffer?.path)
             // Get related products
-            getRelatedProductsByCategory(idCategory, product.id)
+            getRelatedProductsByCategory(product.idCategory!!, product.id)
             // Finish get data
             view.showProductDetail(product, category!!, offer)
-            view.hideShimmerEffect()
+            view.hideShimmerEffects()
+            return true
         } catch (e: Exception) {
-            Log.i("Error", "getProductDetail: ${e}")
+            Log.i("Error", "getProductDetail: $e")
+            return false
         }
     }
 
@@ -52,10 +54,13 @@ class ProductDetailPresenter(
             Log.i("TAG", "getRelatedProductsByCategory: ${relatedProducts}")
 
             val offers = FirebaseService.getListOffers(db)
-            view.showRelatedProducts(relatedProducts, offers)
+            view.showRelatedProducts(relatedProducts.toMutableList(), offers.toMutableList())
         } catch (e: Exception) {
-            Log.i("Error", "getRelatedProductsByCategory: ${e}")
+            Log.e("Error", "getRelatedProductsByCategory: $e")
         }
+    }
+
+    private suspend fun get() {
     }
 
 //    suspend fun fetchRelatedProductsAndOffers(idCategory: DocumentReference, idProduct: String, onResult: (List<Product>, List<Offer>) -> Unit) {

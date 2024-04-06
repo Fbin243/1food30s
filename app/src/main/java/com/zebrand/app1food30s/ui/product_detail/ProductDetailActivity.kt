@@ -4,14 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
-import com.facebook.shimmer.ShimmerFrameLayout
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.squareup.picasso.Picasso
-import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.adapter.ProductAdapter
+import com.zebrand.app1food30s.adapter.ReviewAdapter
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
@@ -19,11 +18,11 @@ import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.data.entity.Review
 import com.zebrand.app1food30s.databinding.ActivityProductDetailBinding
 import com.zebrand.app1food30s.ui.review.ReviewActivity
-import com.zebrand.app1food30s.ui.wishlist.WishlistManager
-import com.zebrand.app1food30s.utils.Utils.formatPrice
+import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 
-class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
+class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
+    SwipeRefreshLayout.OnRefreshListener {
     private lateinit var binding: ActivityProductDetailBinding
     private lateinit var productDetailPresenter: ProductDetailPresenter
     private lateinit var db: AppDatabase
@@ -33,10 +32,11 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
         setContentView(binding.root)
         db = AppDatabase.getInstance(this)
         val userId = "QXLiLOiPLaHhY5gu7ZdS"
-        WishlistManager.initialize(userId)
+        // TODO
+//        WishlistManager.initialize(userId)
         productDetailPresenter = ProductDetailPresenter(this, db)
         val idProduct = intent.getStringExtra("idProduct")
-
+        Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
         lifecycleScope.launch {
             productDetailPresenter.getProductDetail(idProduct!!)
 //            fetchWishlistAndUpdateUI()
@@ -46,7 +46,6 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
 //            })
         }
 
-        handleDisplayReview()
         handleOpenReviewScreen()
         handleCloseDetailScreen()
     }
@@ -60,30 +59,40 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
 
     override fun showProductDetail(product: Product, category: Category, offer: Offer?) {
         product.name.also { binding.productTitle.text = it }
-        "| ${category.name} | ".also { binding.productCategory.text = it }
-        "Sold: ${product.sold}".also { binding.productSold.text = it }
+        "| ${category.name}".also {
+            var truncatedText = it
+            if (it.length > 20) truncatedText = it.substring(0, 20) + "..."
+            binding.productCategory.text = truncatedText
+        }
+        " | Sold: ${product.sold}".also {
+            binding.productSold.text = it
+        }
         product.description.also { binding.productDescription.text = it }
         "${product.stock}".also { binding.productStock.text = it }
 //        Handle price with offer
         val oldPrice = product.price
-        "$${formatPrice(oldPrice)}".also { binding.productPrice.text = it }
+        "$${Utils.formatPrice(oldPrice)}".also { binding.productPrice.text = it }
         if (offer != null) {
             val newPrice = product.price - offer.discountRate * product.price / 100
-            "$${formatPrice(oldPrice)}".also { binding.productOldPrice.text = it }
-            "$${formatPrice(newPrice)}".also { binding.productPrice.text = it }
+            "$${Utils.formatPrice(oldPrice)}".also { binding.productOldPrice.text = it }
+            "$${Utils.formatPrice(newPrice)}".also { binding.productPrice.text = it }
             binding.productOldPrice.visibility = View.VISIBLE
         }
-        Picasso.get().load(product.image).into(binding.productImage)
+        Picasso.get().load(product.image).placeholder(Utils.getShimmerDrawable())
+            .into(binding.productImage)
     }
 
     // TODO
-    override fun showRelatedProducts(relatedProducts: List<Product>, offers: List<Offer>) {
-//        binding.relatedProductRcv.layoutManager = GridLayoutManager(this, 2)
-//        val adapter = ProductAdapter(relatedProducts, offers, WishlistManager.wishlistedItems.map { it.productId }.toSet())
-//        adapter.onItemClick = { product ->
-//            openDetailProduct(product)
-//        }
-//        binding.relatedProductRcv.adapter = adapter
+    override fun showRelatedProducts(
+        relatedProducts: MutableList<Product>,
+        offers: MutableList<Offer>
+    ) {
+        binding.relatedProductRcv.layoutManager = GridLayoutManager(this, 2)
+        val adapter = ProductAdapter(relatedProducts, offers, mutableSetOf())
+        adapter.onItemClick = { product ->
+            openDetailProduct(product)
+        }
+        binding.relatedProductRcv.adapter = adapter
     }
 
     private fun openDetailProduct(product: Product) {
@@ -92,37 +101,14 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
         startActivity(intent)
     }
 
-    override fun showShimmerEffect() {
-        binding.productShimmer.startShimmer()
-        binding.relatedProductShimmer.startShimmer()
+    override fun showShimmerEffects() {
+        Utils.showShimmerEffect(binding.productShimmer, binding.cardView)
+        Utils.showShimmerEffect(binding.relatedProductShimmer, binding.relatedProductRcv)
     }
 
-    override fun hideShimmerEffect() {
-        hideShimmerEffectForCardView(binding.productShimmer, binding.cardView)
-        val constraintSet = ConstraintSet()
-        val constraintLayout = findViewById<ConstraintLayout>(R.id.constraintLayout)
-        constraintSet.clone(constraintLayout)
-        constraintSet.connect(
-            R.id.viewAllBtn,
-            ConstraintSet.TOP,
-            R.id.cardView,
-            ConstraintSet.BOTTOM,
-            20
-        )
-        constraintSet.applyTo(constraintLayout)
-        hideShimmerEffectForRcv(binding.relatedProductShimmer, binding.relatedProductRcv)
-    }
-
-    private fun hideShimmerEffectForCardView(shimmer: ShimmerFrameLayout, cardView: CardView) {
-        shimmer.stopShimmer()
-        shimmer.visibility = View.GONE
-        cardView.visibility = View.VISIBLE
-    }
-
-    private fun hideShimmerEffectForRcv(shimmer: ShimmerFrameLayout, recyclerView: RecyclerView) {
-        shimmer.stopShimmer()
-        shimmer.visibility = View.GONE
-        recyclerView.visibility = View.VISIBLE
+    override fun hideShimmerEffects() {
+        Utils.hideShimmerEffect(binding.productShimmer, binding.cardView)
+        Utils.hideShimmerEffect(binding.relatedProductShimmer, binding.relatedProductRcv)
     }
 
     private fun handleCloseDetailScreen() {
@@ -138,18 +124,15 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView {
         }
     }
 
-    private fun handleDisplayReview() {
-//        rcv = binding.reviewRcv
-//        rcv.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        // TODO
-//        rcv.adapter = ReviewAdapter(getListReviews())
+    override fun showReviews(reviews: List<Review>) {
+        binding.reviewRcv.layoutManager = LinearLayoutManager(this)
+        binding.reviewRcv.adapter = ReviewAdapter(reviews)
     }
 
-    private fun getListReviews(): List<Review> {
-        var list = listOf<Review>()
-//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-//        list = list + Review(R.drawable.ava1, "", 5, "test", "")
-        return list
+    override fun onRefresh() {
+        lifecycleScope.launch {
+            productDetailPresenter.getProductDetail(intent.getStringExtra("idProduct")!!)
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
     }
 }

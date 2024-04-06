@@ -103,7 +103,7 @@
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing2"
-                android:layout_marginTop="110dp"
+                android:layout_marginTop="112dp"
                 android:background="@drawable/category_divider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

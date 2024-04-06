@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 
@@ -21,4 +22,7 @@ interface OfferDao {
     fun delete(category: Offer)
     @Query("DELETE FROM offers")
     fun deleteAll()
+
+    @Query("SELECT * FROM offers WHERE id = :offerId")
+    fun getOneById(offerId: String?): Offer?
 }
