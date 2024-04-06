@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_marginBottom="75dp"
         tools:context=".ui.my_order.MyOrderActivity">
 
         <LinearLayout
@@ -49,7 +52,7 @@
                 android:fontFamily="@font/rubik_semibold"
 
                 android:paddingBottom="@dimen/spacing4"
-                 />
+                />
 
             <ImageButton
                 android:id="@+id/filterBtn"
@@ -77,20 +80,17 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:layout_margin="@dimen/spacing10"
                     >
-                    <include
-                        android:id="@+id/testOrderStatus"
-                        layout="@layout/item_manage_order" />
-                    <include layout="@layout/item_manage_order"/>
-                    <include layout="@layout/item_manage_order"/>
-                    <include layout="@layout/item_manage_order"/>
-                    <include layout="@layout/item_manage_order"/>
-                    <include layout="@layout/item_manage_order"/>
-                    <include layout="@layout/item_manage_order"/>
-                    <include layout="@layout/item_manage_order"/>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:nestedScrollingEnabled="false"
+                        android:id="@+id/rcvManageOrder"
+                        android:paddingTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
     </LinearLayout>
-</layout>
+
+</FrameLayout>

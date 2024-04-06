@@ -1,4 +1,4 @@
-package com.zebrand.app1food30s.ui.manage_order
+package com.zebrand.app1food30s.ui.manage_order.manage_order_details
 
 import android.app.Dialog
 import android.graphics.Color
@@ -11,10 +11,13 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.ActivityManageOrderDetailsBinding
+import com.zebrand.app1food30s.ui.my_order.MyOrderPresenter
 
-class ManageOrderDetailsActivity : AppCompatActivity() {
+class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPView {
     lateinit var binding: ActivityManageOrderDetailsBinding
+    private lateinit var presenter: ManageOrderDetailsPresenter
     lateinit var paymentArr: Array<String>
+    private lateinit var idOrder: String
     //    val deliveryArr = resources.getStringArray(R.array.delivery_array)
     lateinit var deliveryArr: Array<String>
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,8 +32,11 @@ class ManageOrderDetailsActivity : AppCompatActivity() {
     }
 
     private fun init() {
+        presenter = ManageOrderDetailsPresenter(this)
         paymentArr = resources.getStringArray(R.array.payment_array)
         deliveryArr = resources.getStringArray(R.array.delivery_array)
+
+        idOrder = intent.getStringExtra("idOrder").toString()
     }
 
     private fun events() {

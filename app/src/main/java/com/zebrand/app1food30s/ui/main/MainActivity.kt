@@ -13,6 +13,7 @@ import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.databinding.ActivityMainBinding
 import com.zebrand.app1food30s.ui.cart.CartFragment
 import com.zebrand.app1food30s.ui.home.HomeFragment
+import com.zebrand.app1food30s.ui.manage_order.ManageOrderFragment
 import com.zebrand.app1food30s.ui.menu.MenuFragment
 import com.zebrand.app1food30s.ui.offers.OffersFragment
 import com.zebrand.app1food30s.ui.order_confirm.OrderConfirmationDialogFragment
@@ -95,7 +96,7 @@ class MainActivity : AppCompatActivity() {
             val isLogin = mySharedPreferences.getBoolean(SingletonKey.KEY_LOGGED)
             when (menuItem.itemId) {
                 R.id.ic_dashboard -> replaceFragment(OffersFragment())
-                R.id.ic_order -> replaceFragment(ProfileAfterLoginFragment())
+                R.id.ic_order -> replaceFragment(ManageOrderFragment())
                 R.id.ic_manage -> replaceFragment(ProfileFragment())
                 R.id.ic_profile -> {
                     if (isLogin) {
