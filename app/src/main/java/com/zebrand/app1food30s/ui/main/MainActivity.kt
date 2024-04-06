@@ -28,22 +28,25 @@ class MainActivity : AppCompatActivity() {
     private var adminLogin: Boolean = false
     private lateinit var db: AppDatabase
     private var idUser: String? = null
-    private lateinit var mySharePreference: MySharedPreferences
+    val mySharedPreferences = MySharedPreferences.getInstance(this)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         db = AppDatabase.getInstance(this)
-        mySharePreference = MySharedPreferences.getInstance(this)
 //        idUser = intent.getStringExtra("USER_ID") ?: ""
-        idUser = mySharePreference.getString(SingletonKey.KEY_USER_ID)
-        adminLogin = mySharePreference.getBoolean(SingletonKey.IS_ADMIN)
+        idUser = mySharedPreferences.getString(SingletonKey.KEY_USER_ID)
+        adminLogin = mySharedPreferences.getBoolean(SingletonKey.IS_ADMIN)
 
         Log.d("adminLogin", "adminLogin: $adminLogin")
         if (adminLogin) {
+//            First screen for admin
+            replaceFragment(OffersFragment())
             handleBottomNavigationForAdmin()
         } else {
+//            First screen for user
+            replaceFragment(HomeFragment())
             handleBottomNavigation()
         }
 
@@ -52,9 +55,6 @@ class MainActivity : AppCompatActivity() {
         } else if (intent.getBooleanExtra("showOrderConfirmation", false)) {
             showOrderConfirmationToast()
             showOrderConfirmationDialog()
-        } else {
-            // Your default fragment to load
-            replaceFragment(HomeFragment())
         }
     }
 
@@ -92,22 +92,32 @@ class MainActivity : AppCompatActivity() {
         binding.icCart.visibility = View.GONE
         binding.bottomNavView.inflateMenu(R.menu.bottom_nav_menu_admin)
         binding.bottomNavView.setOnItemSelectedListener { menuItem ->
+            val isLogin = mySharedPreferences.getBoolean(SingletonKey.KEY_LOGGED)
             when (menuItem.itemId) {
-//                R.id.ic_dashboard -> replaceFragment()
-//                R.id.ic_order -> replaceFragment()
-//                R.id.ic_manage -> replaceFragment()
-                R.id.ic_profile -> replaceFragment(ProfileFragment())
+                R.id.ic_dashboard -> replaceFragment(OffersFragment())
+                R.id.ic_order -> replaceFragment(ProfileAfterLoginFragment())
+                R.id.ic_manage -> replaceFragment(ProfileFragment())
+                R.id.ic_profile -> {
+                    if (isLogin) {
+                        val fragment = ProfileAfterLoginFragment().apply {
+                            arguments = Bundle().apply {
+                                putString("USER_ID", idUser)
+                            }
+                        }
+                        replaceFragment(fragment)
+                    } else {
+                        replaceFragment(ProfileFragment())
+                    }
+                }
             }
             true
         }
-//        replaceFragment()
     }
 
     private fun handleBottomNavigation() {
         binding.bottomNavView.menu.clear()
         binding.bottomNavView.inflateMenu(R.menu.bottom_nav_menu)
         binding.bottomNavView.setOnItemSelectedListener { menuItem ->
-            val mySharedPreferences = MySharedPreferences.getInstance(this)
             val isLogin = mySharedPreferences.getBoolean(SingletonKey.KEY_LOGGED)
             when(menuItem.itemId) {
                 R.id.ic_home -> replaceFragment(HomeFragment())

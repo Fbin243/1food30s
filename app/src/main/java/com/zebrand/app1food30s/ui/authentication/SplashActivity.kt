@@ -45,18 +45,13 @@ class SplashActivity : AppCompatActivity() {
 
     private fun nextActivity(ref: MySharedPreferences) {
         val user = FirebaseUtils.fireAuth.currentUser
-        Log.d("userInfo", user.toString() + ref.getBoolean(SingletonKey.KEY_LOGGED).toString())
+//        Log.d("userInfo", user.toString() + ref.getBoolean(SingletonKey.KEY_LOGGED).toString())
         if (user == null || !ref.getBoolean(SingletonKey.KEY_LOGGED)) {
             // Not logged in
             GlobalUtils.myStartActivityFinishAffinity(this, MainActivity::class.java)
         } else {
             // Logged in
-            val isAdmin = ref.getBoolean(SingletonKey.IS_ADMIN)
-            if (isAdmin) {
-                myStartActivity(AdminActivity::class.java)
-            } else {
-                myStartActivity(MainActivity::class.java)
-            }
+            myStartActivity(MainActivity::class.java)
         }
     }
 

@@ -11,13 +11,17 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.google.firebase.auth.FirebaseUser
 import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.databinding.ActivityLoginBinding
-import com.zebrand.app1food30s.ui.main.AdminActivity
 import com.zebrand.app1food30s.ui.main.MainActivity
 import com.zebrand.app1food30s.utils.FireStoreUtils
 import com.zebrand.app1food30s.utils.FirebaseUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.ValidateInput
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
@@ -37,12 +41,12 @@ class LoginActivity : AppCompatActivity() {
         events()
     }
 
-    private fun init(){
+    private fun init() {
         val rememberMe = mySharePreference.getBoolean(SingletonKey.KEY_REMEMBER_ME)
         val email = mySharePreference.getString(SingletonKey.KEY_EMAIL)
         val password = mySharePreference.getString(SingletonKey.KEY_PASSWORD)
         binding.rememberMe.isChecked = rememberMe
-        if(rememberMe){
+        if (rememberMe) {
             binding.tvEmail.setText(email)
             binding.tvPassword.setText(password)
         }
@@ -76,55 +80,112 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun onClickLogin() {
-        if(checkValid()){
-        val email = binding.tvEmail.text.toString().trim()
-        val password = binding.tvPassword.text.toString().trim()
+        if (checkValid()) {
+            val email = binding.tvEmail.text.toString().trim()
+            val password = binding.tvPassword.text.toString().trim()
 
-        val mAuth = FirebaseUtils.fireAuth
-        mAuth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Set KEY_LOGGED
-                    setKeyShareRef(email, password)
+            val mAuth = FirebaseUtils.fireAuth
+            mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Set KEY_LOGGED
+                        setKeyShareRef(email, password)
 
-                    // Authorization
-                    val user = mAuth.currentUser
-                    authorization(user, mySharePreference)
-                    Log.d("userInfo", user?.uid.toString())
+                        // Authorization
+                        Log.d("userInfo", "Da di qua 1 " + email)
+                        authorization(email, mySharePreference)
 
-                } else {
-                    Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
         }
     }
 
-    private fun authorization(user: FirebaseUser?, mySharePreference: MySharedPreferences) {
-        val query = FireStoreUtils.mDBUserRef.whereEqualTo("email", user?.email).limit(1)
-        query.get().addOnSuccessListener { queryDocumentSnapshots ->
-            for (documentSnapshot in queryDocumentSnapshots) {
-                val userInfo = documentSnapshot.toObject(User::class.java)
-                userInfo.id = documentSnapshot.id
-
-                Log.d("userInfo", userInfo.toString())
-
-                // da login //changed
-//                if (userInfo.isAdmin) {
-//                    mySharePreference.setBoolean(SingletonKey.IS_ADMIN, true)
-//                    myStartActivity(AdminActivity::class.java, userInfo.id!!)
-//                } else {
+//    private fun authorization(email: String, mySharePreference: MySharedPreferences) {
+//        val query = FireStoreUtils.mDBUserRef.whereEqualTo("email", email)
+//        query.get().addOnSuccessListener { queryDocumentSnapshots ->
+//            Log.d("userInfo", "Success")
+//            Log.d("userInfo", queryDocumentSnapshots.size().toString() + queryDocumentSnapshots.isEmpty.toString())
+////            Log.d("userInfo", queryDocumentSnapshots?.get.toString())
 //
-//                }
+//            for (documentSnapshot in queryDocumentSnapshots) {
+//                val userInfo = documentSnapshot.toObject(User::class.java)
+//                Log.d("userInfo", "Da di qua")
+//                Log.d("userInfo", "Login " + userInfo.toString())
+//
+//                mySharePreference.setString(SingletonKey.KEY_USER_ID, userInfo.id.toString())
+//                mySharePreference.setBoolean(SingletonKey.IS_ADMIN, userInfo.admin)
+//                Log.d("userInfo", "Login 2 " + userInfo.toString())
+////                myStartActivity(MainActivity::class.java, userInfo.id!!)
+//            }
+////            if (!queryDocumentSnapshots.isEmpty) {
+////            } else {
+////                Log.d("userInfo", "No documents found")
+////            }
+//        }.addOnFailureListener { exception ->
+//            Log.e("userInfo", "Error getting documents: ", exception)
+//        }
+//    }
 
+    private fun authorization(email: String, mySharePreference: MySharedPreferences) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val userInfo = getUserInfo(email)
+            userInfo?.let {
+                Log.d("userInfo", "Da di qua")
+                Log.d("userInfo", "Login " + userInfo.toString())
                 mySharePreference.setString(SingletonKey.KEY_USER_ID, userInfo.id.toString())
-
-                mySharePreference.setBoolean(SingletonKey.IS_ADMIN, userInfo.isAdmin)
+                mySharePreference.setBoolean(SingletonKey.IS_ADMIN, userInfo.admin)
                 myStartActivity(MainActivity::class.java, userInfo.id!!)
-                finishAffinity()
-
             }
         }
     }
+
+    private suspend fun getUserInfo(email: String): User? = withContext(Dispatchers.IO) {
+        val query = FireStoreUtils.mDBUserRef.whereEqualTo("email", email)
+        return@withContext try {
+            val querySnapshot = query.get().await()
+            if (!querySnapshot.isEmpty) {
+                val documentSnapshot = querySnapshot.documents[0]
+                val userInfo = documentSnapshot.toObject(User::class.java)
+                userInfo?.id = documentSnapshot.id
+                return@withContext userInfo
+            } else {
+                return@withContext null
+            }
+        } catch (e: Exception) {
+            Log.e("userInfo", "Error getting user info: ", e)
+            return@withContext null
+        }
+    }
+
+//    private fun authorization(user: FirebaseUser?, mySharePreference: MySharedPreferences) {
+//        val query = FireStoreUtils.mDBUserRef.whereEqualTo("email", user?.email).limit(1)
+//        query.get().addOnSuccessListener { queryDocumentSnapshots ->
+//            for (documentSnapshot in queryDocumentSnapshots) {
+//                val userInfo = documentSnapshot.toObject(User::class.java)
+////                userInfo.id = documentSnapshot.id
+//
+//                Log.d("userInfo", "Da di qua")
+//                Log.d("userInfo", "Login " + userInfo.toString())
+//
+//                // da login //changed
+////                if (userInfo.admin) {
+////                    mySharePreference.setBoolean(SingletonKey.IS_ADMIN, true)
+////                    myStartActivity(AdminActivity::class.java, userInfo.id!!)
+////                } else {
+////
+////                }
+//
+//                mySharePreference.setString(SingletonKey.KEY_USER_ID, userInfo.id.toString())
+//
+//                mySharePreference.setBoolean(SingletonKey.IS_ADMIN, userInfo.admin)
+//                myStartActivity(MainActivity::class.java, userInfo.id!!)
+//            }
+//        }.addOnFailureListener {
+//            Log.d("userInfo", "Error getting documents: ", it)
+//        }
+//    }
 
     private fun myStartActivity(cls: Class<*>, idUser: String) {
         val intent = Intent(this, cls).apply {

@@ -2,12 +2,14 @@ package com.zebrand.app1food30s.ui.authentication
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.data.entity.Cart
 import com.zebrand.app1food30s.data.entity.User
+import com.zebrand.app1food30s.data.entity.Wishlist
 import com.zebrand.app1food30s.databinding.ActivitySignUpBinding
 import com.zebrand.app1food30s.utils.FireStoreUtils
 import com.zebrand.app1food30s.utils.FirebaseUtils
@@ -69,7 +71,7 @@ class SignUpActivity : AppCompatActivity() {
                                 firstName = firstName,
                                 lastName = lastName,
                                 email = email,
-                                isAdmin = false,
+                                admin = false,
                             )
                         )
 
@@ -93,19 +95,23 @@ class SignUpActivity : AppCompatActivity() {
     private fun setUserData(user: User) {
         val userRef = FireStoreUtils.mDBUserRef
         val cartRef = FireStoreUtils.mDBCartRef
-        val wishListRef = FireStoreUtils.mDBWishListRef
+        val wishListRef = FireStoreUtils.mDBWishlistRef
 
-//        userRef.add(user)
         val userDoc: DocumentReference = userRef.document() // Automatically generates a unique document ID
         val cartDoc: DocumentReference = cartRef.document() // Automatically generates a unique document ID
         val wishListDoc: DocumentReference = wishListRef.document() // Automatically generates a unique document ID
 
         val userId = userDoc.id
         val cartId = cartDoc.id
-//        val wishListId = wishListDoc.id
+        val wishListId = wishListDoc.id
 
         val cart = Cart(id = cartId, userId = userDoc)
+        val wishList = Wishlist(id = wishListId, userId = userDoc)
         user.id = userId
+        user.cartRef = cartDoc
+        user.wishlistRef = wishListDoc
+
+        Log.d("userInfo", "Sign up " + user.toString())
 
         userDoc.set(user)
         cartDoc.set(cart)
@@ -117,6 +123,7 @@ class SignUpActivity : AppCompatActivity() {
                 // Xử lý lỗi nếu có
                 println("Error adding document: $e")
             }
+        wishListDoc.set(wishList)
     }
 
     private fun checkValid(): Boolean {
