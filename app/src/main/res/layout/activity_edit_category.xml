@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing18"
                 android:fontFamily="@font/rubik_bold"
-                android:text="@string/txt_edi_offer"
+                android:text="@string/txt_edi_category"
                 android:textSize="@dimen/font_header" />
         </LinearLayout>
 
@@ -155,7 +155,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing60"
             android:backgroundTint="@color/primary"
-            android:text="@string/txt_save_offer"
+            android:text="@string/txt_save_category"
             android:textSize="@dimen/font_size16"
             android:textStyle="bold"
             android:layout_marginTop="@dimen/spacing10"

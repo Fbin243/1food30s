@@ -17,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.ManageOfferAdapter
@@ -246,7 +247,7 @@ class ManageOffer : AppCompatActivity() {
     private suspend fun getListOffers(): List<Offer> {
         return withContext(Dispatchers.IO) {
             try {
-                val querySnapshot = fireStore.collection("offers").get().await()
+                val querySnapshot = fireStore.collection("offers").orderBy("date", Query.Direction.DESCENDING).get().await()
                 querySnapshot.documents.map { document ->
                     val id = document.id
                     val name = document.getString("name") ?: ""

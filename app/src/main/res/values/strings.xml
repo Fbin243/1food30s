@@ -199,5 +199,8 @@
     <string name="txt_delete_product">Remove</string>
     <string name="txt_remove_offer">Remove</string>
     <string name="txt_new_category">New category</string>
+    <string name="txt_create_category">Create category</string>
+    <string name="txt_edi_category">Edit category</string>
+    <string name="txt_save_category">Update category</string>
 
 </resources>

@@ -17,6 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.ManageCategoryAdapter
@@ -185,10 +186,10 @@ class ManageCategory : AppCompatActivity() {
     private fun displayFilteredCategories(filteredCategories: List<Category>) {
         // Update RecyclerView with filteredCategories
         val adapter = ManageCategoryAdapter(filteredCategories, onCategoryClick = { category ->
-//            val intent = Intent(this@ManageCategory, EditCategory::class.java).apply {
-//                putExtra("CATEGORY_ID", category.id)
-//            }
-//            startActivity(intent)
+            val intent = Intent(this@ManageCategory, EditCategory::class.java).apply {
+                putExtra("CATEGORY_ID", category.id)
+            }
+            startActivity(intent)
         })
         binding.productRcv.layoutManager = LinearLayoutManager(this@ManageCategory)
         binding.productRcv.adapter = adapter
@@ -228,7 +229,7 @@ class ManageCategory : AppCompatActivity() {
     private suspend fun getListCategories(): List<Category> {
         return withContext(Dispatchers.IO) {
             try {
-                val querySnapshot = fireStore.collection("categories").get().await()
+                val querySnapshot = fireStore.collection("categories").orderBy("date", Query.Direction.DESCENDING).get().await()
                 querySnapshot.documents.map { document ->
                     val id = document.id
                     val name = document.getString("name") ?: ""
