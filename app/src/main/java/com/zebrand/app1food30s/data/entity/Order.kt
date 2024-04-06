@@ -21,7 +21,7 @@ data class Order(
     var items: MutableList<OrderItem> = mutableListOf(),
     var totalAmount: Double = 0.0,
     var orderStatus: String = "",
-    //    User: Pending - Order accepted - On delivery - Delivered
+    //    User: Pending - Order accepted - On delivery - Delivered // Cancelled
     //Admin: Accept (Pending -> Order accepted), On delivery, Delivered
     var cancelReason: String? = "",
     var shippingAddress: String = "",

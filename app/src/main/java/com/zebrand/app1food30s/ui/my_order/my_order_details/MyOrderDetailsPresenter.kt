@@ -58,4 +58,32 @@ class MyOrderDetailsPresenter(private val context: Context, private val view: My
             }
         }
     }
+
+    fun changePaymentStatus(idOrder: String, status: String) {
+        val dOrderRef = FireStoreUtils.mDBOrderRef
+
+        val doc: DocumentReference = dOrderRef.document(idOrder)
+
+        doc.update("paymentStatus", status)
+            .addOnSuccessListener {
+                Toast.makeText(context, "Payment status changed", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Error when changing payment status", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    fun changeOrderStatus(idOrder: String, status: String) {
+        val dOrderRef = FireStoreUtils.mDBOrderRef
+
+        val doc: DocumentReference = dOrderRef.document(idOrder)
+
+        doc.update("orderStatus", status)
+            .addOnSuccessListener {
+                Toast.makeText(context, "Order canceled", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Error when canceling order", Toast.LENGTH_SHORT).show()
+            }
+    }
 }

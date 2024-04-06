@@ -30,7 +30,8 @@
     <color name="splash_color">#B9D5AC63</color>
 
     <color name="pending">#C1EAA62A</color>
-    <color name="order_accepted">#D0E4454A</color>
-    <color name="on_delivery">#D548B1BE</color>
+    <color name="order_accepted">#B2D5588C</color>
+    <color name="on_delivery">#8CD8F1</color>
     <color name="delivered">#BE3ACC3F</color>
+    <color name="orange">#BEF13B0E</color>
 </resources>

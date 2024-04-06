@@ -54,7 +54,7 @@ class MyOrderDetailsAdapter(
             productQuantity.text = orderItem.quantity.toString()
             Glide.with(context).load(orderItem.image).into(productImg)
             productName.text = orderItem.name
-            productCategory.text = "Category: ${orderItem.category}"
+            productCategory.text = context.resources.getString(R.string.txt_category_item_order) + orderItem.category
             productPrice.text = Utils.formatPrice(orderItem.price)
 
             itemView.setOnClickListener {

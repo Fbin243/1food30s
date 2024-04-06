@@ -185,4 +185,10 @@
     </string-array>
     <string name="formatted_currency">%.2f</string>
     <string name="wishlist_button">Wishlist button</string>
+    <string name="txt_category_item_order">Category: </string>
+    <string name="txt_payment">Payment</string>
+    <string name="txt_payment_content">Pay for your order</string>
+    <string name="txt_cancel_payment">Cancel payment</string>
+    <string name="txt_cancel_payment_content">Are you sure you want to cancel your order?</string>
+    <string name="txt_has_been_cancelled">Order has been cancelled</string>
 </resources>
