@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -195,7 +197,7 @@ class ManageCategory : AppCompatActivity() {
 
     private fun handleDisplayCategoryList() {
         lifecycleScope.launch {
-//            showShimmerEffectForProducts()
+            showShimmerEffectForProducts()
 //            val db = AppDatabase.getInstance(applicationContext)
             val adapter = ManageCategoryAdapter(getListCategories(), onCategoryClick = { category ->
                 val intent = Intent(this@ManageCategory, EditCategory::class.java).apply {
@@ -205,8 +207,22 @@ class ManageCategory : AppCompatActivity() {
             })
             binding.productRcv.layoutManager = LinearLayoutManager(this@ManageCategory)
             binding.productRcv.adapter = adapter
-//            hideShimmerEffectForProducts()
+            hideShimmerEffectForProducts()
         }
+    }
+
+    fun showShimmerEffectForProducts() {
+        binding.productShimmer.startShimmer()
+    }
+
+    fun hideShimmerEffectForProducts() {
+        hideShimmerEffectForRcv(binding.productShimmer, binding.productRcv)
+    }
+
+    private fun hideShimmerEffectForRcv(shimmer: ShimmerFrameLayout, recyclerView: RecyclerView) {
+        shimmer.stopShimmer()
+        shimmer.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
     }
 
     private suspend fun getListCategories(): List<Category> {
