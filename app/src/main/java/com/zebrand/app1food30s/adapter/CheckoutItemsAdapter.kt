@@ -8,13 +8,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.data.entity.DetailedCartItem
+import com.zebrand.app1food30s.data.entity.CartItem
 
 class CheckoutItemsAdapter : RecyclerView.Adapter<CheckoutItemsAdapter.CheckoutViewHolder>() {
 
-    private var items = listOf<DetailedCartItem>()
+    private var items = listOf<CartItem>()
 
-    fun setItems(newItems: List<DetailedCartItem>) {
+    fun setItems(newItems: List<CartItem>) {
         items = newItems
         notifyDataSetChanged()
     }
@@ -38,7 +38,7 @@ class CheckoutItemsAdapter : RecyclerView.Adapter<CheckoutItemsAdapter.CheckoutV
         private val productPrice: TextView = itemView.findViewById(R.id.productPrice)
         private val quantity: TextView = itemView.findViewById(R.id.itemQuantity)
 
-        fun bind(item: DetailedCartItem) {
+        fun bind(item: CartItem) {
             productName.text = item.productName
             productCategory.text = item.productCategory
             Glide.with(itemView.context).load(item.productImage).into(productImage)

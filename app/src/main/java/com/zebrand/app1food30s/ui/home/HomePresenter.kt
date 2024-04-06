@@ -12,16 +12,16 @@ class HomePresenter(
         coroutineScope {
             view.showShimmerEffect()
 
-            val products =  FirebaseService.getListProducts(db)
-            val products1 = FirebaseService.getListProducts(db)
-            val categories = FirebaseService.getListCategories(db)
-            val offers =  FirebaseService.getListOffers(db)
+            val productsLatest =  FirebaseService.getListProducts(db).toMutableList()
+            val productsBestSeller =  FirebaseService.getListProducts(db).toMutableList()
+            val categories = FirebaseService.getListCategories(db).toMutableList()
+            val offers =  FirebaseService.getListOffers(db).toMutableList()
 
             view.hideShimmerEffect()
 
             view.showCategories(categories)
-            view.showProductsLatestDishes(products, offers)
-            view.showProductsBestSeller(products1, offers)
+            view.showProductsLatestDishes(productsLatest, offers)
+            view.showProductsBestSeller(productsBestSeller, offers)
             view.showOffers(offers)
         }
     }

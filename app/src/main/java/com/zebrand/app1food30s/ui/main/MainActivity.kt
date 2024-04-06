@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 //        idUser = intent.getStringExtra("USER_ID") ?: ""
         val mySharePreference = MySharedPreferences.getInstance(this)
         idUser = mySharePreference.getString(SingletonKey.KEY_USER_ID)
-        Log.d("MainActivity", "idUser: $idUser")
+//        Log.d("MainActivity", "idUser: $idUser")
 
         if (adminLogin) {
             handleBottomNavigationForAdmin()
@@ -143,5 +143,4 @@ class MainActivity : AppCompatActivity() {
         val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
         ft.replace(R.id.fragment_container, fragment).commit()
     }
-
 }

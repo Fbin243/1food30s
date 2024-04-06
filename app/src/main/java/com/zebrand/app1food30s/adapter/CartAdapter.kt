@@ -6,17 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.data.entity.DetailedCartItem
+import com.zebrand.app1food30s.data.entity.CartItem
+import com.zebrand.app1food30s.ui.cart.CartDiffCallback
 
 class CartAdapter(
     private val context: Context,
-    private var items: MutableList<DetailedCartItem>,
-    private val onItemDeleted: (DetailedCartItem) -> Unit,
-    private val onQuantityUpdated: (DetailedCartItem, Int) -> Unit,
+    private var items: MutableList<CartItem>,
+    private val onItemDeleted: (CartItem) -> Unit,
+    private val onQuantityUpdated: (CartItem, Int) -> Unit,
     private val onUpdateTotalPrice: (Double) -> Unit
 ) : RecyclerView.Adapter<CartAdapter.CartViewHolder>() {
 
@@ -87,11 +89,30 @@ class CartAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    fun updateItems(newItems: List<DetailedCartItem>) {
-        items = newItems.toMutableList()
-        notifyDataSetChanged()
+    fun updateItems(newItems: List<CartItem>) {
+        val diffCallback = CartDiffCallback(items, newItems)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+
+        items.clear()
+        items.addAll(newItems)
+        diffResult.dispatchUpdatesTo(this) // Efficiently updates the list with minimal refreshes
+
         onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
     }
+
+    fun loadItems(newItems: List<CartItem>) {
+        items.clear() // Clear existing items
+        items.addAll(newItems) // Add new items
+        notifyDataSetChanged() // Notify the adapter to refresh the UI
+        onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity }) // Update total price
+    }
+
+
+//    fun updateItems(newItems: List<CartItem>) {
+//        items = newItems.toMutableList()
+//        notifyDataSetChanged()
+//        onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
+//    }
 
     fun removeItemByRef(productRef: DocumentReference) {
         val indexToRemove = items.indexOfFirst { it.productId == productRef }
@@ -100,4 +121,17 @@ class CartAdapter(
             notifyItemRemoved(indexToRemove)
         }
     }
+
+//    fun removeItem(position: Int) {
+//        items.removeAt(position)
+//        notifyItemRemoved(position)
+//        notifyItemRangeChanged(position, items.size) // Update positions of remaining items
+//        onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
+//    }
+//
+//    fun addItem(item: CartItem) {
+//        items.add(item)
+//        notifyItemInserted(items.size - 1)
+//        onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
+//    }
 }

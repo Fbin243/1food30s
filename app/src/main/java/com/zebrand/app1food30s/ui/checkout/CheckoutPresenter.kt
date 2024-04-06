@@ -1,10 +1,12 @@
 package com.zebrand.app1food30s.ui.checkout
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.zebrand.app1food30s.data.entity.DetailedCartItem
+import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.data.entity.OrderItem
 import com.zebrand.app1food30s.ui.cart.CartRepository
+import com.zebrand.app1food30s.utils.FireStoreUtils.mDBCartRef
+import com.zebrand.app1food30s.utils.FireStoreUtils.mDBOrderRef
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -13,16 +15,18 @@ import java.util.Date
 import java.util.UUID
 
 class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepository: CartRepository) : CoroutineScope by CoroutineScope(Dispatchers.Main) {
-    private var detailedCartItems: List<DetailedCartItem> = emptyList()
+    private var cartItems: List<CartItem> = emptyList()
     private var totalPrice: Double = 0.0
 
     fun loadCartData(cartId: String) {
         launch {
-            cartRepository.fetchProductDetailsForCartItems(cartId) { detailedCartItemsResult, totalPriceResult ->
+            // TODO
+            val cartRef = mDBCartRef.document(cartId)
+            cartRepository.fetchProductDetailsForCartItems(cartRef) { detailedCartItemsResult ->
                 if (detailedCartItemsResult != null) {
-                    detailedCartItems = detailedCartItemsResult
-                    totalPrice = totalPriceResult
-                    view.displayCartItems(detailedCartItems, totalPrice)
+                    cartItems = detailedCartItemsResult
+                    totalPrice = detailedCartItemsResult.sumOf { it.productPrice * it.quantity }
+                    view.displayCartItems(cartItems, totalPrice)
                 } else {
                     view.displayError("Failed to fetch cart details")
                 }
@@ -32,10 +36,10 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
 
     private fun placeOrder(cartId: String, completion: (Boolean) -> Unit) {
         // Log.d("Test00", "placeOrder: Starting order placement.")
-        // Assuming network/database operations might be needed
         launch {
-            val orderItems = detailedCartItems.map { cartItem ->
+            val orderItems = cartItems.map { cartItem ->
                 OrderItem(
+                    // TODO
                     productId = FirebaseFirestore.getInstance().document("products/${cartItem.productId?.id}"),
                     category = cartItem.productCategory,
                     discount = 0.0, // TODO: Update this accordingly
@@ -62,13 +66,11 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
 
 //            Log.d("Test00", "Order: Prepared to set in Firestore with ID ${order.id}")
 
-            // Push the order to Firestore
-            val db = FirebaseFirestore.getInstance()
-            db.collection("orders").document(order.id)
+            mDBOrderRef.document(order.id)
                 .set(order)
                 .addOnSuccessListener {
 //                    Log.d("Test00", "Order placement successful: ${order.id}")
-                    cartRepository.placeOrderAndClearCart(cartId, detailedCartItems) { success ->
+                    cartRepository.placeOrderAndClearCart(cartId, cartItems) { success ->
                         if (success) {
 //                            Log.d("Test00", "Cart cleared successfully for cartId: $cartId")
                             // Clear cart was successful
@@ -105,33 +107,11 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
     fun onPlaceOrderClicked(cartId: String) {
         placeOrder(cartId) { success ->
             if (success) {
-//                Log.d("Test00", "Order placement successful.")
                 view.navigateToOrderConfirmation(true)
             } else {
 //                Log.e("Test00", "Order placement failed.")
                 // You can handle the failure by invoking a different method in the view to show an error message, or pass false to navigateToOrderConfirmation if it's set up to handle failure.
                 view.navigateToOrderConfirmation(false)
-            }
-        }
-    }
-
-    interface SimpleCallback {
-        fun onSuccess()
-        fun onFailure(error: String)
-    }
-
-    fun testCallback(callback: SimpleCallback) {
-        launch {
-            // Simulate an asynchronous operation, like a network call with a delay
-            delay(2000)
-
-            // Randomly decide whether the operation succeeds or fails
-            if (Math.random() > 0.5) {
-                // Simulate success
-                callback.onSuccess()
-            } else {
-                // Simulate failure
-                callback.onFailure("Operation failed due to network error.")
             }
         }
     }

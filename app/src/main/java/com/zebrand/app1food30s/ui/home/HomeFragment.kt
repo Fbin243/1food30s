@@ -3,7 +3,6 @@ package com.zebrand.app1food30s.ui.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,15 +23,17 @@ import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
-import com.zebrand.app1food30s.data.entity.WishlistItem
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
+import com.zebrand.app1food30s.ui.authentication.LoginActivity
 import com.zebrand.app1food30s.ui.menu.MenuActivity
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.product_view_all.ProductViewAllActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
-import com.zebrand.app1food30s.ui.wishlist.WishlistManager
 import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
+import com.zebrand.app1food30s.ui.wishlist.WishlistRepository
+import com.zebrand.app1food30s.utils.FireStoreUtils.mDBCartRef
+import com.zebrand.app1food30s.utils.FireStoreUtils.mDBProductRef
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.Utils
@@ -64,24 +65,27 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         // Make function reloading data when swipe down
         Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
 
-        val userId = "QXLiLOiPLaHhY5gu7ZdS"
-        WishlistManager.initialize(userId)
-        wishlistPresenter = WishlistPresenter(this)
+        // TODO
+//        val userId = SingletonKey.KEY_USER_ID
+//        Log.d("Test00", "onCreateView: $userId")
+        val mySharedPreferences = context?.let { MySharedPreferences.getInstance(it) }
+        val userId = mySharedPreferences?.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
+        val wishlistRepository = WishlistRepository(userId)
+        wishlistPresenter = WishlistPresenter(this, wishlistRepository)
         fetchAndUpdateWishlistState()
+
+        handleOpenSearchScreen()
 
         return binding.root
     }
 
     private fun fetchAndUpdateWishlistState() {
-        lifecycleScope.launch {
-            try {
-                val wishlistItems = WishlistManager.fetchWishlistForCurrentUser()
-                wishlistedProductIds =
-                    wishlistItems.map { it.productId }.toSet() as MutableSet<String>
-                updateAdaptersWithWishlistState()
-            } catch (e: Exception) {
-            }
-        }
+        wishlistPresenter.fetchAndUpdateWishlistState()
+    }
+
+    override fun refreshWishlistState(wishlistedProductIds: Set<String>) {
+        this.wishlistedProductIds = wishlistedProductIds.toMutableSet()
+        updateAdaptersWithWishlistState() // Update your UI accordingly
     }
 
     private fun updateAdaptersWithWishlistState() {
@@ -89,24 +93,16 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         (binding.productRcv2.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
     }
 
-    // TODO
-    override fun showWishlistItems(items: List<WishlistItem>) {
-        // Here, you'd update your UI with the wishlist items.
-        // This might involve updating a RecyclerView adapter or similar.
-        // For example:
-        // wishlistAdapter.submitList(items)
-    }
-
-    override fun showRemoveSuccessMessage() {
-        Toast.makeText(context, "Product was removed from the wishlist", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun showError(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-    }
+//    override fun showRemoveSuccessMessage() {
+//        Toast.makeText(context, "Product was removed from the wishlist", Toast.LENGTH_SHORT).show()
+//    }
+//
+//    override fun showError(message: String) {
+//        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+//    }
 
     // Implementation of WishlistMVPView methods
-    override fun showWishlistUpdated(product: Product, isAdded: Boolean) {
+    override fun updateWishlistItemStatus(product: Product, isAdded: Boolean) {
         // Update the set of wishlisted product IDs based on the action
         if (isAdded) {
             wishlistedProductIds.add(product.id)
@@ -141,6 +137,71 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         binding.searchInput.clearFocus()
     }
 
+
+    private fun addProductToCart(context: Context, productId: String) {
+        val db = FirebaseFirestore.getInstance()
+        val preferences = MySharedPreferences.getInstance(context)
+        val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
+        val defaultId = MySharedPreferences.defaultStringValue
+
+        // Check if the user is logged in before proceeding
+        if (userId == defaultId) {
+            // User is not logged in, navigate to LoginActivity
+            val loginIntent = Intent(requireContext(), LoginActivity::class.java)
+            startActivity(loginIntent)
+            return // Stop further execution of this function
+        }
+
+        val cartRef = mDBCartRef.document(userId)
+
+        val productRef = mDBProductRef.document(productId)
+        productRef.get().addOnSuccessListener { productSnapshot ->
+            val product = productSnapshot.toObject(Product::class.java)
+            val stock = product?.stock ?: 0
+
+            if (stock > 0) {
+                cartRef.get().addOnSuccessListener { document ->
+                    val cart = if (document.exists()) {
+                        document.toObject(Cart::class.java)
+                    } else {
+                        Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
+                    }
+
+                    cart?.let {
+                        val existingItemIndex =
+                            it.items.indexOfFirst { item -> item.productId == productRef }
+                        if (existingItemIndex >= 0) {
+                            // Product exists, update quantity
+                            it.items[existingItemIndex].quantity += 1
+                        } else {
+                            // New product, add to cart
+                            // TODO!
+                            it.items.add(CartItem(productRef, "", "", 0.0, "", 0, 1))
+                        }
+
+                        cartRef.set(it).addOnSuccessListener {
+                            Toast.makeText(
+                                context,
+                                "Added to cart successfully!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }.addOnFailureListener { exception ->
+//                    Log.e("addProductToCart", "Error updating cart: ", exception)
+                    Toast.makeText(context, "Failed to add to cart.", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(context, "Product is out of stock.", Toast.LENGTH_SHORT).show()
+            }
+        }.addOnFailureListener { exception ->
+//            Log.e("addProductToCart", "Error getting product: ", exception)
+            Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+    // ============= DƯỚI NÀY LÀ HÀM CỦA T
     private fun handleOpenSearchScreen() {
         binding.searchInput.setOnFocusChangeListener { _, focus ->
             if (focus) {
@@ -155,7 +216,6 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
     }
 
     private fun openMenuActivityWithCategory(categoryId: String, adapterPosition: Int) {
-        Log.i("TAG123", "openMenuActivityWithCategory: DA GOI HAM NAY")
         val intent = Intent(requireContext(), MenuActivity::class.java)
         intent.putExtra("categoryId", categoryId)
         intent.putExtra("adapterPosition", adapterPosition)
@@ -178,82 +238,38 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         }
     }
 
-
-    private fun addProductToCart(context: Context, productId: String) {
-        val db = FirebaseFirestore.getInstance()
-        val preferences = MySharedPreferences.getInstance(context)
-        val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
-
-        val cartRef = db.collection("carts").document(userId)
-
-        val productRef = db.collection("products").document(productId)
-        productRef.get().addOnSuccessListener { productSnapshot ->
-            val product = productSnapshot.toObject(Product::class.java)
-            val stock = product?.stock ?: 0
-
-            if (stock > 0) {
-                cartRef.get().addOnSuccessListener { document ->
-                    val cart = if (document.exists()) {
-                        document.toObject(Cart::class.java)
-                    } else {
-                        // If the cart does not exist, create a new one
-                        Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
-                    }
-//                    Log.d("Test00", "addProductToCart: $cart")
-
-                    cart?.let {
-                        val existingItemIndex =
-                            it.items.indexOfFirst { item -> item.productId == productRef }
-                        if (existingItemIndex >= 0) {
-                            // Product exists, update quantity
-                            it.items[existingItemIndex].quantity += 1
-                        } else {
-                            // New product, add to cart
-                            it.items.add(CartItem(productRef, 1))
-                        }
-
-                        // Save updated cart back to Firestore
-                        cartRef.set(it).addOnSuccessListener {
-                            Toast.makeText(
-                                context,
-                                "Added to cart successfully!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-                }.addOnFailureListener { exception ->
-                    Log.e("addProductToCart", "Error updating cart: ", exception)
-                    Toast.makeText(context, "Failed to add to cart.", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                Toast.makeText(context, "Product is out of stock.", Toast.LENGTH_SHORT).show()
-            }
-        }.addOnFailureListener { exception ->
-            Log.e("addProductToCart", "Error getting product: ", exception)
-            Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    override fun showProductsLatestDishes(products: List<Product>, offers: List<Offer>) {
+    override fun showProductsLatestDishes(products: MutableList<Product>, offers: MutableList<Offer>) {
         for (product in products) {
             product.isGrid = true
         }
         currentProducts = products
         binding.productRcv1.layoutManager = GridLayoutManager(requireContext(), 2)
-        val adapter = ProductAdapter(products.take(4), offers, wishlistedProductIds)
+        val adapter = ProductAdapter(products.take(4).toMutableList(), offers, wishlistedProductIds)
         addCallBacksForAdapter(adapter)
         binding.productRcv1.adapter = adapter
         handleOpenProductViewAll(binding.btn1, true, binding.textView1.text.toString())
     }
 
-    override fun showProductsBestSeller(products: List<Product>, offers: List<Offer>) {
+    override fun showProductsBestSeller(products: MutableList<Product>, offers: MutableList<Offer>) {
         currentProducts = products
         binding.productRcv2.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val adapter = ProductAdapter(products.take(4), offers, wishlistedProductIds)
+        val adapter = ProductAdapter(products.take(4).toMutableList(), offers, wishlistedProductIds)
         addCallBacksForAdapter(adapter)
         binding.productRcv2.adapter = adapter
         handleOpenProductViewAll(binding.btn2, false, binding.textView2.text.toString())
+    }
+
+    private fun addCallBacksForAdapter(adapter: ProductAdapter) {
+        adapter.onItemClick = { product ->
+            openDetailProduct(product)
+        }
+        adapter.onAddButtonClick = { product ->
+            addProductToCart(requireContext(), product.id)
+        }
+        adapter.onWishlistProductClick = { product ->
+            wishlistPresenter.toggleWishlist(product)
+        }
     }
 
     private fun handleOpenProductViewAll(
@@ -266,18 +282,6 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
             intent.putExtra("filterBy", "latestDishes")
             intent.putExtra("title", title)
             startActivity(intent)
-        }
-    }
-
-    private fun addCallBacksForAdapter(adapter: ProductAdapter) {
-        adapter.onItemClick = { product ->
-            openDetailProduct(product)
-        }
-        adapter.onAddButtonClick = { product ->
-            addProductToCart(requireContext(), product.id)
-        }
-        adapter.onWishlistProductClick = { product ->
-            wishlistPresenter.toggleWishlist(product)
         }
     }
 

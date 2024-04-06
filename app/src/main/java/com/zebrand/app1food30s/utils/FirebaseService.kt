@@ -156,8 +156,7 @@ object FirebaseService {
     suspend fun getUserWishlist(userId: String): List<String> {
         return withContext(Dispatchers.IO) {
             try {
-                val document =
-                    FirebaseUtils.fireStore.collection("wishlists").document(userId).get().await()
+                val document = FirebaseUtils.fireStore.collection("wishlists").document(userId).get().await()
                 val productIdsRaw = document.get("productIds")
 
                 // Safely attempt to cast to List<String>

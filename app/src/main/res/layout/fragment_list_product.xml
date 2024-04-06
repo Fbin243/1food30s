@@ -99,7 +99,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone"
-            android:paddingBottom="160dp"/>
+            android:paddingBottom="@dimen/spacing80"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <com.facebook.shimmer.ShimmerFrameLayout

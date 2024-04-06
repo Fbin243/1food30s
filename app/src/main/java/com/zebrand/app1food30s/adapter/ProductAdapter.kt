@@ -7,18 +7,20 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
+import com.zebrand.app1food30s.ui.menu.ProductDiffCallback
 import com.zebrand.app1food30s.utils.Utils.formatPrice
 import com.zebrand.app1food30s.utils.Utils.getShimmerDrawable
 
 class ProductAdapter(
     var products: List<Product>,
     private var offers: List<Offer>,
-    private var wishlistedProductIds: Set<String>,
+    private var wishlistedProductIds: MutableSet<String>,
 ) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
     var onItemClick: ((Product) -> Unit)? = null
@@ -43,6 +45,7 @@ class ProductAdapter(
             }
 
             ivWishlist.setOnClickListener {
+//                Log.d("Test00", "ivWishlist: ")
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     onWishlistProductClick?.invoke(products[position])
@@ -92,15 +95,48 @@ class ProductAdapter(
         }
 
         // Wishlist
-        val isProductWishlisted = product.id in wishlistedProductIds // Check if product's ID is in the set of wishlisted product IDs
+        val isProductWishlisted = product.id in wishlistedProductIds
+//        Log.d("Test00", "$isProductWishlisted")
         holder.ivWishlist.setImageResource(
             if (isProductWishlisted) R.drawable.ic_wishlist_active else R.drawable.ic_wishlist
         )
     }
 
+    // last thing called to update UI
     fun updateWishlistState(newWishlistedProductIds: Set<String>) {
-        this.wishlistedProductIds = newWishlistedProductIds
-        notifyDataSetChanged()
+        // Immediately capture the current state as the old state before any changes
+        val oldWishlistedProductIds = HashSet(wishlistedProductIds)
+
+//        Log.d("Test00", "old: $oldWishlistedProductIds")
+        // Update the adapter's state to the new state
+        wishlistedProductIds.clear()
+        wishlistedProductIds.addAll(newWishlistedProductIds)
+//        Log.d("Test00", "new: $wishlistedProductIds")
+
+//        // Create a copy of the current state for comparison
+//        val oldWishlistedProductIds = wishlistedProductIds.toSet()
+//        Log.d("Test00", "old: $oldWishlistedProductIds")
+//        // Update the adapter's state with the new set
+//        wishlistedProductIds = newWishlistedProductIds
+//        Log.d("Test00", "new: $wishlistedProductIds")
+
+        val diffCallback = object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = products.size
+            override fun getNewListSize(): Int = products.size
+
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return products[oldItemPosition].id == products[newItemPosition].id
+            }
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                // Now correctly compares old and new state
+                val oldProduct = products[oldItemPosition]
+                return oldProduct.id in oldWishlistedProductIds == oldProduct.id in wishlistedProductIds
+            }
+        }
+
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun updateData(newProducts: List<Product>, newOffers: List<Offer>) {

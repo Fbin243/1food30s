@@ -16,18 +16,27 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Category
+import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentMenuBinding
+import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
+import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
+import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
+import com.zebrand.app1food30s.ui.wishlist.WishlistRepository
+import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.SingletonKey
+import kotlinx.coroutines.launch
 import com.zebrand.app1food30s.ui.list_product.ListProductFragment
 import com.zebrand.app1food30s.ui.search.SearchActivity
 import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 
 class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment(), MenuMVPView,
-    SwipeRefreshLayout.OnRefreshListener {
+    SwipeRefreshLayout.OnRefreshListener, WishlistMVPView {
     private lateinit var binding: FragmentMenuBinding
     private lateinit var menuPresenter: MenuPresenter
+    private lateinit var wishlistPresenter: WishlistPresenter
     private lateinit var db: AppDatabase
-    private var wishlistedProductIds: Set<String> = emptySet()
+    private var wishlistedProductIds: MutableSet<String> = mutableSetOf()
     private var categoryId: String? = null
     private var adapterPosition: Int = 0
     private lateinit var fragment: ListProductFragment
@@ -37,6 +46,12 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMenuBinding.inflate(inflater)
+
+        val mySharedPreferences = context?.let { MySharedPreferences.getInstance(it) }
+        val userId = mySharedPreferences?.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
+        val wishlistRepository = WishlistRepository(userId)
+        wishlistPresenter = WishlistPresenter(this, wishlistRepository)
+
         db = AppDatabase.getInstance(requireContext())
         menuPresenter = MenuPresenter(this, db)
 
@@ -71,31 +86,74 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
         return binding.root
     }
 
-//    private fun fetchAndUpdateWishlistState() {
-//        lifecycleScope.launch {
-//            try {
-//                val wishlistItems = WishlistManager.fetchWishlistForCurrentUser()
-//                wishlistedProductIds = wishlistItems.map { it.productId }.toSet()
-//                updateAdapterWithWishlistState()
-//            } catch (e: Exception) {
-//
-//                // Handle errors appropriately
-//            }
-//        }
-//    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        // Initialize your adapter here but don't set data yet
+//        setupInitialAdapter()
 
-    private fun handleOpenSearchScreen() {
-        binding.searchButton.setOnClickListener {
-            val intent = Intent(requireContext(), SearchActivity::class.java)
-            startActivity(intent)
+        lifecycleScope.launch {
+            fetchAndUpdateWishlistState()
         }
     }
 
+//    private fun setupInitialAdapter() {
+//        // Assuming isGrid and offers are known at this point, or use placeholders
+//        val initialProducts: MutableList<Product> = mutableListOf()
+//        val initialOffers: MutableList<Offer> = mutableListOf()
+//        val initialWishlistedIds: Set<String> = emptySet() // Placeholder for wishlisted product IDs
+//
+//        binding.productRcv.layoutManager = if (isGrid) {
+//            GridLayoutManager(requireContext(), 2)
+//        } else {
+//            LinearLayoutManager(requireContext())
+//        }
+//
+//        // Initialize adapter with placeholders/empty lists
+//        val adapter = ProductAdapter(initialProducts, initialOffers, isGrid, initialWishlistedIds)
+//
+//        adapter.onWishlistProductClick = { product ->
+//            Log.d("Test00", "setupInitialAdapter: ")
+//            wishlistPresenter.toggleWishlist(product)
+//        }
+//
+//        binding.productRcv.adapter = adapter
+//    }
+
+    override fun updateWishlistItemStatus(product: Product, isAdded: Boolean) {
+//        Log.d("Test00", "updateWishlistItemStatus: $product, $isAdded")
+//         Update the set of wishlisted product IDs based on the action
+//        if (isAdded) {
+//            wishlistedProductIds.add(product.id)
+//        } else {
+//            wishlistedProductIds.remove(product.id)
+//        }
+//        Log.d("Test00", "updateWishlistItemStatus: $wishlistedProductIds")
+//
+//        (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
+//        val adapter = binding.productRcv.adapter as? ProductAdapter
+//        Log.d("Test00", "updateWishlistItemStatus: $adapter wishlisted IDs: $wishlistedProductIds")
+//        adapter?.updateWishlistState(wishlistedProductIds)
+    }
+
+    private fun fetchAndUpdateWishlistState() {
+        lifecycleScope.launch {
+            wishlistPresenter.fetchAndUpdateWishlistState()
+        }
+    }
+
+    // called after wishlistPresenter.fetchAndUpdateWishlistState()
+    override fun refreshWishlistState(wishlistedProductIds: Set<String>) {
+        this.wishlistedProductIds = wishlistedProductIds as MutableSet<String>
+//        Log.d("Test00", "refreshWishlistState: $wishlistedProductIds")
+//        updateAdapterWithWishlistState()
+    }
 
 //    private fun updateAdapterWithWishlistState() {
+//        Log.d("Test00", "updateAdapterWithWishlistState: $wishlistedProductIds")
 //        (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
 //    }
 
+    // ============ DƯỚI NÀY LÀ HÀM CỦA T
     override fun showCategories(categories: List<Category>) {
             binding.cateRcv.layoutManager =
                 LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
@@ -134,5 +192,12 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
     fun saveCategoryIdAndAdapterPosition(categoryId: String, adapterPosition: Int) {
         this.categoryId = categoryId
         this.adapterPosition = adapterPosition
+    }
+
+    private fun handleOpenSearchScreen() {
+        binding.searchButton.setOnClickListener {
+            val intent = Intent(requireContext(), SearchActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

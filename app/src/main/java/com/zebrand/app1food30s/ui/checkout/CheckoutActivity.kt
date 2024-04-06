@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CheckoutItemsAdapter
-import com.zebrand.app1food30s.data.entity.DetailedCartItem
+import com.zebrand.app1food30s.data.AppDatabase
+import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.databinding.ActivityCheckoutBinding
 import com.zebrand.app1food30s.ui.cart.CartRepository
 import com.zebrand.app1food30s.ui.main.MainActivity
@@ -25,13 +26,14 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView {
         binding = ActivityCheckoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // TODO: pass from cart fragment?
         cartRepository = CartRepository(FirebaseFirestore.getInstance())
         presenter = CheckoutPresenter(this, cartRepository)
 
         setupRecyclerView()
         handleCloseCheckoutScreen()
 
-        cartId = intent.getStringExtra("cart_id") ?: return
+        cartId = intent.getStringExtra("user_id") ?: return
         presenter.loadCartData(cartId)
 
         handlePlaceOrderButton()
@@ -80,9 +82,9 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView {
         binding.checkoutItemsRecyclerView.adapter = checkoutItemsAdapter
     }
 
-    override fun displayCartItems(detailedCartItems: List<DetailedCartItem>, totalPrice: Double) {
+    override fun displayCartItems(cartItems: List<CartItem>, totalPrice: Double) {
         runOnUiThread {
-            checkoutItemsAdapter.setItems(detailedCartItems)
+            checkoutItemsAdapter.setItems(cartItems)
             binding.tvCartTotalAmount.text = getString(R.string.product_price_number, totalPrice)
             binding.textViewAmount.text = getString(R.string.product_price_number, totalPrice)
         }
