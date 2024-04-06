@@ -23,6 +23,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.ui.change_password.ChangePasswordActivity
+import com.zebrand.app1food30s.ui.my_order.MyOrderActivity
 import com.zebrand.app1food30s.utils.FirebaseUtils.fireStorage
 import com.zebrand.app1food30s.utils.FirebaseUtils.fireStore
 import kotlinx.coroutines.launch
@@ -68,7 +69,7 @@ class ProfileAfterLoginFragment : Fragment() {
         // Set up the click listener for the layoutMyOrders
         binding.layoutMyOrders.setOnClickListener {
             // Navigate to AdminStatisticsActivity
-            val intent = Intent(activity, AdminStatsActivity::class.java)
+            val intent = Intent(activity, MyOrderActivity::class.java)
             startActivity(intent)
         }
         // ================================================================

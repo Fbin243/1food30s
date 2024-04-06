@@ -44,6 +44,9 @@
     <string name="txt_order_id">Order ID: # </string>
     <string name="txt_delivery_status">Delivery</string>
     <string name="txt_pending_status">Pending</string>
+    <string name="txt_order_accepted_status">Order accepted</string>
+    <string name="txt_on_delivery_status">On delivery</string>
+    <string name="txt_delivered_status">Delivered</string>
     <string name="txt_order_total">Total: $</string>
     <string name="txt_see_order_status">Order Status ></string>
     <string name="txt_previous_orders">Previous Orders</string>
@@ -205,4 +208,10 @@
     <string name="txt_edi_category">Edit category</string>
     <string name="txt_save_category">Update category</string>
 
+    <string name="txt_category_item_order">Category: </string>
+    <string name="txt_payment">Payment</string>
+    <string name="txt_payment_content">Pay for your order</string>
+    <string name="txt_cancel_payment">Cancel payment</string>
+    <string name="txt_cancel_payment_content">Are you sure you want to cancel your order?</string>
+    <string name="txt_has_been_cancelled">Order has been cancelled</string>
 </resources>

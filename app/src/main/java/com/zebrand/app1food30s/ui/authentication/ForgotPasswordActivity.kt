@@ -63,6 +63,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
         val acceptBtn: Button = dialog.findViewById(R.id.saveBtn)
         val cancel: Button = dialog.findViewById(R.id.cancelBtn)
 
+        bindingSub.title = "Forgot password"
         bindingSub.content = resources.getString(R.string.txt_confirm_forgot_password)
 
         acceptBtn.setOnClickListener {

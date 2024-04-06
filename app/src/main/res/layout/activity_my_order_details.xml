@@ -75,7 +75,7 @@
                             android:textSize="@dimen/font_size16" />
 
                         <TextView
-                            android:id="@+id/tv_order_id"
+                            android:id="@+id/tvOrderId"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/rubik_semibold"
@@ -85,52 +85,77 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tvOrderDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="06:14 PM 14-02-2024"
                         android:textColor="@color/grey_60" />
 
-                    <TextView
+                    <LinearLayout
+                        android:id="@+id/linearTracking"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing24"
-                        android:fontFamily="@font/rubik_semibold"
-                        android:text="@string/txt_estimated_delivery_time"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/font_size16" />
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="visible"
+                        >
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing24"
+                            android:fontFamily="@font/rubik_semibold"
+                            android:text="@string/txt_estimated_delivery_time"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/font_size16" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/rubik_bold"
+                            android:text="@string/txt_estimated_minutes"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/font_super_header" />
+
+                        <com.airbnb.lottie.LottieAnimationView
+                            android:id="@+id/lottieSuccess"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:elevation="@dimen/spacing6"
+                            app:lottie_rawRes="@raw/lottie_success_order">
+
+                        </com.airbnb.lottie.LottieAnimationView>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/rubik_semibold"
+                            android:text="@string/txt_got_your_order"
+                            android:textAlignment="center"
+                            android:textSize="@dimen/font_size16">
+
+                        </TextView>
+
+                        <include
+                            layout="@layout/timeline"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing12" />
+                    </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tvHasBeenCancelled"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:text="@string/txt_has_been_cancelled"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/spacing28"
+                        android:layout_marginRight="@dimen/spacing2"
+                        android:textAlignment="center"
+                        android:visibility="gone"
+                        android:layout_gravity="center_horizontal"
                         android:fontFamily="@font/rubik_bold"
-                        android:text="@string/txt_estimated_minutes"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/font_super_header" />
-
-                    <com.airbnb.lottie.LottieAnimationView
-                        android:id="@+id/lottieSuccess"
-                        android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        android:elevation="@dimen/spacing6"
-                        app:lottie_rawRes="@raw/lottie_success_order">
-
-                    </com.airbnb.lottie.LottieAnimationView>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/rubik_semibold"
-                        android:text="@string/txt_got_your_order"
-                        android:textAlignment="center"
-                        android:textSize="@dimen/font_size16">
-
-                    </TextView>
-
-                    <include
-                        layout="@layout/timeline"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing12" />
+                        android:paddingTop="@dimen/spacing24"
+                        android:paddingBottom="@dimen/spacing12"
+                        android:textColor="@color/orange"/>
 
                     <TextView
                         android:layout_width="match_parent"
@@ -141,6 +166,7 @@
                         android:textSize="@dimen/font_size16" />
 
                     <TextView
+                        android:id="@+id/tvAddress"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/txt_uni_address" />
@@ -187,6 +213,7 @@
                             android:textColor="@color/grey_60" />
 
                         <TextView
+                            android:id="@+id/tvPaymentStatus"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/rubik_semibold"
@@ -195,131 +222,132 @@
                     </LinearLayout>
                 </LinearLayout>
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
+                    android:id="@+id/linearOrderItems"
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/spacing16"
-                    android:layout_marginTop="@dimen/spacing28"
-                    app:cardCornerRadius="@dimen/spacing16"
-                    app:cardElevation="@dimen/spacing4"
-                    app:contentPadding="@dimen/spacing8"
-                    android:layout_marginBottom="170dp"
+
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linear_body_1">
-
-                    <LinearLayout
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
-                        <TextView
+                        app:cardCornerRadius="@dimen/spacing16"
+                        app:cardElevation="@dimen/spacing4"
+                        app:contentPadding="@dimen/spacing8"
+                        android:layout_marginHorizontal="@dimen/spacing16"
+                        android:layout_marginTop="@dimen/spacing24"
+                        android:layout_marginBottom="60dp"
+                        >
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/rubik_semibold"
-                            android:text="@string/txt_order_details"
-                            android:textSize="@dimen/font_size16" />
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/rubik_semibold"
+                                android:text="@string/txt_order_details"
+                                android:textSize="@dimen/font_size16" />
 
-                        <include layout="@layout/item_order_details" />
-
-                        <include layout="@layout/item_order_details" />
-
-                        <include layout="@layout/item_order_details" />
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/spacing16"
-                            >
                             <LinearLayout
+                                android:id="@+id/order_item_list"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
-                                android:padding="@dimen/spacing8"
-                                android:background="@drawable/border_all_side">
-                                <LinearLayout
+                                >
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:nestedScrollingEnabled="false"
+                                    android:id="@+id/rcvMyOrderDetails"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:weightSum="2">
-                                    <TextView
-                                        android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/txt_subtotal"/>
-                                    <TextView
-                                        android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:layout_height="wrap_content"
-                                        android:text="$24.80"
-                                        android:textAlignment="viewEnd"/>
-                                </LinearLayout>
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:weightSum="2">
-                                    <TextView
-                                        android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/txt_deals"/>
-                                    <TextView
-                                        android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:layout_height="wrap_content"
-                                        android:text="$4.80"
-                                        android:textAlignment="viewEnd"/>
-                                </LinearLayout>
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:weightSum="2">
-                                    <TextView
-                                        android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/txt_delivery_charge"/>
-                                    <TextView
-                                        android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:layout_height="wrap_content"
-                                        android:text="$2.80"
-                                        android:textColor="@color/kelly_green"
-                                        android:textAlignment="viewEnd"/>
-                                </LinearLayout>
-
-                                <View
-                                    android:layout_width="match_parent"
-                                    android:layout_height="@dimen/spacing4"
-                                    android:background="@drawable/grey_dash_line"
-                                    android:layout_marginVertical="@dimen/spacing10"/>
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:weightSum="2">
-                                    <TextView
-                                        android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/txt_total"
-                                        android:fontFamily="@font/rubik_semibold"
-                                        />
-                                    <TextView
-                                        android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:layout_height="wrap_content"
-                                        android:text="$29.80"
-                                        android:fontFamily="@font/rubik_semibold"
-                                        android:textAlignment="viewEnd"/>
-                                </LinearLayout>
+                                    android:layout_height="wrap_content"/>
                             </LinearLayout>
-                        </androidx.cardview.widget.CardView>
-                    </LinearLayout>
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing16"
+                                >
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:padding="@dimen/spacing8"
+                                    android:background="@drawable/border_all_side">
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal"
+                                        android:weightSum="2">
+                                        <TextView
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"
+                                            android:text="@string/txt_subtotal"/>
+                                        <TextView
+                                            android:id="@+id/tvSubTotal"
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"
+                                            android:text="$24.80"
+                                            android:textAlignment="viewEnd"/>
+                                    </LinearLayout>
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal"
+                                        android:weightSum="2">
+                                        <TextView
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"
+                                            android:text="@string/txt_deals"/>
+
+                                        <TextView
+                                            android:id="@+id/tvDiscount"
+                                            android:layout_width="178dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_weight="1"
+                                            android:text="$4.80"
+                                            android:textAlignment="viewEnd" />
+                                    </LinearLayout>
+
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/spacing4"
+                                        android:background="@drawable/grey_dash_line"
+                                        android:layout_marginVertical="@dimen/spacing10"/>
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal"
+                                        android:weightSum="2">
+                                        <TextView
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"
+                                            android:text="@string/txt_total"
+                                            android:fontFamily="@font/rubik_semibold"
+                                            />
+                                        <TextView
+                                            android:id="@+id/tvTotalAmount"
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"
+                                            android:text="$29.80"
+                                            android:fontFamily="@font/rubik_semibold"
+                                            android:textAlignment="viewEnd"/>
+                                    </LinearLayout>
+                                </LinearLayout>
+                            </androidx.cardview.widget.CardView>
+                        </LinearLayout>
 
 
-                </androidx.cardview.widget.CardView>
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
@@ -338,6 +366,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
+            android:id="@+id/linearControl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

@@ -8,4 +8,15 @@ object SingletonKey {
     const val KEY_USER_ID = "KEY_USER_ID" //string
     const val KEY_EMAIL = "KEY_EMAIL" //string
     const val KEY_PASSWORD = "KEY_PASSWORD" //string
+
+    // Pending - Order accepted - On delivery - Delivered // Cancelled
+    const val PENDING = "Pending"
+    const val ORDER_ACCEPTED = "Order accepted"
+    const val ON_DELIVERY = "On delivery"
+    const val DELIVERED = "Delivered"
+    const val CANCELLED = "Cancelled"
+
+    //Paid - Unpaid
+    const val PAID = "Paid"
+    const val UNPAID = "Unpaid"
 }

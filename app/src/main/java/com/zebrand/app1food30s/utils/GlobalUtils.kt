@@ -9,6 +9,13 @@ object GlobalUtils {
         val intent = Intent(context, cls)
         context.startActivity(intent)
     }
+
+    fun myStartActivityWithString(context: Context, cls: Class<*>, extraKey: String, extraValue: String) {
+        val intent = Intent(context, cls)
+        intent.putExtra(extraKey, extraValue)
+        context.startActivity(intent)
+    }
+
     fun myStartActivityFinish(context: Context, cls: Class<*>) {
         val intent = Intent(context, cls)
         context.startActivity(intent)

@@ -52,14 +52,18 @@
                         android:text="1402323" />
                 </LinearLayout>
 
-                <include layout="@layout/my_order_status_span"
+                <include
+                    android:id="@+id/orderStatusSpan"
+                    layout="@layout/my_order_status_span"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/spacing20"
+                    app:orderStatusSpan="@{orderStatusSpan}"
                     />
 
             </LinearLayout>
 
             <TextView
+                android:id="@+id/tv_order_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="06:14 PM 14-02-2024"
@@ -96,6 +100,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/tvOrderStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="@string/txt_see_order_status"

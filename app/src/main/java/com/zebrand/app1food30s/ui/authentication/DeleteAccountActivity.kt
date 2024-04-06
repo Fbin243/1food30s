@@ -67,6 +67,7 @@ class DeleteAccountActivity : AppCompatActivity() {
         val acceptBtn: Button = dialog.findViewById(R.id.saveBtn)
         val cancel: Button = dialog.findViewById(R.id.cancelBtn)
 
+        bindingSub.title = "Delete account"
         bindingSub.content = resources.getString(R.string.txt_confirm_delete_account)
 
         acceptBtn.setOnClickListener {

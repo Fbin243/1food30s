@@ -12,6 +12,14 @@ import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerDrawable
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.zebrand.app1food30s.R
+import android.os.Build
+import com.facebook.shimmer.Shimmer
+import com.facebook.shimmer.ShimmerDrawable
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Date
+
 
 object Utils {
     fun formatPrice(price: Double): String {
@@ -51,5 +59,18 @@ object Utils {
     fun replaceFragment(fragment: Fragment, supportFragmentManager: FragmentManager, containerId: Int) {
         val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
         ft.replace(containerId, fragment).commit()
+    fun formatDate(date: Date): String? {
+        var localDateTime: LocalDateTime? = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            localDateTime = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+            // Định dạng theo chuẩn HH:mm:ss yyyy-MM-dd
+            val formatter = DateTimeFormatter.ofPattern("HH:mm dd-MM-yyyy")
+            return localDateTime.format(formatter)
+        }
+        return null
+    }
+
+    fun formatId(id: String): String {
+        return id.substring(0, 7)
     }
 }

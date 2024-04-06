@@ -16,15 +16,17 @@ data class OrderItem(
 )
 
 data class Order(
-    val id: String = "",
-    val accountId: DocumentReference? = null,
-    val items: MutableList<OrderItem> = mutableListOf(),
-    val totalAmount: Double = 0.0,
-    val orderStatus: String = "",
-    val cancelReason: String? = "",
-    val shippingAddress: String = "",
-    val paymentStatus: String = "",
-    val note: String = "",
+    var id: String = "",
+    var idAccount: DocumentReference? = null,
+    var items: MutableList<OrderItem> = mutableListOf(),
+    var totalAmount: Double = 0.0,
+    var orderStatus: String = "",
+    //    User: Pending - Order accepted - On delivery - Delivered // Cancelled
+    //Admin: Accept (Pending -> Order accepted), On delivery, Delivered
+    var cancelReason: String? = "",
+    var shippingAddress: String = "",
+    var paymentStatus: String = "",
+    var note: String = "",
     @get:ServerTimestamp
-    val date: Date? = null
+    var date: Date = Date()
 )

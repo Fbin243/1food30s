@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
     private var adminLogin: Boolean = false
     private lateinit var db: AppDatabase
     private var idUser: String? = null
-//    private val mySharePreference = MySharedPreferences.getInstance(this)
+    private val mySharePreference = MySharedPreferences.getInstance(this)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -36,10 +36,10 @@ class MainActivity : AppCompatActivity() {
 
         db = AppDatabase.getInstance(this)
 //        idUser = intent.getStringExtra("USER_ID") ?: ""
-        val mySharePreference = MySharedPreferences.getInstance(this)
         idUser = mySharePreference.getString(SingletonKey.KEY_USER_ID)
-//        Log.d("MainActivity", "idUser: $idUser")
+        adminLogin = mySharePreference.getBoolean(SingletonKey.IS_ADMIN)
 
+        Log.d("adminLogin", "adminLogin: $adminLogin")
         if (adminLogin) {
             handleBottomNavigationForAdmin()
         } else {
