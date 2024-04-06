@@ -1,234 +1,258 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:weightSum="4">
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.github.vipulasri.timelineview.TimelineView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:markerSize="@dimen/spacing16"
-                app:lineWidth="3dp"
-                app:marker="@drawable/ic_marker"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-                app:startLineColor="@color/transparent"
-                app:endLineColor="@color/transparent"
-                app:lineOrientation="horizontal"
-                />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center_vertical"
-                android:weightSum="2">
-                <View
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="3dp"
-                    android:visibility="invisible"
-                    android:background="@color/primary"
-                    />
-                <View
-                    android:layout_width="@dimen/spacing12"
-                    android:layout_height="0dp"/>
-                <View
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="3dp"
-                    android:background="@color/primary"
-                    android:layout_gravity="center_vertical"/>
-            </LinearLayout>
+    <data>
 
-
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Pending"
-            android:textSize="@dimen/font_size12"
-            android:textColor="@color/primary"
-            android:textAlignment="center"/>
-    </LinearLayout>
+        <variable
+            name="timelineList"
+            type="java.util.List&lt;java.lang.Integer&gt;" />
+    </data>
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.github.vipulasri.timelineview.TimelineView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:markerSize="@dimen/spacing16"
-                app:lineWidth="3dp"
-                app:marker="@drawable/ic_marker_active"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:baselineAligned="false"
+        android:orientation="horizontal"
+        android:weightSum="4">
 
-                app:startLineColor="@color/transparent"
-                app:endLineColor="@color/transparent"
-                app:lineOrientation="horizontal"
-                />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center_vertical"
-                android:weightSum="2">
-                <View
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="3dp"
-                    android:background="@color/primary"
-                    />
-                <View
-                    android:layout_width="@dimen/spacing12"
-                    android:layout_height="0dp"/>
-                <View
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="3dp"
-                    android:background="@color/primary"
-                    android:layout_gravity="center_vertical"/>
-            </LinearLayout>
-
-
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-        <TextView
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Order accepted"
-            android:textSize="@dimen/font_size12"
-            android:textColor="@color/primary"
-            android:textAlignment="center"/>
-    </LinearLayout>
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.github.vipulasri.timelineview.TimelineView
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.github.vipulasri.timelineview.TimelineView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:endLineColor="@color/transparent"
+                    app:lineOrientation="horizontal"
+                    app:lineWidth="3dp"
+
+                    app:marker="@{timelineList.get(0).equals(1) ? @drawable/ic_marker : (timelineList.get(0).equals(2) ? @drawable/ic_marker_active : @drawable/ic_marker_inactive)}"
+
+                    app:markerSize="@dimen/spacing16"
+                    app:startLineColor="@color/transparent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="3dp"
+                        android:layout_weight="1"
+                        android:background="@color/primary"
+                        android:visibility="invisible" />
+
+                    <View
+                        android:layout_width="@dimen/spacing12"
+                        android:layout_height="0dp" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="3dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@color/primary" />
+                </LinearLayout>
+
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:markerSize="@dimen/spacing16"
-                app:lineWidth="3dp"
-                app:marker="@drawable/ic_marker_inactive"
+                android:text="Pending"
+                android:textAlignment="center"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/font_size12" />
+        </LinearLayout>
 
-                app:startLineColor="@color/transparent"
-                app:endLineColor="@color/transparent"
-                app:lineOrientation="horizontal"
-                />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center_vertical"
-                android:weightSum="2">
-                <View
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="3dp"
-                    android:background="@color/primary"
-                    />
-                <View
-                    android:layout_width="@dimen/spacing12"
-                    android:layout_height="0dp"/>
-                <View
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="3dp"
-                    android:background="@color/primary"
-                    android:layout_gravity="center_vertical"/>
-            </LinearLayout>
-
-
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-        <TextView
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="On delivery"
-            android:textSize="@dimen/font_size12"
-            android:textColor="@color/primary"
-            android:textAlignment="center"/>
-    </LinearLayout>
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.github.vipulasri.timelineview.TimelineView
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.github.vipulasri.timelineview.TimelineView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:endLineColor="@color/transparent"
+                    app:lineOrientation="horizontal"
+                    app:lineWidth="3dp"
+
+                    app:marker="@{timelineList.get(1).equals(1) ? @drawable/ic_marker : (timelineList.get(1).equals(2) ? @drawable/ic_marker_active : @drawable/ic_marker_inactive)}"
+
+                    app:markerSize="@dimen/spacing16"
+                    app:startLineColor="@color/transparent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="3dp"
+                        android:layout_weight="1"
+                        android:background="@color/primary" />
+
+                    <View
+                        android:layout_width="@dimen/spacing12"
+                        android:layout_height="0dp" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="3dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@color/primary" />
+                </LinearLayout>
+
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:markerSize="@dimen/spacing16"
-                app:lineWidth="3dp"
-                app:marker="@drawable/ic_marker_inactive"
+                android:text="Order accepted"
+                android:textAlignment="center"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/font_size12" />
+        </LinearLayout>
 
-                app:startLineColor="@color/transparent"
-                app:endLineColor="@color/transparent"
-                app:lineOrientation="horizontal"
-                />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center_vertical"
-                android:weightSum="2">
-                <View
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="3dp"
-                    android:background="@color/primary"
-                    />
-                <View
-                    android:layout_width="@dimen/spacing12"
-                    android:layout_height="0dp"/>
-                <View
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="3dp"
-                    android:visibility="invisible"
-                    android:background="@color/primary"
-                    android:layout_gravity="center_vertical"/>
-            </LinearLayout>
-
-
-
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-        <TextView
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Delivered"
-            android:textSize="@dimen/font_size12"
-            android:textColor="@color/primary"
-            android:textAlignment="center"/>
-    </LinearLayout>
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-</LinearLayout>
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.github.vipulasri.timelineview.TimelineView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:endLineColor="@color/transparent"
+                    app:lineOrientation="horizontal"
+                    app:lineWidth="3dp"
+                    app:marker="@{timelineList.get(2).equals(1) ? @drawable/ic_marker : (timelineList.get(2).equals(2) ? @drawable/ic_marker_active : @drawable/ic_marker_inactive)}"
+                    app:markerSize="@dimen/spacing16"
+                    app:startLineColor="@color/transparent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="3dp"
+                        android:layout_weight="1"
+                        android:background="@color/primary" />
+
+                    <View
+                        android:layout_width="@dimen/spacing12"
+                        android:layout_height="0dp" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="3dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@color/primary" />
+                </LinearLayout>
+
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="On delivery"
+                android:textAlignment="center"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/font_size12" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.github.vipulasri.timelineview.TimelineView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:endLineColor="@color/transparent"
+                    app:lineOrientation="horizontal"
+                    app:lineWidth="3dp"
+                    app:marker="@{timelineList.get(3).equals(1) ? @drawable/ic_marker : (timelineList.get(3).equals(2) ? @drawable/ic_marker_active : @drawable/ic_marker_inactive)}"
+                    app:markerSize="@dimen/spacing16"
+                    app:startLineColor="@color/transparent" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="3dp"
+                        android:layout_weight="1"
+                        android:background="@color/primary" />
+
+                    <View
+                        android:layout_width="@dimen/spacing12"
+                        android:layout_height="0dp" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="3dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:background="@color/primary"
+                        android:visibility="invisible" />
+                </LinearLayout>
+
+
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Delivered"
+                android:textAlignment="center"
+                android:textColor="@color/primary"
+                android:textSize="@dimen/font_size12" />
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

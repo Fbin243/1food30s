@@ -17,7 +17,7 @@ class MyOrderPresenter(private val context: Context) {
 
         val query: Query = dOrderRef
             .whereEqualTo("idAccount", userDoc)
-            .whereNotEqualTo("orderStatus", "Delivered")
+            .whereNotIn("orderStatus", listOf("Delivered", "Cancelled"))
             .orderBy("date", Query.Direction.DESCENDING)
         query.addSnapshotListener { snapshot, error ->
 
@@ -54,7 +54,7 @@ class MyOrderPresenter(private val context: Context) {
 
         val query: Query = dOrderRef
             .whereEqualTo("idAccount", userDoc)
-            .whereEqualTo("orderStatus", "Delivered")
+            .whereIn("orderStatus", listOf("Delivered", "Cancelled"))
             .orderBy("date", Query.Direction.DESCENDING)
         query.addSnapshotListener { snapshot, error ->
 

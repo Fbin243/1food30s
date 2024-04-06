@@ -106,16 +106,22 @@ class LoginActivity : AppCompatActivity() {
                 val userInfo = documentSnapshot.toObject(User::class.java)
                 userInfo.id = documentSnapshot.id
 
+                Log.d("userInfo", userInfo.toString())
+
                 // da login //changed
-                if (userInfo.isAdmin) {
-                    mySharePreference.setBoolean(SingletonKey.IS_ADMIN, true)
-                    myStartActivity(AdminActivity::class.java, userInfo.id!!)
-                } else {
-                    mySharePreference.setBoolean(SingletonKey.IS_ADMIN, false)
-                    myStartActivity(MainActivity::class.java, userInfo.id!!)
-                }
+//                if (userInfo.isAdmin) {
+//                    mySharePreference.setBoolean(SingletonKey.IS_ADMIN, true)
+//                    myStartActivity(AdminActivity::class.java, userInfo.id!!)
+//                } else {
+//
+//                }
 
                 mySharePreference.setString(SingletonKey.KEY_USER_ID, userInfo.id.toString())
+
+                mySharePreference.setBoolean(SingletonKey.IS_ADMIN, userInfo.isAdmin)
+                myStartActivity(MainActivity::class.java, userInfo.id!!)
+                finishAffinity()
+
             }
         }
     }

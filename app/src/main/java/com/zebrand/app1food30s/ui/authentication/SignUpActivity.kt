@@ -93,12 +93,16 @@ class SignUpActivity : AppCompatActivity() {
     private fun setUserData(user: User) {
         val userRef = FireStoreUtils.mDBUserRef
         val cartRef = FireStoreUtils.mDBCartRef
+        val wishListRef = FireStoreUtils.mDBWishListRef
+
 //        userRef.add(user)
         val userDoc: DocumentReference = userRef.document() // Automatically generates a unique document ID
         val cartDoc: DocumentReference = cartRef.document() // Automatically generates a unique document ID
+        val wishListDoc: DocumentReference = wishListRef.document() // Automatically generates a unique document ID
 
         val userId = userDoc.id
         val cartId = cartDoc.id
+//        val wishListId = wishListDoc.id
 
         val cart = Cart(id = cartId, userId = userDoc)
         user.id = userId
