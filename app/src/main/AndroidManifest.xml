@@ -16,6 +16,12 @@
         android:theme="@style/Base.Theme.App1food30s"
         tools:targetApi="31">
         <activity
+            android:name=".ui.edit_category.EditCategory"
+            android:exported="false" />
+        <activity
+            android:name=".ui.manage_category.ManageCategoryDetail"
+            android:exported="false" />
+        <activity
             android:name=".ui.edit_offer.EditOffer"
             android:exported="false" />
         <activity
@@ -38,15 +44,23 @@
             android:exported="false" />
         <activity
             android:name=".ui.manage_category.ManageCategory"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.offers.ManageOffer"
             android:exported="true">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".ui.profile.EditProfileActivity"
@@ -58,12 +72,12 @@
             android:name=".ui.manage_product.ManageProductActivity"
             android:exported="true">
 
-             <intent-filter>
-             <action android:name="android.intent.action.MAIN" />
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
 
 
-             <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".ui.manage_order.ManageOrderDetailsActivity"

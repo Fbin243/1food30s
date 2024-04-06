@@ -198,5 +198,6 @@
     <string name="txt_choose_num_product">Choose number of product</string>
     <string name="txt_delete_product">Remove</string>
     <string name="txt_remove_offer">Remove</string>
+    <string name="txt_new_category">New category</string>
 
 </resources>
