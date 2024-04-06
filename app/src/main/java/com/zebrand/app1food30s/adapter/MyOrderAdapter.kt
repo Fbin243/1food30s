@@ -19,11 +19,14 @@ class MyOrderAdapter(
 
     fun insertData(order: Order) {
         this.orders.add(order)
-        notifyItemInserted(this.orders.size - 1)
+        this.orders.sortByDescending { it.date }
+        val insertedIndex = this.orders.indexOf(order)
+        notifyItemInserted(insertedIndex)
     }
 
     fun modifyData(order: Order) {
-        val pos = orders.indexOfFirst { it.id == order.id } // Find the position of the modified item
+        val pos =
+            orders.indexOfFirst { it.id == order.id } // Find the position of the modified item
         if (pos != -1) {
             this.orders[pos] = order
             notifyItemChanged(pos)
@@ -46,19 +49,19 @@ class MyOrderAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyOrderViewHolder {
-        val productCardView =
+        val orderCardView =
             LayoutInflater.from(parent.context).inflate(
                 R.layout.item_my_order,
                 parent,
                 false
             )
-        return MyOrderViewHolder(productCardView)
+        return MyOrderViewHolder(orderCardView)
     }
 
     override fun onBindViewHolder(holder: MyOrderViewHolder, position: Int) {
         val order: Order = orders[position]
 
-        holder.tvID.text = order.id.substring(0,7)
+        holder.tvID.text = Utils.formatId(order.id)
         holder.tvOrderDate.text = Utils.formatDate(order.date)
         holder.orderAmount.text = Utils.formatPrice(order.totalAmount)
         val binding = DataBindingUtil.bind<MyOrderStatusSpanBinding>(holder.orderStatusSpan)

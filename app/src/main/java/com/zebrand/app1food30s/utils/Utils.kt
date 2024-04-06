@@ -35,4 +35,8 @@ object Utils {
         }
         return null
     }
+
+    fun formatId(id: String): String {
+        return id.substring(0, 7)
+    }
 }
