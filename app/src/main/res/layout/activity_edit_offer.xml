@@ -177,6 +177,19 @@
 
 
         <Button
+            android:id="@+id/remove_btn"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing60"
+            android:backgroundTint="@color/deep_orange"
+            android:text="@string/txt_remove_offer"
+            android:textSize="@dimen/font_size16"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/spacing50"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image_offer"
+            tools:layout_editor_absoluteY="643dp" />
+
+        <Button
             android:id="@+id/create_btn"
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing60"
@@ -184,10 +197,9 @@
             android:text="@string/txt_save_offer"
             android:textSize="@dimen/font_size16"
             android:textStyle="bold"
-            android:layout_marginTop="@dimen/spacing50"
+            android:layout_marginTop="@dimen/spacing10"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/image_offer"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/remove_btn"
             tools:layout_editor_absoluteY="643dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

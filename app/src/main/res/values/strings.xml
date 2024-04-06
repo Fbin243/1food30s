@@ -197,5 +197,6 @@
     <string name="txt_choose_discount">Choose discount rate</string>
     <string name="txt_choose_num_product">Choose number of product</string>
     <string name="txt_delete_product">Remove</string>
+    <string name="txt_remove_offer">Remove</string>
 
 </resources>

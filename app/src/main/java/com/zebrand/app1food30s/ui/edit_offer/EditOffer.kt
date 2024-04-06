@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -39,6 +40,7 @@ class EditOffer : AppCompatActivity() {
     private lateinit var discountRateEditText: TextInputEditText
     private lateinit var numProductEditText: TextInputEditText
     private lateinit var saveButton: Button
+    private lateinit var removeButton: Button
 
     private lateinit var offerImageView: ImageView
     private var currentImagePath: String? = null
@@ -64,6 +66,7 @@ class EditOffer : AppCompatActivity() {
         discountRateEditText = binding.inputDiscountRate
         numProductEditText = binding.inputNumProduct
         saveButton = binding.createBtn
+        removeButton = binding.removeBtn
         offerImageView = binding.imageOffer
 
         saveButton.setOnClickListener {
@@ -74,6 +77,16 @@ class EditOffer : AppCompatActivity() {
                 Toast.makeText(this, "Error: Product ID is missing.", Toast.LENGTH_SHORT).show()
             }
         }
+
+        removeButton.setOnClickListener {
+            val offerId = intent.getStringExtra("OFFER_ID")
+            offerId?.let {
+                deleteOffer(it)
+            } ?: run {
+                Toast.makeText(this, "Error: Offer ID is missing.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
 
         offerImageView.setOnClickListener {
             startImagePicker()
@@ -93,6 +106,43 @@ class EditOffer : AppCompatActivity() {
             Picasso.get().load(imageUri).into(offerImageView)
         }
     }
+
+    private fun deleteOffer(offerId: String) {
+        val offerRef = fireStore.collection("offers").document(offerId)
+        offerRef
+            .delete()
+            .addOnSuccessListener {
+                Toast.makeText(this, "Offer deleted successfully", Toast.LENGTH_SHORT).show()
+                // Cập nhật các sản phẩm có idOffer là offerRef
+                unsetOfferIdInProducts(offerRef)
+                val intent = Intent(this, ManageOffer::class.java)
+                startActivity(intent)
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error deleting offer: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+    private fun unsetOfferIdInProducts(offerRef: DocumentReference) {
+        fireStore.collection("products")
+            .whereEqualTo("idOffer", offerRef)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    fireStore.collection("products").document(document.id)
+                        .update("idOffer", null)
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Failed to update product: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                }
+                Toast.makeText(this, "All related products have been updated.", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error finding related products: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
 
     private fun saveOfferToFirestore(offerId: String) {
         val offerName = nameEditText.text.toString().trim()
