@@ -4,9 +4,11 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.ktx.firestore
@@ -26,8 +28,8 @@ class ManageProductDetailActivity : AppCompatActivity() {
     private lateinit var stockEditText: TextInputEditText
     private lateinit var descriptionEditText: TextInputEditText
     private lateinit var createButton: Button
-    private lateinit var categorySpinner: Spinner
-    private lateinit var offerSpinner: Spinner
+    private lateinit var categoryAutoComplete: AutoCompleteTextView
+    private lateinit var offerAutoComplete: AutoCompleteTextView
 
     private lateinit var productImageView: ImageView
 
@@ -43,8 +45,8 @@ class ManageProductDetailActivity : AppCompatActivity() {
         stockEditText = findViewById(R.id.input_stock)
         descriptionEditText = findViewById(R.id.input_description)
         createButton = findViewById(R.id.create_btn)
-        categorySpinner = findViewById(R.id.category_spinner)
-        offerSpinner = findViewById(R.id.offer_spinner)
+        categoryAutoComplete = findViewById(R.id.autoCompleteCategory)
+        offerAutoComplete = findViewById(R.id.autoCompleteOffer)
         productImageView = findViewById(R.id.image_product)
         loadCategoriesFromFirebase()
         loadOffersFromFirebase()
@@ -102,8 +104,8 @@ class ManageProductDetailActivity : AppCompatActivity() {
         val productDescription = descriptionEditText.text.toString().trim()
         val db = Firebase.firestore
 
-        val selectedCategoryName = categorySpinner.selectedItem.toString()
-        val selectedOfferName = offerSpinner.selectedItem.toString()
+        val selectedCategoryName = categoryAutoComplete.text.toString()
+        val selectedOfferName = offerAutoComplete.text.toString()
 
         db.collection("categories").whereEqualTo("name", selectedCategoryName).limit(1).get()
             .addOnSuccessListener { categoryDocuments ->
@@ -129,15 +131,57 @@ class ManageProductDetailActivity : AppCompatActivity() {
                                     date = Date()
                                 )
 
+//                                newProductRef.set(newProduct)
+//                                    .addOnSuccessListener {
+//                                        // Xử lý thành công, ví dụ: hiển thị thông báo thành công cho người dùng
+//                                        val intent = Intent(this, ManageProductActivity::class.java)
+//                                        startActivity(intent)
+//                                    }
+//                                    .addOnFailureListener { e ->
+//                                        // Xử lý thất bại, ví dụ: hiển thị thông báo lỗi cho người dùng
+//                                    }
+
                                 newProductRef.set(newProduct)
                                     .addOnSuccessListener {
-                                        // Xử lý thành công, ví dụ: hiển thị thông báo thành công cho người dùng
-                                        val intent = Intent(this, ManageProductActivity::class.java)
-                                        startActivity(intent)
+                                        categoryDocumentRef.get()
+                                            .addOnSuccessListener { documentSnapshot ->
+                                                val currentNumProductCategory = documentSnapshot.getLong("numProduct") ?: 0
+                                                val newNumProductCategory = currentNumProductCategory + 1
+                                                categoryDocumentRef.update("numProduct", newNumProductCategory)
+                                                    .addOnSuccessListener {
+                                                        offerDocumentRef.get()
+                                                            .addOnSuccessListener { offerSnapshot ->
+                                                                val currentNumProductOffer = offerSnapshot.getLong("numProduct") ?: 0
+                                                                val newNumProductOffer = currentNumProductOffer + 1
+                                                                offerDocumentRef.update("numProduct", newNumProductOffer)
+                                                                    .addOnSuccessListener {
+                                                                        Toast.makeText(this, "Product and counts updated successfully", Toast.LENGTH_SHORT).show()
+                                                                        val intent = Intent(this, ManageProductActivity::class.java)
+                                                                        startActivity(intent)
+                                                                    }
+                                                                    .addOnFailureListener { e ->
+                                                                        Toast.makeText(this, "Failed to update offer count: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                                    }
+                                                            }
+                                                            .addOnFailureListener { e ->
+                                                                Toast.makeText(this, "Failed to get current offer count: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                            }
+                                                    }
+                                                    .addOnFailureListener { e ->
+                                                        // Handle failure for updating the category
+                                                        Toast.makeText(this, "Failed to update category count: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                    }
+                                            }
+                                            .addOnFailureListener { e ->
+                                                // Handle failure for getting the current category count
+                                                Toast.makeText(this, "Failed to get current category count: ${e.message}", Toast.LENGTH_SHORT).show()
+                                            }
                                     }
                                     .addOnFailureListener { e ->
-                                        // Xử lý thất bại, ví dụ: hiển thị thông báo lỗi cho người dùng
+                                        // Handle failure for creating the new product
+                                        Toast.makeText(this, "Failed to create product: ${e.message}", Toast.LENGTH_SHORT).show()
                                     }
+
                             } else {
                                 // Xử lý trường hợp không tìm thấy ưu đãi phù hợp
                             }
@@ -163,9 +207,9 @@ class ManageProductDetailActivity : AppCompatActivity() {
                 for (document in documents) {
                     categoriesList.add(document.getString("name") ?: "")
                 }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesList)
-                adapter.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
-                categorySpinner.adapter = adapter
+
+                val adapter = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, categoriesList)
+                categoryAutoComplete.setAdapter(adapter)
             }
             .addOnFailureListener { exception ->
                 // Xử lý lỗi ở đây
@@ -181,9 +225,8 @@ class ManageProductDetailActivity : AppCompatActivity() {
                 for (document in documents) {
                     offersList.add(document.getString("name") ?: "")
                 }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, offersList)
-                adapter.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
-                offerSpinner.adapter = adapter
+                val adapter = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, offersList)
+                offerAutoComplete.setAdapter(adapter)
             }
             .addOnFailureListener { exception ->
                 // Xử lý lỗi ở đây

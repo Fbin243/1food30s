@@ -30,6 +30,11 @@
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MaterialCardView.Cut</item>
     </style>
 
+    <style name="AutocompleteTextViewRedStyle">
+        <item name="android:background">@color/primary</item>
+        <!-- Các thiết lập khác bạn muốn áp dụng cho AutoCompleteTextView -->
+    </style>
+
 
     <style name="ShapeAppearanceOverlay.MaterialCardView.Cut" parent="">
         <item name="cornerFamily">rounded</item>

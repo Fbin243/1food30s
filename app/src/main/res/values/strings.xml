@@ -184,5 +184,25 @@
     <string name="wishlist_button">Wishlist button</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="txt_choose_range_price">Choose range of price</string>
+    <string name="txt_choose_category">Choose category</string>
+    <string name="txt_choose_offer">Choose offer</string>
+    <string name="txt_edit_product">Edit product</string>
+    <string name="txt_new_offer">New offer</string>
+    <string name="title_discount_rate">Discount rate</string>
+    <string name="text_num_product">Number of product</string>
+    <string name="txt_create_offer">Create offer</string>
+    <string name="txt_edi_offer">Edit offer</string>
+    <string name="txt_save_offer">Update offer</string>
+    <string name="txt_discount_rate">Discount rate</string>
+    <string name="txt_num_product">Number of product</string>
+    <string name="txt_choose_discount">Choose discount rate</string>
+    <string name="txt_choose_num_product">Choose number of product</string>
+    <string name="txt_delete_product">Remove</string>
+    <string name="txt_remove_offer">Remove</string>
+    <string name="txt_new_category">New category</string>
+    <string name="txt_create_category">Create category</string>
+    <string name="txt_edi_category">Edit category</string>
+    <string name="txt_save_category">Update category</string>
 
 </resources>

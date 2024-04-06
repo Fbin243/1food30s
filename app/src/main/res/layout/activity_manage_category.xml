@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.manage_category.ManageCategory"
+    tools:context=".ui.offers.ManageOffer"
     android:paddingBottom="@dimen/spacing50">
 
     <LinearLayout
@@ -90,6 +90,37 @@
                 android:layout_marginEnd="-8dp"
                 android:orientation="vertical"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/productShimmer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="-8dp"
+                android:orientation="vertical"
+                app:layout_constraintTop_toTopOf="parent" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/category_card_view_linear_shimmer" />
+
+                    <include layout="@layout/category_card_view_linear_shimmer" />
+
+                    <include layout="@layout/category_card_view_linear_shimmer" />
+
+                    <include layout="@layout/category_card_view_linear_shimmer" />
+
+                    <include layout="@layout/category_card_view_linear_shimmer" />
+
+                    <include layout="@layout/category_card_view_linear_shimmer" />
+
+                    <include layout="@layout/category_card_view_linear_shimmer" />
+
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

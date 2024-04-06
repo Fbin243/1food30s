@@ -59,24 +59,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing12"
-            android:text="@string/txt_category"
+            android:text="@string/txt_discount_rate"
             android:textSize="@dimen/font_size16" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/category"
+            android:id="@+id/discountRate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_marginTop="5dp">
 
             <AutoCompleteTextView
-                android:id="@+id/autoCompleteCategory"
+                android:id="@+id/autoCompleteDiscountRate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
                 android:paddingHorizontal="@dimen/spacing8"
                 android:dropDownHeight="150dp"
-                android:text="@string/txt_choose_category"
+                android:text="@string/txt_choose_discount"
                 android:scrollbars="vertical"
                 android:fadeScrollbars="false"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -91,24 +91,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing12"
-            android:text="@string/txt_price"
+            android:text="@string/txt_num_product"
             android:textSize="@dimen/font_size16" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/filter_price"
+            android:id="@+id/filter_num_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_marginTop="5dp">
 
             <AutoCompleteTextView
-                android:id="@+id/autoCompletePrice"
+                android:id="@+id/autoCompleteNumProduct"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
                 android:paddingHorizontal="@dimen/spacing8"
                 android:dropDownHeight="150dp"
-                android:text="@string/txt_choose_range_price"
+                android:text="@string/txt_choose_num_product"
                 android:scrollbars="vertical"
                 android:fadeScrollbars="false"/>
         </com.google.android.material.textfield.TextInputLayout>

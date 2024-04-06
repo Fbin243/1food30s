@@ -42,6 +42,7 @@
     <dimen name="spacing80">80dp</dimen>
 
     <!-- Border Radius -->
+    <dimen name="radius4">4dp</dimen>
     <dimen name="radius8">8dp</dimen>
     <dimen name="radius12">12dp</dimen>
     <dimen name="radius16">16dp</dimen>

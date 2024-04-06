@@ -4,13 +4,16 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -21,9 +24,11 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.ManageProductAdapter
+import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.ActivityManageProductBinding
 import com.zebrand.app1food30s.ui.edit_product.EditProduct
+import com.zebrand.app1food30s.utils.FirebaseService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -41,12 +46,12 @@ class ManageProductActivity : AppCompatActivity() {
     private lateinit var addButton: ImageView
     private lateinit var filterButton: ImageView
     private lateinit var botDialog: BottomSheetDialog
-    private lateinit var categorySpinner: Spinner
-    private lateinit var priceSpinner: Spinner
+    private lateinit var categoryAutoComplete: AutoCompleteTextView
+    private lateinit var priceAutoComplete: AutoCompleteTextView
     private lateinit var nameFilterEditText: TextInputEditText
     private lateinit var datePickerText: TextInputEditText
     lateinit var categoryArr: ArrayList<String>
-    val priceArr = arrayOf("Choose range of price","1$ to 10$", "11$ to 50$", "51$ to 100$", "More than 100$")
+    val priceArr = arrayOf("1$ to 10$", "11$ to 50$", "51$ to 100$", "More than 100$")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +76,8 @@ class ManageProductActivity : AppCompatActivity() {
 
     private fun handleDisplayProductList() {
         lifecycleScope.launch {
+            showShimmerEffectForProducts()
+//            val db = AppDatabase.getInstance(applicationContext)
             val adapter = ManageProductAdapter(getListProducts(), onProductClick = { product ->
                 val intent = Intent(this@ManageProductActivity, EditProduct::class.java).apply {
                     putExtra("PRODUCT_ID", product.id)
@@ -79,25 +86,40 @@ class ManageProductActivity : AppCompatActivity() {
             })
             binding.productRcv.layoutManager = LinearLayoutManager(this@ManageProductActivity)
             binding.productRcv.adapter = adapter
+            hideShimmerEffectForProducts()
         }
+    }
+
+    fun showShimmerEffectForProducts() {
+        binding.productShimmer.startShimmer()
+    }
+
+    fun hideShimmerEffectForProducts() {
+        hideShimmerEffectForRcv(binding.productShimmer, binding.productRcv)
+    }
+
+    private fun hideShimmerEffectForRcv(shimmer: ShimmerFrameLayout, recyclerView: RecyclerView) {
+        shimmer.stopShimmer()
+        shimmer.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
     }
 
     private fun loadCategoriesFromFirebase() {
         val db = Firebase.firestore
         val categoriesList = ArrayList<String>()
-        categoriesList.add("Choose category")
+//        categoriesList.add("Choose category")
 
         db.collection("categories").get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     categoriesList.add(document.getString("name") ?: "")
                 }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesList)
-                adapter.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
-                categorySpinner.adapter = adapter
+                // Cập nhật ArrayAdapter và thiết lập nó cho categoryAutoCompleteTextView
+                val adapter = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, categoriesList)
+                categoryAutoComplete.setAdapter(adapter)
             }
             .addOnFailureListener { exception ->
-                // Xử lý lỗi ở đây
+                // Xử lý lỗi
             }
     }
 
@@ -108,15 +130,19 @@ class ManageProductActivity : AppCompatActivity() {
         botDialog.setContentView(dialogView)
 
         nameFilterEditText = dialogView.findViewById(R.id.nameFilter)
-        categorySpinner = dialogView.findViewById(R.id.spinnerCategory)
-        priceSpinner = dialogView.findViewById(R.id.spinnerPrice)
+        categoryAutoComplete = dialogView.findViewById(R.id.autoCompleteCategory)
+        priceAutoComplete = dialogView.findViewById(R.id.autoCompletePrice)
         datePickerText = dialogView.findViewById(R.id.datePicker)
 
         loadCategoriesFromFirebase()
 
-        val adapterPrice = ArrayAdapter(this, android.R.layout.simple_spinner_item, priceArr)
-        adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
-        priceSpinner.adapter = adapterPrice
+//        val adapterPrice = ArrayAdapter(this, android.R.layout.simple_spinner_item, priceArr)
+//        adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
+//        priceAutoComplete.adapter = adapterPrice
+
+        val adapterPrice = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, priceArr)
+//        adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
+        priceAutoComplete.setAdapter(adapterPrice)
 
         // date picker
         val datePickerText: TextInputEditText = dialogView.findViewById(R.id.datePicker)
@@ -143,6 +169,7 @@ class ManageProductActivity : AppCompatActivity() {
 
         // Setup for filter button
         botDialog.findViewById<MaterialButton>(R.id.saveBtn)?.setOnClickListener {
+            botDialog.dismiss()
             filterProducts()
         }
 
@@ -159,11 +186,14 @@ class ManageProductActivity : AppCompatActivity() {
     private fun filterProducts() {
         lifecycleScope.launch {
             val nameFilter = nameFilterEditText.text.toString().trim()
-            val selectedCategory = categorySpinner.selectedItem.toString()
-            val selectedPriceRange = priceSpinner.selectedItem.toString()
+            val selectedCategory = categoryAutoComplete.text.toString()
+            val selectedPriceRange = priceAutoComplete.text.toString()
             val selectedDate = datePickerText.text.toString()
 
-            val allProducts = getListProducts() // Giả định đây là phương thức của bạn để lấy tất cả sản phẩm
+            val allProducts = getListProducts()
+
+//            val db = AppDatabase.getInstance(applicationContext)
+//            val allProducts = FirebaseService.getListProducts(db)
 
             var filteredProducts = allProducts
 

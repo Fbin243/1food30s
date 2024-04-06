@@ -4,7 +4,9 @@ import com.zebrand.app1food30s.R
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Spinner
@@ -13,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
@@ -29,8 +32,8 @@ class EditProduct : AppCompatActivity() {
     private lateinit var binding: ActivityEditProductBinding
     private val fireStore = FirebaseFirestore.getInstance()
     private val fireStorage = FirebaseStorage.getInstance()
-    private lateinit var categorySpinner: Spinner
-    private lateinit var offerSpinner: Spinner
+    private lateinit var categoryAutoComplete: AutoCompleteTextView
+    private lateinit var offerAutoComplete: AutoCompleteTextView
     private val PICK_IMAGE_REQUEST = 71 // Unique request code
 
     private lateinit var nameEditText: TextInputEditText
@@ -38,9 +41,12 @@ class EditProduct : AppCompatActivity() {
     private lateinit var stockEditText: TextInputEditText
     private lateinit var descriptionEditText: TextInputEditText
     private lateinit var saveButton: Button
+    private lateinit var deleteButton: Button
 
     private lateinit var productImageView: ImageView
     private var currentImagePath: String? = null
+    private var currentCategory: String? = null
+    private var currentOffer: String? = null
 
     // Lưu URI của hình ảnh tạm thời
     private var imageUri: Uri? = null
@@ -64,18 +70,33 @@ class EditProduct : AppCompatActivity() {
         stockEditText = binding.inputStock
         descriptionEditText = binding.inputDescription
         saveButton = binding.saveBtn
+        deleteButton = binding.deleteBtn
         productImageView = binding.imageProduct
-        categorySpinner = binding.categorySpinner
-        offerSpinner = binding.offerSpinner
+        categoryAutoComplete = binding.autoCompleteCategory
+        offerAutoComplete = binding.autoCompleteOffer
 
         saveButton.setOnClickListener {
             val productId = intent.getStringExtra("PRODUCT_ID")
             productId?.let {
-                saveProductToFirestore(it)
+                currentCategory?.let { it1 -> currentOffer?.let { it2 ->
+                    saveProductToFirestore(it, it1,
+                        it2
+                    )
+                } }
             } ?: run {
                 Toast.makeText(this, "Error: Product ID is missing.", Toast.LENGTH_SHORT).show()
             }
         }
+
+        deleteButton.setOnClickListener {
+            val productId = intent.getStringExtra("PRODUCT_ID")
+            if (productId != null) {
+                deleteProduct(productId)
+            } else {
+                Toast.makeText(this, "Error: Product ID is missing.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
 
         productImageView.setOnClickListener {
             startImagePicker()
@@ -96,7 +117,44 @@ class EditProduct : AppCompatActivity() {
         }
     }
 
-    private fun saveProductToFirestore(productId: String) {
+
+    private fun deleteProduct(productId: String) {
+        fireStore.collection("products").document(productId)
+            .delete()
+            .addOnSuccessListener {
+                val offersCollection = FirebaseFirestore.getInstance().collection("offers")
+                currentOffer?.let { it1 ->
+                    offersCollection.document(it1).get().addOnSuccessListener { document ->
+                        if (document != null && document.exists()) {
+                            offersCollection.document(currentOffer!!).update("numProduct", FieldValue.increment(-1))
+                        }
+                    }.addOnFailureListener {
+
+                    }
+                }
+
+                val categoriesCollection = FirebaseFirestore.getInstance().collection("categories")
+                currentCategory?.let { it1 ->
+                    categoriesCollection.document(it1).get().addOnSuccessListener { document ->
+                        if (document != null && document.exists()) {
+                            categoriesCollection.document(currentCategory!!).update("numProduct", FieldValue.increment(-1))
+                        }
+                    }.addOnFailureListener {
+
+                    }
+                }
+                Toast.makeText(this, "Product deleted successfully", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, ManageProductActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error deleting product: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+    private fun saveProductToFirestore(productId: String, idCategory: String, idOffer: String) {
         val productName = nameEditText.text.toString().trim()
 
         imageUri?.let { uri ->
@@ -106,23 +164,43 @@ class EditProduct : AppCompatActivity() {
 
             uploadTask.addOnSuccessListener {
                 val imagePath = "images/product/$fileName"
-                updateProductDetails(productId, imagePath)
+                updateProductDetails(productId, imagePath, idCategory, idOffer)
             }.addOnFailureListener {
                 Toast.makeText(this, "Image upload failed: ${it.message}", Toast.LENGTH_LONG).show()
             }
         } ?: run {
-            updateProductDetails(productId, currentImagePath!!)
+            updateProductDetails(productId, currentImagePath!!, idCategory, idOffer)
         }
     }
 
-    private fun updateProductDetails(productId: String, imagePath: String) {
+    private fun updateProductDetails(productId: String, imagePath: String, idCategory: String, idOffer: String) {
         val productName = nameEditText.text.toString().trim()
         val productPrice = priceEditText.text.toString().toDoubleOrNull() ?: 0.0
         val productStock = stockEditText.text.toString().toIntOrNull() ?: 0
         val productDescription = descriptionEditText.text.toString().trim()
 
-        val selectedCategoryName = categorySpinner.selectedItem.toString()
-        val selectedOfferName = offerSpinner.selectedItem.toString()
+        val selectedCategoryName = categoryAutoComplete.text.toString()
+        val selectedOfferName = offerAutoComplete.text.toString()
+
+        val offersCollection = FirebaseFirestore.getInstance().collection("offers")
+//        Log.d("EditProduct", "idCategoryEdit: $idCategory")
+//        Log.d("EditProduct", "idOfferEdit: $idOffer")
+        offersCollection.document(idOffer).get().addOnSuccessListener { document ->
+            if (document != null && document.exists()) {
+                offersCollection.document(idOffer).update("numProduct", FieldValue.increment(-1))
+            }
+        }.addOnFailureListener {
+
+        }
+
+        val categoriesCollection = FirebaseFirestore.getInstance().collection("categories")
+        categoriesCollection.document(idCategory).get().addOnSuccessListener { document ->
+            if (document != null && document.exists()) {
+                categoriesCollection.document(idCategory).update("numProduct", FieldValue.increment(-1))
+            }
+        }.addOnFailureListener {
+
+        }
 
         fireStore.collection("categories").whereEqualTo("name", selectedCategoryName).limit(1).get()
             .addOnSuccessListener { categoryDocuments ->
@@ -146,10 +224,45 @@ class EditProduct : AppCompatActivity() {
                                 )
 
                                 fireStore.collection("products").document(productId).update(productUpdate)
+//                                    .addOnSuccessListener {
+//                                        Toast.makeText(this, "Product updated successfully", Toast.LENGTH_LONG).show()
+//                                        val intent = Intent(this, ManageProductActivity::class.java)
+//                                        startActivity(intent)
+//                                    }
                                     .addOnSuccessListener {
-                                        Toast.makeText(this, "Product updated successfully", Toast.LENGTH_LONG).show()
-                                        val intent = Intent(this, ManageProductActivity::class.java)
-                                        startActivity(intent)
+                                        categoryDocumentRef.get()
+                                            .addOnSuccessListener { documentSnapshot ->
+                                                val currentNumProductCategory = documentSnapshot.getLong("numProduct") ?: 0
+                                                val newNumProductCategory = currentNumProductCategory + 1
+                                                categoryDocumentRef.update("numProduct", newNumProductCategory)
+                                                    .addOnSuccessListener {
+                                                        offerDocumentRef.get()
+                                                            .addOnSuccessListener { offerSnapshot ->
+                                                                val currentNumProductOffer = offerSnapshot.getLong("numProduct") ?: 0
+                                                                val newNumProductOffer = currentNumProductOffer + 1
+                                                                offerDocumentRef.update("numProduct", newNumProductOffer)
+                                                                    .addOnSuccessListener {
+                                                                        Toast.makeText(this, "Product updated successfully", Toast.LENGTH_SHORT).show()
+                                                                        val intent = Intent(this, ManageProductActivity::class.java)
+                                                                        startActivity(intent)
+                                                                    }
+                                                                    .addOnFailureListener { e ->
+                                                                        Toast.makeText(this, "Failed to update offer count: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                                    }
+                                                            }
+                                                            .addOnFailureListener { e ->
+                                                                Toast.makeText(this, "Failed to get current offer count: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                            }
+                                                    }
+                                                    .addOnFailureListener { e ->
+                                                        // Handle failure for updating the category
+                                                        Toast.makeText(this, "Failed to update category count: ${e.message}", Toast.LENGTH_SHORT).show()
+                                                    }
+                                            }
+                                            .addOnFailureListener { e ->
+                                                // Handle failure for getting the current category count
+                                                Toast.makeText(this, "Failed to get current category count: ${e.message}", Toast.LENGTH_SHORT).show()
+                                            }
                                     }
                                     .addOnFailureListener { e ->
                                         Toast.makeText(this, "Error updating product: ${e.message}", Toast.LENGTH_LONG).show()
@@ -179,13 +292,14 @@ class EditProduct : AppCompatActivity() {
                 for (document in documents) {
                     categoriesList.add(document.getString("name") ?: "")
                 }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoriesList)
-                adapter.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
-                categorySpinner.adapter = adapter
+                val adapter = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, categoriesList)
+                categoryAutoComplete.setAdapter(adapter)
 
-                val selectedPosition = categoriesList.indexOf(categoryStr)
-                if (selectedPosition != -1) {
-                    categorySpinner.setSelection(selectedPosition)
+                if (categoryStr.isNotEmpty()) {
+                    categoryAutoComplete.setText(categoryStr, false) // Set text và không filter kết quả dựa trên text được set
+                }
+                else{
+                    categoryAutoComplete.setText("Choose category", false)
                 }
             }
             .addOnFailureListener { exception ->
@@ -202,13 +316,14 @@ class EditProduct : AppCompatActivity() {
                 for (document in documents) {
                     offerList.add(document.getString("name") ?: "")
                 }
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, offerList)
-                adapter.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
-                offerSpinner.adapter = adapter
+                val adapter = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, offerList)
+                offerAutoComplete.setAdapter(adapter)
 
-                val selectedPosition = offerList.indexOf(offerStr)
-                if (selectedPosition != -1) {
-                    offerSpinner.setSelection(selectedPosition)
+                if (offerStr.isNotEmpty()) {
+                    offerAutoComplete.setText(offerStr, false) // Set text và không filter kết quả dựa trên text được set
+                }
+                else{
+                    offerAutoComplete.setText("Choose offer", false)
                 }
             }
             .addOnFailureListener { exception ->
@@ -232,12 +347,14 @@ class EditProduct : AppCompatActivity() {
                         currentImagePath = it.image
 
                         val offerId = it.idOffer?.id ?: "non"
+                        currentOffer = offerId
                         val offersCollection = FirebaseFirestore.getInstance().collection("offers")
                         offersCollection.document(offerId).get().addOnSuccessListener { document ->
                             if (document != null && document.exists()) {
 //                val category = document.toObject(Category::class.java)
-//                                categorySpinner.text = document.getString("name") ?: ""
+//                                categoryAutoComplete.text = document.getString("name") ?: ""
                                 val offerStr = document.getString("name") ?: ""
+//                                offersCollection.document(offerId).update("numProduct", FieldValue.increment(-1))
                                 loadOffersFromFirebase(offerStr)
                             } else {
                                 loadOffersFromFirebase("")
@@ -247,11 +364,13 @@ class EditProduct : AppCompatActivity() {
                         }
 
                         val categoryId = it.idCategory?.id ?: "non"
+                        currentCategory = categoryId
                         val categoriesCollection = FirebaseFirestore.getInstance().collection("categories")
                         categoriesCollection.document(categoryId).get().addOnSuccessListener { document ->
                             if (document != null && document.exists()) {
 //                val category = document.toObject(Category::class.java)
-//                                categorySpinner.text = document.getString("name") ?: ""
+//                                categoryAutoComplete.text = document.getString("name") ?: ""
+//                                categoriesCollection.document(categoryId).update("numProduct", FieldValue.increment(-1))
                                 val categoryStr = document.getString("name") ?: ""
                                 loadCategoriesFromFirebase(categoryStr)
                             } else {

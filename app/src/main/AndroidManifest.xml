@@ -31,6 +31,18 @@
             android:name=".ui.menu.MenuActivity"
             android:exported="true" />
         <activity
+            android:name=".ui.edit_category.EditCategory"
+            android:exported="false" />
+        <activity
+            android:name=".ui.manage_category.ManageCategoryDetail"
+            android:exported="false" />
+        <activity
+            android:name=".ui.edit_offer.EditOffer"
+            android:exported="false" />
+        <activity
+            android:name=".ui.offers.ManageOfferDetail"
+            android:exported="false" />
+        <activity
             android:name=".ui.change_password.ChangePasswordActivity"
             android:exported="false" />
         <activity
@@ -57,9 +69,48 @@
         <activity
             android:name=".ui.manage_product.ManageProductDetailActivity"
             android:exported="true" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.offers.ManageOffer"
+            android:exported="true">
+
+<!--             <intent-filter>-->
+<!--             <action android:name="android.intent.action.MAIN" />-->
+
+
+<!--             <category android:name="android.intent.category.LAUNCHER" />-->
+<!--             </intent-filter>-->
+        </activity>
+        <activity
+            android:name=".ui.profile.EditProfileActivity"
+            android:exported="true" >
+
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+        <activity
+            android:name=".ui.manage_product.ManageProductDetailActivity"
+            android:exported="true" />
         <activity
             android:name=".ui.manage_product.ManageProductActivity"
             android:exported="true" />
+
+<!--             <intent-filter>-->
+<!--             <action android:name="android.intent.action.MAIN" />-->
+
+
+<!--             <category android:name="android.intent.category.LAUNCHER" />-->
+<!--             </intent-filter>-->
+        </activity>
         <activity
             android:name=".ui.manage_order.ManageOrderDetailsActivity"
             android:exported="false" />
@@ -116,11 +167,13 @@
             android:name=".ui.main.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--             <intent-filter>-->
+<!--             <action android:name="android.intent.action.MAIN" />-->
+
+
+<!--             <category android:name="android.intent.category.LAUNCHER" />-->
+<!--             </intent-filter>-->
         </activity>
     </application>
 
