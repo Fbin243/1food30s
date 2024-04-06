@@ -40,6 +40,7 @@ class EditProduct : AppCompatActivity() {
     private lateinit var stockEditText: TextInputEditText
     private lateinit var descriptionEditText: TextInputEditText
     private lateinit var saveButton: Button
+    private lateinit var deleteButton: Button
 
     private lateinit var productImageView: ImageView
     private var currentImagePath: String? = null
@@ -68,6 +69,7 @@ class EditProduct : AppCompatActivity() {
         stockEditText = binding.inputStock
         descriptionEditText = binding.inputDescription
         saveButton = binding.saveBtn
+        deleteButton = binding.deleteBtn
         productImageView = binding.imageProduct
         categoryAutoComplete = binding.autoCompleteCategory
         offerAutoComplete = binding.autoCompleteOffer
@@ -80,6 +82,16 @@ class EditProduct : AppCompatActivity() {
                 Toast.makeText(this, "Error: Product ID is missing.", Toast.LENGTH_SHORT).show()
             }
         }
+
+        deleteButton.setOnClickListener {
+            val productId = intent.getStringExtra("PRODUCT_ID")
+            if (productId != null) {
+                deleteProduct(productId)
+            } else {
+                Toast.makeText(this, "Error: Product ID is missing.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
 
         productImageView.setOnClickListener {
             startImagePicker()
@@ -99,6 +111,53 @@ class EditProduct : AppCompatActivity() {
             Picasso.get().load(imageUri).into(productImageView)
         }
     }
+
+
+    private fun deleteProduct(productId: String) {
+        val productRef = fireStore.collection("products").document(productId)
+
+        productRef.get().addOnSuccessListener { document ->
+            val categoryId = document.getString("idCategory")
+            val offerId = document.getString("idOffer")
+
+            // Tiếp tục xóa sản phẩm
+            productRef.delete().addOnSuccessListener {
+                // Cập nhật số lượng sản phẩm cho danh mục và ưu đãi
+                if (categoryId != null) {
+                    updateNumProductInCategory(categoryId, -1)
+                }
+                if (offerId != null) {
+                    updateNumProductInOffer(offerId, -1)
+                }
+
+                Toast.makeText(this, "Product deleted successfully", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, ManageProductActivity::class.java)
+                startActivity(intent)
+            }.addOnFailureListener { e ->
+                Toast.makeText(this, "Error deleting product: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }.addOnFailureListener { e ->
+            Toast.makeText(this, "Error fetching product details: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+    private fun updateNumProductInCategory(categoryId: String, amount: Int) {
+        val categoryRef = fireStore.collection("categories").document(categoryId)
+        categoryRef.update("numProduct", FieldValue.increment(amount.toLong()))
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error updating category: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun updateNumProductInOffer(offerId: String, amount: Int) {
+        val offerRef = fireStore.collection("offers").document(offerId)
+        offerRef.update("numProduct", FieldValue.increment(amount.toLong()))
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error updating offer: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
 
     private fun saveProductToFirestore(productId: String) {
         val productName = nameEditText.text.toString().trim()
