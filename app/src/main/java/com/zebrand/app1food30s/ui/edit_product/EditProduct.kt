@@ -4,6 +4,7 @@ import com.zebrand.app1food30s.R
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
@@ -77,7 +78,11 @@ class EditProduct : AppCompatActivity() {
         saveButton.setOnClickListener {
             val productId = intent.getStringExtra("PRODUCT_ID")
             productId?.let {
-                saveProductToFirestore(it)
+                currentCategory?.let { it1 -> currentOffer?.let { it2 ->
+                    saveProductToFirestore(it, it1,
+                        it2
+                    )
+                } }
             } ?: run {
                 Toast.makeText(this, "Error: Product ID is missing.", Toast.LENGTH_SHORT).show()
             }
@@ -128,7 +133,7 @@ class EditProduct : AppCompatActivity() {
     }
 
 
-    private fun saveProductToFirestore(productId: String) {
+    private fun saveProductToFirestore(productId: String, idCategory: String, idOffer: String) {
         val productName = nameEditText.text.toString().trim()
 
         imageUri?.let { uri ->
@@ -138,16 +143,16 @@ class EditProduct : AppCompatActivity() {
 
             uploadTask.addOnSuccessListener {
                 val imagePath = "images/product/$fileName"
-                updateProductDetails(productId, imagePath)
+                updateProductDetails(productId, imagePath, idCategory, idOffer)
             }.addOnFailureListener {
                 Toast.makeText(this, "Image upload failed: ${it.message}", Toast.LENGTH_LONG).show()
             }
         } ?: run {
-            updateProductDetails(productId, currentImagePath!!)
+            updateProductDetails(productId, currentImagePath!!, idCategory, idOffer)
         }
     }
 
-    private fun updateProductDetails(productId: String, imagePath: String) {
+    private fun updateProductDetails(productId: String, imagePath: String, idCategory: String, idOffer: String) {
         val productName = nameEditText.text.toString().trim()
         val productPrice = priceEditText.text.toString().toDoubleOrNull() ?: 0.0
         val productStock = stockEditText.text.toString().toIntOrNull() ?: 0
@@ -155,6 +160,26 @@ class EditProduct : AppCompatActivity() {
 
         val selectedCategoryName = categoryAutoComplete.text.toString()
         val selectedOfferName = offerAutoComplete.text.toString()
+
+        val offersCollection = FirebaseFirestore.getInstance().collection("offers")
+//        Log.d("EditProduct", "idCategoryEdit: $idCategory")
+//        Log.d("EditProduct", "idOfferEdit: $idOffer")
+        offersCollection.document(idOffer).get().addOnSuccessListener { document ->
+            if (document != null && document.exists()) {
+                offersCollection.document(idOffer).update("numProduct", FieldValue.increment(-1))
+            }
+        }.addOnFailureListener {
+
+        }
+
+        val categoriesCollection = FirebaseFirestore.getInstance().collection("categories")
+        categoriesCollection.document(idCategory).get().addOnSuccessListener { document ->
+            if (document != null && document.exists()) {
+                categoriesCollection.document(idCategory).update("numProduct", FieldValue.increment(-1))
+            }
+        }.addOnFailureListener {
+
+        }
 
         fireStore.collection("categories").whereEqualTo("name", selectedCategoryName).limit(1).get()
             .addOnSuccessListener { categoryDocuments ->
@@ -301,13 +326,14 @@ class EditProduct : AppCompatActivity() {
                         currentImagePath = it.image
 
                         val offerId = it.idOffer?.id ?: "non"
+                        currentOffer = offerId
                         val offersCollection = FirebaseFirestore.getInstance().collection("offers")
                         offersCollection.document(offerId).get().addOnSuccessListener { document ->
                             if (document != null && document.exists()) {
 //                val category = document.toObject(Category::class.java)
 //                                categoryAutoComplete.text = document.getString("name") ?: ""
                                 val offerStr = document.getString("name") ?: ""
-                                offersCollection.document(offerId).update("numProduct", FieldValue.increment(-1))
+//                                offersCollection.document(offerId).update("numProduct", FieldValue.increment(-1))
                                 loadOffersFromFirebase(offerStr)
                             } else {
                                 loadOffersFromFirebase("")
@@ -317,12 +343,13 @@ class EditProduct : AppCompatActivity() {
                         }
 
                         val categoryId = it.idCategory?.id ?: "non"
+                        currentCategory = categoryId
                         val categoriesCollection = FirebaseFirestore.getInstance().collection("categories")
                         categoriesCollection.document(categoryId).get().addOnSuccessListener { document ->
                             if (document != null && document.exists()) {
 //                val category = document.toObject(Category::class.java)
 //                                categoryAutoComplete.text = document.getString("name") ?: ""
-                                categoriesCollection.document(categoryId).update("numProduct", FieldValue.increment(-1))
+//                                categoriesCollection.document(categoryId).update("numProduct", FieldValue.increment(-1))
                                 val categoryStr = document.getString("name") ?: ""
                                 loadCategoriesFromFirebase(categoryStr)
                             } else {
