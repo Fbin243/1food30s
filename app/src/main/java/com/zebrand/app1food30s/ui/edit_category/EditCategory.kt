@@ -24,7 +24,6 @@ import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.ActivityEditCategoryBinding
-import com.zebrand.app1food30s.databinding.ActivityEditCategoryBinding
 import com.zebrand.app1food30s.ui.manage_product.ManageProductActivity
 import com.zebrand.app1food30s.ui.offers.ManageOffer
 import com.zebrand.app1food30s.ui.manage_category.ManageCategory

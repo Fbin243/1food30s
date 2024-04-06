@@ -18,6 +18,7 @@ class ManageCategoryAdapter(private val categories: List<Category>, private val 
         val categoryImg: ImageView = listItemView.findViewById(R.id.categoryImg)
         val categoryName: TextView = listItemView.findViewById(R.id.categoryName)
         val categoryNumProduct: TextView = listItemView.findViewById(R.id.noProduct)
+        val categoryDate: TextView = listItemView.findViewById(R.id.productDate)
 
         init {
             itemView.setOnClickListener {
@@ -44,5 +45,15 @@ class ManageCategoryAdapter(private val categories: List<Category>, private val 
         Picasso.get().load(category.image).into(holder.categoryImg)
         holder.categoryName.text = category.name
         holder.categoryNumProduct.text = category.numProduct.toString()
+
+        // Display time and date with "-" as the separator
+        category.date?.let {
+            // Định dạng giờ và ngày để giờ đứng trước và ngày theo sau, được ngăn cách bằng "-"
+            val dateTimeFormat = java.text.SimpleDateFormat("HH:mm:ss  dd/MM/yyyy", java.util.Locale.getDefault())
+            holder.categoryDate.text = dateTimeFormat.format(it)
+        } ?: run {
+            // Handle case where date is null
+            holder.categoryDate.text = "No date provided"
+        }
     }
 }

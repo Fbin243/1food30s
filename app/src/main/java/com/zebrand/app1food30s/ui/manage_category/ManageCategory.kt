@@ -25,6 +25,7 @@ import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.ActivityManageCategoryBinding
+import com.zebrand.app1food30s.ui.edit_category.EditCategory
 import com.zebrand.app1food30s.ui.edit_offer.EditOffer
 import com.zebrand.app1food30s.ui.edit_product.EditProduct
 import com.zebrand.app1food30s.ui.manage_product.ManageProductDetailActivity
@@ -57,7 +58,7 @@ class ManageCategory : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityManageCategoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        handleDisplayOfferList()
+        handleDisplayCategoryList()
 
         addButton = findViewById(R.id.add_product_btn)
         filterButton = findViewById(R.id.filter_btn)
@@ -192,15 +193,15 @@ class ManageCategory : AppCompatActivity() {
     }
 
 
-    private fun handleDisplayOfferList() {
+    private fun handleDisplayCategoryList() {
         lifecycleScope.launch {
 //            showShimmerEffectForProducts()
 //            val db = AppDatabase.getInstance(applicationContext)
             val adapter = ManageCategoryAdapter(getListCategories(), onCategoryClick = { category ->
-//                val intent = Intent(this@ManageCategory, EditCategory::class.java).apply {
-//                    putExtra("CATEGORY_ID", category.id)
-//                }
-//                startActivity(intent)
+                val intent = Intent(this@ManageCategory, EditCategory::class.java).apply {
+                    putExtra("CATEGORY_ID", category.id)
+                }
+                startActivity(intent)
             })
             binding.productRcv.layoutManager = LinearLayoutManager(this@ManageCategory)
             binding.productRcv.adapter = adapter

@@ -18,6 +18,7 @@ class ManageOfferAdapter(private val offers: List<Offer>, private val onOfferCli
         val offerName: TextView = listItemView.findViewById(R.id.offerName)
         val offerRate: TextView = listItemView.findViewById(R.id.offerRate)
         val offerNumProduct: TextView = listItemView.findViewById(R.id.noProduct)
+        val offerDate: TextView = listItemView.findViewById(R.id.productDate)
 
         init {
             itemView.setOnClickListener {
@@ -47,5 +48,15 @@ class ManageOfferAdapter(private val offers: List<Offer>, private val onOfferCli
 
         holder.offerRate.text = "${offer.discountRate}%"
         holder.offerNumProduct.text = offer.numProduct.toString()
+
+        // Display time and date with "-" as the separator
+        offer.date?.let {
+            // Định dạng giờ và ngày để giờ đứng trước và ngày theo sau, được ngăn cách bằng "-"
+            val dateTimeFormat = java.text.SimpleDateFormat("HH:mm:ss  dd/MM/yyyy", java.util.Locale.getDefault())
+            holder.offerDate.text = dateTimeFormat.format(it)
+        } ?: run {
+            // Handle case where date is null
+            holder.offerDate.text = "No date provided"
+        }
     }
 }
