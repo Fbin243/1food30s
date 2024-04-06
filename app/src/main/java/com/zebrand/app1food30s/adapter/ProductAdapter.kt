@@ -18,10 +18,9 @@ import com.zebrand.app1food30s.utils.Utils.formatPrice
 import com.zebrand.app1food30s.utils.Utils.getShimmerDrawable
 
 class ProductAdapter(
-    val products: MutableList<Product>,
-    private val offers: MutableList<Offer>,
-    private val isGrid: Boolean = true,
-    private var wishlistedProductIds: MutableSet<String>,
+    var products: List<Product>,
+    private var offers: List<Offer>,
+    private var wishlistedProductIds: Set<String>,
 ) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
     var onItemClick: ((Product) -> Unit)? = null
@@ -55,10 +54,14 @@ class ProductAdapter(
         }
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return if(products[position].isGrid) 1 else 0
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val productCardView =
             LayoutInflater.from(parent.context).inflate(
-                if (isGrid) R.layout.product_card_view_grid else R.layout.product_card_view_linear,
+                if(viewType == 1) R.layout.product_card_view_grid else R.layout.product_card_view_linear,
                 parent,
                 false
             )
@@ -81,7 +84,6 @@ class ProductAdapter(
         if (product.idOffer != null) {
             val idOffer = product.idOffer!!.id
             val offer = offers.find { it.id == idOffer }
-            Log.i("Fix", "onBindViewHolder: $offer")
             val newPrice = oldPrice - offer!!.discountRate * oldPrice / 100
             "$${formatPrice(oldPrice)}".also { holder.productOldPrice.text = it }
             "$${formatPrice(newPrice)}".also { holder.productPrice.text = it }
@@ -135,5 +137,11 @@ class ProductAdapter(
 
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun updateData(newProducts: List<Product>, newOffers: List<Offer>) {
+        products = newProducts
+        offers = newOffers
+        notifyDataSetChanged()
     }
 }

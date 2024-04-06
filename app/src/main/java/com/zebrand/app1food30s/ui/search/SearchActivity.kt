@@ -1,63 +1,65 @@
 package com.zebrand.app1food30s.ui.search
 
+import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.adapter.ProductAdapter
+import com.zebrand.app1food30s.data.AppDatabase
+import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.ActivitySearchBinding
+import com.zebrand.app1food30s.ui.list_product.ListProductFragment
+import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
+import com.zebrand.app1food30s.utils.Utils
+import kotlinx.coroutines.launch
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var rcv: RecyclerView
+    private lateinit var db: AppDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        handleDisplayProductList()
-        handleChangeLayout()
+        db = AppDatabase.getInstance(this)
         handleCloseSearchScreen()
+
+        binding.clearSearchBtn.setOnClickListener {
+            binding.searchInput.text?.clear()
+        }
+
+        Utils.replaceFragment(ListProductFragment(), supportFragmentManager, R.id.fragment_container)
+
+        supportFragmentManager.registerFragmentLifecycleCallbacks(
+            object : FragmentManager.FragmentLifecycleCallbacks() {
+                override fun onFragmentViewCreated(
+                    fm: FragmentManager,
+                    f: Fragment,
+                    v: View,
+                    savedInstanceState: Bundle?
+                ) {
+                    if (f is ListProductFragment) {
+                        f.setInfo("", "search")
+                        f.setSearchInput(binding.searchInput)
+                        f.initSearch()
+                    }
+                }
+            }, false
+        )
     }
 
     private fun handleCloseSearchScreen() {
         binding.backFromSearch.root.setOnClickListener {
             finish()
         }
-    }
-    private fun handleDisplayProductList() {
-        rcv = binding.productRcv
-        rcv.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-//        val adapter = ProductAdapter(getListProducts(), false)
-//        rcv.adapter = adapter
-    }
-
-    private fun handleChangeLayout() {
-        binding.gridBtn.setOnClickListener {
-            binding.gridBtn.setImageResource(R.drawable.ic_active_grid)
-            binding.linearBtn.setImageResource(R.drawable.ic_linear)
-            rcv.layoutManager = GridLayoutManager(this, 2)
-//            rcv.adapter = ProductAdapter(getListProducts())
-        }
-
-        binding.linearBtn.setOnClickListener {
-            binding.linearBtn.setImageResource(R.drawable.ic_active_linear)
-            binding.gridBtn.setImageResource(R.drawable.ic_grid)
-            rcv.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-//            rcv.adapter = ProductAdapter(getListProducts(), false)
-        }
-
-    }
-
-    private fun getListProducts(): List<Product> {
-        var list = listOf<Product>()
-//        list = list + Product(
-//            R.drawable.product1,
-//            "Sweet & Sour Chicken",
-//            "Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce.",
-//            4.5
-//        )
-        return list
     }
 }

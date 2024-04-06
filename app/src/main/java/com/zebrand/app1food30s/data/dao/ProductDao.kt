@@ -30,4 +30,10 @@ interface ProductDao {
 
     @Query("SELECT * FROM products WHERE idCategory = :categoryId")
     fun getByCategory(categoryId: String): List<Product>
+
+    @Query("SELECT * FROM products WHERE idOffer = :offerId")
+    fun getByOffer(offerId: String): List<Product>
+
+    @Query("SELECT * FROM products WHERE name LIKE '%' || :name || '%'")
+    fun searchByName(name: String): List<Product>
 }

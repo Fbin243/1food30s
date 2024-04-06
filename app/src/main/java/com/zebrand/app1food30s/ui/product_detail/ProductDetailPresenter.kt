@@ -49,6 +49,8 @@ class ProductDetailPresenter(
                 product
             }
 
+            Log.i("TAG", "getRelatedProductsByCategory: ${relatedProducts}")
+
             val offers = FirebaseService.getListOffers(db)
             view.showRelatedProducts(relatedProducts.toMutableList(), offers.toMutableList())
         } catch (e: Exception) {

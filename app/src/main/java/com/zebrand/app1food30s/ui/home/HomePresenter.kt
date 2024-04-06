@@ -20,7 +20,7 @@ class HomePresenter(
 
             view.showCategories(categories)
             view.showProductsLatestDishes(products, offers)
-            view.showProductsBestSeller(products, offers)
+            view.showProductsBestSeller(products1, offers)
             view.showOffers(offers)
         }
     }

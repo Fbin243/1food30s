@@ -53,6 +53,7 @@ dependencies {
     implementation("com.google.firebase:firebase-database-ktx:20.3.1")
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
     implementation("androidx.room:room-common:2.6.1")
+    implementation("androidx.activity:activity:1.8.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -71,14 +72,16 @@ dependencies {
     implementation("com.firebaseui:firebase-ui-storage:7.2.0")
 
     implementation("androidx.fragment:fragment-ktx:1.6.2")
-
+    // =============== JSON
     implementation("com.google.code.gson:gson:2.10.1")
-    // Download and display image from URL
+    // ============== Download and display image from URL
     implementation("com.squareup.picasso:picasso:2.8")
-    // Shimmer effect
+    // =============== Shimmer effect
     implementation("com.facebook.shimmer:shimmer:0.5.0")
     implementation("com.github.sharish:ShimmerRecyclerView:v1.3")
     implementation("com.todkars:shimmer-recyclerview:0.4.1")
+    // =============== Pull to request
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
 
     // ================ Firebase services =======================
     implementation(platform("com.google.firebase:firebase-bom:32.7.4"))

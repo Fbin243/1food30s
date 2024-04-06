@@ -18,5 +18,6 @@ data class Product(
     var stock: Int = 0,
     var sold: Int = 0,
     var reviews: List<Review>? = emptyList(),
-    var date: Date? = Date() // Date the product is created
+    var date: Date? = Date(), // Date the product is created
+    var isGrid: Boolean = false
 )

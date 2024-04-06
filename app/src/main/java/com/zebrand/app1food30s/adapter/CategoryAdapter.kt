@@ -11,7 +11,7 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.utils.Utils.getShimmerDrawable
 
-class CategoryAdapter(private val categories: List<Category>, private val underline: Boolean = false): RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+class CategoryAdapter(private var categories: List<Category>, private val hasUnderline: Boolean = false, private var initialPosition: Int = 0): RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
     var onItemClick: ((CategoryViewHolder) -> Unit)? = null
     var lastItemClicked: CategoryViewHolder? = null
 
@@ -34,11 +34,29 @@ class CategoryAdapter(private val categories: List<Category>, private val underl
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val category: Category = categories[position]
+        if(position == initialPosition && hasUnderline) {
+            if(lastItemClicked != null) {
+                lastItemClicked?.cateUnderline?.setBackgroundResource(0)
+                lastItemClicked?.cateTitle?.setTextColor(lastItemClicked!!.itemView.resources.getColor(R.color.black))
+            }
+            holder.cateUnderline.setBackgroundResource(R.drawable.category_underline)
+            holder.cateTitle.setTextColor(holder.itemView.resources.getColor(R.color.primary))
+            lastItemClicked = holder
+        }
         Picasso.get().load(category.image).placeholder(getShimmerDrawable()).into(holder.cateImg)
         holder.cateTitle.text = category.name
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(holder)
             lastItemClicked = holder
         }
+    }
+
+    fun updateData(newCategories: List<Category>) {
+        categories = newCategories
+        notifyDataSetChanged()
+    }
+
+    fun updateInitialPosition(newPosition: Int) {
+        initialPosition = newPosition
     }
 }

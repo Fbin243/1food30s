@@ -12,19 +12,24 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.facebook.shimmer.ShimmerFrameLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.data.AppDatabase
+import com.zebrand.app1food30s.data.entity.Cart
+import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.data.entity.Cart
 import com.zebrand.app1food30s.data.entity.CartItem
+import com.zebrand.app1food30s.data.entity.WishlistItem
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
+import com.zebrand.app1food30s.ui.menu.MenuActivity
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
+import com.zebrand.app1food30s.ui.product_view_all.ProductViewAllActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
 import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
@@ -33,9 +38,13 @@ import com.zebrand.app1food30s.utils.FireStoreUtils.mDBCartRef
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBProductRef
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
+import com.zebrand.app1food30s.utils.Utils
+import com.zebrand.app1food30s.utils.Utils.hideShimmerEffect
+import com.zebrand.app1food30s.utils.Utils.showShimmerEffect
 import kotlinx.coroutines.launch
 
-class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
+class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
+    SwipeRefreshLayout.OnRefreshListener {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var homePresenter: HomePresenter
     private lateinit var db: AppDatabase
@@ -50,7 +59,13 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         binding = FragmentHomeBinding.inflate(inflater)
         db = AppDatabase.getInstance(requireContext())
         homePresenter = HomePresenter(this, db)
-        lifecycleScope.launch { homePresenter.getDataAndDisplay() }
+        lifecycleScope.launch {
+            homePresenter.getDataAndDisplay()
+            handleOpenSearchScreen()
+        }
+
+        // Make function reloading data when swipe down
+        Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
 
         // TODO
 //        val userId = SingletonKey.KEY_USER_ID
@@ -170,11 +185,30 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         }
     }
 
+    private fun openMenuActivityWithCategory(categoryId: String, adapterPosition: Int) {
+        Log.i("TAG123", "openMenuActivityWithCategory: DA GOI HAM NAY")
+        val intent = Intent(requireContext(), MenuActivity::class.java)
+        intent.putExtra("categoryId", categoryId)
+        intent.putExtra("adapterPosition", adapterPosition)
+        startActivity(intent)
+    }
+
     override fun showCategories(categories: List<Category>) {
         binding.cateRcv.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        binding.cateRcv.adapter = CategoryAdapter(categories)
+        val adapter = CategoryAdapter(categories)
+        adapter.onItemClick = { holder ->
+            openMenuActivityWithCategory(
+                categories[holder.adapterPosition].id,
+                holder.adapterPosition
+            )
+        }
+        binding.cateRcv.adapter = adapter
+        binding.btn.setOnClickListener {
+            openMenuActivityWithCategory(categories[0].id, 0)
+        }
     }
+
 
     private fun addProductToCart(context: Context, productId: String) {
         val db = FirebaseFirestore.getInstance()
@@ -197,7 +231,8 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
                     }
 
                     cart?.let {
-                        val existingItemIndex = it.items.indexOfFirst { item -> item.productId == productRef }
+                        val existingItemIndex =
+                            it.items.indexOfFirst { item -> item.productId == productRef }
                         if (existingItemIndex >= 0) {
                             // Product exists, update quantity
                             it.items[existingItemIndex].quantity += 1
@@ -208,7 +243,11 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
                         }
 
                         cartRef.set(it).addOnSuccessListener {
-                            Toast.makeText(context, "Added to cart successfully!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Added to cart successfully!",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 }.addOnFailureListener { exception ->
@@ -224,6 +263,53 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         }
     }
 
+    override fun showProductsLatestDishes(products: List<Product>, offers: List<Offer>) {
+        for (product in products) {
+            product.isGrid = true
+        }
+        currentProducts = products
+        binding.productRcv1.layoutManager = GridLayoutManager(requireContext(), 2)
+        val adapter = ProductAdapter(products.take(4), offers, wishlistedProductIds)
+        addCallBacksForAdapter(adapter)
+        binding.productRcv1.adapter = adapter
+        handleOpenProductViewAll(binding.btn1, true, binding.textView1.text.toString())
+    }
+
+    override fun showProductsBestSeller(products: List<Product>, offers: List<Offer>) {
+        currentProducts = products
+        binding.productRcv2.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        val adapter = ProductAdapter(products.take(4), offers, wishlistedProductIds)
+        addCallBacksForAdapter(adapter)
+        binding.productRcv2.adapter = adapter
+        handleOpenProductViewAll(binding.btn2, false, binding.textView2.text.toString())
+    }
+
+    private fun handleOpenProductViewAll(
+        view: View,
+        isLatestDishes: Boolean = false,
+        title: String
+    ) {
+        view.setOnClickListener {
+            val intent = Intent(requireContext(), ProductViewAllActivity::class.java)
+            intent.putExtra("filterBy", "latestDishes")
+            intent.putExtra("title", title)
+            startActivity(intent)
+        }
+    }
+
+    private fun addCallBacksForAdapter(adapter: ProductAdapter) {
+        adapter.onItemClick = { product ->
+            openDetailProduct(product)
+        }
+        adapter.onAddButtonClick = { product ->
+            addProductToCart(requireContext(), product.id)
+        }
+        adapter.onWishlistProductClick = { product ->
+            wishlistPresenter.toggleWishlist(product)
+        }
+    }
+
     private fun openDetailProduct(product: Product) {
         val intent = Intent(requireContext(), ProductDetailActivity::class.java)
         intent.putExtra("idProduct", product.id)
@@ -234,26 +320,27 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView {
         // Offer
         binding.offerRcv.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        binding.offerRcv.adapter = OfferAdapter(offers)
+        binding.offerRcv.adapter = OfferAdapter(offers.take(2))
     }
 
     override fun showShimmerEffect() {
-        binding.cateShimmer.startShimmer()
-        binding.product1Shimmer.startShimmer()
-        binding.offerShimmer.startShimmer()
-        binding.product2Shimmer.startShimmer()
+        showShimmerEffect(binding.cateShimmer, binding.cateRcv)
+        showShimmerEffect(binding.product1Shimmer, binding.productRcv1)
+        showShimmerEffect(binding.product2Shimmer, binding.productRcv2)
+        showShimmerEffect(binding.offerShimmer, binding.offerRcv)
     }
 
     override fun hideShimmerEffect() {
-        hideShimmerEffectForRcv(binding.cateShimmer, binding.cateRcv)
-        hideShimmerEffectForRcv(binding.product1Shimmer, binding.productRcv1)
-        hideShimmerEffectForRcv(binding.product2Shimmer, binding.productRcv2)
-        hideShimmerEffectForRcv(binding.offerShimmer, binding.offerRcv)
+        hideShimmerEffect(binding.cateShimmer, binding.cateRcv)
+        hideShimmerEffect(binding.product1Shimmer, binding.productRcv1)
+        hideShimmerEffect(binding.product2Shimmer, binding.productRcv2)
+        hideShimmerEffect(binding.offerShimmer, binding.offerRcv)
     }
 
-    private fun hideShimmerEffectForRcv(shimmer: ShimmerFrameLayout, recyclerView: RecyclerView) {
-        shimmer.stopShimmer()
-        shimmer.visibility = View.GONE
-        recyclerView.visibility = View.VISIBLE
+    override fun onRefresh() {
+        lifecycleScope.launch {
+            homePresenter.getDataAndDisplay()
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
     }
 }

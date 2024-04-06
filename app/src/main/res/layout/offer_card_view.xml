@@ -7,13 +7,12 @@
     app:cardCornerRadius="@dimen/spacing16"
     app:cardElevation="0dp">
 
-
-    <com.google.android.material.imageview.ShapeableImageView
+    <ImageView
         android:id="@+id/offerImg"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:scaleType="centerCrop"
-        app:shapeAppearanceOverlay="@style/RoundedImageView"
-        android:src="@drawable/offer1" />
+        android:src="@drawable/offer1"
+        app:shapeAppearanceOverlay="@style/RoundedImageView" />
 
 </androidx.cardview.widget.CardView>

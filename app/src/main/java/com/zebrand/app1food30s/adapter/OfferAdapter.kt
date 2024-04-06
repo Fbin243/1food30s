@@ -11,6 +11,7 @@ import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.utils.Utils.getShimmerDrawable
 
 class OfferAdapter(private val offers: List<Offer>): RecyclerView.Adapter<OfferAdapter.OfferViewHolder>() {
+    var onItemClick: ((OfferAdapter.OfferViewHolder) -> Unit)? = null
     inner class OfferViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView) {
         val offerImg: ImageView = listItemView.findViewById(R.id.offerImg)
     }
@@ -27,5 +28,8 @@ class OfferAdapter(private val offers: List<Offer>): RecyclerView.Adapter<OfferA
     override fun onBindViewHolder(holder: OfferViewHolder, position: Int) {
         val offer = offers[position]
         Picasso.get().load(offer.image).placeholder(getShimmerDrawable()).into(holder.offerImg)
+        holder.itemView.setOnClickListener {
+            onItemClick?.invoke(holder)
+        }
     }
 }

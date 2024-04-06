@@ -15,9 +15,16 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 object FirebaseService {
+    private var firstTimeGetProducts: Boolean = true
+    private var firstTimeGetCategories: Boolean = true
+    private var firstTimeGetOffers: Boolean = true
     suspend fun getListCategories(db: AppDatabase): List<Category> {
         return withContext(Dispatchers.IO) {
             try {
+                if(firstTimeGetCategories) {
+                    db.categoryDao().deleteAll()
+                    firstTimeGetCategories = false
+                }
                 var categories = db.categoryDao().getAll()
                 if (categories.isEmpty()) {
                     val deferred = CompletableDeferred<List<Category>>()
@@ -51,6 +58,10 @@ object FirebaseService {
     suspend fun getListProducts(db: AppDatabase): List<Product> {
         return withContext(Dispatchers.IO) {
             try {
+                if(firstTimeGetProducts) {
+                    db.productDao().deleteAll()
+                    firstTimeGetProducts = false
+                }
                 var products = db.productDao().getAll()
                 if (products.isEmpty()) {
                     val deferred = CompletableDeferred<List<Product>>()
@@ -86,6 +97,10 @@ object FirebaseService {
     suspend fun getListOffers(db: AppDatabase): List<Offer> {
         return withContext(Dispatchers.IO) {
             try {
+                if(firstTimeGetOffers) {
+                    db.offerDao().deleteAll()
+                    firstTimeGetOffers = false
+                }
                 var offers = db.offerDao().getAll()
                 if (offers.isEmpty()) {
                     val deferred = CompletableDeferred<List<Offer>>()

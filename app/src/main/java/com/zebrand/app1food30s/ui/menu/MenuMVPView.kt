@@ -6,10 +6,6 @@ import com.zebrand.app1food30s.data.entity.Product
 
 interface MenuMVPView {
     fun showCategories(categories: List<Category>)
-    fun showProducts(products: MutableList<Product>, offers: MutableList<Offer>)
-    fun handleChangeLayout(products: MutableList<Product>, offers: MutableList<Offer>)
     fun showShimmerEffectForCategories()
-    fun showShimmerEffectForProducts()
     fun hideShimmerEffectForCategories()
-    fun hideShimmerEffectForProducts()
 }
