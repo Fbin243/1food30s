@@ -45,7 +45,7 @@ object Utils {
     fun initSwipeRefreshLayout(swipeRefreshLayout: SwipeRefreshLayout, onRefreshListener: SwipeRefreshLayout.OnRefreshListener, resources: Resources) {
         swipeRefreshLayout.setOnRefreshListener(onRefreshListener)
         swipeRefreshLayout.setColorSchemeColors(resources.getColor(R.color.primary))
-        swipeRefreshLayout.setDistanceToTriggerSync(300)
+        swipeRefreshLayout.setDistanceToTriggerSync(250)
     }
 
     fun replaceFragment(fragment: Fragment, supportFragmentManager: FragmentManager, containerId: Int) {

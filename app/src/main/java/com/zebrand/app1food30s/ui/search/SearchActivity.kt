@@ -50,6 +50,7 @@ class SearchActivity : AppCompatActivity() {
                     if (f is ListProductFragment) {
                         f.setInfo("", "search")
                         f.setSearchInput(binding.searchInput)
+                        f.initSearch()
                     }
                 }
             }, false

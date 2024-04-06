@@ -11,42 +11,21 @@ import kotlinx.coroutines.coroutineScope
 class MenuPresenter(private val view: MenuMVPView, private val db: AppDatabase) {
     suspend fun getDataAndDisplay(calledFromActivity: Boolean = false) {
         coroutineScope {
-            view.showShimmerEffectForProducts()
-            val products = FirebaseService.getListProducts(db)
-            val offers = FirebaseService.getListOffers(db)
-            view.showProducts(products, offers)
-            view.handleChangeLayout(products)
-            if(!calledFromActivity) {
-                view.hideShimmerEffectForProducts()
-            }
-
             view.showShimmerEffectForCategories()
             val categories = FirebaseService.getListCategories(db)
             view.showCategories(categories)
-            view.filterAndScrollToCategory(categories)
+            view.hideShimmerEffectForCategories()
         }
     }
 
-    fun reloadData(productAdapter: ProductAdapter, categoryAdapter: CategoryAdapter): List<Category> {
-        val categories = db.categoryDao().getAll()
-        filterProductByCategory(categories[0].id, productAdapter)
+    fun getAllCategories(): List<Category> {
+        return db.categoryDao().getAll()
+    }
+
+    fun refreshData(adapter: CategoryAdapter) {
         view.showShimmerEffectForCategories()
-        categoryAdapter.updateData(categories)
-        categoryAdapter.updateInitialPosition(0)
+        val categories = db.categoryDao().getAll()
+        adapter.updateData(categories)
         view.hideShimmerEffectForCategories()
-        return categories
-    }
-
-    fun filterProductByCategory(idCategory: String, adapter: ProductAdapter) {
-        try {
-            val products = db.productDao().getByCategory("categories/${idCategory}")
-            val offers = db.offerDao().getAll()
-            view.showShimmerEffectForProducts()
-            adapter.updateData(products, offers)
-            view.handleChangeLayout(products)
-            view.hideShimmerEffectForProducts()
-        } catch (e: Exception) {
-            Log.i("Error", "getRelatedProductsByCategory: ${e}")
-        }
     }
 }

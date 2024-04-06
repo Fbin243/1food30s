@@ -23,7 +23,7 @@ class OfferDetailActivity : AppCompatActivity() {
         binding = ActivityOfferDetailBinding.inflate(layoutInflater)
         db = AppDatabase.getInstance(this)
         setContentView(binding.root)
-        Utils.replaceFragment(ListProductFragment(), supportFragmentManager, R.id.fragment_container)
+        Utils.replaceFragment(ListProductFragment(hasLoading = true), supportFragmentManager, R.id.fragment_container)
 
         supportFragmentManager.registerFragmentLifecycleCallbacks(
             object : FragmentManager.FragmentLifecycleCallbacks() {
@@ -38,7 +38,8 @@ class OfferDetailActivity : AppCompatActivity() {
                     val offerImg = intent.getStringExtra("offerImg")!!
                     Picasso.get().load(offerImg).placeholder(Utils.getShimmerDrawable()).into(binding.offerImg)
                     if (f is ListProductFragment) {
-                        f.setInfo(offerName, offerId, "offer")
+                        f.setInfo(offerName, "offer", offerId)
+                        f.initOffer()
                     }
                 }
             }, false

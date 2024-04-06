@@ -5,6 +5,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.databinding.ActivityProductViewAllBinding
@@ -19,8 +20,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityProductViewAllBinding.inflate(layoutInflater)
         db = AppDatabase.getInstance(this)
         setContentView(binding.root)
-        Utils.replaceFragment(ListProductFragment(hasBackBtn = true, hasTitle = true), supportFragmentManager, R.id.fragment_container)
-
+        Utils.replaceFragment(ListProductFragment(hasBackBtn = true, hasTitle = true, hasLoading = true), supportFragmentManager, R.id.fragment_container)
         supportFragmentManager.registerFragmentLifecycleCallbacks(
             object : FragmentManager.FragmentLifecycleCallbacks() {
                 override fun onFragmentViewCreated(
@@ -33,6 +33,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
                     val filterBy = intent.getStringExtra("filterBy")!!
                     if (f is ListProductFragment) {
                         f.setInfo(title, filterBy, null)
+                        f.initProductViewAll()
                     }
                 }
             }, false

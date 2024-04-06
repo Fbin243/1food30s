@@ -12,10 +12,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.textfield.TextInputEditText
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.data.AppDatabase
+import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentListProductBinding
@@ -23,10 +26,12 @@ import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 
+@Suppress("DEPRECATION")
 class ListProductFragment(
     private val hasBackBtn: Boolean = false,
-    private val hasTitle: Boolean = false
-) : Fragment(), ListProductMVPView {
+    private val hasTitle: Boolean = false,
+    private val hasLoading: Boolean = false
+) : Fragment(), ListProductMVPView, SwipeRefreshLayout.OnRefreshListener {
     private lateinit var binding: FragmentListProductBinding
     private lateinit var listProductPresenter: ListProductPresenter
     private lateinit var db: AppDatabase
@@ -37,29 +42,19 @@ class ListProductFragment(
     private var idFilter: String? = null
     private lateinit var filterBy: String
     private lateinit var searchInput: TextInputEditText
+    private lateinit var categoryAdapter: CategoryAdapter
+    private lateinit var categories: List<Category>
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentListProductBinding.inflate(inflater)
         db = AppDatabase.getInstance(requireContext())
         linearLayoutManager = LinearLayoutManager(requireContext())
         gridLayoutManager = GridLayoutManager(requireContext(), 2)
         listProductPresenter = ListProductPresenter(this, db)
-
-        lifecycleScope.launch {
-            listProductPresenter.getDataAndDisplay()
-            if (filterBy == "offer") {
-                listProductPresenter.filterProductsByOffer(
-                    idFilter!!,
-                    binding.productRcv.adapter as ProductAdapter
-                )
-            } else if (filterBy == "search") {
-                searchProductsByName("")
-                Utils.hideShimmerEffect(binding.shimmerLayout, binding.textView)
-                handleSearchInput()
-            }
-        }
+        if(hasLoading) Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
+        else binding.swipeRefreshLayout.isEnabled = false
 
         return binding.root
     }
@@ -75,6 +70,77 @@ class ListProductFragment(
 
     fun setSearchInput(searchInput: TextInputEditText) {
         this.searchInput = searchInput
+    }
+
+    fun initProductViewAll() {
+        lifecycleScope.launch {
+            listProductPresenter.getDataAndDisplay()
+        }
+    }
+
+    fun initOffer() {
+        lifecycleScope.launch {
+            listProductPresenter.getDataAndDisplay()
+            listProductPresenter.filterProductsByOffer(
+                idFilter!!,
+                binding.productRcv.adapter as ProductAdapter
+            )
+        }
+    }
+
+    fun initCategory(initialPosition: Int) {
+        Log.i("TAG123", "initCategory: $categories")
+        lifecycleScope.launch {
+            listProductPresenter.getDataAndDisplay()
+            listProductPresenter.filterProductsByCategory(
+                categories[initialPosition].id,
+                binding.productRcv.adapter as ProductAdapter
+            )
+        }
+        binding.textView.text = categories[initialPosition].name
+    }
+
+    fun refreshDataAndFilterByCategory() {
+        refreshData()
+        listProductPresenter.filterProductsByCategory(
+            categories[0].id,
+            binding.productRcv.adapter as ProductAdapter
+        )
+        binding.textView.text = categories[0].name
+    }
+
+    private fun refreshData() {
+        listProductPresenter.refreshData(binding.productRcv.adapter as ProductAdapter)
+    }
+
+    fun initSearch() {
+        lifecycleScope.launch {
+            listProductPresenter.getDataAndDisplay()
+            searchProductsByName("")
+            Utils.hideShimmerEffect(binding.shimmerLayout, binding.textView)
+            handleSearchInput()
+        }
+    }
+
+    fun setCategoryAdapterAndCategories(
+        categoryAdapter: CategoryAdapter,
+        categories: List<Category>
+    ) {
+        this.categoryAdapter = categoryAdapter
+        this.categories = categories
+        Log.i("TAG123", "setCategoryAdapterAndCategories: $categories")
+        categoryAdapter.onItemClick = { holder ->
+            categoryAdapter.lastItemClicked?.cateTitle?.setTextColor(resources.getColor(R.color.black))
+            categoryAdapter.lastItemClicked?.cateUnderline?.setBackgroundResource(0)
+            holder.cateUnderline.setBackgroundResource(R.drawable.category_underline)
+            holder.cateTitle.setTextColor(resources.getColor(R.color.primary))
+            binding.textView.text = categories[holder.adapterPosition].name
+            // Update UI by category
+            listProductPresenter.filterProductsByCategory(
+                categories[holder.adapterPosition].id,
+                binding.productRcv.adapter as ProductAdapter
+            )
+        }
     }
 
     private fun handleSearchInput() {
@@ -94,7 +160,7 @@ class ListProductFragment(
             pattern,
             binding.productRcv.adapter as ProductAdapter
         )
-        binding.textView.text = "$searchResultNumber Items Available"
+        "$searchResultNumber Items Available".also { binding.textView.text = it }
     }
 
     private fun handleDisplayTitle() {
@@ -110,7 +176,7 @@ class ListProductFragment(
         } else {
             Utils.showShimmerEffect(binding.shimmerLayout, binding.textView)
             binding.textView.text = title
-            if(title != "search") Utils.hideShimmerEffect(binding.shimmerLayout, binding.textView)
+            if (title != "search") Utils.hideShimmerEffect(binding.shimmerLayout, binding.textView)
         }
     }
 
@@ -173,5 +239,10 @@ class ListProductFragment(
 
     override fun hideShimmerEffectForProducts() {
         Utils.hideShimmerEffect(binding.productShimmer, binding.productRcv)
+    }
+
+    override fun onRefresh() {
+        refreshData()
+        binding.swipeRefreshLayout.isRefreshing = false
     }
 }
