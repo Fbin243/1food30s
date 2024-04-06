@@ -252,6 +252,9 @@ class EditProduct : AppCompatActivity() {
                 if (categoryStr.isNotEmpty()) {
                     categoryAutoComplete.setText(categoryStr, false) // Set text và không filter kết quả dựa trên text được set
                 }
+                else{
+                    categoryAutoComplete.setText("Choose category", false)
+                }
             }
             .addOnFailureListener { exception ->
                 // Xử lý lỗi ở đây
@@ -272,6 +275,9 @@ class EditProduct : AppCompatActivity() {
 
                 if (offerStr.isNotEmpty()) {
                     offerAutoComplete.setText(offerStr, false) // Set text và không filter kết quả dựa trên text được set
+                }
+                else{
+                    offerAutoComplete.setText("Choose offer", false)
                 }
             }
             .addOnFailureListener { exception ->

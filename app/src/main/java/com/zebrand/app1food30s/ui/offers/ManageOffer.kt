@@ -136,14 +136,13 @@ class ManageOffer : AppCompatActivity() {
             val selectedNumProduct = numProductAutoComplete.text.toString()
             val selectedDate = datePickerText.text.toString()
 
-            val allOffers = getListOffers() // Giả định đây là phương thức của bạn để lấy tất cả sản phẩm
+            val allOffers = getListOffers()
 
 //            val db = AppDatabase.getInstance(applicationContext)
 //            val allOffers = FirebaseService.getListProducts(db)
 
             var filteredOffers = allOffers
 
-            // Chỉ áp dụng bộ lọc nếu giá trị không phải là "Choose ..."
             if (nameFilter.isNotEmpty()) {
                 filteredOffers = filterOffersByName(nameFilter, filteredOffers)
             }
@@ -180,8 +179,6 @@ class ManageOffer : AppCompatActivity() {
     }
 
     private fun filterOffersByDiscount(selectedDiscount: String, offers: List<Offer>): List<Offer> {
-        // Parse selectedPriceRange to min and max values, then filter
-        // Ví dụ: chuyển đổi "1$ to 10$" thành một cặp giá trị (1.0, 10.0)
         val range = selectedDiscount.split(" to ").mapNotNull { it.filter { char -> char.isDigit() }.toIntOrNull() }
         if (range.size == 2) {
             return offers.filter {
@@ -192,8 +189,6 @@ class ManageOffer : AppCompatActivity() {
     }
 
     private fun filterOffersByNumProduct(selectedNumProduct: String, offers: List<Offer>): List<Offer> {
-        // Parse selectedPriceRange to min and max values, then filter
-        // Ví dụ: chuyển đổi "1$ to 10$" thành một cặp giá trị (1.0, 10.0)
         val range = selectedNumProduct.split(" to ").mapNotNull { it.filter { char -> char.isDigit() }.toIntOrNull() }
         if (range.size == 2) {
             return offers.filter {
