@@ -190,10 +190,10 @@ class ManageProductActivity : AppCompatActivity() {
             val selectedPriceRange = priceAutoComplete.text.toString()
             val selectedDate = datePickerText.text.toString()
 
-            val allProducts = getListProducts()
+//            val allProducts = getListProducts()
 
-//            val db = AppDatabase.getInstance(applicationContext)
-//            val allProducts = FirebaseService.getListProducts(db)
+            val db = AppDatabase.getInstance(this@ManageProductActivity)
+            val allProducts = FirebaseService.getListProducts(db)
 
             var filteredProducts = allProducts
 

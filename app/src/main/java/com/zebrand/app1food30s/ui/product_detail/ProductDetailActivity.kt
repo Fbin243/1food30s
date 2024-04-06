@@ -11,11 +11,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.adapter.ReviewAdapter
-import androidx.recyclerview.widget.RecyclerView
-import com.facebook.shimmer.ShimmerFrameLayout
-import com.squareup.picasso.Picasso
-import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
