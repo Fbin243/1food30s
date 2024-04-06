@@ -24,6 +24,7 @@ import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
+import com.zebrand.app1food30s.ui.authentication.LoginActivity
 import com.zebrand.app1food30s.ui.menu.MenuActivity
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.product_view_all.ProductViewAllActivity
@@ -141,6 +142,15 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         val db = FirebaseFirestore.getInstance()
         val preferences = MySharedPreferences.getInstance(context)
         val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
+        val defaultId = MySharedPreferences.defaultStringValue
+
+        // Check if the user is logged in before proceeding
+        if (userId == defaultId) {
+            // User is not logged in, navigate to LoginActivity
+            val loginIntent = Intent(requireContext(), LoginActivity::class.java)
+            startActivity(loginIntent)
+            return // Stop further execution of this function
+        }
 
         val cartRef = mDBCartRef.document(userId)
 

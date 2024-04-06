@@ -1,11 +1,13 @@
 package com.zebrand.app1food30s.ui.cart
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.DocumentReference
@@ -13,8 +15,10 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.adapter.CartAdapter
 import com.zebrand.app1food30s.databinding.FragmentCartBinding
+import com.zebrand.app1food30s.ui.authentication.LoginActivity
 import com.zebrand.app1food30s.ui.checkout.CheckoutActivity
 import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.MySharedPreferences.Companion.defaultStringValue
 import com.zebrand.app1food30s.utils.SingletonKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +34,26 @@ class CartFragment : Fragment(), CartMVPView {
     private lateinit var presenter: CartPresenter
     private lateinit var preferences: MySharedPreferences
     private var debounceJob: Job? = null
+    private lateinit var userId: String
+
+    // TODO: not display cart screen before moving to log in
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        // Initialize preferences here as context is available and safe to use
+        preferences = MySharedPreferences.getInstance(context)
+
+        userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
+        val defaultId = defaultStringValue
+
+        // Check if the user is logged in before proceeding
+        if (userId == defaultId) {
+            // User is not logged in, navigate to LoginActivity
+            val loginIntent = Intent(requireContext(), LoginActivity::class.java)
+            startActivity(loginIntent)
+            return // Stop further execution of this function
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +70,6 @@ class CartFragment : Fragment(), CartMVPView {
 
         setupRecyclerView()
 
-        val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
         if (userId.isNotBlank()) {
             presenter = CartPresenter(this, userId, requireContext())
 //          presenter.listenToCartChanges()
@@ -110,7 +133,9 @@ class CartFragment : Fragment(), CartMVPView {
     }
 
     override fun displayError(error: String) {
-        // Display error to user
+        context?.let {
+            Toast.makeText(it, error, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun handleCheckoutNavigation(userId: String) {
