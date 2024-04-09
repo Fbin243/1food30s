@@ -1,6 +1,7 @@
 package com.zebrand.app1food30s.data.entity
 
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.Exclude
 import java.util.Date
 import com.google.firebase.firestore.ServerTimestamp
 
@@ -17,6 +18,8 @@ data class OrderItem(
 
 data class Order(
     var id: String = "",
+    @Exclude
+    var user: User = User(),
     var idAccount: DocumentReference? = null,
     var items: MutableList<OrderItem> = mutableListOf(),
     var totalAmount: Double = 0.0,

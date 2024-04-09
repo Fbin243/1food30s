@@ -108,9 +108,6 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
 
     @SuppressLint("SetTextI18n")
     override fun setOrderDetailsUI() {
-        val control: Boolean =
-            orderDetails.orderStatus == SingletonKey.CANCELLED || orderDetails.orderStatus == SingletonKey.PAID
-//        Log.d("Test00", "orderDetails: ${orderDetails?.id}")
         binding.tvOrderId.text = Utils.formatId(orderDetails.id)
         binding.tvOrderDate.text = Utils.formatDate(orderDetails.date)
         binding.tvAddress.text = orderDetails.shippingAddress
@@ -125,7 +122,7 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
 
-        if (control) {
+        if (orderDetails.orderStatus != SingletonKey.PENDING) {
             binding.linearControl.visibility = View.GONE
             layoutParams.bottomMargin = 130
         } else {
@@ -145,9 +142,6 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
         binding.linearOrderItems.layoutParams = layoutParams
 //        --------------------------------------------
 
-        binding.payNowBtn.setOnClickListener {
-            showCustomConfirmDialogBox(R.string.txt_payment, R.string.txt_payment_content)
-        }
         binding.cancelOrderBtn.setOnClickListener {
             showCustomConfirmDialogBox(
                 R.string.txt_cancel_payment,
@@ -189,11 +183,7 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
         bindingSub.content = resources.getString(content)
 
         acceptBtn.setOnClickListener {
-            if (title == R.string.txt_payment) {
-                presenter.changePaymentStatus(idOrder, SingletonKey.PAID)
-            } else if (title == R.string.txt_cancel_payment) {
-                presenter.changeOrderStatus(idOrder, SingletonKey.CANCELLED)
-            }
+            presenter.changeOrderStatus(idOrder, SingletonKey.CANCELLED)
             dialog.dismiss()
             finish()
         }

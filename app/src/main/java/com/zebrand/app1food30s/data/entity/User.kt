@@ -13,9 +13,14 @@ data class User(
     val avatar: String = "",
     val phone: String = "",
     val address: String = "",
-    val isAdmin: Boolean = false,
+    val admin: Boolean,
     @get:ServerTimestamp
     val date: Date? = null,
-    val wishlistRef: DocumentReference? = null,
-    val cartRef: DocumentReference? = null,
-)
+    var wishlistRef: DocumentReference? = null,
+    var cartRef: DocumentReference? = null,
+){
+    constructor() : this(
+        id = null,
+        admin = false
+    )
+}

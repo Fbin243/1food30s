@@ -378,21 +378,11 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <Button
-                android:id="@+id/payNowBtn"
-                android:layout_width="0dp"
-                android:layout_height="@dimen/spacing60"
-                android:layout_weight="1"
-                android:backgroundTint="@color/primary"
-                android:text="@string/txt_pay_now"
-                android:textSize="@dimen/font_size16"
-                android:textStyle="bold" />
-
-            <Button
                 android:id="@+id/cancelOrderBtn"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/spacing60"
                 android:layout_marginStart="@dimen/spacing12"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:backgroundTint="@color/deep_orange"
                 android:text="@string/txt_cancel_order"
                 android:textSize="@dimen/font_size16"

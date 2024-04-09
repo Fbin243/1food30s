@@ -48,7 +48,7 @@
                         />
 
                     <TextView
-                        android:id="@+id/tv_order_id"
+                        android:id="@+id/tvOrderId"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/font_size16"
@@ -74,6 +74,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/tvCustomerName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Tuan Nguyen"
@@ -91,6 +92,7 @@
                     />
 
                 <TextView
+                    android:id="@+id/tvDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="06:14 PM 14-02-2024"
@@ -116,7 +118,7 @@
                         />
 
                     <TextView
-                        android:id="@+id/tv_total_amount"
+                        android:id="@+id/tvTotalAmount"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/rubik_semibold"

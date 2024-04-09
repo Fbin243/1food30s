@@ -8,6 +8,6 @@ object FireStoreUtils{
     val mDBOrderRef:CollectionReference = FirebaseUtils.fireStore.collection("orders")
     val mDBCartRef: CollectionReference = FirebaseUtils.fireStore.collection("carts")
     val mDBProductRef: CollectionReference = FirebaseUtils.fireStore.collection("products")
-    val mDBCategoryRef: CollectionReference = FirebaseUtils.fireStore.collection("wishlists")
+    val mDBCategoryRef: CollectionReference = FirebaseUtils.fireStore.collection("categories")
     val mDBWishlistRef: CollectionReference = FirebaseUtils.fireStore.collection("wishlists")
 }

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".ui.manage_order.ManageOrderDetailsActivity">
+    tools:context=".ui.manage_order.manage_order_details.ManageOrderDetailsActivity">
 
     <LinearLayout
         android:id="@+id/linear_app_bar"
