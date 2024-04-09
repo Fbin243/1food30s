@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="15dp"
         app:cardElevation="0dp"
-        android:backgroundTint="@{orderStatusSpan.equals(@string/txt_pending_status) ? @color/pending : (orderStatusSpan.equals(@string/txt_order_accepted_status) ? @color/order_accepted :(orderStatusSpan.equals(@string/txt_on_delivery_status) ? @color/on_delivery :@color/delivered))}"
+        android:backgroundTint="@{orderStatusSpan.equals(@string/txt_pending_status) ? @color/pending : (orderStatusSpan.equals(@string/txt_order_accepted_status) ? @color/order_accepted :(orderStatusSpan.equals(@string/txt_on_delivery_status) ? @color/on_delivery : (orderStatusSpan.equals(@string/txt_delivered_status) ? @color/delivered : @color/cancelled)))}"
         >
 
         <TextView
