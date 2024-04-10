@@ -11,7 +11,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import com.zebrand.app1food30s.ui.admin_stats.AdminStatsActivity
 import com.zebrand.app1food30s.databinding.FragmentProfileAfterLoginBinding
 import com.zebrand.app1food30s.ui.authentication.DeleteAccountActivity
 import com.zebrand.app1food30s.ui.main.MainActivity

@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.databinding.ActivityMainBinding
+import com.zebrand.app1food30s.ui.admin_stats.AdminStatsFragment
 import com.zebrand.app1food30s.ui.cart.CartFragment
 import com.zebrand.app1food30s.ui.home.HomeFragment
 import com.zebrand.app1food30s.ui.manage_order.ManageOrderFragment
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity() {
     private var adminLogin: Boolean = false
     private lateinit var db: AppDatabase
     private var idUser: String? = null
-    val mySharedPreferences = MySharedPreferences.getInstance(this)
+    private val mySharedPreferences = MySharedPreferences.getInstance(this)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -40,10 +41,10 @@ class MainActivity : AppCompatActivity() {
         idUser = mySharedPreferences.getString(SingletonKey.KEY_USER_ID)
         adminLogin = mySharedPreferences.getBoolean(SingletonKey.IS_ADMIN)
 
-        Log.d("adminLogin", "adminLogin: $adminLogin")
+//        Log.d("adminLogin", "adminLogin: $adminLogin")
         if (adminLogin) {
 //            First screen for admin
-            replaceFragment(OffersFragment())
+            replaceFragment(AdminStatsFragment())
             handleBottomNavigationForAdmin()
         } else {
 //            First screen for user
@@ -95,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavView.setOnItemSelectedListener { menuItem ->
             val isLogin = mySharedPreferences.getBoolean(SingletonKey.KEY_LOGGED)
             when (menuItem.itemId) {
-                R.id.ic_dashboard -> replaceFragment(OffersFragment())
+                R.id.ic_dashboard -> replaceFragment(AdminStatsFragment())
                 R.id.ic_order -> replaceFragment(ManageOrderFragment())
                 R.id.ic_manage -> replaceFragment(ProfileFragment())
                 R.id.ic_profile -> {

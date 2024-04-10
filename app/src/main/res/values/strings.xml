@@ -184,6 +184,7 @@
         <item>Unpaid</item>
     </string-array>
     <string name="formatted_currency">%.2f</string>
+    <string name="formatted_currency_dollar">$%.2f</string>
     <string name="wishlist_button">Wishlist button</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

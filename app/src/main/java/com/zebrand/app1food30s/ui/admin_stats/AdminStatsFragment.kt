@@ -3,11 +3,13 @@ package com.zebrand.app1food30s.ui.admin_stats
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.BarChart
@@ -27,40 +29,50 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
-import java.util.TimeZone
 
-class AdminStatsActivity : AppCompatActivity() {
+class AdminStatsFragment : Fragment() {
     private lateinit var myGridRecyclerView: RecyclerView
-    private lateinit var binding: ActivityAdminStatisticsBinding
+//    private lateinit var binding: ActivityAdminStatisticsBinding
+    private var _binding: ActivityAdminStatisticsBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityAdminStatisticsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = ActivityAdminStatisticsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        myGridRecyclerView = findViewById(R.id.my_grid_recycler_view)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        // Initialize RecyclerView and other views here
         updateGridItems()
         setupDaysChooser()
-
-        // val editTextNumberOfDays = findViewById<EditText>(R.id.editTextNumberOfDays)
-//        val textViewValue1 = findViewById<TextView>(R.id.textViewValue1)
-//        val textViewValue2 = findViewById<TextView>(R.id.textViewValue2)
-//        val lineChart: LineChart = findViewById(R.id.lineChart)
-//        val barChart: BarChart = findViewById(R.id.barChart)
-
-        // Example button to trigger the calculation
-        // val calculateButton = findViewById<Button>(R.id.calculateButton)
-//        calculateButton.setOnClickListener {
-//            val days = editTextNumberOfDays.text.toString().toIntOrNull() ?: 0
-//            calculateRevenueAndDrawChart(days, barChart, textViewValue1, textViewValue2)
-//        }
-
-        // Draw the bar chart with the last 30 days of revenue data on startup
         calculateRevenueAndDrawChart(30, binding.barChart, binding.textViewValue1, binding.textViewValue2)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Cancel all coroutines
+    }
+
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        binding = ActivityAdminStatisticsBinding.inflate(layoutInflater)
+//        setContentView(binding.root)
+//
+//        myGridRecyclerView = findViewById(R.id.my_grid_recycler_view)
+//
+//        updateGridItems()
+//        setupDaysChooser()
+//        // Draw the bar chart with the last 30 days of revenue data on startup
+//        calculateRevenueAndDrawChart(30, binding.barChart, binding.textViewValue1, binding.textViewValue2)
+//    }
 
     private fun setupDaysChooser() {
         binding.containerDaysChooser.setOnClickListener {
@@ -69,10 +81,10 @@ class AdminStatsActivity : AppCompatActivity() {
     }
 
     private fun showDaysInputPopup() {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_days_chooser, null)
+        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_days_chooser, null)
         val editText = dialogView.findViewById<EditText>(R.id.editTextDialog)
 
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(requireContext())
             .setTitle("Choose Number of Days")
             .setView(dialogView)
             .setPositiveButton("Update") { dialog, _ ->
@@ -112,12 +124,12 @@ class AdminStatsActivity : AppCompatActivity() {
                     MyGridAdapter.GridItem("Delivered", totalDelivered, R.drawable.ic_box_delivered),
                 )
             )
-            myGridRecyclerView.adapter = myGridAdapter
+            binding.myGridRecyclerView.adapter = myGridAdapter
             val spanCount = 2 // Number of columns
-            myGridRecyclerView.layoutManager = GridLayoutManager(this@AdminStatsActivity, spanCount)
+            binding.myGridRecyclerView.layoutManager = GridLayoutManager(requireContext(), spanCount)
             val spacing = 60 // Spacing in pixels
             val includeEdge = false
-            myGridRecyclerView.addItemDecoration(GridSpacingItemDecoration(spanCount, spacing, includeEdge))
+            binding.myGridRecyclerView.addItemDecoration(GridSpacingItemDecoration(spanCount, spacing, includeEdge))
         }
     }
 
@@ -195,8 +207,11 @@ class AdminStatsActivity : AppCompatActivity() {
                 orderSnapshots.forEach { orderDoc ->
                     val totalAmount = orderDoc.getDouble("totalAmount") ?: 0.0
                     val orderDate = orderDoc.getDate("date")
-                    val formattedDate = dateFormat.format(orderDate)
+//                    val formattedDate = dateFormat.format(orderDate)
+//                    revenuePerDay[formattedDate] = revenuePerDay.getOrDefault(formattedDate, 0.0) + totalAmount
+                    val formattedDate = if (orderDate != null) dateFormat.format(orderDate) else "Unknown Date"
                     revenuePerDay[formattedDate] = revenuePerDay.getOrDefault(formattedDate, 0.0) + totalAmount
+
                 }
 
                 // All orders processed, update the chart and TextViews
@@ -230,7 +245,7 @@ class AdminStatsActivity : AppCompatActivity() {
         }
 
         val dataSet = BarDataSet(entries, "Daily Total Sales")
-        dataSet.color = ContextCompat.getColor(this, R.color.primary)
+        dataSet.color = ContextCompat.getColor(requireContext(), R.color.primary)
         val barData = BarData(dataSet)
 
         // Set the labels to the XAxis
@@ -257,7 +272,7 @@ class AdminStatsActivity : AppCompatActivity() {
         val averageRevenuePerDay = if (days > 0) totalRevenue / days else 0.0
 
         // Update the TextViews
-        textViewValue1.text = getString(R.string.formatted_currency, totalRevenue)
-        textViewValue2.text = getString(R.string.formatted_currency, averageRevenuePerDay)
+        textViewValue1.text = getString(R.string.formatted_currency_dollar, totalRevenue)
+        textViewValue2.text = getString(R.string.formatted_currency_dollar, averageRevenuePerDay)
     }
 }

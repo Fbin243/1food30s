@@ -18,19 +18,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
-    <ImageView
-        android:id="@+id/ava"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintWidth_percent="0.4"
-        app:layout_constraintDimensionRatio="1:1"
-        android:src="@drawable/placeholder_ava"
-        app:layout_constraintTop_toBottomOf="@id/tvMyProfile"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/tvLoginInfo"
-        android:layout_marginTop="16dp"
-        android:contentDescription="@string/ava" />
+<!--    <ImageView-->
+<!--        android:id="@+id/ava"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        app:layout_constraintWidth_percent="0.4"-->
+<!--        app:layout_constraintDimensionRatio="1:1"-->
+<!--        android:src="@drawable/default_avatar"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/tvMyProfile"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/tvLoginInfo"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:contentDescription="@string/ava" />-->
 
     <TextView
         android:id="@+id/tvLoginInfo"
@@ -40,7 +40,7 @@
         android:fontFamily="@font/rubik_regular"
         android:textSize="@dimen/font_size18"
         android:textColor="#000000"
-        app:layout_constraintTop_toBottomOf="@id/ava"
+        app:layout_constraintTop_toBottomOf="@id/tvMyProfile"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
@@ -61,39 +61,39 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layoutChangeLanguage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnLogin"
-        android:layout_marginTop="32dp">
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/layoutChangeLanguage"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/btnLogin"-->
+<!--        android:layout_marginTop="32dp">-->
 
-        <ImageView
-            android:id="@+id/ivChangeLanguage"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_language"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tvChangeLanguage"
-            android:layout_marginEnd="8dp"
-            android:contentDescription="@string/ic_change_language" />
+<!--        <ImageView-->
+<!--            android:id="@+id/ivChangeLanguage"-->
+<!--            android:layout_width="24dp"-->
+<!--            android:layout_height="24dp"-->
+<!--            android:src="@drawable/ic_language"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/tvChangeLanguage"-->
+<!--            android:layout_marginEnd="8dp"-->
+<!--            android:contentDescription="@string/ic_change_language" />-->
 
-        <TextView
-            android:id="@+id/tvChangeLanguage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/change_language"
-            android:fontFamily="@font/rubik_regular"
-            android:textSize="14sp"
-            android:textColor="#000000"
-            app:layout_constraintStart_toEndOf="@+id/ivChangeLanguage"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+<!--        <TextView-->
+<!--            android:id="@+id/tvChangeLanguage"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/change_language"-->
+<!--            android:fontFamily="@font/rubik_regular"-->
+<!--            android:textSize="14sp"-->
+<!--            android:textColor="#000000"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/ivChangeLanguage"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent" />-->
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
