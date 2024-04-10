@@ -4,6 +4,7 @@ import com.zebrand.app1food30s.R
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
@@ -68,6 +69,11 @@ class EditCategory : AppCompatActivity() {
         saveButton = binding.createBtn
         removeButton = binding.removeBtn
         categoryImageView = binding.imageCategory
+
+        val backIcon = findViewById<View>(R.id.backIcon)
+        backIcon.setOnClickListener {
+            finish() // Kết thúc Activity hiện tại
+        }
 
         saveButton.setOnClickListener {
             val categoryId = intent.getStringExtra("CATEGORY_ID")

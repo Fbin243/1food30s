@@ -218,4 +218,6 @@
     <string name="txt_has_been_cancelled">Order has been cancelled</string>
     <string name="no_items_added">No items added</string>
     <string name="no_items_in_cart">No items in cart</string>
+    <string name="txt_new_password">New password</string>
+    <string name="txt_confirm_new_password">Confirm new password</string>
 </resources>

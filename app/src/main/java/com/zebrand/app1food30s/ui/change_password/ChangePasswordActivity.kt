@@ -35,7 +35,7 @@ class ChangePasswordActivity : AppCompatActivity() {
         }
 
         binding.backIcon.root.setOnClickListener {
-            onBackPressed()
+            finish()
         }
     }
 
