@@ -5,7 +5,10 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.toObject
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Category
+import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
+import com.zebrand.app1food30s.data.entity.Review
+import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.utils.FireStoreUtils
 import com.zebrand.app1food30s.utils.FirebaseService
 import com.zebrand.app1food30s.utils.FirebaseUtils
@@ -16,17 +19,18 @@ class ProductDetailPresenter(
 ) {
     suspend fun getProductDetail(idProduct: String): Boolean {
         try {
-            view.showShimmerEffects()
+            view.showShimmerEffectForProduct()
             val product = FirebaseService.getOneProductByID(db, idProduct)
                 ?: throw Exception("Product not found")
             // Get category
             val category = product.idCategory!!.get().await().toObject<Category>()
-            val offer = db.offerDao().getOneById(product.idOffer?.path)
+            val offer = product.idOffer?.get()?.await()?.toObject<Offer>()
+            view.showProductDetail(product, category!!, offer)
+            view.hideShimmerEffectForProduct()
             // Get related products
             getRelatedProductsByCategory(product.idCategory!!, product.id)
-            // Finish get data
-            view.showProductDetail(product, category!!, offer)
-            view.hideShimmerEffects()
+            Log.i("TAG123", "getProductDetail:$idProduct")
+            getReviews(idProduct)
             return true
         } catch (e: Exception) {
             Log.i("Error", "getProductDetail: $e")
@@ -39,6 +43,7 @@ class ProductDetailPresenter(
         idProduct: String
     ) {
         try {
+            view.showShimmerEffectForRelatedProducts()
             val querySnapshot =
                 FirebaseUtils.fireStore.collection("products")
                     .whereEqualTo("idCategory", idCategory)
@@ -51,16 +56,23 @@ class ProductDetailPresenter(
                 product
             }
 
-            Log.i("TAG", "getRelatedProductsByCategory: ${relatedProducts}")
-
             val offers = FirebaseService.getListOffers(db)
             view.showRelatedProducts(relatedProducts.toMutableList(), offers.toMutableList())
+            view.hideShimmerEffectForRelatedProducts()
         } catch (e: Exception) {
             Log.e("Error", "getRelatedProductsByCategory: $e")
         }
     }
 
-    private suspend fun get() {
+    private suspend fun getReviews(idProduct: String) {
+        try {
+            view.showShimmerEffectForReviews()
+            val reviews = FirebaseService.getListReviewsOfProduct(idProduct)
+            view.showReviews(reviews)
+            view.hideShimmerEffectForReviews()
+        } catch (e: Exception) {
+            Log.e("Error", "getReviews: $e")
+        }
     }
 
 //    suspend fun fetchRelatedProductsAndOffers(idCategory: DocumentReference, idProduct: String, onResult: (List<Product>, List<Offer>) -> Unit) {

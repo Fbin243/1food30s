@@ -10,4 +10,5 @@ object FireStoreUtils{
     val mDBProductRef: CollectionReference = FirebaseUtils.fireStore.collection("products")
     val mDBCategoryRef: CollectionReference = FirebaseUtils.fireStore.collection("categories")
     val mDBWishlistRef: CollectionReference = FirebaseUtils.fireStore.collection("wishlists")
+    val mDBReviewRef:CollectionReference = FirebaseUtils.fireStore.collection("reviews")
 }

@@ -6,6 +6,8 @@ import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
+import com.zebrand.app1food30s.data.entity.Review
+import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBWishlistRef
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -70,6 +72,7 @@ object FirebaseService {
                             if (error != null) {
                                 return@addSnapshotListener
                             }
+//                                Log.i("TAG123", "getListProducts: ${value?.documents}")
                             CoroutineScope(Dispatchers.IO).launch {
                                 value?.documents?.map { document ->
                                     val product = document.toObject<Product>()!!
@@ -140,6 +143,9 @@ object FirebaseService {
                     val document =
                         FirebaseUtils.fireStore.collection("products").document(idProduct).get()
                             .await()
+                    if(!document.exists()) {
+                        return@withContext null
+                    }
                     product = document.toObject<Product>()!!
                     product.image =
                         FirebaseUtils.fireStorage.reference.child(product.image).downloadUrl.await()
@@ -168,6 +174,26 @@ object FirebaseService {
                 }
             } catch (e: Exception) {
                 Log.e("getUserWishlist", "Error getting wishlist for user $userId", e)
+                emptyList()
+            }
+        }
+    }
+
+    suspend fun getListReviewsOfProduct(idProduct: String): List<Review> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val reviews = FireStoreUtils.mDBReviewRef.whereEqualTo("idProduct",
+                    FireStoreUtils.mDBProductRef.document(idProduct)
+                ).get().await().toObjects(Review::class.java)
+                val reviewsList = reviews.map { review ->
+                    val user = review.idAccount!!.get().await()?.toObject<User>()
+                    review.avatar = FirebaseUtils.fireStorage.reference.child(user!!.avatar).downloadUrl.await().toString()
+                    review.name = user.firstName + user.lastName
+                    review
+                }
+                reviewsList
+            } catch (e: Exception) {
+                Log.e("getListReviewsOfProduct", "Error getting reviews of product $idProduct", e)
                 emptyList()
             }
         }

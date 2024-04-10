@@ -12,6 +12,7 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.utils.Utils.getShimmerDrawable
 
+@Suppress("DEPRECATION")
 class CategoryAdapter(
     private var categories: List<Category>,
     private val hasUnderline: Boolean = false,
@@ -49,10 +50,6 @@ class CategoryAdapter(
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val category: Category = categories[position]
-        Log.i(
-            "TAG123",
-            "onBindViewHolder: $position ${categories.size} $categories $currentPosition"
-        )
         if(position == currentPosition && hasUnderline) {
             holder.enableUnderline()
             lastItemClicked = holder
@@ -62,7 +59,6 @@ class CategoryAdapter(
         Picasso.get().load(category.image).placeholder(getShimmerDrawable()).into(holder.cateImg)
         holder.cateTitle.text = category.name
         holder.itemView.setOnClickListener {
-            Log.i("TAG123", "onBindViewHolder: ${lastItemClicked?.cateTitle?.text}")
             onItemClick?.invoke(holder)
             lastItemClicked = holder
         }

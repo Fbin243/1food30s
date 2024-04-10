@@ -33,7 +33,7 @@ class OfferDetailActivity : AppCompatActivity() {
                     v: View,
                     savedInstanceState: Bundle?
                 ) {
-                    val offerName = intent.getStringExtra("offerName")!!
+                    val offerName = intent.getStringExtra("offerNameWithDiscount")!!
                     val offerId = intent.getStringExtra("offerId")!!
                     val offerImg = intent.getStringExtra("offerImg")!!
                     Picasso.get().load(offerImg).placeholder(Utils.getShimmerDrawable()).into(binding.offerImg)

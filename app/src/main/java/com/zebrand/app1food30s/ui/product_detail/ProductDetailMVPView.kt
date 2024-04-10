@@ -10,6 +10,10 @@ interface ProductDetailMVPView {
 
     fun showReviews(reviews: List<Review>)
     fun showRelatedProducts(relatedProducts: MutableList<Product>, offers: MutableList<Offer>)
-    fun showShimmerEffects()
-    fun hideShimmerEffects()
+    fun showShimmerEffectForProduct()
+    fun hideShimmerEffectForProduct()
+    fun showShimmerEffectForReviews()
+    fun hideShimmerEffectForReviews()
+    fun showShimmerEffectForRelatedProducts()
+    fun hideShimmerEffectForRelatedProducts()
 }

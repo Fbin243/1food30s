@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.data.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.Exclude
 import java.util.Date
 
 @Entity(tableName = "products")
@@ -17,7 +18,7 @@ data class Product(
     var description: String = "",
     var stock: Int = 0,
     var sold: Int = 0,
-    var reviews: List<Review>? = emptyList(),
     var date: Date? = Date(), // Date the product is created
+    @Exclude
     var isGrid: Boolean = false
 )

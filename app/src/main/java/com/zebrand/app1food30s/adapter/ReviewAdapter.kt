@@ -6,8 +6,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Review
+import com.zebrand.app1food30s.utils.Utils
 
 class ReviewAdapter(private val reviews: List<Review>): RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
     inner class ReviewViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView) {
@@ -27,6 +29,10 @@ class ReviewAdapter(private val reviews: List<Review>): RecyclerView.Adapter<Rev
     }
 
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
-        // Bind khi đã có database
+        val review = reviews[position]
+        holder.name.text = review.name
+        holder.content.text = review.content
+        holder.date.text = Utils.formatDate(review.date)
+        Picasso.get().load(review.avatar).placeholder(Utils.getShimmerDrawable()).into(holder.avatar)
     }
 }
