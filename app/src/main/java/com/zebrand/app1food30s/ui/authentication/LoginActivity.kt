@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
         val email = mySharePreference.getString(SingletonKey.KEY_EMAIL)
         val password = mySharePreference.getString(SingletonKey.KEY_PASSWORD)
         binding.rememberMe.isChecked = rememberMe
-        if(rememberMe){
+        if (rememberMe){
             binding.tvEmail.setText(email)
             binding.tvPassword.setText(password)
         }

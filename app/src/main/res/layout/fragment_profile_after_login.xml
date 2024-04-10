@@ -32,7 +32,7 @@
                 android:id="@+id/ava"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:src="@drawable/placeholder_ava"
+                android:src="@drawable/default_avatar"
                 android:contentDescription="@string/ava"
                 app:layout_constraintDimensionRatio="1:1"
                 app:layout_constraintWidth_percent="0.4"
@@ -47,7 +47,7 @@
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2deptrai"
+                android:text=""
                 android:fontFamily="@font/rubik_semibold"
                 android:textSize="@dimen/font_size24"
                 android:textColor="#000000"
@@ -60,7 +60,7 @@
                 android:id="@+id/email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2deptrai@gmail.com"
+                android:text=""
                 android:fontFamily="@font/rubik_regular"
                 android:textSize="@dimen/font_size18"
                 android:textColor="@color/grey_80"
@@ -99,7 +99,7 @@
                 android:id="@+id/options"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="24dp"
+                android:padding="@dimen/spacing12"
                 app:layout_constraintTop_toBottomOf="@id/line"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
@@ -290,7 +290,6 @@
                 app:layout_constraintTop_toBottomOf="@id/options"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="16dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp" />
 
