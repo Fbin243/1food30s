@@ -28,9 +28,8 @@ class ProductDetailPresenter(
             view.showProductDetail(product, category!!, offer)
             view.hideShimmerEffectForProduct()
             // Get related products
-            getRelatedProductsByCategory(product.idCategory!!, product.id)
-            Log.i("TAG123", "getProductDetail:$idProduct")
             getReviews(idProduct)
+            getRelatedProductsByCategory(product.idCategory!!, product.id)
             return true
         } catch (e: Exception) {
             Log.i("Error", "getProductDetail: $e")

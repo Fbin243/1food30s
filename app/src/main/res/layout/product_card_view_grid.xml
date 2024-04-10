@@ -42,10 +42,13 @@
 
             <ImageView
                 android:id="@+id/ivWishlist"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:paddingBottom="@dimen/spacing8"
+                android:paddingLeft="@dimen/spacing16"
                 android:layout_marginEnd="5dp"
                 android:src="@drawable/ic_wishlist"
+                android:layout_marginTop="-4dp"
                 android:contentDescription="@string/wishlist_button" />
             </LinearLayout>
 

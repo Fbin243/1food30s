@@ -326,7 +326,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:text="6 Reviews"
-                        android:textSize="@dimen/font_size18"
+                        android:textSize="@dimen/font_size16"
                         android:fontFamily="@font/rubik_semibold"
                         android:visibility="gone" />
                 </LinearLayout>
@@ -433,7 +433,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/related_products_title"
-                    android:textSize="@dimen/font_size18"
+                    android:textSize="@dimen/font_size16"
                     android:fontFamily="@font/rubik_semibold" />
             </LinearLayout>
 
