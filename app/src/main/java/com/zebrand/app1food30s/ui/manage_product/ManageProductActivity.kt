@@ -62,6 +62,7 @@ class ManageProductActivity : AppCompatActivity() {
 
         addButton = findViewById(R.id.add_product_btn)
         filterButton = findViewById(R.id.filter_btn)
+        
 
         addButton.setOnClickListener {
             val intent = Intent(this, ManageProductDetailActivity::class.java)

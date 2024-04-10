@@ -48,20 +48,41 @@
         android:layout_marginTop="21dp"
         android:src="@drawable/ic_plus"/>
 
-    <TextView
+
+    <LinearLayout
         android:id="@+id/tv_active_orders"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/txt_manage_products"
-        android:textSize="@dimen/font_header"
-        android:fontFamily="@font/rubik_semibold"
-        android:paddingLeft="@dimen/spacing20"
-        android:paddingRight="@dimen/spacing24"
-        android:paddingBottom="@dimen/spacing4"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/linear_app_bar"
-        android:layout_marginTop="@dimen/spacing20"/>
+        app:layout_constraintStart_toStartOf="parent"
+        android:paddingLeft="@dimen/spacing16"
+        android:paddingRight="@dimen/spacing24"
+        android:layout_marginTop="@dimen/spacing20">
 
+        <ImageButton
+            android:id="@+id/menu_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_menu_24"
+            android:background="@color/transparent"/>
+
+        <FrameLayout
+            android:id="@+id/menu_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/linear_app_bar" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/txt_manage_products"
+            android:textSize="@dimen/font_header"
+            android:paddingLeft="@dimen/spacing10"
+            android:fontFamily="@font/rubik_semibold" />
+
+    </LinearLayout>
 
 
     <androidx.core.widget.NestedScrollView
