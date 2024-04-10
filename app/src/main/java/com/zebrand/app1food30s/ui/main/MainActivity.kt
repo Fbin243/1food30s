@@ -20,6 +20,7 @@ import com.zebrand.app1food30s.ui.manage_order.ManageOrderFragment
 import com.zebrand.app1food30s.ui.menu.MenuFragment
 import com.zebrand.app1food30s.ui.offers.OffersFragment
 import com.zebrand.app1food30s.ui.order_confirm.OrderConfirmationDialogFragment
+import com.zebrand.app1food30s.ui.profile.ProfileAdminAfterLogin
 import com.zebrand.app1food30s.ui.profile.ProfileAfterLoginFragment
 import com.zebrand.app1food30s.ui.profile.ProfileFragment
 import kotlinx.coroutines.launch
@@ -99,7 +100,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.ic_manage -> replaceFragment(ProfileFragment())
                 R.id.ic_profile -> {
                     if (isLogin) {
-                        val fragment = ProfileAfterLoginFragment().apply {
+                        val fragment = ProfileAdminAfterLogin().apply {
                             arguments = Bundle().apply {
                                 putString("USER_ID", idUser)
                             }
