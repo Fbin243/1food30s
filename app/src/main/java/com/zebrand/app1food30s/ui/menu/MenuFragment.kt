@@ -30,7 +30,7 @@ import com.zebrand.app1food30s.ui.search.SearchActivity
 import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 
-class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment(), MenuMVPView,
+class MenuFragment(private val calledFromActivity: Boolean = false) : Fragment(), MenuMVPView,
     SwipeRefreshLayout.OnRefreshListener, WishlistMVPView {
     private lateinit var binding: FragmentMenuBinding
     private lateinit var menuPresenter: MenuPresenter
@@ -73,6 +73,7 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
                             menuPresenter.getDataAndDisplay(calledFromActivity)
                             val categories = menuPresenter.getAllCategories()
                             f.setCategoryAdapterAndCategories(binding.cateRcv.adapter as CategoryAdapter, categories)
+                            Log.i("TAG123", "onFragmentViewCreated: vi tri hien tai $adapterPosition")
                             f.initCategory(if(calledFromActivity) adapterPosition else 0)
                             fragment = f
                         }
@@ -155,11 +156,11 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
 
     // ============ DƯỚI NÀY LÀ HÀM CỦA T
     override fun showCategories(categories: List<Category>) {
-            binding.cateRcv.layoutManager =
-                LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-            val adapter = CategoryAdapter(categories, true, adapterPosition)
-            binding.cateRcv.scrollToPosition(adapterPosition)
-            binding.cateRcv.adapter = adapter
+        binding.cateRcv.layoutManager =
+            LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
+        val adapter = CategoryAdapter(categories, true, adapterPosition)
+        binding.cateRcv.scrollToPosition(adapterPosition)
+        binding.cateRcv.adapter = adapter
     }
 
     override fun showShimmerEffectForCategories() {
@@ -175,7 +176,7 @@ class MenuFragment(private var calledFromActivity: Boolean = false) : Fragment()
             val categoryAdapter = binding.cateRcv.adapter as CategoryAdapter
             menuPresenter.refreshData(categoryAdapter)
             binding.cateRcv.scrollToPosition(0)
-            (binding.cateRcv.adapter as CategoryAdapter).updateInitialPosition(0)
+            (binding.cateRcv.adapter as CategoryAdapter).updateCurrentPosition(0)
             fragment.refreshDataAndFilterByCategory()
             binding.swipeRefreshLayout.isRefreshing = false
         }

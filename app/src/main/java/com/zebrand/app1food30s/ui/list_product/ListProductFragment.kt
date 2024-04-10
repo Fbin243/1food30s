@@ -89,7 +89,7 @@ class ListProductFragment(
     }
 
     fun initCategory(initialPosition: Int) {
-        Log.i("TAG123", "initCategory: $categories")
+        Log.i("TAG123", "initCategory: vi tri ban dau $initialPosition")
         lifecycleScope.launch {
             listProductPresenter.getDataAndDisplay()
             listProductPresenter.filterProductsByCategory(
@@ -126,21 +126,19 @@ class ListProductFragment(
         categoryAdapter: CategoryAdapter,
         categories: List<Category>
     ) {
-        this.categoryAdapter = categoryAdapter
-        this.categories = categories
-        Log.i("TAG123", "setCategoryAdapterAndCategories: $categories")
         categoryAdapter.onItemClick = { holder ->
-            categoryAdapter.lastItemClicked?.cateTitle?.setTextColor(resources.getColor(R.color.black))
-            categoryAdapter.lastItemClicked?.cateUnderline?.setBackgroundResource(0)
-            holder.cateUnderline.setBackgroundResource(R.drawable.category_underline)
-            holder.cateTitle.setTextColor(resources.getColor(R.color.primary))
+            categoryAdapter.lastItemClicked?.disableUnderline()
+            holder.enableUnderline()
             binding.textView.text = categories[holder.adapterPosition].name
+            categoryAdapter.updateCurrentPosition(holder.adapterPosition)
             // Update UI by category
             listProductPresenter.filterProductsByCategory(
                 categories[holder.adapterPosition].id,
                 binding.productRcv.adapter as ProductAdapter
             )
         }
+        this.categoryAdapter = categoryAdapter
+        this.categories = categories
     }
 
     private fun handleSearchInput() {

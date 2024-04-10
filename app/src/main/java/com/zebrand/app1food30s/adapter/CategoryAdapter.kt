@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,14 +12,28 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.utils.Utils.getShimmerDrawable
 
-class CategoryAdapter(private var categories: List<Category>, private val hasUnderline: Boolean = false, private var initialPosition: Int = 0): RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
+class CategoryAdapter(
+    private var categories: List<Category>,
+    private val hasUnderline: Boolean = false,
+    private var currentPosition: Int = 0
+) : RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
     var onItemClick: ((CategoryViewHolder) -> Unit)? = null
     var lastItemClicked: CategoryViewHolder? = null
 
-    inner class CategoryViewHolder(listItemView: View): RecyclerView.ViewHolder(listItemView) {
+    inner class CategoryViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val cateImg: ImageView = listItemView.findViewById(R.id.cateImg)
         val cateTitle: TextView = listItemView.findViewById(R.id.cateTitle)
         val cateUnderline: TextView = listItemView.findViewById(R.id.cateUnderline)
+
+        fun disableUnderline() {
+            cateUnderline.setBackgroundResource(0)
+            cateTitle.setTextColor(itemView.resources.getColor(R.color.black))
+        }
+
+        fun enableUnderline() {
+            cateUnderline.setBackgroundResource(R.drawable.category_underline)
+            cateTitle.setTextColor(itemView.resources.getColor(R.color.primary))
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
@@ -34,18 +49,20 @@ class CategoryAdapter(private var categories: List<Category>, private val hasUnd
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val category: Category = categories[position]
-        if(position == initialPosition && hasUnderline) {
-            if(lastItemClicked != null) {
-                lastItemClicked?.cateUnderline?.setBackgroundResource(0)
-                lastItemClicked?.cateTitle?.setTextColor(lastItemClicked!!.itemView.resources.getColor(R.color.black))
-            }
-            holder.cateUnderline.setBackgroundResource(R.drawable.category_underline)
-            holder.cateTitle.setTextColor(holder.itemView.resources.getColor(R.color.primary))
+        Log.i(
+            "TAG123",
+            "onBindViewHolder: $position ${categories.size} $categories $currentPosition"
+        )
+        if(position == currentPosition && hasUnderline) {
+            holder.enableUnderline()
             lastItemClicked = holder
+        } else {
+            holder.disableUnderline()
         }
         Picasso.get().load(category.image).placeholder(getShimmerDrawable()).into(holder.cateImg)
         holder.cateTitle.text = category.name
         holder.itemView.setOnClickListener {
+            Log.i("TAG123", "onBindViewHolder: ${lastItemClicked?.cateTitle?.text}")
             onItemClick?.invoke(holder)
             lastItemClicked = holder
         }
@@ -56,7 +73,7 @@ class CategoryAdapter(private var categories: List<Category>, private val hasUnd
         notifyDataSetChanged()
     }
 
-    fun updateInitialPosition(newPosition: Int) {
-        initialPosition = newPosition
+    fun updateCurrentPosition(newPosition: Int) {
+        currentPosition = newPosition
     }
 }
