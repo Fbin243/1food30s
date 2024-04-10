@@ -106,17 +106,30 @@ class CartRepository(private val firebaseDb: FirebaseFirestore) {
 //        }
 //    }
 
-    fun removeFromCart(cartRef: DocumentReference, productRef: DocumentReference, onComplete: (Boolean) -> Unit) {
+    fun removeFromCart(cartRef: DocumentReference, productRef: DocumentReference, onComplete: (Boolean, Boolean) -> Unit) {
         cartRef.get().addOnSuccessListener { documentSnapshot ->
             val cart = documentSnapshot.toObject(Cart::class.java)
             cart?.let {
-                it.items.removeAll { item -> item.productId == productRef }
-                cartRef.set(it).addOnSuccessListener {
-                    onComplete(true)
-                }.addOnFailureListener {
-                    onComplete(false)
+                val wasItemRemoved = it.items.removeAll { item -> item.productId == productRef }
+
+                if (wasItemRemoved) {
+                    cartRef.set(cart).addOnSuccessListener {
+                        // Call onComplete with true for success and also whether the cart is empty
+                        onComplete(true, cart.items.isEmpty())
+                    }.addOnFailureListener {
+                        // Operation failed; the emptiness of the cart doesn't matter here
+                        onComplete(false, false)
+                    }
+                } else {
+                    // If no item was removed, it's not a "success", but it doesn't indicate a failure either
+                    // You might need to adjust this based on your app's logic
+                    onComplete(false, cart.items.isEmpty())
                 }
             }
+        }
+        .addOnFailureListener {
+            // Operation failed to even retrieve the cart
+            onComplete(false, false)
         }
     }
 

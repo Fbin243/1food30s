@@ -8,4 +8,5 @@ interface CartMVPView {
     fun displayCartItems(cartItems: List<CartItem>)
     fun displayError(error: String)
     fun refreshCart(productRef: DocumentReference)
+    fun displayEmptyCart()
 }

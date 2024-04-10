@@ -35,62 +35,84 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/cartItemsRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/clHeader"
-        android:clipToPadding="false" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/clTotalPrice"
+        android:id="@+id/cartView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_background"
-        android:padding="8dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        app:layout_constraintTop_toBottomOf="@+id/cartItemsRecyclerView"
+        app:layout_constraintTop_toBottomOf="@id/clHeader"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="24dp">
-
-        <TextView
-            android:id="@+id/textView_total"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total"
-            android:textSize="@dimen/font_size20"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cartItemsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintTop_toTopOf="parent"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+            android:clipToPadding="false" />
 
-        <TextView
-            android:id="@+id/textView_amount"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clTotalPrice"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="$0.00"
-            android:textSize="@dimen/font_size20"
-            android:textColor="@color/primary"
-            android:fontFamily="@font/rubik_bold"
+            android:background="@drawable/rounded_background"
+            android:padding="8dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/cartItemsRecyclerView"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:id="@+id/textView_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total"
+                android:textSize="@dimen/font_size20"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            <TextView
+                android:id="@+id/textView_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$0.00"
+                android:textSize="@dimen/font_size20"
+                android:textColor="@color/primary"
+                android:fontFamily="@font/rubik_bold"
+                android:textStyle="bold"
+                app:layout_constraintBaseline_toBaselineOf="@+id/textView_total"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Button
+            android:id="@+id/btnCheckout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/spacing60"
+            android:text="@string/checkout"
+            android:textSize="@dimen/font_header"
             android:textStyle="bold"
-            app:layout_constraintBaseline_toBaselineOf="@+id/textView_total"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            android:backgroundTint="@color/primary"
+            android:layout_marginTop="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/clTotalPrice"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
-        android:id="@+id/btnCheckout"
+    <TextView
+        android:id="@+id/emptyCartTextView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/spacing60"
-        android:text="@string/checkout"
-        android:textSize="@dimen/font_header"
-        android:textStyle="bold"
-        android:backgroundTint="@color/primary"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/clTotalPrice"
-        app:layout_constraintLeft_toLeftOf="parent"
-        />
-
+        android:layout_height="wrap_content"
+        android:text="@string/no_items_in_cart"
+        android:fontFamily="@font/rubik_regular"
+        android:textSize="@dimen/font_size18"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/clHeader"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

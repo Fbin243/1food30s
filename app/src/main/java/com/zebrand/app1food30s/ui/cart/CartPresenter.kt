@@ -38,7 +38,7 @@ class CartPresenter(private val view: CartMVPView, private val userId: String, c
                         view.loadCart(detailedCartItems)
                     } else {
                         // TODO: this is called when checkout clears cart
-                        view.displayError("Cart is empty.")
+                        view.displayEmptyCart()
                     }
                 }
             }, onError = { error ->
@@ -52,16 +52,45 @@ class CartPresenter(private val view: CartMVPView, private val userId: String, c
 
     fun removeFromCart(productRef: DocumentReference) {
         cartRef?.let { ref ->
-            repository.removeFromCart(ref, productRef) { success ->
-                if (success) {
-                    // TODO
-                    // Update UI accordingly
+            repository.removeFromCart(ref, productRef) { isSuccess, isEmpty ->
+                if (isSuccess) {
+                    if (isEmpty) {
+                        // If the operation was successful and the cart is now empty, display the empty cart UI
+                        CoroutineScope(Dispatchers.Main).launch {
+                            view.displayEmptyCart()
+                        }
+                    } else {
+                        // If the operation was successful but the cart is not empty, perform other UI updates as necessary
+                    }
                 } else {
-                    view.displayError("Failed to remove item")
+                    // If the operation failed, display an error
+                    CoroutineScope(Dispatchers.Main).launch {
+                        view.displayError("Failed to remove item")
+                    }
                 }
             }
         }
     }
+
+//    fun removeFromCart(cartRef: DocumentReference, productRef: DocumentReference) {
+//        repository.removeFromCart(cartRef, productRef) { isSuccess, isEmpty ->
+//            if (isSuccess) {
+//                if (isEmpty) {
+//                    // If the operation was successful and the cart is now empty, display the empty cart UI
+//                    CoroutineScope(Dispatchers.Main).launch {
+//                        view.displayEmptyCart()
+//                    }
+//                } else {
+//                    // If the operation was successful but the cart is not empty, perform other UI updates as necessary
+//                }
+//            } else {
+//                // If the operation failed, display an error
+//                CoroutineScope(Dispatchers.Main).launch {
+//                    view.displayError("Failed to remove item")
+//                }
+//            }
+//        }
+//    }
 
     fun updateCartItemQuantity(productRef: DocumentReference, newQuantity: Int) {
         cartRef?.let { ref ->

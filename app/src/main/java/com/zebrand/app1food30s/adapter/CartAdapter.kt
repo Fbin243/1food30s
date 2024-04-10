@@ -107,13 +107,6 @@ class CartAdapter(
         onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity }) // Update total price
     }
 
-
-//    fun updateItems(newItems: List<CartItem>) {
-//        items = newItems.toMutableList()
-//        notifyDataSetChanged()
-//        onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
-//    }
-
     fun removeItemByRef(productRef: DocumentReference) {
         val indexToRemove = items.indexOfFirst { it.productId == productRef }
         if (indexToRemove != -1) {
