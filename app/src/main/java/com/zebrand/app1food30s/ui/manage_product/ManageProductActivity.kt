@@ -299,7 +299,7 @@ class ManageProductActivity : AppCompatActivity() {
                     val idCategoryRef = document.getDocumentReference("idCategory")
                     val idOfferRef = document.getDocumentReference("idOffer")
 
-                    Product(id, idCategoryRef, idOfferRef, name, imageUrl, price, description, stock, sold, null, document.getDate("date"))
+                    Product(id, idCategoryRef, idOfferRef, name, imageUrl, price, description, stock, sold, document.getDate("date"))
                 }
             } catch (e: Exception) {
                 Log.e("getListProducts", "Error getting products", e)

@@ -29,13 +29,14 @@ class MainActivity : AppCompatActivity() {
     private var adminLogin: Boolean = false
     private lateinit var db: AppDatabase
     private var idUser: String? = null
-    val mySharedPreferences = MySharedPreferences.getInstance(this)
+    private lateinit var mySharedPreferences: MySharedPreferences
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         db = AppDatabase.getInstance(this)
+        mySharedPreferences = MySharedPreferences.getInstance(this)
 //        idUser = intent.getStringExtra("USER_ID") ?: ""
         idUser = mySharedPreferences.getString(SingletonKey.KEY_USER_ID)
         adminLogin = mySharedPreferences.getBoolean(SingletonKey.IS_ADMIN)
@@ -64,12 +65,6 @@ class MainActivity : AppCompatActivity() {
         Log.i("TAG123", "onDestroy: Xóa db")
         db.clearAllTables()
     }
-
-//    override fun onStop() {
-//        super.onStop()
-//        Log.i("TAG123", "onDestroy: Xóa db")
-//        db.clearAllTables()
-//    }
 
     private fun showOrderConfirmationToast() {
         val toastView = findViewById<LinearLayout>(R.id.toast)
@@ -136,7 +131,6 @@ class MainActivity : AppCompatActivity() {
                         replaceFragment(ProfileFragment())
                     }
                 }
-//                R.id.ic_cart -> replaceFragment(CartFragment())
             }
             true
         }

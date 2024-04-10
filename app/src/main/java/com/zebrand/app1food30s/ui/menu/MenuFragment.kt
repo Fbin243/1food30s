@@ -73,7 +73,6 @@ class MenuFragment(private val calledFromActivity: Boolean = false) : Fragment()
                             menuPresenter.getDataAndDisplay(calledFromActivity)
                             val categories = menuPresenter.getAllCategories()
                             f.setCategoryAdapterAndCategories(binding.cateRcv.adapter as CategoryAdapter, categories)
-                            Log.i("TAG123", "onFragmentViewCreated: vi tri hien tai $adapterPosition")
                             f.initCategory(if(calledFromActivity) adapterPosition else 0)
                             fragment = f
                         }
@@ -185,7 +184,6 @@ class MenuFragment(private val calledFromActivity: Boolean = false) : Fragment()
     fun changeHeaderOfFragment() {
         binding.backFromMenu.visibility = View.VISIBLE
         binding.backFromMenu.setOnClickListener {
-            Log.i("TAG123", "changeHeaderOfFragment: DA BAM NUT BACK")
             requireActivity().finish()
         }
     }

@@ -26,6 +26,7 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
     private lateinit var binding: ActivityProductDetailBinding
     private lateinit var productDetailPresenter: ProductDetailPresenter
     private lateinit var db: AppDatabase
+    private lateinit var idProduct: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProductDetailBinding.inflate(layoutInflater)
@@ -35,10 +36,10 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
         // TODO
 //        WishlistManager.initialize(userId)
         productDetailPresenter = ProductDetailPresenter(this, db)
-        val idProduct = intent.getStringExtra("idProduct")
+        idProduct = intent.getStringExtra("idProduct")!!
         Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
         lifecycleScope.launch {
-            productDetailPresenter.getProductDetail(idProduct!!)
+            productDetailPresenter.getProductDetail(idProduct)
 //            fetchWishlistAndUpdateUI()
 //            productDetailPresenter.fetchRelatedProductsAndOffers(/* You need to provide idCategory and idProduct here */, { relatedProducts, offers ->
 //                // Use the fetched relatedProducts and offers here
@@ -87,6 +88,9 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
         relatedProducts: MutableList<Product>,
         offers: MutableList<Offer>
     ) {
+        for (product in relatedProducts) {
+            product.isGrid = true
+        }
         binding.relatedProductRcv.layoutManager = GridLayoutManager(this, 2)
         val adapter = ProductAdapter(relatedProducts, offers, mutableSetOf())
         adapter.onItemClick = { product ->
@@ -101,13 +105,29 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
         startActivity(intent)
     }
 
-    override fun showShimmerEffects() {
+    override fun showShimmerEffectForProduct() {
         Utils.showShimmerEffect(binding.productShimmer, binding.cardView)
+    }
+
+    override fun hideShimmerEffectForProduct() {
+        Utils.hideShimmerEffect(binding.productShimmer, binding.cardView)
+    }
+
+    override fun showShimmerEffectForReviews() {
+        Utils.showShimmerEffect(binding.reviewTitleShimmer, binding.reviewTitle)
+        Utils.showShimmerEffect(binding.reviewShimmer, binding.reviewRcv)
+    }
+
+    override fun hideShimmerEffectForReviews() {
+        Utils.hideShimmerEffect(binding.reviewTitleShimmer, binding.reviewTitle)
+        Utils.hideShimmerEffect(binding.reviewShimmer, binding.reviewRcv)
+    }
+
+    override fun showShimmerEffectForRelatedProducts() {
         Utils.showShimmerEffect(binding.relatedProductShimmer, binding.relatedProductRcv)
     }
 
-    override fun hideShimmerEffects() {
-        Utils.hideShimmerEffect(binding.productShimmer, binding.cardView)
+    override fun hideShimmerEffectForRelatedProducts() {
         Utils.hideShimmerEffect(binding.relatedProductShimmer, binding.relatedProductRcv)
     }
 
@@ -120,6 +140,7 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
     private fun handleOpenReviewScreen() {
         binding.viewAllBtn.setOnClickListener {
             val intent = Intent(this, ReviewActivity::class.java)
+            intent.putExtra("idProduct", idProduct)
             startActivity(intent)
         }
     }
@@ -127,6 +148,7 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
     override fun showReviews(reviews: List<Review>) {
         binding.reviewRcv.layoutManager = LinearLayoutManager(this)
         binding.reviewRcv.adapter = ReviewAdapter(reviews)
+        binding.reviewTitle.text = "${reviews.size} Reviews"
     }
 
     override fun onRefresh() {

@@ -60,6 +60,7 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     // =============== Circled avatar
     implementation("com.google.android.material:material:1.12.0-rc01")
+    implementation("de.hdodenhof:circleimageview:3.1.0")
     // For control over item selection of both touch and mouse driven selection
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
     implementation("androidx.cardview:cardview:1.0.0")
@@ -95,5 +96,5 @@ dependencies {
     // ================ ROOM Database =================
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
 }

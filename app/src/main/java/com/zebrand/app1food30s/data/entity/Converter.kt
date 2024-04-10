@@ -27,24 +27,4 @@ class Converter {
     fun toDocumentReference(path: String?): DocumentReference? {
         return path?.let { FirebaseUtils.fireStore.document(it) }
     }
-
-    @TypeConverter
-    fun fromReviewList(reviews: List<Review>?): String? {
-        if (reviews == null) {
-            return null
-        }
-        val gson = Gson()
-        val type = object : TypeToken<List<Review>>() {}.type
-        return gson.toJson(reviews, type)
-    }
-
-    @TypeConverter
-    fun toReviewList(reviewsString: String?): List<Review>? {
-        if (reviewsString == null) {
-            return null
-        }
-        val gson = Gson()
-        val type = object : TypeToken<List<Review>>() {}.type
-        return gson.fromJson(reviewsString, type)
-    }
 }

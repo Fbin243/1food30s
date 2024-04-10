@@ -16,6 +16,7 @@ import com.zebrand.app1food30s.ui.offer_detail.OfferDetailActivity
 import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 
+@Suppress("DEPRECATION")
 class OffersFragment : Fragment(), OffersMVPView {
     private lateinit var binding: FragmentOffersBinding
     private lateinit var db: AppDatabase
@@ -45,7 +46,7 @@ class OffersFragment : Fragment(), OffersMVPView {
 
     private fun openOfferDetailScreen(offer: Offer) {
         val intent = Intent(requireContext(), OfferDetailActivity::class.java)
-        intent.putExtra("offerName", offer.name)
+        intent.putExtra("offerNameWithDiscount", "${offer.name} (${offer.discountRate}%)")
         intent.putExtra("offerId", offer.id)
         intent.putExtra("offerImg", offer.image)
         startActivity(intent)
