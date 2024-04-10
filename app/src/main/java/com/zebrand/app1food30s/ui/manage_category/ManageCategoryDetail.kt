@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.ui.manage_category
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
@@ -41,6 +42,11 @@ class ManageCategoryDetail : AppCompatActivity() {
         numProductEditText = findViewById(R.id.input_num_product)
         createButton = findViewById(R.id.create_btn)
         categoryImageView = findViewById(R.id.image_category)
+
+        val backIcon = findViewById<View>(R.id.backIcon)
+        backIcon.setOnClickListener {
+            finish()
+        }
 
         createButton.setOnClickListener {
             saveProductToFirestore()

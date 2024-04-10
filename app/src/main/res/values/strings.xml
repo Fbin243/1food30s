@@ -215,4 +215,6 @@
     <string name="txt_cancel_payment">Cancel payment</string>
     <string name="txt_cancel_payment_content">Are you sure you want to cancel your order?</string>
     <string name="txt_has_been_cancelled">Order has been cancelled</string>
+    <string name="txt_new_password">New password</string>
+    <string name="txt_confirm_new_password">Confirm new password</string>
 </resources>
