@@ -36,22 +36,21 @@ class CartFragment : Fragment(), CartMVPView {
     private var debounceJob: Job? = null
     private lateinit var userId: String
 
-    // TODO: not display cart screen before moving to log in
     override fun onAttach(context: Context) {
         super.onAttach(context)
         // Initialize preferences here as context is available and safe to use
         preferences = MySharedPreferences.getInstance(context)
 
         userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
-        val defaultId = defaultStringValue
 
-        // Check if the user is logged in before proceeding
-        if (userId == defaultId) {
-            // User is not logged in, navigate to LoginActivity
-            val loginIntent = Intent(requireContext(), LoginActivity::class.java)
-            startActivity(loginIntent)
-            return // Stop further execution of this function
-        }
+//        val defaultId = defaultStringValue
+//        // Check if the user is logged in before proceeding
+//        if (userId == defaultId) {
+//            // User is not logged in, navigate to LoginActivity
+//            val loginIntent = Intent(requireContext(), LoginActivity::class.java)
+//            startActivity(loginIntent)
+//            return // Stop further execution of this function
+//        }
     }
 
 

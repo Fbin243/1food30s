@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,6 +13,7 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.databinding.ActivityMainBinding
 import com.zebrand.app1food30s.ui.admin_stats.AdminStatsFragment
+import com.zebrand.app1food30s.ui.authentication.LoginActivity
 import com.zebrand.app1food30s.ui.cart.CartFragment
 import com.zebrand.app1food30s.ui.home.HomeFragment
 import com.zebrand.app1food30s.ui.manage_order.ManageOrderFragment
@@ -22,6 +24,7 @@ import com.zebrand.app1food30s.ui.profile.ProfileAfterLoginFragment
 import com.zebrand.app1food30s.ui.profile.ProfileFragment
 import kotlinx.coroutines.launch
 import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.MySharedPreferences.Companion.defaultStringValue
 import com.zebrand.app1food30s.utils.SingletonKey
 
 class MainActivity : AppCompatActivity() {
@@ -147,6 +150,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFloatingButton() {
         binding.icCart.setOnClickListener {
+            // Check if the user is logged in before proceeding
+            val defaultId = defaultStringValue
+            if (idUser == defaultId) {
+                // User is not logged in, navigate to LoginActivity
+                val loginIntent = Intent(this, LoginActivity::class.java)
+                startActivity(loginIntent)
+                return@setOnClickListener // Stop further execution of this function
+            }
+
             replaceFragment(CartFragment())
             binding.bottomNavView.selectedItemId = R.id.placeholder
         }
