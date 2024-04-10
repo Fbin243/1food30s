@@ -7,9 +7,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.CartItem
@@ -33,31 +35,21 @@ class CartFragment : Fragment(), CartMVPView {
     private lateinit var adapter: CartAdapter
     private lateinit var presenter: CartPresenter
     private lateinit var preferences: MySharedPreferences
-    private var debounceJob: Job? = null
+//    private var debounceJob: Job? = null
     private lateinit var userId: String
 
-    // TODO: not display cart screen before moving to log in
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        // Initialize preferences here as context is available and safe to use
-        preferences = MySharedPreferences.getInstance(context)
-
-        userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
-        val defaultId = defaultStringValue
-
-        // Check if the user is logged in before proceeding
-        if (userId == defaultId) {
-            // User is not logged in, navigate to LoginActivity
-            val loginIntent = Intent(requireContext(), LoginActivity::class.java)
-            startActivity(loginIntent)
-            return // Stop further execution of this function
-        }
-    }
-
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//        // Initialize preferences here as context is available and safe to use
+//        preferences = MySharedPreferences.getInstance(context)
+//
+//        userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         preferences = MySharedPreferences.getInstance(requireContext())
+        userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -106,19 +98,41 @@ class CartFragment : Fragment(), CartMVPView {
         binding.cartItemsRecyclerView.adapter = adapter
     }
 
-    private fun updateQuantityWithDebounce(productRef: DocumentReference, newQuantity: Int) {
-        // Cancel any existing job to ensure only the last update within the debounce period is processed
-        debounceJob?.cancel()
-        debounceJob = CoroutineScope(Dispatchers.Main).launch {
-            delay(500) // Adjust the delay as needed
-            presenter.updateCartItemQuantity(productRef, newQuantity)
-        }
+    override fun displayEmptyCart() {
+        binding.emptyCartTextView.visibility = View.VISIBLE // Show the empty cart message
+        binding.cartView.visibility = View.GONE // Hide the RecyclerView
     }
 
+//    private fun updateCartUI(cartItems: List<CartItem>) {
+//        if (cartItems.isEmpty()) {
+//            // The cart is empty
+//            binding.emptyCartTextView.visibility = View.VISIBLE // Show the empty cart message
+//            binding.cartView.visibility = View.GONE // Hide the RecyclerView
+//        } else {
+//            // The cart has items
+//            adapter.loadItems(cartItems) // Load new items into the adapter
+//            binding.emptyCartTextView.visibility = View.GONE // Hide the empty cart message
+//            binding.cartView.visibility = View.VISIBLE // Show the RecyclerView
+//        }
+//    }
+
+//    private fun updateQuantityWithDebounce(productRef: DocumentReference, newQuantity: Int) {
+//        // Cancel any existing job to ensure only the last update within the debounce period is processed
+//        debounceJob?.cancel()
+//        debounceJob = CoroutineScope(Dispatchers.Main).launch {
+//            delay(500) // Adjust the delay as needed
+//            presenter.updateCartItemQuantity(productRef, newQuantity)
+//        }
+//    }
+
     // presenter: load cart
+    // only called when some items are found
     override fun loadCart(cartItems: List<CartItem>) {
         _binding?.let {
             adapter.loadItems(cartItems)
+            binding.emptyCartTextView.visibility = View.GONE // Hide the empty cart message
+            binding.cartView.visibility = View.VISIBLE // Show the RecyclerView
+//            updateCartUI(cartItems)
         }
     }
 

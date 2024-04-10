@@ -184,6 +184,7 @@
         <item>Unpaid</item>
     </string-array>
     <string name="formatted_currency">%.2f</string>
+    <string name="formatted_currency_dollar">$%.2f</string>
     <string name="wishlist_button">Wishlist button</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -215,4 +216,6 @@
     <string name="txt_cancel_payment">Cancel payment</string>
     <string name="txt_cancel_payment_content">Are you sure you want to cancel your order?</string>
     <string name="txt_has_been_cancelled">Order has been cancelled</string>
+    <string name="no_items_added">No items added</string>
+    <string name="no_items_in_cart">No items in cart</string>
 </resources>

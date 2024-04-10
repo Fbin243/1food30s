@@ -36,14 +36,14 @@ class CheckoutItemsAdapter : RecyclerView.Adapter<CheckoutItemsAdapter.CheckoutV
         private val productCategory: TextView = itemView.findViewById(R.id.productCategory)
         private val productImage: ImageView = itemView.findViewById(R.id.productImg)
         private val productPrice: TextView = itemView.findViewById(R.id.productPrice)
-        private val quantity: TextView = itemView.findViewById(R.id.itemQuantity)
+        private val productQuantity: TextView = itemView.findViewById(R.id.productQuantity)
 
         fun bind(item: CartItem) {
             productName.text = item.productName
             productCategory.text = item.productCategory
             Glide.with(itemView.context).load(item.productImage).into(productImage)
             productPrice.text = itemView.context.getString(R.string.product_price_number, item.productPrice)
-            quantity.text = item.quantity.toString()
+            productQuantity.text = item.quantity.toString()
         }
     }
 }

@@ -44,7 +44,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView {
         if (showOrderConfirmation) {
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("showOrderConfirmation", true)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         } else {
             // Handle the failure case appropriately, maybe show an error message

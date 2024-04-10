@@ -106,17 +106,30 @@ class CartRepository(private val firebaseDb: FirebaseFirestore) {
 //        }
 //    }
 
-    fun removeFromCart(cartRef: DocumentReference, productRef: DocumentReference, onComplete: (Boolean) -> Unit) {
+    fun removeFromCart(cartRef: DocumentReference, productRef: DocumentReference, onComplete: (Boolean, Boolean) -> Unit) {
         cartRef.get().addOnSuccessListener { documentSnapshot ->
             val cart = documentSnapshot.toObject(Cart::class.java)
             cart?.let {
-                it.items.removeAll { item -> item.productId == productRef }
-                cartRef.set(it).addOnSuccessListener {
-                    onComplete(true)
-                }.addOnFailureListener {
-                    onComplete(false)
+                val wasItemRemoved = it.items.removeAll { item -> item.productId == productRef }
+
+                if (wasItemRemoved) {
+                    cartRef.set(cart).addOnSuccessListener {
+                        // Call onComplete with true for success and also whether the cart is empty
+                        onComplete(true, cart.items.isEmpty())
+                    }.addOnFailureListener {
+                        // Operation failed; the emptiness of the cart doesn't matter here
+                        onComplete(false, false)
+                    }
+                } else {
+                    // If no item was removed, it's not a "success", but it doesn't indicate a failure either
+                    // You might need to adjust this based on your app's logic
+                    onComplete(false, cart.items.isEmpty())
                 }
             }
+        }
+        .addOnFailureListener {
+            // Operation failed to even retrieve the cart
+            onComplete(false, false)
         }
     }
 
@@ -297,17 +310,17 @@ class CartRepository(private val firebaseDb: FirebaseFirestore) {
             // Update the cart to have no items, effectively clearing it
             batch.update(cartRef, "items", emptyList<CartItem>())
 
-            // Prepare to update each product based on the cart item details
-            documentSnapshots.forEach { documentSnapshot ->
-                val product = documentSnapshot.toObject(Product::class.java)
-                val cartItem = cartItems.firstOrNull { it.productId?.id == documentSnapshot.id } // Match cart item to product
-                if (product != null && cartItem != null) {
-                    val newStock = product.stock - cartItem.quantity
-                    val newSold = product.sold + cartItem.quantity
-                    // Prepare product updates
-                    batch.update(documentSnapshot.reference, mapOf("stock" to newStock, "sold" to newSold))
-                }
-            }
+            // update stock and sold
+//            documentSnapshots.forEach { documentSnapshot ->
+//                val product = documentSnapshot.toObject(Product::class.java)
+//                val cartItem = cartItems.firstOrNull { it.productId?.id == documentSnapshot.id } // Match cart item to product
+//                if (product != null && cartItem != null) {
+//                    val newStock = product.stock - cartItem.quantity
+//                    val newSold = product.sold + cartItem.quantity
+//                    // Prepare product updates
+//                    batch.update(documentSnapshot.reference, mapOf("stock" to newStock, "sold" to newSold))
+//                }
+//            }
 
             // Commit all prepared operations in the batch
             batch.commit().addOnSuccessListener {

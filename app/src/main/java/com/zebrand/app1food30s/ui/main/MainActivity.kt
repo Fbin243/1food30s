@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,6 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.databinding.ActivityMainBinding
+import com.zebrand.app1food30s.ui.admin_stats.AdminStatsFragment
+import com.zebrand.app1food30s.ui.authentication.LoginActivity
 import com.zebrand.app1food30s.ui.cart.CartFragment
 import com.zebrand.app1food30s.ui.home.HomeFragment
 import com.zebrand.app1food30s.ui.manage_order.ManageOrderFragment
@@ -21,6 +24,7 @@ import com.zebrand.app1food30s.ui.profile.ProfileAfterLoginFragment
 import com.zebrand.app1food30s.ui.profile.ProfileFragment
 import kotlinx.coroutines.launch
 import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.MySharedPreferences.Companion.defaultStringValue
 import com.zebrand.app1food30s.utils.SingletonKey
 
 class MainActivity : AppCompatActivity() {
@@ -35,16 +39,16 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        db = AppDatabase.getInstance(this)
         mySharedPreferences = MySharedPreferences.getInstance(this)
+        db = AppDatabase.getInstance(this)
 //        idUser = intent.getStringExtra("USER_ID") ?: ""
         idUser = mySharedPreferences.getString(SingletonKey.KEY_USER_ID)
         adminLogin = mySharedPreferences.getBoolean(SingletonKey.IS_ADMIN)
 
-        Log.d("adminLogin", "adminLogin: $adminLogin")
+//        Log.d("adminLogin", "adminLogin: $adminLogin")
         if (adminLogin) {
 //            First screen for admin
-            replaceFragment(OffersFragment())
+            replaceFragment(AdminStatsFragment())
             handleBottomNavigationForAdmin()
         } else {
 //            First screen for user
@@ -90,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavView.setOnItemSelectedListener { menuItem ->
             val isLogin = mySharedPreferences.getBoolean(SingletonKey.KEY_LOGGED)
             when (menuItem.itemId) {
-                R.id.ic_dashboard -> replaceFragment(OffersFragment())
+                R.id.ic_dashboard -> replaceFragment(AdminStatsFragment())
                 R.id.ic_order -> replaceFragment(ManageOrderFragment())
                 R.id.ic_manage -> replaceFragment(ProfileFragment())
                 R.id.ic_profile -> {
@@ -140,6 +144,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupFloatingButton() {
         binding.icCart.setOnClickListener {
+            // Check if the user is logged in before proceeding
+            val defaultId = defaultStringValue
+            if (idUser == defaultId) {
+                // User is not logged in, navigate to LoginActivity
+                val loginIntent = Intent(this, LoginActivity::class.java)
+                startActivity(loginIntent)
+                return@setOnClickListener // Stop further execution of this function
+            }
+
             replaceFragment(CartFragment())
             binding.bottomNavView.selectedItemId = R.id.placeholder
         }
