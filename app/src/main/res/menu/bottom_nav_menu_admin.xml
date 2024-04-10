@@ -11,7 +11,7 @@
         android:title="@string/txt_orders" />
 
     <item
-        android:id="@+id/id_manage"
+        android:id="@+id/ic_manage"
         android:icon="@drawable/ic_manage"
         android:title="@string/txt_manage"/>
 

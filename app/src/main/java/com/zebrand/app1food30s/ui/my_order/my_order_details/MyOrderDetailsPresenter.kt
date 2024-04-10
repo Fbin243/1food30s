@@ -66,10 +66,10 @@ class MyOrderDetailsPresenter(private val context: Context, private val view: My
 
         doc.update("paymentStatus", status)
             .addOnSuccessListener {
-                Toast.makeText(context, "Payment status changed", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "Payment status changed", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
-                Toast.makeText(context, "Error when changing payment status", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "Error when changing payment status", Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -80,10 +80,10 @@ class MyOrderDetailsPresenter(private val context: Context, private val view: My
 
         doc.update("orderStatus", status)
             .addOnSuccessListener {
-                Toast.makeText(context, "Order canceled", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "Order canceled", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
-                Toast.makeText(context, "Error when canceling order", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "Error when canceling order", Toast.LENGTH_SHORT).show()
             }
     }
 }
