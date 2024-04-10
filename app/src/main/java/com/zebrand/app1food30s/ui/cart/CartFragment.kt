@@ -99,8 +99,12 @@ class CartFragment : Fragment(), CartMVPView {
     }
 
     override fun displayEmptyCart() {
-        binding.emptyCartTextView.visibility = View.VISIBLE // Show the empty cart message
-        binding.cartView.visibility = View.GONE // Hide the RecyclerView
+        if (isAdded && !isRemoving && !requireActivity().isFinishing) {
+            _binding?.let {
+                binding.emptyCartTextView.visibility = View.VISIBLE // Show the empty cart message
+                binding.cartView.visibility = View.GONE // Hide the RecyclerView
+            }
+        }
     }
 
 //    private fun updateCartUI(cartItems: List<CartItem>) {

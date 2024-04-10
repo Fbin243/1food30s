@@ -121,7 +121,7 @@ class AdminStatsFragment : Fragment() {
             // Now update the UI with totalOrders and totalPending
             val myGridAdapter = MyGridAdapter(
                 arrayOf(
-                    MyGridAdapter.GridItem("Items In Stock", totalStock, R.drawable.ic_in_stock),
+                    MyGridAdapter.GridItem("In Stock", totalStock, R.drawable.ic_in_stock),
                     MyGridAdapter.GridItem("Total Orders", totalOrders, R.drawable.ic_total_orders),
                     MyGridAdapter.GridItem("Pending", totalPending, R.drawable.ic_box_pending),
                     MyGridAdapter.GridItem("Accepted", totalAccepted, R.drawable.ic_box_accepted),

@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.ui.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -93,6 +94,11 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         (binding.productRcv2.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
     }
 
+    private fun updateAdaptersWishlistProductIds() {
+        (binding.productRcv1.adapter as? ProductAdapter)?.updateWishlistProductIds(wishlistedProductIds)
+        (binding.productRcv2.adapter as? ProductAdapter)?.updateWishlistProductIds(wishlistedProductIds)
+    }
+
 //    override fun showRemoveSuccessMessage() {
 //        Toast.makeText(context, "Product was removed from the wishlist", Toast.LENGTH_SHORT).show()
 //    }
@@ -104,28 +110,37 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
     // Implementation of WishlistMVPView methods
     override fun updateWishlistItemStatus(product: Product, isAdded: Boolean) {
         // Update the set of wishlisted product IDs based on the action
+        val productId = product.id
+//        Log.d("Test00", "updateWishlistItemStatus: $productId")
         if (isAdded) {
-            wishlistedProductIds.add(product.id)
+//            Log.d("Test00", "updateWishlistItemStatus: added")
+            wishlistedProductIds.add(productId)
         } else {
-            wishlistedProductIds.remove(product.id)
+//            Log.d("Test00", "updateWishlistItemStatus: removed")
+            wishlistedProductIds.remove(productId)
         }
+        // updated correctly
+//        Log.d("Test00", "updateWishlistItemStatus: $wishlistedProductIds")
+        updateAdaptersWishlistProductIds()
 
         // Notify all adapters about the update
-        updateProductInAllAdapters(product.id, isAdded)
+        updateProductInAllAdapters(productId)
+        // updateProductInAllAdapters(product.id, isAdded)
     }
 
-    private fun updateProductInAllAdapters(productId: String, isWishlisted: Boolean) {
+//    private fun updateProductInAllAdapters(productId: String, isWishlisted: Boolean)
+    private fun updateProductInAllAdapters(productId: String) {
         val adapters = listOfNotNull(
             binding.productRcv1.adapter as? ProductAdapter,
             binding.productRcv2.adapter as? ProductAdapter
         )
 
+//        Log.d("Test00", "updateProductInAllAdapters: $adapters")
+
         adapters.forEach { adapter ->
             val index = adapter.products.indexOfFirst { it.id == productId }
             if (index != -1) {
-                // Update the wishlist status if your data model requires it
-                // e.g., adapter.products[index].isWishlisted = isWishlisted
-
+//                Log.d("Test00", "updateProductInAllAdapters: notified")
                 adapter.notifyItemChanged(index)
             }
         }
@@ -134,6 +149,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
     override fun onResume() {
         super.onResume()
         fetchAndUpdateWishlistState()
+        refreshWishlistState(wishlistedProductIds)
         binding.searchInput.clearFocus()
     }
 

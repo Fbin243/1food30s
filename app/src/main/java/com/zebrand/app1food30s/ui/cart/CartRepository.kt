@@ -7,6 +7,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Cart
@@ -146,6 +147,25 @@ class CartRepository(private val firebaseDb: FirebaseFirestore) {
             }
         }
     }
+
+//    fun updateCartItemQuantity(cartRef: DocumentReference, productRef: DocumentReference, newQuantity: Int, onComplete: (Boolean) -> Unit) {
+//        FirebaseFirestore.getInstance().runTransaction { transaction ->
+//            val cartSnapshot = transaction.get(cartRef)
+//            val cart = cartSnapshot.toObject(Cart::class.java)
+//            val itemIndex = cart?.items?.indexOfFirst { it.productId == productRef }
+//
+//            if (cart != null && itemIndex != null && itemIndex >= 0) {
+//                val path = "items.$itemIndex.quantity"
+//                transaction.update(cartRef, path, newQuantity)
+//            } else {
+//                throw FirebaseFirestoreException("Cart item not found", FirebaseFirestoreException.Code.ABORTED)
+//            }
+//        }.addOnSuccessListener {
+//            onComplete(true)
+//        }.addOnFailureListener {
+//            onComplete(false)
+//        }
+//    }
 
     // fetching from user
 //    fun fetchProductDetailsForCartItems(cartRef: DocumentReference, callback: (List<CartItem>?, Double) -> Unit) {

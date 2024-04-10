@@ -73,6 +73,7 @@ class ProductAdapter(
         return products.size
     }
 
+    // make sure that wishlist is up to date
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product: Product = products[position]
         Picasso.get().load(product.image).placeholder(getShimmerDrawable()).into(holder.productImg)
@@ -96,14 +97,25 @@ class ProductAdapter(
         }
 
         // Wishlist
-        val isProductWishlisted = product.id in wishlistedProductIds
-//        Log.d("Test00", "$isProductWishlisted")
+        val productId = product.id
+        val isProductWishlisted = productId in wishlistedProductIds
+//        Log.d("Test00", "onBindViewHolder: $productId")
+//        Log.d("Test00", "onBindViewHolder: $wishlistedProductIds")
+//        Log.d("Test00", "onBindViewHolder: $isProductWishlisted")
         holder.ivWishlist.setImageResource(
             if (isProductWishlisted) R.drawable.ic_wishlist_active else R.drawable.ic_wishlist
         )
     }
 
-    // last thing called to update UI
+    fun updateWishlistProductIds(newWishlistedProductIds: Set<String>) {
+//        Log.d("Test00", "updateWishlistProductIds: new: $newWishlistedProductIds")
+//        wishlistedProductIds.clear()
+//        wishlistedProductIds.addAll(newWishlistedProductIds)
+        wishlistedProductIds = newWishlistedProductIds.toMutableSet()
+//        Log.d("Test00", "updateWishlistProductIds: $wishlistedProductIds")
+    }
+
+    // only called when resume
     fun updateWishlistState(newWishlistedProductIds: Set<String>) {
         // Immediately capture the current state as the old state before any changes
         val oldWishlistedProductIds = HashSet(wishlistedProductIds)
@@ -112,7 +124,7 @@ class ProductAdapter(
         // Update the adapter's state to the new state
         wishlistedProductIds.clear()
         wishlistedProductIds.addAll(newWishlistedProductIds)
-//        Log.d("Test00", "new: $wishlistedProductIds")
+//        Log.d("Test00", "updateWishlistState: new wishlist: $wishlistedProductIds")
 
 //        // Create a copy of the current state for comparison
 //        val oldWishlistedProductIds = wishlistedProductIds.toSet()

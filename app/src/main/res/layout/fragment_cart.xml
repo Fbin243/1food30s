@@ -15,13 +15,13 @@
         app:layout_constraintTop_toTopOf="parent"
         android:paddingBottom="16dp">
 
-        <include
-            android:id="@+id/ivBack"
-            layout="@layout/item_back"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--        <include-->
+<!--            android:id="@+id/ivBack"-->
+<!--            layout="@layout/item_back"-->
+<!--            android:layout_width="30dp"-->
+<!--            android:layout_height="30dp"-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
         <TextView
             android:id="@+id/tvHeader"
@@ -31,7 +31,7 @@
             android:fontFamily="@font/rubik_extrabold"
             android:text="@string/my_cart"
             android:textSize="@dimen/font_header"
-            app:layout_constraintStart_toEndOf="@+id/ivBack"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
