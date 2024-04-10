@@ -310,17 +310,17 @@ class CartRepository(private val firebaseDb: FirebaseFirestore) {
             // Update the cart to have no items, effectively clearing it
             batch.update(cartRef, "items", emptyList<CartItem>())
 
-            // Prepare to update each product based on the cart item details
-            documentSnapshots.forEach { documentSnapshot ->
-                val product = documentSnapshot.toObject(Product::class.java)
-                val cartItem = cartItems.firstOrNull { it.productId?.id == documentSnapshot.id } // Match cart item to product
-                if (product != null && cartItem != null) {
-                    val newStock = product.stock - cartItem.quantity
-                    val newSold = product.sold + cartItem.quantity
-                    // Prepare product updates
-                    batch.update(documentSnapshot.reference, mapOf("stock" to newStock, "sold" to newSold))
-                }
-            }
+            // update stock and sold
+//            documentSnapshots.forEach { documentSnapshot ->
+//                val product = documentSnapshot.toObject(Product::class.java)
+//                val cartItem = cartItems.firstOrNull { it.productId?.id == documentSnapshot.id } // Match cart item to product
+//                if (product != null && cartItem != null) {
+//                    val newStock = product.stock - cartItem.quantity
+//                    val newSold = product.sold + cartItem.quantity
+//                    // Prepare product updates
+//                    batch.update(documentSnapshot.reference, mapOf("stock" to newStock, "sold" to newSold))
+//                }
+//            }
 
             // Commit all prepared operations in the batch
             batch.commit().addOnSuccessListener {

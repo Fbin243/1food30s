@@ -33,12 +33,15 @@ class MainActivity : AppCompatActivity() {
     private var adminLogin: Boolean = false
     private lateinit var db: AppDatabase
     private var idUser: String? = null
-    private val mySharedPreferences = MySharedPreferences.getInstance(this)
+//    private val mySharedPreferences = MySharedPreferences.getInstance(this)
+    private lateinit var mySharedPreferences: MySharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        mySharedPreferences = MySharedPreferences.getInstance(this)
         db = AppDatabase.getInstance(this)
 //        idUser = intent.getStringExtra("USER_ID") ?: ""
         idUser = mySharedPreferences.getString(SingletonKey.KEY_USER_ID)

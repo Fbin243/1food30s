@@ -37,31 +37,19 @@ class CartFragment : Fragment(), CartMVPView {
     private lateinit var preferences: MySharedPreferences
 //    private var debounceJob: Job? = null
     private lateinit var userId: String
-//    private lateinit var cartItemsRecyclerView: RecyclerView
-//    private lateinit var emptyCartTextView: TextView
-//    private lateinit var cartView: View
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        // Initialize preferences here as context is available and safe to use
-        preferences = MySharedPreferences.getInstance(context)
-
-        userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
-
-//        val defaultId = defaultStringValue
-//        // Check if the user is logged in before proceeding
-//        if (userId == defaultId) {
-//            // User is not logged in, navigate to LoginActivity
-//            val loginIntent = Intent(requireContext(), LoginActivity::class.java)
-//            startActivity(loginIntent)
-//            return // Stop further execution of this function
-//        }
-    }
-
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//        // Initialize preferences here as context is available and safe to use
+//        preferences = MySharedPreferences.getInstance(context)
+//
+//        userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         preferences = MySharedPreferences.getInstance(requireContext())
+        userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
