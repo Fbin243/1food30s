@@ -220,4 +220,8 @@
     <string name="no_items_in_cart">No items in cart</string>
     <string name="txt_new_password">New password</string>
     <string name="txt_confirm_new_password">Confirm new password</string>
+    <string name="txt_no_item_available">No Item Available</string>
+    <string name="no_reviews">No reviews yet !</string>
+    <string name="related_products_title">May be you\'ll like too</string>
+    <string name="txt_no_related_products">No products available !</string>
 </resources>

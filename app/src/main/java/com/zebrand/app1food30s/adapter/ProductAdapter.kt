@@ -21,6 +21,7 @@ class ProductAdapter(
     var products: List<Product>,
     private var offers: List<Offer>,
     private var wishlistedProductIds: MutableSet<String>,
+    private var noItemLayout: View? = null
 ) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
     var onItemClick: ((Product) -> Unit)? = null
@@ -142,6 +143,11 @@ class ProductAdapter(
     fun updateData(newProducts: List<Product>, newOffers: List<Offer>) {
         products = newProducts
         offers = newOffers
+        if(products.isEmpty()) {
+            noItemLayout?.visibility = View.VISIBLE
+        } else {
+            noItemLayout?.visibility = View.GONE
+        }
         notifyDataSetChanged()
     }
 }
