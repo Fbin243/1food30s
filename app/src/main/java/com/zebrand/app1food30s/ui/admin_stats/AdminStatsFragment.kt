@@ -21,6 +21,8 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.ActivityAdminStatisticsBinding
+import com.zebrand.app1food30s.utils.FireStoreUtils.mDBOrderRef
+import com.zebrand.app1food30s.utils.FireStoreUtils.mDBProductRef
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -32,7 +34,7 @@ import java.util.Calendar
 import java.util.Locale
 
 class AdminStatsFragment : Fragment() {
-    private lateinit var myGridRecyclerView: RecyclerView
+//    private lateinit var myGridRecyclerView: RecyclerView
 //    private lateinit var binding: ActivityAdminStatisticsBinding
     private var _binding: ActivityAdminStatisticsBinding? = null
     private val binding get() = _binding!!
@@ -102,12 +104,14 @@ class AdminStatsFragment : Fragment() {
 
     private fun updateGridItems() {
         CoroutineScope(Dispatchers.Main).launch {
+            val totalStockDeffered = async { getTotalItemsInStock() }
             val totalOrdersDeferred = async { getTotalNumberOfOrders() }
             val totalPendingDeferred = async { getTotalOrdersWithStatus("Pending") }
             val totalAcceptedDeferred = async { getTotalOrdersWithStatus("Order accepted") }
             val totalDeliveringDeferred = async { getTotalOrdersWithStatus("On delivery") }
             val totalDeliveredDeferred = async { getTotalOrdersWithStatus("Delivered") }
 
+            val totalStock = totalStockDeffered.await()
             val totalOrders = totalOrdersDeferred.await()
             val totalPending = totalPendingDeferred.await()
             val totalAccepted = totalAcceptedDeferred.await()
@@ -117,10 +121,11 @@ class AdminStatsFragment : Fragment() {
             // Now update the UI with totalOrders and totalPending
             val myGridAdapter = MyGridAdapter(
                 arrayOf(
+                    MyGridAdapter.GridItem("Items In Stock", totalStock, R.drawable.ic_in_stock),
                     MyGridAdapter.GridItem("Total Orders", totalOrders, R.drawable.ic_total_orders),
                     MyGridAdapter.GridItem("Pending", totalPending, R.drawable.ic_box_pending),
                     MyGridAdapter.GridItem("Accepted", totalAccepted, R.drawable.ic_box_accepted),
-                    MyGridAdapter.GridItem("On delivery", totalDelivering, R.drawable.ic_box_delivering),
+                    MyGridAdapter.GridItem("On Delivery", totalDelivering, R.drawable.ic_box_delivering),
                     MyGridAdapter.GridItem("Delivered", totalDelivered, R.drawable.ic_box_delivered),
                 )
             )
@@ -130,6 +135,20 @@ class AdminStatsFragment : Fragment() {
             val spacing = 60 // Spacing in pixels
             val includeEdge = false
             binding.myGridRecyclerView.addItemDecoration(GridSpacingItemDecoration(spanCount, spacing, includeEdge))
+        }
+    }
+
+    private suspend fun getTotalItemsInStock(): Int = withContext(Dispatchers.IO) {
+        val productsRef = mDBProductRef
+        try {
+            val snapshot = productsRef.get().await()
+            val totalStock = snapshot.documents.sumOf { document ->
+                document.getLong("stock")?.toInt() ?: 0 // Assuming each document has a "stock" field
+            }
+            return@withContext totalStock
+        } catch (e: Exception) {
+            Log.e("AdminStats", "Failed to fetch total items in stock", e)
+            return@withContext 0
         }
     }
 
@@ -163,9 +182,6 @@ class AdminStatsFragment : Fragment() {
         textViewValue1: TextView,
         textViewValue2: TextView
     ) {
-        val db = FirebaseFirestore.getInstance()
-        val ordersRef = db.collection("orders")
-
         // Calculate the start and end date for the query
         val startCalendar = Calendar.getInstance().apply {
             add(Calendar.DAY_OF_YEAR, -days + 1) // Adjust to start from the beginning of the 'days' period
@@ -194,32 +210,60 @@ class AdminStatsFragment : Fragment() {
         val dateFormat = SimpleDateFormat("dd-MM", Locale.getDefault())
 
         // Query orders that were created within the specified time frame
-        ordersRef.whereGreaterThanOrEqualTo("date", startDate)
-            .whereLessThanOrEqualTo("date", endDate).get()
+//        val deliveredOrders = ordersRef.whereEqualTo("orderStatus", "Delivered")
+//        Log.d("Test00", "calculateRevenueAndDrawChart: $deliveredOrders")
+//        deliveredOrders.whereGreaterThanOrEqualTo("date", startDate)
+//            .whereLessThanOrEqualTo("date", endDate).get()
+//            .addOnSuccessListener { orderSnapshots ->
+////                Log.d("calculateRevenue", "Number of orders: ${orderSnapshots.size()}")
+//                if (orderSnapshots.isEmpty) {
+//                    // No orders found, proceed to update the chart with no data
+//                    updateBarChartAndTextViews(barChart, revenuePerDay, days, textViewValue1, textViewValue2)
+//                    return@addOnSuccessListener
+//                }
+//
+//                orderSnapshots.forEach { orderDoc ->
+//                    val totalAmount = orderDoc.getDouble("totalAmount") ?: 0.0
+//                    val orderDate = orderDoc.getDate("date")
+////                    val formattedDate = dateFormat.format(orderDate)
+////                    revenuePerDay[formattedDate] = revenuePerDay.getOrDefault(formattedDate, 0.0) + totalAmount
+//                    val formattedDate = if (orderDate != null) dateFormat.format(orderDate) else "Unknown Date"
+//                    revenuePerDay[formattedDate] = revenuePerDay.getOrDefault(formattedDate, 0.0) + totalAmount
+//
+//                }
+//
+//                // All orders processed, update the chart and TextViews
+//                updateBarChartAndTextViews(barChart, revenuePerDay, days, textViewValue1, textViewValue2)
+//            }
+//            .addOnFailureListener { e ->
+//                Log.e("calculateRevenue", "Error fetching orders", e)
+//                // Error fetching orders, update the chart with no data
+//                updateBarChartAndTextViews(barChart, revenuePerDay, days, textViewValue1, textViewValue2)
+//            }
+        mDBOrderRef
+            .whereEqualTo("orderStatus", "Delivered")
+            .whereGreaterThanOrEqualTo("date", startDate)
+            .whereLessThanOrEqualTo("date", endDate)
+            .get()
             .addOnSuccessListener { orderSnapshots ->
 //                Log.d("calculateRevenue", "Number of orders: ${orderSnapshots.size()}")
-                if (orderSnapshots.isEmpty) {
-                    // No orders found, proceed to update the chart with no data
-                    updateBarChartAndTextViews(barChart, revenuePerDay, days, textViewValue1, textViewValue2)
-                    return@addOnSuccessListener
-                }
 
                 orderSnapshots.forEach { orderDoc ->
                     val totalAmount = orderDoc.getDouble("totalAmount") ?: 0.0
                     val orderDate = orderDoc.getDate("date")
-//                    val formattedDate = dateFormat.format(orderDate)
-//                    revenuePerDay[formattedDate] = revenuePerDay.getOrDefault(formattedDate, 0.0) + totalAmount
-                    val formattedDate = if (orderDate != null) dateFormat.format(orderDate) else "Unknown Date"
-                    revenuePerDay[formattedDate] = revenuePerDay.getOrDefault(formattedDate, 0.0) + totalAmount
+//                    Log.d("calculateRevenue", "Order date from Firestore: $orderDate")
 
+                    val formattedDate = if (orderDate != null) dateFormat.format(orderDate) else "Unknown Date"
+//                    Log.d("calculateRevenue", "Formatted date: $formattedDate and total amount: $totalAmount")
+
+                    revenuePerDay[formattedDate] = revenuePerDay.getOrDefault(formattedDate, 0.0) + totalAmount
                 }
 
-                // All orders processed, update the chart and TextViews
+//                Log.d("calculateRevenue", "Revenue per day: $revenuePerDay")
                 updateBarChartAndTextViews(barChart, revenuePerDay, days, textViewValue1, textViewValue2)
             }
             .addOnFailureListener { e ->
                 Log.e("calculateRevenue", "Error fetching orders", e)
-                // Error fetching orders, update the chart with no data
                 updateBarChartAndTextViews(barChart, revenuePerDay, days, textViewValue1, textViewValue2)
             }
     }
