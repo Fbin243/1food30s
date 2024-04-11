@@ -52,6 +52,9 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
     private lateinit var wishlistPresenter: WishlistPresenter
     private var currentProducts: List<Product> = emptyList()
     private var wishlistedProductIds: MutableSet<String> = mutableSetOf()
+    private lateinit var preferences: MySharedPreferences
+    private lateinit var userId: String
+    private lateinit var defaultUserId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,6 +62,10 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
     ): View {
         binding = FragmentHomeBinding.inflate(inflater)
         db = AppDatabase.getInstance(requireContext())
+        preferences = context?.let { MySharedPreferences.getInstance(it) }!!
+        userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
+        defaultUserId = MySharedPreferences.defaultStringValue
+
         homePresenter = HomePresenter(this, db)
         lifecycleScope.launch {
             homePresenter.getDataAndDisplay()
@@ -71,8 +78,9 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         // TODO
 //        val userId = SingletonKey.KEY_USER_ID
 //        Log.d("Test00", "onCreateView: $userId")
-        val mySharedPreferences = context?.let { MySharedPreferences.getInstance(it) }
-        val userId = mySharedPreferences?.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
+
+//        val mySharedPreferences = context?.let { MySharedPreferences.getInstance(it) }
+//        val userId = mySharedPreferences?.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
         val wishlistRepository = WishlistRepository(userId)
         wishlistPresenter = WishlistPresenter(this, wishlistRepository)
 //        Log.d("Test00", "onCreateView: fetchAndUpdateWishlistState()")
@@ -233,12 +241,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
 //    }
 
     private fun addProductToCart(context: Context, productId: String) {
-        val db = FirebaseFirestore.getInstance()
-        val preferences = MySharedPreferences.getInstance(context)
-        val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
-        val defaultId = MySharedPreferences.defaultStringValue
-
-        if (userId == defaultId) {
+        if (userId == defaultUserId) {
             val loginIntent = Intent(requireContext(), LoginActivity::class.java)
             startActivity(loginIntent)
             return
@@ -368,7 +371,12 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
             addProductToCart(requireContext(), product.id)
         }
         adapter.onWishlistProductClick = { product ->
-            wishlistPresenter.toggleWishlist(product)
+            if (userId == defaultUserId) {
+                val loginIntent = Intent(requireContext(), LoginActivity::class.java)
+                startActivity(loginIntent)
+            } else {
+                wishlistPresenter.toggleWishlist(product)
+            }
         }
     }
 
