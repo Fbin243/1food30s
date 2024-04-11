@@ -37,6 +37,7 @@ import kotlinx.coroutines.withContext
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class ManageOffer : AppCompatActivity() {
@@ -168,19 +169,35 @@ class ManageOffer : AppCompatActivity() {
         }
     }
 
-    private fun filterOffersByDate(selectedDate: String, offers: List<Offer>): List<Offer> {
-        // Parse selectedDate and filter products based on this date
-        val sdf = SimpleDateFormat("dd/MM/yy", Locale.US)
+//    private fun filterOffersByDate(selectedDate: String, offers: List<Offer>): List<Offer> {
+//        // Parse selectedDate and filter products based on this date
+//        val sdf = SimpleDateFormat("dd/MM/yy", Locale.US)
+//
+//        return try {
+//            val dateTimeFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+//            offers.filter {
+//                dateTimeFormat.format(it.date) == selectedDate
+//            }
+//        } catch (e: ParseException) {
+//            offers // Trả về tất cả sản phẩm nếu có lỗi khi parse
+//        }
+//    }
 
-        return try {
-            val dateTimeFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
-            offers.filter {
-                dateTimeFormat.format(it.date) == selectedDate
-            }
-        } catch (e: ParseException) {
-            offers // Trả về tất cả sản phẩm nếu có lỗi khi parse
+    private fun filterOffersByDate(startDateStr: String, endDateStr: String, offers: List<Offer>): List<Offer> {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+
+        // Chuyển đổi chuỗi ngày bắt đầu và kết thúc sang kiểu Date
+        val startDate: Date? = try { sdf.parse(startDateStr) } catch (e: ParseException) { null }
+        val endDate: Date? = try { sdf.parse(endDateStr) } catch (e: ParseException) { null }
+
+        // Lọc offers dựa trên khoảng ngày
+        return offers.filter {
+            val offerDate = it.date
+            offerDate != null && startDate != null && endDate != null &&
+                    !offerDate.before(startDate) && !offerDate.after(endDate)
         }
     }
+
 
     private fun filterOffersByName(nameFilter: String, offers: List<Offer>): List<Offer> {
         return offers.filter { it.name.contains(nameFilter, ignoreCase = true) }

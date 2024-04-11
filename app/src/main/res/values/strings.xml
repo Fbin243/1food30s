@@ -227,4 +227,6 @@
     <string name="manage_products">Manage products</string>
     <string name="manage_categories">Manage categories</string>
     <string name="manage_offers">Manage offers</string>
+    <string name="txt_from_date_filter">From date</string>
+    <string name="txt_to_date_filter">To date</string>
 </resources>
