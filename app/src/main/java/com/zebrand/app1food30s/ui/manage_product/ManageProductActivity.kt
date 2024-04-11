@@ -36,6 +36,7 @@ import kotlinx.coroutines.withContext
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class ManageProductActivity : AppCompatActivity() {
@@ -50,6 +51,7 @@ class ManageProductActivity : AppCompatActivity() {
     private lateinit var priceAutoComplete: AutoCompleteTextView
     private lateinit var nameFilterEditText: TextInputEditText
     private lateinit var datePickerText: TextInputEditText
+    private lateinit var toDatePickerText: TextInputEditText
     lateinit var categoryArr: ArrayList<String>
     val priceArr = arrayOf("1$ to 10$", "11$ to 50$", "51$ to 100$", "More than 100$")
 
@@ -139,6 +141,7 @@ class ManageProductActivity : AppCompatActivity() {
         categoryAutoComplete = dialogView.findViewById(R.id.autoCompleteCategory)
         priceAutoComplete = dialogView.findViewById(R.id.autoCompletePrice)
         datePickerText = dialogView.findViewById(R.id.datePicker)
+        toDatePickerText = dialogView.findViewById(R.id.toDatePicker)
 
         loadCategoriesFromFirebase()
 
@@ -152,6 +155,7 @@ class ManageProductActivity : AppCompatActivity() {
 
         // date picker
         val datePickerText: TextInputEditText = dialogView.findViewById(R.id.datePicker)
+        val toDatePickerText: TextInputEditText = dialogView.findViewById(R.id.toDatePicker)
         val myCalendar = Calendar.getInstance()
         val datePicker = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
             myCalendar.set(Calendar.YEAR, year)
@@ -165,10 +169,30 @@ class ManageProductActivity : AppCompatActivity() {
             datePickerText.setText(formattedDate)
         }
 
+        val toDatePicker = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+            myCalendar.set(Calendar.YEAR, year)
+            myCalendar.set(Calendar.MONTH, month)
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+            val myFormat = "dd/MM/yyyy"
+            val sdf = SimpleDateFormat(myFormat, Locale.UK)
+            val formattedDate = sdf.format(myCalendar.time)
+            Log.d("dateABC", formattedDate)
+            toDatePickerText.setText(formattedDate)
+        }
+
         datePickerText.setOnClickListener {
             DatePickerDialog(
                 this,
                 R.style.MyDatePickerDialogStyle, datePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+
+        toDatePickerText.setOnClickListener {
+            DatePickerDialog(
+                this,
+                R.style.MyDatePickerDialogStyle, toDatePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
@@ -195,6 +219,7 @@ class ManageProductActivity : AppCompatActivity() {
             val selectedCategory = categoryAutoComplete.text.toString()
             val selectedPriceRange = priceAutoComplete.text.toString()
             val selectedDate = datePickerText.text.toString()
+            val selectedToDate = toDatePickerText.text.toString()
 
 //            val allProducts = getListProducts()
 
@@ -214,7 +239,7 @@ class ManageProductActivity : AppCompatActivity() {
                 filteredProducts = filterProductsByPriceRange(selectedPriceRange, filteredProducts)
             }
             if (selectedDate != "Choose date") {
-                filteredProducts = filterProductsByDate(selectedDate, filteredProducts)
+                filteredProducts = filterProductsByDate(selectedDate, selectedToDate, filteredProducts)
             }
 
             displayFilteredProducts(filteredProducts)
@@ -260,19 +285,44 @@ class ManageProductActivity : AppCompatActivity() {
         return products
     }
 
-    private fun filterProductsByDate(selectedDate: String, products: List<Product>): List<Product> {
-        // Parse selectedDate and filter products based on this date
-        val sdf = SimpleDateFormat("dd/MM/yy", Locale.US)
+//    private fun filterProductsByDate(selectedDate: String, products: List<Product>): List<Product> {
+//        // Parse selectedDate and filter products based on this date
+//        val sdf = SimpleDateFormat("dd/MM/yy", Locale.US)
+//
+//        return try {
+//            val dateTimeFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+//            products.filter {
+//                dateTimeFormat.format(it.date) == selectedDate
+//            }
+//        } catch (e: ParseException) {
+//            products // Trả về tất cả sản phẩm nếu có lỗi khi parse
+//        }
+//    }
 
-        return try {
-            val dateTimeFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
-            products.filter {
-                dateTimeFormat.format(it.date) == selectedDate
-            }
-        } catch (e: ParseException) {
-            products // Trả về tất cả sản phẩm nếu có lỗi khi parse
+    private fun filterProductsByDate(startDateStr: String, endDateStr: String, products: List<Product>): List<Product> {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+
+        // Chuyển đổi chuỗi ngày bắt đầu và kết thúc sang kiểu Date
+        var startDate: Date? = try { sdf.parse(startDateStr) } catch (e: ParseException) { null }
+        var endDate: Date? = try { sdf.parse(endDateStr) } catch (e: ParseException) { null }
+
+        // Tăng endDate lên 1 ngày
+        val calendar = Calendar.getInstance()
+        if (endDate != null) {
+            calendar.time = endDate
+            calendar.add(Calendar.DAY_OF_MONTH, 1) // Tăng lên 1 ngày
+            endDate = calendar.time
+        }
+
+        // Lọc offers dựa trên khoảng ngày, bao gồm cả endDate + 1
+        return products.filter {
+            val productDate = it.date
+            productDate != null && startDate != null && endDate != null &&
+                    !productDate.before(startDate) && productDate.before(endDate)
         }
     }
+
+
 
     private fun displayFilteredProducts(filteredProducts: List<Product>) {
         // Update RecyclerView with filteredProducts
