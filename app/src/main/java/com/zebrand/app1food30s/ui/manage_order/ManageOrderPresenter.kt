@@ -15,8 +15,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class ManageOrderPresenter(private val context: Context) {
-    suspend fun getManageOrders(): MutableList<Order> = withContext(Dispatchers.IO) {
-        val orders = mutableListOf<Order>()
+    suspend fun getManageOrders(adapter: ManageOrderAdapter) = withContext(Dispatchers.IO) {
         val query = FireStoreUtils.mDBOrderRef
         val userDB = FireStoreUtils.mDBUserRef
         query.addSnapshotListener { snapshot, error ->
@@ -56,12 +55,8 @@ class ManageOrderPresenter(private val context: Context) {
                         }
                         Log.d("ManageOrderPresenter", "User: ${newObject.toString()}")
                     }
-                    orders.add(order)
                 }
             }
-        } catch (e: Exception) {
-            Log.e("getManageOrders", "Error getting orders: ", e)
         }
-        return@withContext orders
     }
 }
