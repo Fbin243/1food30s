@@ -238,7 +238,7 @@ class ManageProductActivity : AppCompatActivity() {
             if (selectedPriceRange != "Choose range of price") {
                 filteredProducts = filterProductsByPriceRange(selectedPriceRange, filteredProducts)
             }
-            if (selectedDate != "Choose date") {
+            if (selectedDate != "Date") {
                 filteredProducts = filterProductsByDate(selectedDate, selectedToDate, filteredProducts)
             }
 
@@ -335,6 +335,20 @@ class ManageProductActivity : AppCompatActivity() {
         binding.productRcv.layoutManager = LinearLayoutManager(this@ManageProductActivity)
         binding.productRcv.adapter = adapter
     }
+
+//    private fun displayFilteredProducts(filteredProducts: List<Product>) {
+//        showShimmerEffectForProducts()
+////            val db = AppDatabase.getInstance(applicationContext)
+//        val adapter = ManageProductAdapter(filteredProducts, onProductClick = { product ->
+//            val intent = Intent(this@ManageProductActivity, EditProduct::class.java).apply {
+//                putExtra("PRODUCT_ID", product.id)
+//            }
+//            startActivity(intent)
+//        })
+//        binding.productRcv.layoutManager = LinearLayoutManager(this@ManageProductActivity)
+//        binding.productRcv.adapter = adapter
+//        hideShimmerEffectForProducts()
+//    }
 
 
 

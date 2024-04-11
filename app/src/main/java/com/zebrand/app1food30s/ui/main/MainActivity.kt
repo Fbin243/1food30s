@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.MySharedPreferences.Companion.defaultStringValue
 import com.zebrand.app1food30s.utils.SingletonKey
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,9 +36,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var db: AppDatabase
     private var idUser: String? = null
     private lateinit var mySharedPreferences: MySharedPreferences
+
+    fun setLocale(activity: MainActivity, languageCode: String) {
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
+        val resources = activity.resources
+        val config = resources.configuration
+        config.setLocale(locale)
+        resources.updateConfiguration(config, resources.displayMetrics)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        setLocale(this, "en")
         setContentView(binding.root)
 
         mySharedPreferences = MySharedPreferences.getInstance(this)
