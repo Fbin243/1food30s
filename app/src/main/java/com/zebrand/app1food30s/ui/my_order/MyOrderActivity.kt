@@ -25,10 +25,6 @@ class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
 //    Chưa login nên không có đi qua local db để lấy data được
     private lateinit var mySharePreference: MySharedPreferences
     private lateinit var presenter: MyOrderPresenter
-//    private lateinit var myActiveOrderAdapter: MyOrderAdapter
-//    private var myActiveOrderList: MutableList<Order> = mutableListOf()
-//    private lateinit var myPrevOrderAdapter: MyOrderAdapter
-//    private var myPrevOrderList: MutableList<Order> = mutableListOf()
     private lateinit var viewPager2Adapter: MyOrderViewPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,24 +42,12 @@ class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
         init()
 
         events()
-
-//        getActiveMyOrderList()
-//        getPrevMyOrderList()
     }
 
     private fun init(){
         presenter = MyOrderPresenter(this)
         mySharePreference = MySharedPreferences.getInstance(this)
 
-//        binding.viewPager2.post {
-//            viewPager2Adapter = MyOrderViewPagerAdapter()
-//            TabLayoutMediator(binding.tabLayout, binding.viewPager2) { tab, position ->
-//                when (position) {
-//                    0 -> tab.text = "Active"
-//                    1 -> tab.text = "Previous"
-//                }
-//            }.attach()
-//        }
         viewPager2Adapter = MyOrderViewPagerAdapter(supportFragmentManager, lifecycle)
         binding.viewPager2.adapter = viewPager2Adapter // Set adapter here
         TabLayoutMediator(binding.tabLayout, binding.viewPager2) { tab, position ->
@@ -79,38 +63,4 @@ class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
             onBackPressedDispatcher.onBackPressed()
         }
     }
-
-//    override fun getActiveMyOrderList() {
-////        val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID) as String
-////        Log.d("Test00", "getMyOrderList: ${userId}")
-//
-//        val userId = "8U49yTcDk55UW2UJO69h"
-//        myActiveOrderAdapter = MyOrderAdapter(myActiveOrderList)
-//        myActiveOrderAdapter.onItemClick = {
-//            GlobalUtils.myStartActivityWithString(this, MyOrderDetailsActivity::class.java, "idOrder", it.id)
-//        }
-//
-//        // Set layout manager và adapter cho RecyclerView
-//        binding.rcvActiveMyOrder.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-//        binding.rcvActiveMyOrder.adapter = myActiveOrderAdapter
-//
-//        //getData
-//        presenter.getActiveOrderList(userId, myActiveOrderAdapter)
-//    }
-//
-//    override fun getPrevMyOrderList() {
-////        val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID) as String
-//        val userId = "8U49yTcDk55UW2UJO69h"
-//        myPrevOrderAdapter = MyOrderAdapter(myPrevOrderList)
-//        myPrevOrderAdapter.onItemClick = {
-//            GlobalUtils.myStartActivityWithString(this, MyOrderDetailsActivity::class.java, "idOrder", it.id)
-//        }
-//
-//        // Set layout manager và adapter cho RecyclerView
-//        binding.rcvPrevMyOrder.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-//        binding.rcvPrevMyOrder.adapter = myPrevOrderAdapter
-//
-//        //getData
-//        presenter.getPrevOrderList(userId, myPrevOrderAdapter)
-//    }
 }

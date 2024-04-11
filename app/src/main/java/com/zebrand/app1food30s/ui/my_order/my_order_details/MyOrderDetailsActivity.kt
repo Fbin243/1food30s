@@ -200,13 +200,12 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
 
         acceptBtn.setOnClickListener {
             presenter.changeOrderStatus(idOrder, SingletonKey.CANCELLED)
+            binding.cardControl.visibility = View.GONE
             dialog.dismiss()
-            finish()
         }
 
         cancel.setOnClickListener {
             dialog.dismiss()
-            finish()
         }
 
         dialog.show()
