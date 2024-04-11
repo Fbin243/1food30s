@@ -49,7 +49,7 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
                     image = cartItem.productImage,
                     price = cartItem.productPrice,
                     quantity = cartItem.quantity,
-                    isReviewed = false // Defaulting to false
+                    reviewed = false // Defaulting to false
                 )
             }
 

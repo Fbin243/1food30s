@@ -70,7 +70,7 @@ class MyOrderDetailsAdapter(
             Log.i("TAG123", "onBindViewHolder: $isDelivered")
             if (isDelivered) {
                 reviewBtn.visibility = View.VISIBLE
-                if (orderItem.isReviewed) {
+                if (orderItem.reviewed) {
                     reviewBtn.text = context.resources.getString(R.string.txt_reviewed)
                     reviewBtn.setTextColor(context.resources.getColor(R.color.secondary))
                     reviewBtn.setOnClickListener {

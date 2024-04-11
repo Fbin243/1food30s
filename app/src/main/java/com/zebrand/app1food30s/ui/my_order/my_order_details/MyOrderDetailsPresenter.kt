@@ -29,32 +29,46 @@ class MyOrderDetailsPresenter(private val context: Context, private val view: My
             val newObject: Order? = snapshot.toObject(Order::class.java)
             Log.d("Test00", "placeOrder: Starting order placement. ${orderDetails?.id} $newObject")
             if (newObject != null && newObject.items.isNotEmpty()) {
-                if (orderDetails?.id?.isEmpty() == false && orderDetails.orderStatus != newObject.orderStatus) {
-                    // Trạng thái đã được sửa đổi, cập nhật lại trong adapter
-                    orderDetails.apply {
-                        orderStatus = newObject.orderStatus
+                var check: Boolean = false
+                for (newItem in newObject.items) {
+                    val oldItem = orderDetails?.items?.find { it.productId == newItem.productId }
+                    if (oldItem != null && oldItem.reviewed != newItem.reviewed) {
+                        check = true
+                        // Replace the old item with the new item
+                        val index = orderDetails.items.indexOf(oldItem)
+                        orderDetails.items[index] = newItem
                     }
-                } else {
-                    // Nếu không có sự thay đổi trạng thái, thêm dữ liệu mới vào adapter
-                    orderDetails?.apply {
-                        id = newObject.id
-                        idAccount = newObject.idAccount
-                        items.clear()
-                        items.addAll(newObject.items)
-                        totalAmount = newObject.totalAmount
-                        orderStatus = newObject.orderStatus
-                        cancelReason = newObject.cancelReason
-                        shippingAddress = newObject.shippingAddress
-                        paymentStatus = newObject.paymentStatus
-                        note = newObject.note
-                        date = newObject.date
-                    }
-                    adapter.updateIsDelivered(newObject.orderStatus)
-                    for (item in newObject.items) {
-                        adapter.insertData(item)
-                    }
-                    view.handleReviewProduct()
                 }
+
+                if(!check){
+                    if (orderDetails?.id?.isEmpty() == false && (orderDetails.orderStatus != newObject.orderStatus)) {
+                        // Trạng thái đã được sửa đổi, cập nhật lại trong adapter
+                        orderDetails.apply {
+                            orderStatus = newObject.orderStatus
+                        }
+                    } else {
+                        // Nếu không có sự thay đổi trạng thái, thêm dữ liệu mới vào adapter
+                        orderDetails?.apply {
+                            id = newObject.id
+                            idAccount = newObject.idAccount
+                            items.clear()
+                            items.addAll(newObject.items)
+                            totalAmount = newObject.totalAmount
+                            orderStatus = newObject.orderStatus
+                            cancelReason = newObject.cancelReason
+                            shippingAddress = newObject.shippingAddress
+                            paymentStatus = newObject.paymentStatus
+                            note = newObject.note
+                            date = newObject.date
+                        }
+                        adapter.updateIsDelivered(newObject.orderStatus)
+                        for (item in newObject.items) {
+                            adapter.insertData(item)
+                        }
+                        view.handleReviewProduct()
+                    }
+                }
+
                 view.setOrderDetailsUI()
                 Log.d("Test00", "placeOrder: Starting order placement. $orderDetails")
             }

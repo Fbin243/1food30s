@@ -13,12 +13,12 @@ data class OrderItem(
     val image: String = "", // Firebase Storage
     val price: Double = 0.0,
     val quantity: Int = 0,
-    val isReviewed: Boolean = false,
+    val reviewed: Boolean = false,
 )
 
 data class Order(
     var id: String = "",
-    @Exclude
+    @get:Exclude
     var user: User = User(),
     var idAccount: DocumentReference? = null,
     var items: MutableList<OrderItem> = mutableListOf(),

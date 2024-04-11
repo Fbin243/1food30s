@@ -247,7 +247,7 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
                 val orderRef = FireStoreUtils.mDBOrderRef.document(idOrder)
                 orderRef.update("items", orderDetails.items.map {
                     if (it.productId == orderItem.productId) {
-                        it.copy(isReviewed = true)
+                        it.copy(reviewed = true)
                     } else {
                         it
                     }
