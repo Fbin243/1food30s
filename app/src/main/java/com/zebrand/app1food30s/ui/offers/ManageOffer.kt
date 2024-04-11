@@ -171,10 +171,10 @@ class ManageOffer : AppCompatActivity() {
             val selectedDate = datePickerText.text.toString()
             val selectedToDate = toDatePickerText.text.toString()
 
-            val allOffers = getListOffers()
+//            val allOffers = getListOffers()
 
-//            val db = AppDatabase.getInstance(applicationContext)
-//            val allOffers = FirebaseService.getListProducts(db)
+            val db = AppDatabase.getInstance(this@ManageOffer)
+            val allOffers = FirebaseService.getListOffers(db)
 
             var filteredOffers = allOffers
 

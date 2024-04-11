@@ -56,7 +56,8 @@ class ManageCategory : AppCompatActivity() {
     private lateinit var numProductAutoComplete: AutoCompleteTextView
     private lateinit var datePickerText: TextInputEditText
     private lateinit var toDatePickerText: TextInputEditText
-    val numProductArray = arrayOf("0 to 1", "2 to 10", "11 to 50", "51 to 100", "More than 100")
+    val numProductArray = arrayOf("Empty", "1 to 10", "11 to 50", "51 to 100", "More than 100")
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -165,10 +166,10 @@ class ManageCategory : AppCompatActivity() {
             val selectedDate = datePickerText.text.toString()
             val selectedToDate = toDatePickerText.text.toString()
 
-            val allCategories = getListCategories()
+//            val allCategories = getListCategories()
 
-//            val db = AppDatabase.getInstance(applicationContext)
-//            val allCategories = FirebaseService.getListProducts(db)
+            val db = AppDatabase.getInstance(this@ManageCategory)
+            val allCategories = FirebaseService.getListCategories(db)
 
             var filteredCategories = allCategories
 
@@ -178,7 +179,7 @@ class ManageCategory : AppCompatActivity() {
             if (selectedNumProduct != "Choose number of product") {
                 filteredCategories = filterCategoriesByNumProduct(selectedNumProduct, filteredCategories)
             }
-            if (selectedDate != "Choose date") {
+            if (selectedDate != "Date") {
                 filteredCategories = filterCategoriesByDate(selectedDate, selectedToDate ,filteredCategories)
             }
 
@@ -227,15 +228,29 @@ class ManageCategory : AppCompatActivity() {
         return categories.filter { it.name.contains(nameFilter, ignoreCase = true) }
     }
 
+//    private fun filterCategoriesByNumProduct(selectedNumProduct: String, categories: List<Category>): List<Category> {
+//        val range = selectedNumProduct.split(" to ").mapNotNull { it.filter { char -> char.isDigit() }.toIntOrNull() }
+//        if (range.size == 2) {
+//            return categories.filter {
+//                it.numProduct >= range[0] && it.numProduct <= range[1]
+//            }
+//        }
+//        return categories
+//    }
+
     private fun filterCategoriesByNumProduct(selectedNumProduct: String, categories: List<Category>): List<Category> {
-        val range = selectedNumProduct.split(" to ").mapNotNull { it.filter { char -> char.isDigit() }.toIntOrNull() }
-        if (range.size == 2) {
-            return categories.filter {
-                it.numProduct >= range[0] && it.numProduct <= range[1]
+        return when (selectedNumProduct) {
+            "Empty" -> categories.filter { it.numProduct == 0 }
+            "More than 100" -> categories.filter { it.numProduct > 100 }
+            else -> {
+                val range = selectedNumProduct.split(" to ").mapNotNull { it.toIntOrNull() }
+                if (range.size == 2) {
+                    categories.filter { it.numProduct >= range[0] && it.numProduct <= range[1] }
+                } else categories
             }
         }
-        return categories
     }
+
 
     private fun displayFilteredCategories(filteredCategories: List<Category>) {
         // Update RecyclerView with filteredCategories
