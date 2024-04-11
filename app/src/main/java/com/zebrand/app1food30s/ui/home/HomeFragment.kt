@@ -280,7 +280,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         currentProducts = products
         binding.productRcv2.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        val adapter = ProductAdapter(products.take(4).toMutableList(), offers, wishlistedProductIds)
+        val adapter = ProductAdapter(products.sortedByDescending { it.sold }.take(4).toMutableList(), offers, wishlistedProductIds)
         addCallBacksForAdapter(adapter)
         binding.productRcv2.adapter = adapter
         handleOpenProductViewAll(binding.btn2, false, binding.textView2.text.toString())
