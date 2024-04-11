@@ -19,7 +19,7 @@ import com.zebrand.app1food30s.utils.SingletonKey
 class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
     lateinit var binding: ActivityMyOrderBinding
 //    Chưa login nên không có đi qua local db để lấy data được
-//    private val mySharePreference = MySharedPreferences.getInstance(this)
+    private lateinit var mySharePreference: MySharedPreferences
     private lateinit var presenter: MyOrderPresenter
     private lateinit var myActiveOrderAdapter: MyOrderAdapter
     private var myActiveOrderList: MutableList<Order> = mutableListOf()
@@ -48,6 +48,7 @@ class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
 
     private fun init(){
         presenter = MyOrderPresenter(this)
+        mySharePreference = MySharedPreferences.getInstance(this)
     }
 
     private fun events(){
@@ -57,10 +58,10 @@ class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
     }
 
     override fun getActiveMyOrderList() {
-//        val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID) as String
-//        Log.d("Test00", "getMyOrderList: ${userId}")
+        val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID)!!
+        Log.d("Test00", "getMyOrderList: ${userId}")
 
-        val userId = "8U49yTcDk55UW2UJO69h"
+//        val userId = "8U49yTcDk55UW2UJO69h"
         myActiveOrderAdapter = MyOrderAdapter(myActiveOrderList)
         myActiveOrderAdapter.onItemClick = {
             GlobalUtils.myStartActivityWithString(this, MyOrderDetailsActivity::class.java, "idOrder", it.id)
@@ -75,8 +76,8 @@ class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
     }
 
     override fun getPrevMyOrderList() {
-//        val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID) as String
-        val userId = "8U49yTcDk55UW2UJO69h"
+        val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID)!!
+//        val userId = "8U49yTcDk55UW2UJO69h"
         myPrevOrderAdapter = MyOrderAdapter(myPrevOrderList)
         myPrevOrderAdapter.onItemClick = {
             GlobalUtils.myStartActivityWithString(this, MyOrderDetailsActivity::class.java, "idOrder", it.id)
