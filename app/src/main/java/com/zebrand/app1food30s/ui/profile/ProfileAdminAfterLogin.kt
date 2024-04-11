@@ -116,7 +116,12 @@ class ProfileAdminAfterLogin : Fragment() {
     }
 
 
-
+    override fun onResume() {
+        super.onResume()
+        idUser?.let {
+            fetchUserInformation(it)
+        }
+    }
 
 
     private fun saveAvaUserToFirestore(userId: String) {
