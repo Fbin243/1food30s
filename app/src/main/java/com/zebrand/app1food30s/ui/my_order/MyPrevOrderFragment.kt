@@ -27,6 +27,7 @@ import com.zebrand.app1food30s.ui.manage_order.manage_order_details.ManageOrderD
 import com.zebrand.app1food30s.ui.my_order.my_order_details.MyOrderDetailsActivity
 import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.SingletonKey
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -35,14 +36,14 @@ import java.util.Locale
 class MyPrevOrderFragment : Fragment(), MyOrderMVPView.MyPrevOrderMVPView {
     lateinit var binding: FragmentMyPrevOrderBinding
     //    Chưa login nên không có đi qua local db để lấy data được
-//    private val mySharePreference = MySharedPreferences.getInstance(this)
+    private lateinit var mySharePreference: MySharedPreferences
     private lateinit var presenter: MyOrderPresenter
     private lateinit var myPrevOrderAdapter: MyOrderAdapter
     private var myPrevOrderList: MutableList<Order> = mutableListOf()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-//        preferences = MySharedPreferences.getInstance(context)
+        mySharePreference = MySharedPreferences.getInstance(context)
         presenter = MyOrderPresenter(context)
     }
 
@@ -124,10 +125,10 @@ class MyPrevOrderFragment : Fragment(), MyOrderMVPView.MyPrevOrderMVPView {
 //    }
 
     override fun getPrevMyOrderList() {
-//        val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID) as String
+        val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID) as String
 //        Log.d("Test00", "getMyOrderList: ${userId}")
 
-        val userId = "8U49yTcDk55UW2UJO69h"
+//        val userId = "8U49yTcDk55UW2UJO69h"
         myPrevOrderAdapter = MyOrderAdapter(myPrevOrderList)
         myPrevOrderAdapter.onItemClick = {
             GlobalUtils.myStartActivityWithString(requireContext(), MyOrderDetailsActivity::class.java, "idOrder", it.id)

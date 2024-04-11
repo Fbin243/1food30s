@@ -26,6 +26,7 @@ import com.zebrand.app1food30s.ui.manage_order.manage_order_details.ManageOrderD
 import com.zebrand.app1food30s.ui.my_order.my_order_details.MyOrderDetailsActivity
 import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.SingletonKey
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -34,14 +35,14 @@ import java.util.Locale
 class MyActiveOrderFragment : Fragment(), MyOrderMVPView.MyActiveOrderMVPView {
     lateinit var binding: FragmentMyActiveOrderBinding
     //    Chưa login nên không có đi qua local db để lấy data được
-//    private val mySharePreference = MySharedPreferences.getInstance(this)
+    private lateinit var mySharePreference: MySharedPreferences
     private lateinit var presenter: MyOrderPresenter
     private lateinit var myActiveOrderAdapter: MyOrderAdapter
     private var myActiveOrderList: MutableList<Order> = mutableListOf()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-//        preferences = MySharedPreferences.getInstance(context)
+        mySharePreference = MySharedPreferences.getInstance(context)
         presenter = MyOrderPresenter(context)
     }
 
@@ -123,10 +124,10 @@ class MyActiveOrderFragment : Fragment(), MyOrderMVPView.MyActiveOrderMVPView {
 //    }
 
     override fun getActiveMyOrderList() {
-//        val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID) as String
+        val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID) as String
 //        Log.d("Test00", "getMyOrderList: ${userId}")
 
-        val userId = "8U49yTcDk55UW2UJO69h"
+//        val userId = "8U49yTcDk55UW2UJO69h"
         myActiveOrderAdapter = MyOrderAdapter(myActiveOrderList)
         myActiveOrderAdapter.onItemClick = {
             GlobalUtils.myStartActivityWithString(requireContext(), MyOrderDetailsActivity::class.java, "idOrder", it.id)
