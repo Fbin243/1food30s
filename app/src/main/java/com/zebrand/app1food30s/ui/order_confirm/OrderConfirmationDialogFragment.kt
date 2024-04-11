@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.ui.order_confirm
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.ui.my_order.my_order_details.MyOrderDetailsActivity
 
 class OrderConfirmationDialogFragment : DialogFragment() {
 
@@ -28,7 +30,10 @@ class OrderConfirmationDialogFragment : DialogFragment() {
 
         // Set up button listeners and handle actions like 'Go to Details' and 'Pay Now'
         view.findViewById<Button>(R.id.btnGoToDetails).setOnClickListener {
-            // Handle 'Go to Details' action
+            val intentMyOrderDetailsActivity = Intent(requireContext(), MyOrderDetailsActivity::class.java)
+            intentMyOrderDetailsActivity.putExtra("idOrder", activity?.intent?.getStringExtra("orderId"))
+            dismiss()
+            startActivity(intentMyOrderDetailsActivity)
         }
 
         // Set up the click listener for the close button

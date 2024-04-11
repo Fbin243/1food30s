@@ -36,7 +36,7 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
         }
     }
 
-    private fun placeOrder(cartId: String, idAccount: DocumentReference, address: String, note: String, completion: (Boolean) -> Unit) {
+    private fun placeOrder(cartId: String, idAccount: DocumentReference, address: String, note: String, completion: (Boolean, String) -> Unit) {
         // Log.d("Test00", "placeOrder: Starting order placement.")
         launch {
             val orderItems = cartItems.map { cartItem ->
@@ -76,30 +76,30 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
                         if (success) {
 //                            Log.d("Test00", "Cart cleared successfully for cartId: $cartId")
                             // Clear cart was successful
-                            completion(true) // Directly calling completion callback without nested launch
+                            completion(true, order.id) // Directly calling completion callback without nested launch
                         } else {
 //                            Log.d("Test00", "Failed to clear cart for cartId: $cartId")
                             // Clear cart failed
-                            completion(false) // Directly calling completion callback without nested launch
+                            completion(false, order.id) // Directly calling completion callback without nested launch
                         }
                     }
                 }
                 .addOnFailureListener { e ->
 //                    Log.e("Test00", "Order placement failed: ${order.id}", e)
                     // Operation failed
-                    completion(false) // Directly calling completion callback without nested launch
+                    completion(false, order.id) // Directly calling completion callback without nested launch
                 }
         }
     }
 
     fun onPlaceOrderClicked(cartId: String, idAccount: DocumentReference, address: String, note: String) {
-        placeOrder(cartId, idAccount, address, note) { success ->
+        placeOrder(cartId, idAccount, address, note) { success, orderId ->
             if (success) {
-                view.navigateToOrderConfirmation(true)
+                view.navigateToOrderConfirmation(true, orderId)
             } else {
 //                Log.e("Test00", "Order placement failed.")
                 // You can handle the failure by invoking a different method in the view to show an error message, or pass false to navigateToOrderConfirmation if it's set up to handle failure.
-                view.navigateToOrderConfirmation(false)
+                view.navigateToOrderConfirmation(false, orderId)
             }
         }
     }

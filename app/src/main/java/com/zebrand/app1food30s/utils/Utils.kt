@@ -9,6 +9,7 @@ import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -95,66 +96,124 @@ object Utils {
         return id.substring(0, 7)
     }
 
-    fun addProductToCart(context: Context, productId: String) {
-        val db = FirebaseFirestore.getInstance()
-        val preferences = MySharedPreferences.getInstance(context)
-        val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
-        val defaultId = MySharedPreferences.defaultStringValue
-
-        // Check if the user is logged in before proceeding
-        if (userId == defaultId) {
-            // User is not logged in, navigate to LoginActivity
+    fun addProductToCart(context: Context, productId: String, userId: String, defaultUserId: String = MySharedPreferences.defaultStringValue) {
+        if (userId == defaultUserId) {
             val loginIntent = Intent(context, LoginActivity::class.java)
             context.startActivity(loginIntent)
-            return // Stop further execution of this function
+            return
         }
 
         val cartRef = FireStoreUtils.mDBCartRef.document(userId)
 
         val productRef = FireStoreUtils.mDBProductRef.document(productId)
-        productRef.get().addOnSuccessListener { productSnapshot ->
+        productRef.get().addOnSuccessListener product@{ productSnapshot ->
             val product = productSnapshot.toObject(Product::class.java)
             val stock = product?.stock ?: 0
 
-            if (stock > 0) {
-                cartRef.get().addOnSuccessListener { document ->
-                    val cart = if (document.exists()) {
-                        document.toObject(Cart::class.java)
+            cartRef.get().addOnSuccessListener cart@{ document ->
+                val cart = document.toObject(Cart::class.java)
+//                val cart = if (document.exists()) {
+//                    document.toObject(Cart::class.java)
+//                }
+//                else {
+//                    Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
+//                }
+                cart?.let {
+                    val existingItemIndex =
+                        it.items.indexOfFirst { item -> item.productId == productRef }
+                    if (existingItemIndex >= 0) {
+                        // Product exists, update quantity
+                        val newQuantity = it.items[existingItemIndex].quantity + 1
+                        if (newQuantity <= stock) {
+                            it.items[existingItemIndex].quantity = newQuantity
+                        }
+                        else {
+                            Toast.makeText(context, "Product is out of stock.", Toast.LENGTH_SHORT).show()
+                            return@cart
+                        }
                     } else {
-                        Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
+                        // New product, add to cart
+                        it.items.add(CartItem(productRef, "", "", 0.0, 0.0,"", 0, 1))
                     }
 
-                    cart?.let {
-                        val existingItemIndex =
-                            it.items.indexOfFirst { item -> item.productId == productRef }
-                        if (existingItemIndex >= 0) {
-                            // Product exists, update quantity
-                            it.items[existingItemIndex].quantity += 1
-                        } else {
-                            // New product, add to cart
-                            // TODO!
-                            it.items.add(CartItem(productRef, "", "", 0.0, "", 0, 1))
-                        }
-
-                        cartRef.set(it).addOnSuccessListener {
-                            Toast.makeText(
-                                context,
-                                "Added to cart successfully!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                    cartRef.set(it).addOnSuccessListener {
+                        Toast.makeText(
+                            context,
+                            "Added to cart successfully!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                }.addOnFailureListener { exception ->
-                    Log.e("Test00", "Error updating cart: ", exception)
-                    Toast.makeText(context, "Failed to add to cart.", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(context, "Product is out of stock.", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener { exception ->
+                Log.e("Test00", "Error updating cart: ", exception)
+                Toast.makeText(context, "Failed to add to cart.", Toast.LENGTH_SHORT).show()
             }
         }.addOnFailureListener { exception ->
             Log.e("Test00", "Error getting product: ", exception)
             Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
         }
     }
+
+//    fun addProductToCart(context: Context, productId: String) {
+//        val db = FirebaseFirestore.getInstance()
+//        val preferences = MySharedPreferences.getInstance(context)
+//        val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
+//        val defaultId = MySharedPreferences.defaultStringValue
+//
+//        // Check if the user is logged in before proceeding
+//        if (userId == defaultId) {
+//            // User is not logged in, navigate to LoginActivity
+//            val loginIntent = Intent(context, LoginActivity::class.java)
+//            context.startActivity(loginIntent)
+//            return // Stop further execution of this function
+//        }
+//
+//        val cartRef = FireStoreUtils.mDBCartRef.document(userId)
+//
+//        val productRef = FireStoreUtils.mDBProductRef.document(productId)
+//        productRef.get().addOnSuccessListener { productSnapshot ->
+//            val product = productSnapshot.toObject(Product::class.java)
+//            val stock = product?.stock ?: 0
+//
+//            if (stock > 0) {
+//                cartRef.get().addOnSuccessListener { document ->
+//                    val cart = if (document.exists()) {
+//                        document.toObject(Cart::class.java)
+//                    } else {
+//                        Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
+//                    }
+//
+//                    cart?.let {
+//                        val existingItemIndex =
+//                            it.items.indexOfFirst { item -> item.productId == productRef }
+//                        if (existingItemIndex >= 0) {
+//                            // Product exists, update quantity
+//                            it.items[existingItemIndex].quantity += 1
+//                        } else {
+//                            // New product, add to cart
+//                            // TODO!
+//                            it.items.add(CartItem(productRef, "", "", 0.0, "", 0, 1))
+//                        }
+//
+//                        cartRef.set(it).addOnSuccessListener {
+//                            Toast.makeText(
+//                                context,
+//                                "Added to cart successfully!",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//                        }
+//                    }
+//                }.addOnFailureListener { exception ->
+//                    Log.e("Test00", "Error updating cart: ", exception)
+//                    Toast.makeText(context, "Failed to add to cart.", Toast.LENGTH_SHORT).show()
+//                }
+//            } else {
+//                Toast.makeText(context, "Product is out of stock.", Toast.LENGTH_SHORT).show()
+//            }
+//        }.addOnFailureListener { exception ->
+//            Log.e("Test00", "Error getting product: ", exception)
+//            Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
+//        }
+//    }
 
 }

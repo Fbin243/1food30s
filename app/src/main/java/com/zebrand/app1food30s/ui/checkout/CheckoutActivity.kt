@@ -125,11 +125,12 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     }
 
     // TODO: fix snackbar top to bottom of container
-    override fun navigateToOrderConfirmation(showOrderConfirmation: Boolean) {
+    override fun navigateToOrderConfirmation(showOrderConfirmation: Boolean, orderId: String) {
         if (showOrderConfirmation) {
             val intent = Intent(this, MainActivity::class.java).apply {
                 putExtra("showOrderConfirmation", true)
                 putExtra("address", address)
+                putExtra("orderId", orderId)
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
             startActivity(intent)

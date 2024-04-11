@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.ic_dashboard -> replaceFragment(AdminStatsFragment())
                 R.id.ic_order -> replaceFragment(ManageOrderFragment())
-                R.id.ic_manage -> replaceFragment(ProfileFragment())
+//                R.id.ic_manage -> replaceFragment(ProfileFragment())
                 R.id.ic_profile -> {
                     if (isLogin) {
                         val fragment = ProfileAdminAfterLogin().apply {

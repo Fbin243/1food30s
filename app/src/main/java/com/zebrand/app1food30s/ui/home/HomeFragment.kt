@@ -237,64 +237,6 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
 //        }
 //    }
 
-    private fun addProductToCart(context: Context, productId: String) {
-        if (userId == defaultUserId) {
-            val loginIntent = Intent(requireContext(), LoginActivity::class.java)
-            startActivity(loginIntent)
-            return
-        }
-
-        val cartRef = mDBCartRef.document(userId)
-
-        val productRef = mDBProductRef.document(productId)
-        productRef.get().addOnSuccessListener product@{ productSnapshot ->
-            val product = productSnapshot.toObject(Product::class.java)
-            val stock = product?.stock ?: 0
-
-            cartRef.get().addOnSuccessListener cart@{ document ->
-                val cart = document.toObject(Cart::class.java)
-//                val cart = if (document.exists()) {
-//                    document.toObject(Cart::class.java)
-//                }
-//                else {
-//                    Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
-//                }
-                cart?.let {
-                    val existingItemIndex =
-                        it.items.indexOfFirst { item -> item.productId == productRef }
-                    if (existingItemIndex >= 0) {
-                        // Product exists, update quantity
-                        val newQuantity = it.items[existingItemIndex].quantity + 1
-                        if (newQuantity <= stock) {
-                            it.items[existingItemIndex].quantity = newQuantity
-                        }
-                        else {
-                            Toast.makeText(context, "Product is out of stock.", Toast.LENGTH_SHORT).show()
-                            return@cart
-                        }
-                    } else {
-                        // New product, add to cart
-                        it.items.add(CartItem(productRef, "", "", 0.0, 0.0,"", 0, 1))
-                    }
-
-                    cartRef.set(it).addOnSuccessListener {
-                        Toast.makeText(
-                            context,
-                            "Added to cart successfully!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }.addOnFailureListener { exception ->
-                Log.e("Test00", "Error updating cart: ", exception)
-                Toast.makeText(context, "Failed to add to cart.", Toast.LENGTH_SHORT).show()
-            }
-        }.addOnFailureListener { exception ->
-            Log.e("Test00", "Error getting product: ", exception)
-            Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
     // ============= DƯỚI NÀY LÀ HÀM CỦA T
     private fun handleOpenSearchScreen() {
         binding.searchInput.setOnFocusChangeListener { _, focus ->
@@ -365,7 +307,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
             openDetailProduct(product)
         }
         adapter.onAddButtonClick = { product ->
-            Utils.addProductToCart(requireContext(), product.id)
+            Utils.addProductToCart(requireContext(), product.id, userId, defaultUserId)
         }
         adapter.onWishlistProductClick = { product ->
             if (userId == defaultUserId) {

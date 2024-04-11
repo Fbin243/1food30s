@@ -51,6 +51,8 @@ class ListProductFragment(
     private lateinit var categories: List<Category>
     private lateinit var wishlistPresenter: WishlistPresenter
     private var wishlistedProductIds: MutableSet<String> = mutableSetOf()
+    private lateinit var userId: String
+    private lateinit var defaultUserId: String
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,7 +67,8 @@ class ListProductFragment(
 
         // Wishlist
         val mySharedPreferences = context?.let { MySharedPreferences.getInstance(it) }
-        val userId = mySharedPreferences?.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
+        userId = mySharedPreferences?.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
+        defaultUserId = MySharedPreferences.defaultStringValue
         val wishlistRepository = WishlistRepository(userId)
         wishlistPresenter = WishlistPresenter(this, wishlistRepository)
 //        Log.d("Test00", "onCreateView: fetchAndUpdateWishlistState()")
@@ -247,7 +250,7 @@ class ListProductFragment(
             openDetailProduct(product)
         }
         adapter.onAddButtonClick = { product ->
-            Utils.addProductToCart(requireContext(), product.id)
+            Utils.addProductToCart(requireContext(), product.id, userId, defaultUserId)
         }
         adapter.onWishlistProductClick = { product ->
             wishlistPresenter.toggleWishlist(product)

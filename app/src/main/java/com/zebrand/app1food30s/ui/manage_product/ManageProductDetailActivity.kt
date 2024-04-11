@@ -134,7 +134,7 @@ class ManageProductDetailActivity : AppCompatActivity() {
                                     description = productDescription,
                                     stock = productStock,
                                     image = imagePath, // Sử dụng URL của hình ảnh đã tải lên
-                                    date = Date()
+                                    date = Date(),
                                 )
 
 //                                newProductRef.set(newProduct)

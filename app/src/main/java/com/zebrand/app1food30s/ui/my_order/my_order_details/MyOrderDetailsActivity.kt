@@ -72,7 +72,6 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
 
     private fun init() {
         presenter = MyOrderDetailsPresenter(this, this)
-
         idOrder = intent.getStringExtra("idOrder").toString()
     }
 
