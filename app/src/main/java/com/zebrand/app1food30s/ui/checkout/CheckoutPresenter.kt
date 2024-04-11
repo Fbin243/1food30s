@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.ui.checkout
 
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.data.entity.Order
@@ -11,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.w3c.dom.Document
 import java.util.Date
 import java.util.UUID
 
@@ -34,7 +36,7 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
         }
     }
 
-    private fun placeOrder(cartId: String, completion: (Boolean) -> Unit) {
+    private fun placeOrder(cartId: String, idAccount: DocumentReference, completion: (Boolean) -> Unit) {
         // Log.d("Test00", "placeOrder: Starting order placement.")
         launch {
             val orderItems = cartItems.map { cartItem ->
@@ -53,7 +55,7 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
 
             val order = Order(
                 id = UUID.randomUUID().toString(),
-                //idAccount = accountId, // TODO: Link to user's account
+                idAccount = idAccount,
                 items = orderItems.toMutableList(),
                 totalAmount = totalPrice,
                 orderStatus = "Pending", // Consider using constants or enum
@@ -104,8 +106,8 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
 //        }
 //    }
 
-    fun onPlaceOrderClicked(cartId: String) {
-        placeOrder(cartId) { success ->
+    fun onPlaceOrderClicked(cartId: String, idAccount: DocumentReference) {
+        placeOrder(cartId, idAccount) { success ->
             if (success) {
                 view.navigateToOrderConfirmation(true)
             } else {
