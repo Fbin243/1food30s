@@ -39,7 +39,6 @@ class EditOffer : AppCompatActivity() {
 
     private lateinit var nameEditText: TextInputEditText
     private lateinit var discountRateEditText: TextInputEditText
-    private lateinit var numProductEditText: TextInputEditText
     private lateinit var saveButton: Button
     private lateinit var removeButton: Button
 
@@ -65,7 +64,6 @@ class EditOffer : AppCompatActivity() {
     private fun setupUI() {
         nameEditText = binding.inputName
         discountRateEditText = binding.inputDiscountRate
-        numProductEditText = binding.inputNumProduct
         saveButton = binding.createBtn
         removeButton = binding.removeBtn
         offerImageView = binding.imageOffer
@@ -172,12 +170,11 @@ class EditOffer : AppCompatActivity() {
     private fun updateOfferDetails(offerId: String, imagePath: String) {
         val offerName = nameEditText.text.toString().trim()
         val offerDiscountRate = discountRateEditText.text.toString().toIntOrNull() ?: 0
-        val offerNumProduct = numProductEditText.text.toString().toIntOrNull() ?: 0
 
         val offerUpdate = hashMapOf<String, Any>(
             "name" to offerName,
             "discountRate" to offerDiscountRate,
-            "numProduct" to offerNumProduct,
+            "numProduct" to 0,
             "image" to imagePath,
             "date" to Date()
         )
@@ -202,7 +199,6 @@ class EditOffer : AppCompatActivity() {
                     with(binding) {
                         inputName.setText(it.name)
                         inputDiscountRate.setText(it.discountRate.toString())
-                        inputNumProduct.setText(it.numProduct.toString())
                         val imageUrl = fireStorage.reference.child(it.image).downloadUrl.await().toString()
                         Picasso.get().load(imageUrl).into(imageOffer)
                         currentImagePath = it.image

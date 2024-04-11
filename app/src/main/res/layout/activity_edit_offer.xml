@@ -87,8 +87,7 @@
 
         <TextView
             android:id="@+id/text_discount_rate"
-            android:layout_width="0dp"
-            app:layout_constraintWidth_percent="0.55"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/title_discount_rate"
             android:layout_marginTop="@dimen/spacing20"
@@ -98,8 +97,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/discountRate"
-            android:layout_width="0dp"
-            app:layout_constraintWidth_percent="0.55"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/text_discount_rate"
             app:layout_constraintStart_toStartOf="parent"
@@ -121,45 +119,6 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/text_numProduct"
-            android:layout_width="0dp"
-            app:layout_constraintWidth_percent="0.4"
-            android:layout_height="wrap_content"
-            android:text="@string/text_num_product"
-            android:layout_marginTop="@dimen/spacing20"
-            app:layout_constraintTop_toBottomOf="@+id/edit_name"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:layout_editor_absoluteX="14dp" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/numProduct"
-            android:layout_width="0dp"
-            app:layout_constraintWidth_percent="0.4"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/text_numProduct"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:boxStrokeColor="@color/primary"
-            app:boxCornerRadiusTopStart="@dimen/radius8"
-            app:boxCornerRadiusTopEnd="@dimen/radius8"
-            app:boxCornerRadiusBottomStart="@dimen/radius8"
-            app:boxCornerRadiusBottomEnd="@dimen/radius8"
-            app:cursorColor="@color/primary"
-            app:hintTextColor="@color/primary"
-            >
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/input_num_product"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing60"
-                android:maxLines="1"
-                android:inputType="number"
-                android:text="0"
-                android:focusable="false"
-                android:gravity="center_vertical"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
-
         <ImageView
             android:id="@+id/image_offer"
             android:layout_width="match_parent"
@@ -168,7 +127,7 @@
             android:paddingVertical="@dimen/spacing14"
             android:src="@drawable/upload"
             android:background="@drawable/dashed_border"
-            app:layout_constraintTop_toBottomOf="@+id/numProduct"
+            app:layout_constraintTop_toBottomOf="@+id/discountRate"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="@dimen/spacing20"

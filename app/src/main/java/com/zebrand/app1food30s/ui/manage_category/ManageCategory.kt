@@ -66,6 +66,11 @@ class ManageCategory : AppCompatActivity() {
         addButton = findViewById(R.id.add_product_btn)
         filterButton = findViewById(R.id.filter_btn)
 
+        val backIcon = findViewById<ImageView>(R.id.imageView)
+        backIcon.setOnClickListener {
+            finish() // Kết thúc Activity hiện tại
+        }
+
         addButton.setOnClickListener {
             val intent = Intent(this, ManageCategoryDetail::class.java)
             startActivity(intent)

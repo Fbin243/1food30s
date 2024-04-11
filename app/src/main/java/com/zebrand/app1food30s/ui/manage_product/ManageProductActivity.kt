@@ -64,6 +64,11 @@ class ManageProductActivity : AppCompatActivity() {
         filterButton = findViewById(R.id.filter_btn)
 
 
+        val backIcon = findViewById<ImageView>(R.id.imageView)
+        backIcon.setOnClickListener {
+            finish() // Kết thúc Activity hiện tại
+        }
+
         addButton.setOnClickListener {
             val intent = Intent(this, ManageProductDetailActivity::class.java)
             startActivity(intent)

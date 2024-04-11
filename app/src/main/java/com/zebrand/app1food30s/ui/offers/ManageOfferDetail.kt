@@ -26,7 +26,6 @@ class ManageOfferDetail : AppCompatActivity() {
 
     private lateinit var nameEditText: TextInputEditText
     private lateinit var discountRateEditText: TextInputEditText
-    private lateinit var numProductEditText: TextInputEditText
     private lateinit var createButton: Button
 
     private lateinit var offerImageView: ImageView
@@ -40,7 +39,6 @@ class ManageOfferDetail : AppCompatActivity() {
 
         nameEditText = findViewById(R.id.input_name)
         discountRateEditText = findViewById(R.id.input_discount_rate)
-        numProductEditText = findViewById(R.id.input_num_product)
         createButton = findViewById(R.id.create_btn)
         offerImageView = findViewById(R.id.image_offer)
 
@@ -98,7 +96,6 @@ class ManageOfferDetail : AppCompatActivity() {
     private fun createAndSaveOffer(imagePath: String) {
         val offerName = nameEditText.text.toString().trim()
         val offerDiscountRate = discountRateEditText.text.toString().toIntOrNull() ?: 0
-        val offerNumProduct = numProductEditText.text.toString().toIntOrNull() ?: 0
         val db = Firebase.firestore
 
         val newOfferRef = db.collection("offers").document()
@@ -107,7 +104,7 @@ class ManageOfferDetail : AppCompatActivity() {
             id = newOfferRef.id,
             name = offerName,
             discountRate = offerDiscountRate,
-            numProduct = offerNumProduct,
+            numProduct = 0,
             image = imagePath, // Sử dụng URL của hình ảnh đã tải lên
             date = Date()
         )

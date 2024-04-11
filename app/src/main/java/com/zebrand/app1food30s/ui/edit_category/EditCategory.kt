@@ -40,7 +40,6 @@ class EditCategory : AppCompatActivity() {
     private val PICK_IMAGE_REQUEST = 71 // Unique request code
 
     private lateinit var nameEditText: TextInputEditText
-    private lateinit var numProductEditText: TextInputEditText
     private lateinit var saveButton: Button
     private lateinit var removeButton: Button
 
@@ -65,7 +64,6 @@ class EditCategory : AppCompatActivity() {
 
     private fun setupUI() {
         nameEditText = binding.inputName
-        numProductEditText = binding.inputNumProduct
         saveButton = binding.createBtn
         removeButton = binding.removeBtn
         categoryImageView = binding.imageCategory
@@ -171,11 +169,9 @@ class EditCategory : AppCompatActivity() {
 
     private fun updateCategoryDetails(categoryId: String, imagePath: String) {
         val categoryName = nameEditText.text.toString().trim()
-        val categoryNumProduct = numProductEditText.text.toString().toIntOrNull() ?: 0
 
         val categoryUpdate = hashMapOf<String, Any>(
             "name" to categoryName,
-            "numProduct" to categoryNumProduct,
             "image" to imagePath,
             "date" to Date()
         )
@@ -199,7 +195,6 @@ class EditCategory : AppCompatActivity() {
                 category?.let {
                     with(binding) {
                         inputName.setText(it.name)
-                        inputNumProduct.setText(it.numProduct.toString())
                         val imageUrl = fireStorage.reference.child(it.image).downloadUrl.await().toString()
                         Picasso.get().load(imageUrl).into(imageCategory)
                         currentImagePath = it.image

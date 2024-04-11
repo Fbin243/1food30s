@@ -26,7 +26,6 @@ class ManageCategoryDetail : AppCompatActivity() {
     private val PICK_IMAGE_REQUEST = 71 // Unique request code
 
     private lateinit var nameEditText: TextInputEditText
-    private lateinit var numProductEditText: TextInputEditText
     private lateinit var createButton: Button
 
     private lateinit var categoryImageView: ImageView
@@ -39,7 +38,6 @@ class ManageCategoryDetail : AppCompatActivity() {
         setContentView(R.layout.activity_manage_category_detail)
 
         nameEditText = findViewById(R.id.input_name)
-        numProductEditText = findViewById(R.id.input_num_product)
         createButton = findViewById(R.id.create_btn)
         categoryImageView = findViewById(R.id.image_category)
 
@@ -96,7 +94,6 @@ class ManageCategoryDetail : AppCompatActivity() {
 
     private fun createAndSaveCategory(imagePath: String) {
         val categoryName = nameEditText.text.toString().trim()
-        val categoryNumProduct = numProductEditText.text.toString().toIntOrNull() ?: 0
         val db = Firebase.firestore
 
         val newCategoryRef = db.collection("categories").document()
@@ -104,7 +101,7 @@ class ManageCategoryDetail : AppCompatActivity() {
         val newCategory = Category(
             id = newCategoryRef.id,
             name = categoryName,
-            numProduct = categoryNumProduct,
+            numProduct = 0,
             image = imagePath, // Sử dụng URL của hình ảnh đã tải lên
             date = Date()
         )
