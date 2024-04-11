@@ -96,6 +96,14 @@ class ProfileAfterLoginFragment : Fragment() {
         return binding.root
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        idUser?.let {
+            fetchUserInformation(it)
+        }
+    }
+
     private fun saveAvaUserToFirestore(userId: String) {
         imageUri?.let { uri ->
             val fileName = "ava${UUID.randomUUID()}.png"
