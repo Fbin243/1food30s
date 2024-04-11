@@ -53,6 +53,9 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
     private lateinit var wishlistPresenter: WishlistPresenter
     private var currentProducts: List<Product> = emptyList()
     private var wishlistedProductIds: MutableSet<String> = mutableSetOf()
+    private lateinit var preferences: MySharedPreferences
+    private lateinit var userId: String
+    private lateinit var defaultUserId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,13 +63,18 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
     ): View {
         binding = FragmentHomeBinding.inflate(inflater)
         db = AppDatabase.getInstance(requireContext())
+        preferences = context?.let { MySharedPreferences.getInstance(it) }!!
+        userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
+        defaultUserId = MySharedPreferences.defaultStringValue
+
         homePresenter = HomePresenter(this, db)
 
         // TODO
 //        val userId = SingletonKey.KEY_USER_ID
 //        Log.d("Test00", "onCreateView: $userId")
-        val mySharedPreferences = context?.let { MySharedPreferences.getInstance(it) }
-        val userId = mySharedPreferences?.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
+
+//        val mySharedPreferences = context?.let { MySharedPreferences.getInstance(it) }
+//        val userId = mySharedPreferences?.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
         val wishlistRepository = WishlistRepository(userId)
         wishlistPresenter = WishlistPresenter(this, wishlistRepository)
         Log.d("Test00", "onCreateView: fetchAndUpdateWishlistState()")
@@ -158,141 +166,134 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
     }
 
 //    private fun addProductToCart(context: Context, productId: String) {
-//        Log.d("AddToCart", "Starting addProductToCart for productId: $productId")
-//
 //        val db = FirebaseFirestore.getInstance()
 //        val preferences = MySharedPreferences.getInstance(context)
 //        val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
 //        val defaultId = MySharedPreferences.defaultStringValue
 //
-//        // Check if the user is logged in before proceeding
 //        if (userId == defaultId) {
-////            Log.d("AddToCart", "User not logged in, redirecting to LoginActivity")
-//            // User is not logged in, navigate to LoginActivity
-//            val loginIntent = Intent(context, LoginActivity::class.java)
-//            context.startActivity(loginIntent)
-//            return // Stop further execution of this function
+//            val loginIntent = Intent(requireContext(), LoginActivity::class.java)
+//            startActivity(loginIntent)
+//            return
 //        }
 //
-////        Log.d("AddToCart", "User is logged in, proceeding with adding to cart")
+//        mDBUserRef.document(userId).get().addOnSuccessListener { accountSnapshot ->
+//            val cartDocumentReference = accountSnapshot.getString("cartRef")
+//            if (cartDocumentReference != null) {
+//                val cartRef = db.document(cartDocumentReference)
+//                // Continue with adding a product to the cart using the fetched cartRef
+//                val productRef = mDBProductRef.document(productId)
+//                productRef.get().addOnSuccessListener product@{ productSnapshot ->
+//                    val product = productSnapshot.toObject(Product::class.java)
+//                    val stock = product?.stock ?: 0
 //
-//        val cartRef = mDBCartRef.document(userId)
-//        val productRef = mDBProductRef.document(productId)
-//
-//        productRef.get().addOnSuccessListener { productSnapshot ->
-//            Log.d("AddToCart", "Successfully retrieved product details for productId: $productId")
-//            val product = productSnapshot.toObject(Product::class.java)
-//            val stock = product?.stock ?: 0
-//
-//            if (stock > 0) {
-//                Log.d("AddToCart", "Product is in stock, proceeding to add to cart")
-//                cartRef.get().addOnSuccessListener { document ->
-//                    val cart = if (document.exists()) {
-//                        Log.d("AddToCart", "Cart exists, retrieving existing cart")
-//                        document.toObject(Cart::class.java)
-//                    } else {
-//                        Log.d("AddToCart", "Creating new cart for the user")
-//                        Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
-//                    }
-//
-//                    cart?.let {
-//                        val existingItemIndex =
-//                            it.items.indexOfFirst { item -> item.productId == productRef }
-//                        if (existingItemIndex >= 0) {
-//                            // Product exists, update quantity
-//                            Log.d("AddToCart", "Product exists in cart, updating quantity")
-//                            it.items[existingItemIndex].quantity += 1
+//                    cartRef.get().addOnSuccessListener cart@{ document ->
+//                        val cart = if (document.exists()) {
+//                            document.toObject(Cart::class.java)
 //                        } else {
-//                            // New product, add to cart
-//                            Log.d("AddToCart", "Adding new product to cart")
-//                            it.items.add(CartItem(productRef, "", "", 0.0, "", 0, 1))
+//                            Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
 //                        }
+//                        cart?.let {
+//                            val existingItemIndex =
+//                                it.items.indexOfFirst { item -> item.productId == productRef }
+//                            if (existingItemIndex >= 0) {
+//                                // Product exists, update quantity
+//                                val newQuantity = it.items[existingItemIndex].quantity + 1
+//                                if (newQuantity <= stock) {
+//                                    it.items[existingItemIndex].quantity = newQuantity
+//                                }
+//                                else {
+//                                    Toast.makeText(context, "Product is out of stock.", Toast.LENGTH_SHORT).show()
+//                                    return@cart
+//                                }
+//                            } else {
+//                                // New product, add to cart
+//                                it.items.add(CartItem(productRef, "", "", 0.0, 0.0,"", 0, 1))
+//                            }
 //
-//                        cartRef.set(it).addOnSuccessListener {
-//                            Log.d("AddToCart", "Product added to cart successfully")
-//                            Toast.makeText(
-//                                context,
-//                                "Added to cart successfully!",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
+//                            cartRef.set(it).addOnSuccessListener {
+//                                Toast.makeText(
+//                                    context,
+//                                    "Added to cart successfully!",
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
+//                            }
 //                        }
+//                    }.addOnFailureListener { exception ->
+//                        Log.e("Test00", "Error updating cart: ", exception)
+//                        Toast.makeText(context, "Failed to add to cart.", Toast.LENGTH_SHORT).show()
 //                    }
 //                }.addOnFailureListener { exception ->
-//                    Log.e("AddToCart", "Error updating cart: ", exception)
-//                    Toast.makeText(context, "Failed to add to cart.", Toast.LENGTH_SHORT).show()
+//                    Log.e("Test00", "Error getting product: ", exception)
+//                    Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
 //                }
 //            } else {
-//                Log.d("AddToCart", "Product is out of stock")
-//                Toast.makeText(context, "Product is out of stock.", Toast.LENGTH_SHORT).show()
+//                Log.e("Test00", "Cart has not been created")
+//                Toast.makeText(context, "Failed to add to cart.", Toast.LENGTH_SHORT).show()
 //            }
 //        }.addOnFailureListener { exception ->
-//            Log.e("AddToCart", "Error getting product: ", exception)
-//            Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
+//            Log.e("Test00", "Error fetching user account: ", exception)
+//            Toast.makeText(context, "Failed to get user account details.", Toast.LENGTH_SHORT).show()
 //        }
 //    }
 
     private fun addProductToCart(context: Context, productId: String) {
-        val db = FirebaseFirestore.getInstance()
-        val preferences = MySharedPreferences.getInstance(context)
-        val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
-        val defaultId = MySharedPreferences.defaultStringValue
-
-        // Check if the user is logged in before proceeding
-        if (userId == defaultId) {
-            // User is not logged in, navigate to LoginActivity
+        if (userId == defaultUserId) {
             val loginIntent = Intent(requireContext(), LoginActivity::class.java)
             startActivity(loginIntent)
-            return // Stop further execution of this function
+            return
         }
 
         val cartRef = mDBCartRef.document(userId)
 
         val productRef = mDBProductRef.document(productId)
-        productRef.get().addOnSuccessListener { productSnapshot ->
+        productRef.get().addOnSuccessListener product@{ productSnapshot ->
             val product = productSnapshot.toObject(Product::class.java)
             val stock = product?.stock ?: 0
 
-            if (stock > 0) {
-                cartRef.get().addOnSuccessListener { document ->
-                    val cart = if (document.exists()) {
-                        document.toObject(Cart::class.java)
+            cartRef.get().addOnSuccessListener cart@{ document ->
+                val cart = document.toObject(Cart::class.java)
+//                val cart = if (document.exists()) {
+//                    document.toObject(Cart::class.java)
+//                }
+//                else {
+//                    Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
+//                }
+                cart?.let {
+                    val existingItemIndex =
+                        it.items.indexOfFirst { item -> item.productId == productRef }
+                    if (existingItemIndex >= 0) {
+                        // Product exists, update quantity
+                        val newQuantity = it.items[existingItemIndex].quantity + 1
+                        if (newQuantity <= stock) {
+                            it.items[existingItemIndex].quantity = newQuantity
+                        }
+                        else {
+                            Toast.makeText(context, "Product is out of stock.", Toast.LENGTH_SHORT).show()
+                            return@cart
+                        }
                     } else {
-                        Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
+                        // New product, add to cart
+                        it.items.add(CartItem(productRef, "", "", 0.0, 0.0,"", 0, 1))
                     }
 
-                    cart?.let {
-                        val existingItemIndex =
-                            it.items.indexOfFirst { item -> item.productId == productRef }
-                        if (existingItemIndex >= 0) {
-                            // Product exists, update quantity
-                            it.items[existingItemIndex].quantity += 1
-                        } else {
-                            // New product, add to cart
-                            // TODO!
-                            it.items.add(CartItem(productRef, "", "", 0.0, "", 0, 1))
-                        }
-
-                        cartRef.set(it).addOnSuccessListener {
-                            Toast.makeText(
-                                context,
-                                "Added to cart successfully!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                    cartRef.set(it).addOnSuccessListener {
+                        Toast.makeText(
+                            context,
+                            "Added to cart successfully!",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                }.addOnFailureListener { exception ->
-                    Log.e("Test00", "Error updating cart: ", exception)
-                    Toast.makeText(context, "Failed to add to cart.", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(context, "Product is out of stock.", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener { exception ->
+                Log.e("Test00", "Error updating cart: ", exception)
+                Toast.makeText(context, "Failed to add to cart.", Toast.LENGTH_SHORT).show()
             }
         }.addOnFailureListener { exception ->
             Log.e("Test00", "Error getting product: ", exception)
             Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
         }
     }
-
 
     // ============= DƯỚI NÀY LÀ HÀM CỦA T
     private fun handleOpenSearchScreen() {
@@ -367,7 +368,12 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
             Utils.addProductToCart(requireContext(), product.id)
         }
         adapter.onWishlistProductClick = { product ->
-            wishlistPresenter.toggleWishlist(product)
+            if (userId == defaultUserId) {
+                val loginIntent = Intent(requireContext(), LoginActivity::class.java)
+                startActivity(loginIntent)
+            } else {
+                wishlistPresenter.toggleWishlist(product)
+            }
         }
     }
 
