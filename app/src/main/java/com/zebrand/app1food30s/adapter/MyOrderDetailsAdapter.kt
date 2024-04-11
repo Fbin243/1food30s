@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.OrderItem
+import com.zebrand.app1food30s.ui.my_order.my_order_details.MyOrderDetailsActivity
 import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.Utils
 
@@ -69,17 +70,19 @@ class MyOrderDetailsAdapter(
                 onItemClick?.invoke(orderItem)
             }
             Log.i("TAG123", "onBindViewHolder: $isDelivered")
-            if (isDelivered) {
-                reviewBtn.visibility = View.VISIBLE
-                if (orderItem.reviewed) {
-                    reviewBtn.text = context.resources.getString(R.string.txt_reviewed)
-                    reviewBtn.setTextColor(context.resources.getColor(R.color.secondary))
-                    reviewBtn.setOnClickListener {
-                        onReviewBtnClickAfterReview?.invoke(orderItem)
-                    }
-                } else {
-                    reviewBtn.setOnClickListener {
-                        onReviewBtnClick?.invoke(orderItem, holder)
+            if(context is MyOrderDetailsActivity){
+                if (isDelivered) {
+                    reviewBtn.visibility = View.VISIBLE
+                    if (orderItem.reviewed) {
+                        reviewBtn.text = context.resources.getString(R.string.txt_reviewed)
+                        reviewBtn.setTextColor(context.resources.getColor(R.color.secondary))
+                        reviewBtn.setOnClickListener {
+                            onReviewBtnClickAfterReview?.invoke(orderItem)
+                        }
+                    } else {
+                        reviewBtn.setOnClickListener {
+                            onReviewBtnClick?.invoke(orderItem, holder)
+                        }
                     }
                 }
             }

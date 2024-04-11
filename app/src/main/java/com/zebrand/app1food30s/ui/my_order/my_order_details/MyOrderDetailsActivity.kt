@@ -103,7 +103,7 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
         binding.lottieSuccess.playAnimation()
     }
 
-    override fun getMyOrderDetailsList() {
+    private fun getMyOrderDetailsList() {
         Log.i("TAG123", "getMyOrderDetailsList: ${orderDetails.orderStatus}")
         itemOrderDetailsAdapter = MyOrderDetailsAdapter(this, myOrderDetailsList)
         itemOrderDetailsAdapter.onItemClick = {
