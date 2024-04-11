@@ -80,37 +80,37 @@ class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
         }
     }
 
-    override fun getActiveMyOrderList() {
-        val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID)!!
-        Log.d("Test00", "getMyOrderList: ${userId}")
-
+//    override fun getActiveMyOrderList() {
+////        val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID) as String
+////        Log.d("Test00", "getMyOrderList: ${userId}")
+//
 //        val userId = "8U49yTcDk55UW2UJO69h"
-        myActiveOrderAdapter = MyOrderAdapter(myActiveOrderList)
-        myActiveOrderAdapter.onItemClick = {
-            GlobalUtils.myStartActivityWithString(this, MyOrderDetailsActivity::class.java, "idOrder", it.id)
-        }
-
-        // Set layout manager và adapter cho RecyclerView
-        binding.rcvActiveMyOrder.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        binding.rcvActiveMyOrder.adapter = myActiveOrderAdapter
-
-        //getData
-        presenter.getActiveOrderList(userId, myActiveOrderAdapter)
-    }
-
-    override fun getPrevMyOrderList() {
-        val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID)!!
+//        myActiveOrderAdapter = MyOrderAdapter(myActiveOrderList)
+//        myActiveOrderAdapter.onItemClick = {
+//            GlobalUtils.myStartActivityWithString(this, MyOrderDetailsActivity::class.java, "idOrder", it.id)
+//        }
+//
+//        // Set layout manager và adapter cho RecyclerView
+//        binding.rcvActiveMyOrder.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+//        binding.rcvActiveMyOrder.adapter = myActiveOrderAdapter
+//
+//        //getData
+//        presenter.getActiveOrderList(userId, myActiveOrderAdapter)
+//    }
+//
+//    override fun getPrevMyOrderList() {
+////        val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID) as String
 //        val userId = "8U49yTcDk55UW2UJO69h"
-        myPrevOrderAdapter = MyOrderAdapter(myPrevOrderList)
-        myPrevOrderAdapter.onItemClick = {
-            GlobalUtils.myStartActivityWithString(this, MyOrderDetailsActivity::class.java, "idOrder", it.id)
-        }
-
-        // Set layout manager và adapter cho RecyclerView
-        binding.rcvPrevMyOrder.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        binding.rcvPrevMyOrder.adapter = myPrevOrderAdapter
-
-        //getData
-        presenter.getPrevOrderList(userId, myPrevOrderAdapter)
-    }
+//        myPrevOrderAdapter = MyOrderAdapter(myPrevOrderList)
+//        myPrevOrderAdapter.onItemClick = {
+//            GlobalUtils.myStartActivityWithString(this, MyOrderDetailsActivity::class.java, "idOrder", it.id)
+//        }
+//
+//        // Set layout manager và adapter cho RecyclerView
+//        binding.rcvPrevMyOrder.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+//        binding.rcvPrevMyOrder.adapter = myPrevOrderAdapter
+//
+//        //getData
+//        presenter.getPrevOrderList(userId, myPrevOrderAdapter)
+//    }
 }
