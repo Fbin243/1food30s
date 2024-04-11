@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     private var idUser: String? = null
     private lateinit var mySharedPreferences: MySharedPreferences
 
-    fun setLocale(activity: MainActivity, languageCode: String) {
+    private fun setLocale(activity: MainActivity, languageCode: String) {
         val locale = Locale(languageCode)
         Locale.setDefault(locale)
         val resources = activity.resources

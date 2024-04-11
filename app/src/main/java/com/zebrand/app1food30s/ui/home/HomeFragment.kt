@@ -77,7 +77,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
 //        val userId = mySharedPreferences?.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
         val wishlistRepository = WishlistRepository(userId)
         wishlistPresenter = WishlistPresenter(this, wishlistRepository)
-        Log.d("Test00", "onCreateView: fetchAndUpdateWishlistState()")
+//        Log.d("Test00", "onCreateView: fetchAndUpdateWishlistState()")
 
         lifecycleScope.launch {
             homePresenter.getDataAndDisplay()
@@ -159,7 +159,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
 
     override fun onResume() {
         super.onResume()
-        Log.d("Test00", "onResume: ")
+//        Log.d("Test00", "onResume: ")
 //        fetchAndUpdateWishlistState()
 //        refreshWishlistState(wishlistedProductIds)
         binding.searchInput.clearFocus()
