@@ -114,43 +114,92 @@
         </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="0dp"
+            app:layout_constraintWidth_percent="0.49"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing12"
-            android:text="@string/txt_date_filter"
-            android:textSize="@dimen/font_size16" />
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layoutDatePicker"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:boxStrokeColor="@color/primary"
-            app:cursorColor="@color/primary"
-            app:hintTextColor="@color/primary"
-            app:endIconDrawable="@drawable/ic_calendar"
-            app:endIconMode="custom"
-            app:endIconTint="@color/grey_80"
-            app:layout_constraintTop_toBottomOf="@+id/header_title">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/datePicker"
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing60"
-                android:inputType="none"
-                android:paddingHorizontal="@dimen/spacing16"
-                android:text="@string/txt_default_filter_date"
-                android:focusable="false"
-                />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing12"
+                android:text="@string/txt_from_date_filter"
+                android:textSize="@dimen/font_size16" />
 
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutDatePicker"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxStrokeColor="@color/primary"
+                app:cursorColor="@color/primary"
+                app:hintTextColor="@color/primary"
+                app:endIconDrawable="@drawable/ic_calendar"
+                app:endIconMode="custom"
+                app:endIconTint="@color/grey_80"
+                app:layout_constraintTop_toBottomOf="@+id/header_title">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/datePicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spacing60"
+                    android:inputType="none"
+                    android:paddingHorizontal="@dimen/spacing16"
+                    android:text="@string/txt_default_filter_from_date"
+                    android:focusable="false"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            app:layout_constraintWidth_percent="0.49"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing12"
+                android:text="@string/txt_to_date_filter"
+                android:textSize="@dimen/font_size16" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutToDatePicker"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxStrokeColor="@color/primary"
+                app:cursorColor="@color/primary"
+                app:hintTextColor="@color/primary"
+                app:endIconDrawable="@drawable/ic_calendar"
+                app:endIconMode="custom"
+                app:endIconTint="@color/grey_80"
+                app:layout_constraintTop_toBottomOf="@+id/header_title">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/toDatePicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spacing60"
+                    android:inputType="none"
+                    android:paddingHorizontal="@dimen/spacing16"
+                    android:text="@string/txt_default_filter_from_date"
+                    android:focusable="false"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <LinearLayout

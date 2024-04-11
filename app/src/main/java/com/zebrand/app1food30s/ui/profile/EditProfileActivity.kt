@@ -2,6 +2,7 @@ package com.zebrand.app1food30s.ui.profile
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.databinding.ActivityEditProfileBinding
 import kotlinx.coroutines.launch
@@ -51,6 +53,11 @@ class EditProfileActivity : AppCompatActivity() {
         addressEditText = binding.editAddress
         phoneEditText = binding.editPhone
         saveButton = binding.saveBtn
+
+        val backIcon = findViewById<View>(R.id.backIcon)
+        backIcon.setOnClickListener {
+            finish()
+        }
 
         saveButton.setOnClickListener {
             val userId = intent.getStringExtra("USER_ID")
