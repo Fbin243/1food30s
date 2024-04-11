@@ -7,15 +7,15 @@ import java.util.Date
 
 data class User(
     var id: String? = null,
-    val firstName: String = "",
-    val lastName: String = "",
-    val email: String = "",
-    val avatar: String = "",
-    val phone: String = "",
-    val address: String = "",
-    val admin: Boolean,
+    var firstName: String = "",
+    var lastName: String = "",
+    var email: String = "",
+    var avatar: String = "",
+    var phone: String = "",
+    var address: String = "",
+    var admin: Boolean,
     @get:ServerTimestamp
-    val date: Date? = null,
+    var date: Date? = null,
     var wishlistRef: DocumentReference? = null,
     var cartRef: DocumentReference? = null,
 ){
