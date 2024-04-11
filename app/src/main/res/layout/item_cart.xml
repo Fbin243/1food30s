@@ -52,11 +52,36 @@
                 android:textColor="@color/grey_80"
                 android:layout_marginTop="@dimen/nev_spacing_4"
                 android:layout_marginBottom="@dimen/spacing2"/>
+
+            <TextView
+                android:id="@+id/productOldPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginEnd="@dimen/spacing4"
+                android:background="@drawable/strikethrough"
+                android:text="$0.00"
+                android:textColor="@color/grey_60"
+                android:textSize="@dimen/font_size10"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+<!--            <TextView-->
+<!--                android:id="@+id/productPrice"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="bottom"-->
+<!--                android:layout_weight="1"-->
+<!--                android:maxLines="2"-->
+<!--                android:text="$0.00"-->
+<!--                android:textSize="@dimen/font_default"-->
+<!--                android:textStyle="bold" />-->
+
             <TextView
                 android:id="@+id/productPrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="$3.80"
+                android:text="$0.00"
                 android:textStyle="bold"/>
         </LinearLayout>
 
