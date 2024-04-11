@@ -224,4 +224,5 @@
     <string name="no_reviews">No reviews yet !</string>
     <string name="related_products_title">May be you\'ll like too</string>
     <string name="txt_no_related_products">No products available !</string>
+    <string name="error_address_required">Address is required</string>
 </resources>

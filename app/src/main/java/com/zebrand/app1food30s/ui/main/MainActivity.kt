@@ -59,8 +59,9 @@ class MainActivity : AppCompatActivity() {
         if (intent.getBooleanExtra("loadProfileFragment", false)) {
             replaceFragment(ProfileAfterLoginFragment())
         } else if (intent.getBooleanExtra("showOrderConfirmation", false)) {
+            val address = intent.getStringExtra("address")
             showOrderConfirmationToast()
-            showOrderConfirmationDialog()
+            showOrderConfirmationDialog(address)
         }
     }
 
@@ -81,8 +82,12 @@ class MainActivity : AppCompatActivity() {
 //        }, duration)
     }
 
-    private fun showOrderConfirmationDialog() {
-        val dialog = OrderConfirmationDialogFragment()
+    private fun showOrderConfirmationDialog(address: String?) {
+        val dialog = OrderConfirmationDialogFragment().apply {
+            arguments = Bundle().apply {
+                putString("address", address)
+            }
+        }
         dialog.show(supportFragmentManager, "OrderConfirmationDialog")
     }
 

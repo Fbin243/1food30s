@@ -25,6 +25,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView {
     private lateinit var cartId: String
     private lateinit var preferences: MySharedPreferences
     private lateinit var userId: String
+    private lateinit var address: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,9 +51,11 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView {
     // TODO: fix snackbar top to bottom of container
     override fun navigateToOrderConfirmation(showOrderConfirmation: Boolean) {
         if (showOrderConfirmation) {
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("showOrderConfirmation", true)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            val intent = Intent(this, MainActivity::class.java).apply {
+                putExtra("showOrderConfirmation", true)
+                putExtra("address", address)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
             startActivity(intent)
         } else {
             // Handle the failure case appropriately, maybe show an error message
@@ -62,28 +65,21 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView {
     // presenter.onPlaceOrderClicked(cartId)
     private fun handlePlaceOrderButton() {
         binding.btnPlaceOrder.setOnClickListener {
+            address = binding.tvAddress.text.toString()
+            val note = binding.tvNote.text.toString()
+            if (address.isEmpty()) {
+                // Show error message
+                binding.addressContainer.error = getString(R.string.error_address_required)
+                return@setOnClickListener
+            } else {
+                // Clear error
+                binding.addressContainer.error = null
+            }
+
+            // Proceed with the place order logic if address is not empty
             // TODO: add to utils
             val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
-            presenter.onPlaceOrderClicked(cartId, userDocRef)
-//            presenter.testCallback(object : CheckoutPresenter.SimpleCallback {
-//                override fun onSuccess() {
-//                    Log.d("Test00", "Test operation succeeded!")
-//                    // Success handling
-//                    runOnUiThread {
-//                        // Assuming you have a method in CheckoutActivity to handle success
-//                        navigateToOrderConfirmation(true)
-//                    }
-//                }
-//
-//                override fun onFailure(error: String) {
-//                    Log.d("Test00", "Test operation failed: $error")
-//                    // Error handling
-//                    runOnUiThread {
-//                        // Assuming you have a method in CheckoutActivity to handle error
-//                        displayError(error)
-//                    }
-//                }
-//            })
+            presenter.onPlaceOrderClicked(cartId, userDocRef, address, note)
         }
     }
 
