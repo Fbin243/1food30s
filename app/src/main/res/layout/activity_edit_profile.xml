@@ -105,6 +105,7 @@
                 android:id="@+id/edit_last_name"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing52"
+                android:gravity="center_vertical"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -137,6 +138,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing52"
                 android:maxLines="1"
+                android:gravity="center_vertical"
                 android:inputType="textEmailAddress"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -169,6 +171,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing52"
                 android:maxLines="1"
+                android:gravity="center_vertical"
                 android:inputType="textEmailAddress"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -228,6 +231,7 @@
                 android:id="@+id/edit_phone"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing52"
+                android:gravity="center_vertical"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
