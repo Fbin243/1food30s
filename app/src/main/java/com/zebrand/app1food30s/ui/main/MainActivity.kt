@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.i("TAG123", "onDestroy: Xóa db")
+//        Log.i("TAG123", "onDestroy: Xóa db")
         db.clearAllTables()
     }
 

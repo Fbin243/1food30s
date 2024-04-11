@@ -39,14 +39,6 @@ class CartFragment : Fragment(), CartMVPView {
     //    private var debounceJob: Job? = null
     private lateinit var userId: String
 
-//    override fun onAttach(context: Context) {
-//        super.onAttach(context)
-//        // Initialize preferences here as context is available and safe to use
-//        preferences = MySharedPreferences.getInstance(context)
-//
-//        userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
-//    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         preferences = MySharedPreferences.getInstance(requireContext())
@@ -72,7 +64,6 @@ class CartFragment : Fragment(), CartMVPView {
 
         handleCheckoutNavigation(userId)
 
-        // TODO
 //        handleCloseCartScreen()
     }
 
@@ -118,19 +109,6 @@ class CartFragment : Fragment(), CartMVPView {
         Utils.hideShimmerEffect(_binding!!.cartViewShimmer, _binding!!.cartView, false)
     }
 
-//    private fun updateCartUI(cartItems: List<CartItem>) {
-//        if (cartItems.isEmpty()) {
-//            // The cart is empty
-//            binding.emptyCartTextView.visibility = View.VISIBLE // Show the empty cart message
-//            binding.cartView.visibility = View.GONE // Hide the RecyclerView
-//        } else {
-//            // The cart has items
-//            adapter.loadItems(cartItems) // Load new items into the adapter
-//            binding.emptyCartTextView.visibility = View.GONE // Hide the empty cart message
-//            binding.cartView.visibility = View.VISIBLE // Show the RecyclerView
-//        }
-//    }
-
 //    private fun updateQuantityWithDebounce(productRef: DocumentReference, newQuantity: Int) {
 //        // Cancel any existing job to ensure only the last update within the debounce period is processed
 //        debounceJob?.cancel()
@@ -145,9 +123,9 @@ class CartFragment : Fragment(), CartMVPView {
     override fun loadCart(cartItems: List<CartItem>) {
         _binding?.let {
             adapter.loadItems(cartItems)
-            binding.emptyCartTextView.visibility = View.GONE // Hide the empty cart message
-            binding.cartView.visibility = View.VISIBLE // Show the RecyclerView
-//            updateCartUI(cartItems)
+
+            binding.emptyCartTextView.visibility = View.GONE
+            binding.cartView.visibility = View.VISIBLE
         }
     }
 
@@ -177,12 +155,6 @@ class CartFragment : Fragment(), CartMVPView {
             startActivity(intent)
         }
     }
-
-//    private fun handleCloseCartScreen() {
-//        binding.ivBack.root.setOnClickListener {
-//            findNavController().navigateUp()
-//        }
-//    }
 
     override fun onDestroyView() {
         super.onDestroyView()

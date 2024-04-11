@@ -42,7 +42,7 @@ class OrderConfirmationDialogFragment : DialogFragment() {
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
-            val width = (resources.displayMetrics.widthPixels * 0.8).toInt() // 80% of screen width
+            val width = (resources.displayMetrics.widthPixels * 0.9).toInt() // % of screen width
             // The height will be wrapped based on the content, which will automatically adjust to the new width
             setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

@@ -14,6 +14,8 @@ import com.zebrand.app1food30s.data.entity.Cart
 import com.zebrand.app1food30s.data.entity.CartEntity
 import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.data.entity.CartItemEntity
+import com.zebrand.app1food30s.data.entity.Category
+import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBCartRef
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBProductRef
@@ -210,7 +212,6 @@ class CartRepository(private val firebaseDb: FirebaseFirestore) {
                 return@addOnSuccessListener
             }
 
-            // Ensure cart.items is not null or empty before proceeding
             if (cartItems != null) {
                 if (cartItems.isEmpty()) {
                     callback(emptyList()) // No items to process, return empty list and zero total price
@@ -219,7 +220,6 @@ class CartRepository(private val firebaseDb: FirebaseFirestore) {
             }
 
             val tasks = cartItems?.map { cartItem ->
-                // Skip null items, if any, to prevent NullPointerException
 //                Log.d("Test00", "fetchProductDetailsForCartItems: $cartItem")
                 fetchProductDetailsForCartItem(cartItem)
             }
@@ -270,51 +270,138 @@ class CartRepository(private val firebaseDb: FirebaseFirestore) {
 //    }
 
     private fun fetchProductDetailsForCartItem(cartItem: CartItem): Task<CartItem?> {
-//        Log.d("Test00", "fetchProductDetailsForCartItem: ")
-
         if (cartItem.productId == null) {
-//            Log.d("Test00", "fetchProductDetailsForCartItem: fail")
             return Tasks.forResult(null) // Early return if productId is null
         }
 
-        return cartItem.productId.get().continueWithTask { task ->
-            if (task.isSuccessful) {
-//                Log.d("Test00", "fetchProductDetailsForCartItem: successful")
-                val product = task.result.toObject(Product::class.java)
+        return cartItem.productId.get().continueWithTask { productTask ->
+            if (productTask.isSuccessful) {
+                val product = productTask.result.toObject(Product::class.java)
                 if (product != null) {
-//                    Log.d("Test00", "fetchProductDetailsForCartItem: product not null")
-                    val storageReference = FirebaseStorage.getInstance().reference.child(product.image)
-                    return@continueWithTask storageReference.downloadUrl.continueWithTask { urlTask ->
-                        if (urlTask.isSuccessful) {
-                            val imageUrl = urlTask.result.toString()
-                            val cartItem = CartItem(
-                                productId = cartItem.productId, // Use DocumentReference's ID as a string
-                                // TODO
-                                productCategory = "Food", // Example category, adjust as necessary
-                                productName = product.name,
-                                productPrice = product.price,
-                                productImage = imageUrl, // Now using the URL string
-                                productStock = product.stock,
-                                quantity = cartItem.quantity
-                            )
-//                            Log.d("Test00", "fetchProductDetailsForCartItem: $cartItem")
-                            Tasks.forResult(cartItem)
+                    // First, fetch the category name
+                    val categoryTask = product.idCategory?.get()?.continueWith { categoryTask ->
+                        if (categoryTask.isSuccessful) {
+                            val category = categoryTask.result.toObject(Category::class.java)
+                            category?.name ?: "" // Return the category name or an empty string if not found
                         } else {
-                            Tasks.forException<CartItem?>(urlTask.exception ?: Exception("Failed to fetch image URL"))
+                            "" // Return an empty string if fetching category fails
+                        }
+                    } ?: Tasks.forResult("") // If idCategory is null, default to an empty string
+
+                    return@continueWithTask categoryTask.continueWithTask { categoryNameTask ->
+                        val categoryName = categoryNameTask.result as String
+                        // Proceed to fetch image URL
+                        val storageReference = FirebaseStorage.getInstance().reference.child(product.image)
+                        // TODO: refactor
+                        return@continueWithTask storageReference.downloadUrl.continueWithTask { urlTask ->
+                            if (!urlTask.isSuccessful) {
+                                Tasks.forException<CartItem?>(urlTask.exception ?: Exception("Failed to fetch image URL"))
+                            } else {
+                                val imageUrl = urlTask.result.toString()
+                                // Check if there is an offer
+                                val idOffer = product.idOffer
+                                if (idOffer != null) {
+                                    // Fetch offer details
+                                    return@continueWithTask idOffer.get().continueWithTask { offerTask ->
+                                        if (offerTask.isSuccessful) {
+                                            val offer = offerTask.result.toObject(Offer::class.java)
+                                            val discountRate = offer?.discountRate ?: 0
+                                            val oldPrice = product.price
+                                            val newPrice = if (discountRate > 0) {
+                                                oldPrice * (1 - (discountRate / 100.0))
+                                            } else {
+                                                oldPrice
+                                            }
+
+                                            val cartItemResult = CartItem(
+                                                productId = cartItem.productId,
+                                                productCategory = categoryName,
+                                                productName = product.name,
+                                                productPrice = newPrice,
+                                                oldPrice = oldPrice,
+                                                productImage = imageUrl,
+                                                productStock = product.stock,
+                                                quantity = cartItem.quantity
+                                            )
+                                            Tasks.forResult(cartItemResult)
+                                        } else {
+                                            Tasks.forException<CartItem?>(offerTask.exception ?: Exception("Failed to fetch offer details"))
+                                        }
+                                    }
+                                } else {
+                                    // No offer, use product price as is
+                                    val cartItemResult = CartItem(
+                                        productId = cartItem.productId,
+                                        productCategory = categoryName,
+                                        productName = product.name,
+                                        productPrice = product.price,
+                                        oldPrice = product.price, // No discount, so oldPrice equals productPrice
+                                        productImage = imageUrl,
+                                        productStock = product.stock,
+                                        quantity = cartItem.quantity
+                                    )
+                                    Tasks.forResult(cartItemResult)
+                                }
+                            }
                         }
                     }
                 } else {
-//                    Log.d("Test00", "fetchProductDetailsForCartItem: product null")
                     return@continueWithTask Tasks.forResult(null)
                 }
             } else {
-//                Log.d("Test00", "fetchProductDetailsForCartItem: task fails")
-                task.exception?.let { exception ->
+                productTask.exception?.let { exception ->
                     return@continueWithTask Tasks.forException<CartItem?>(exception)
                 }
             }
         }
     }
+
+//    private fun fetchProductDetailsForCartItem(cartItem: CartItem): Task<CartItem?> {
+////        Log.d("Test00", "fetchProductDetailsForCartItem: ")
+//
+//        if (cartItem.productId == null) {
+////            Log.d("Test00", "fetchProductDetailsForCartItem: fail")
+//            return Tasks.forResult(null) // Early return if productId is null
+//        }
+//
+//        return cartItem.productId.get().continueWithTask { task ->
+//            if (task.isSuccessful) {
+////                Log.d("Test00", "fetchProductDetailsForCartItem: successful")
+//                val product = task.result.toObject(Product::class.java)
+//                if (product != null) {
+////                    Log.d("Test00", "fetchProductDetailsForCartItem: product not null")
+//                    val storageReference = FirebaseStorage.getInstance().reference.child(product.image)
+//                    return@continueWithTask storageReference.downloadUrl.continueWithTask { urlTask ->
+//                        if (urlTask.isSuccessful) {
+//                            val imageUrl = urlTask.result.toString()
+//                            val cartItemResult = CartItem(
+//                                productId = cartItem.productId, // Use DocumentReference's ID as a string
+//                                // TODO
+//                                productCategory = "Food", // Example category, adjust as necessary
+//                                productName = product.name,
+//                                productPrice = product.price,
+//                                productImage = imageUrl, // Now using the URL string
+//                                productStock = product.stock,
+//                                quantity = cartItem.quantity
+//                            )
+////                            Log.d("Test00", "fetchProductDetailsForCartItem: $cartItem")
+//                            Tasks.forResult(cartItemResult)
+//                        } else {
+//                            Tasks.forException<CartItem?>(urlTask.exception ?: Exception("Failed to fetch image URL"))
+//                        }
+//                    }
+//                } else {
+////                    Log.d("Test00", "fetchProductDetailsForCartItem: product null")
+//                    return@continueWithTask Tasks.forResult(null)
+//                }
+//            } else {
+////                Log.d("Test00", "fetchProductDetailsForCartItem: task fails")
+//                task.exception?.let { exception ->
+//                    return@continueWithTask Tasks.forException<CartItem?>(exception)
+//                }
+//            }
+//        }
+//    }
 
     // called by CheckoutPresenter
     fun placeOrderAndClearCart(cartId: String, cartItems: List<CartItem>, completion: (Boolean) -> Unit) {

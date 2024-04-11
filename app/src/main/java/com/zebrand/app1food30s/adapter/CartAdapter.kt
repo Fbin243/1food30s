@@ -1,6 +1,7 @@
 package com.zebrand.app1food30s.adapter
 
 import android.content.Context
+import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ class CartAdapter(
         val productCategory: TextView = view.findViewById(R.id.productCategory)
         val productImg: ImageView = view.findViewById(R.id.productImg)
         val productName: TextView = view.findViewById(R.id.productName)
+        val productOldPrice: TextView = view.findViewById(R.id.productOldPrice)
         val productPrice: TextView = view.findViewById(R.id.productPrice)
         val minusBtn: ImageView = view.findViewById(R.id.minusBtn)
         val plusBtn: ImageView = view.findViewById(R.id.plusBtn)
@@ -61,6 +63,19 @@ class CartAdapter(
             productCategory.text = detailedCartItem.productCategory
             productName.text = detailedCartItem.productName
             productPrice.text = context.getString(R.string.product_price_number, detailedCartItem.productPrice)
+
+            // Check if there's a discount by comparing the old price with the new price
+            if (detailedCartItem.oldPrice > detailedCartItem.productPrice) {
+                // There's a discount, show the old price and apply strikethrough effect
+                productOldPrice.visibility = View.VISIBLE
+                productOldPrice.text = context.getString(R.string.product_price_number, detailedCartItem.oldPrice)
+                // Optionally, apply strikethrough directly if not using a background drawable for it
+                productOldPrice.paintFlags = productOldPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                // No discount, hide the old price TextView
+                productOldPrice.visibility = View.GONE
+            }
+
             itemQuantity.text = detailedCartItem.quantity.toString()
 
             plusBtn.setOnClickListener {

@@ -92,7 +92,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView {
     override fun displayCartItems(cartItems: List<CartItem>, totalPrice: Double) {
         runOnUiThread {
             checkoutItemsAdapter.setItems(cartItems)
-            binding.tvCartTotalAmount.text = getString(R.string.product_price_number, totalPrice)
+//            binding.tvCartTotalAmount.text = getString(R.string.product_price_number, totalPrice)
             binding.textViewAmount.text = getString(R.string.product_price_number, totalPrice)
         }
     }
@@ -100,7 +100,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView {
     override fun displayError(error: String) {
         runOnUiThread {
             // Handle error or empty state
-            binding.tvCartTotalAmount.text = getString(R.string.product_price_number, 0.0)
+//            binding.tvCartTotalAmount.text = getString(R.string.product_price_number, 0.0)
             binding.textViewAmount.text = getString(R.string.product_price_number, 0.0)
         }
     }

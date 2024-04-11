@@ -199,7 +199,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
                         }
                     } else {
                         // New product, add to cart
-                        it.items.add(CartItem(productRef, "", "", 0.0, "", 0, 1))
+                        it.items.add(CartItem(productRef, "", "", 0.0, 0.0,"", 0, 1))
                     }
 
                     cartRef.set(it).addOnSuccessListener {
