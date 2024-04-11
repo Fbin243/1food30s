@@ -111,21 +111,58 @@ class EditCategory : AppCompatActivity() {
         }
     }
 
+//    private fun deleteCategory(categoryId: String) {
+//        val categoryRef = fireStore.collection("categories").document(categoryId)
+//        categoryRef
+//            .delete()
+//            .addOnSuccessListener {
+//                Toast.makeText(this, "Category deleted successfully", Toast.LENGTH_SHORT).show()
+//                // Cập nhật các sản phẩm có idCategory là categoryRef
+//                unsetcategoryIdInProducts(categoryRef)
+//                val intent = Intent(this, ManageOffer::class.java)
+//                startActivity(intent)
+//            }
+//            .addOnFailureListener { e ->
+//                Toast.makeText(this, "Error deleting offer: ${e.message}", Toast.LENGTH_SHORT).show()
+//            }
+//    }
+
     private fun deleteCategory(categoryId: String) {
+        // Tạo một tham chiếu đến document của danh mục cần xóa
         val categoryRef = fireStore.collection("categories").document(categoryId)
-        categoryRef
-            .delete()
-            .addOnSuccessListener {
-                Toast.makeText(this, "Category deleted successfully", Toast.LENGTH_SHORT).show()
-                // Cập nhật các sản phẩm có idCategory là categoryRef
-                unsetcategoryIdInProducts(categoryRef)
-                val intent = Intent(this, ManageOffer::class.java)
-                startActivity(intent)
+
+        // Truy vấn để tìm tất cả sản phẩm liên quan đến danh mục dựa trên DocumentReference
+        fireStore.collection("products")
+            .whereEqualTo("idCategory", categoryRef)
+            .get()
+            .addOnSuccessListener { documents ->
+                // Tạo một batch để xóa nhiều document cùng lúc cho hiệu suất
+                val batch = fireStore.batch()
+                for (document in documents) {
+                    // Thêm mỗi document sản phẩm vào batch để xóa
+                    batch.delete(fireStore.collection("products").document(document.id))
+                }
+
+                // Thực thi batch
+                batch.commit().addOnCompleteListener {
+                    // Xóa danh mục sau khi tất cả sản phẩm liên quan đã được xóa
+                    categoryRef.delete()
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Category and all related products deleted successfully", Toast.LENGTH_SHORT).show()
+                            finish() // Hoặc chuyển hướng người dùng về màn hình quản lý danh mục
+                        }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(this, "Error deleting category: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                }.addOnFailureListener { e ->
+                    Toast.makeText(this, "Failed to delete related products: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Error deleting offer: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error finding related products: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
 
 
     private fun unsetcategoryIdInProducts(categoryRef: DocumentReference) {

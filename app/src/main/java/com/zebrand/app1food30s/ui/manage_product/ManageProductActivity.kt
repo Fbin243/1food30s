@@ -28,6 +28,7 @@ import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.ActivityManageProductBinding
 import com.zebrand.app1food30s.ui.edit_product.EditProduct
+import com.zebrand.app1food30s.ui.main.MainActivity
 import com.zebrand.app1food30s.utils.FirebaseService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -68,7 +69,8 @@ class ManageProductActivity : AppCompatActivity() {
 
         val backIcon = findViewById<ImageView>(R.id.imageView)
         backIcon.setOnClickListener {
-            finish() // Kết thúc Activity hiện tại
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
         }
 
         addButton.setOnClickListener {
