@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.ui.checkout
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zebrand.app1food30s.R
@@ -12,6 +13,8 @@ import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.databinding.ActivityCheckoutBinding
 import com.zebrand.app1food30s.ui.cart.CartRepository
 import com.zebrand.app1food30s.ui.main.MainActivity
+import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.SingletonKey
 
 class CheckoutActivity : AppCompatActivity(), CheckoutMVPView {
 
@@ -20,11 +23,16 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView {
     private lateinit var cartRepository: CartRepository
     private lateinit var presenter: CheckoutPresenter
     private lateinit var cartId: String
+    private lateinit var preferences: MySharedPreferences
+    private lateinit var userId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCheckoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        preferences = MySharedPreferences.getInstance(this)
+        userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
 
         // TODO: pass from cart fragment?
         cartRepository = CartRepository(FirebaseFirestore.getInstance())
@@ -54,7 +62,9 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView {
     // presenter.onPlaceOrderClicked(cartId)
     private fun handlePlaceOrderButton() {
         binding.btnPlaceOrder.setOnClickListener {
-            presenter.onPlaceOrderClicked(cartId)
+            // TODO: add to utils
+            val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
+            presenter.onPlaceOrderClicked(cartId, userDocRef)
 //            presenter.testCallback(object : CheckoutPresenter.SimpleCallback {
 //                override fun onSuccess() {
 //                    Log.d("Test00", "Test operation succeeded!")

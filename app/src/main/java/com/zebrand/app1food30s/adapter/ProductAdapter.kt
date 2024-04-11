@@ -115,42 +115,104 @@ class ProductAdapter(
 //        Log.d("Test00", "updateWishlistProductIds: $wishlistedProductIds")
     }
 
-    // only called when resume
     fun updateWishlistState(newWishlistedProductIds: Set<String>) {
-        // Immediately capture the current state as the old state before any changes
-        val oldWishlistedProductIds = HashSet(wishlistedProductIds)
+//        Log.d("WishlistDebug", "Starting to update wishlist UI state.")
 
-//        Log.d("Test00", "old: $oldWishlistedProductIds")
-        // Update the adapter's state to the new state
-        wishlistedProductIds.clear()
-        wishlistedProductIds.addAll(newWishlistedProductIds)
-//        Log.d("Test00", "updateWishlistState: new wishlist: $wishlistedProductIds")
+        // Update the adapter's state with the new set of wishlisted products
+//        wishlistedProductIds.clear()
+//        wishlistedProductIds.addAll(newWishlistedProductIds)\
+        wishlistedProductIds = newWishlistedProductIds.toMutableSet()
+//        Log.d("WishlistDebug", "Wishlist updated with new items: $wishlistedProductIds")
 
-//        // Create a copy of the current state for comparison
-//        val oldWishlistedProductIds = wishlistedProductIds.toSet()
-//        Log.d("Test00", "old: $oldWishlistedProductIds")
-//        // Update the adapter's state with the new set
-//        wishlistedProductIds = newWishlistedProductIds
-//        Log.d("Test00", "new: $wishlistedProductIds")
-
-        val diffCallback = object : DiffUtil.Callback() {
-            override fun getOldListSize(): Int = products.size
-            override fun getNewListSize(): Int = products.size
-
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                return products[oldItemPosition].id == products[newItemPosition].id
-            }
-
-            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                // Now correctly compares old and new state
-                val oldProduct = products[oldItemPosition]
-                return oldProduct.id in oldWishlistedProductIds == oldProduct.id in wishlistedProductIds
-            }
-        }
-
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-        diffResult.dispatchUpdatesTo(this)
+        // Notify the entire dataset has changed. This is not the most efficient way to update
+        // the adapter, but it's a straightforward approach when diff comparison isn't needed.
+        // TODO
+        notifyDataSetChanged()
+//        Log.d("WishlistDebug", "Adapter notified of entire data set change.")
     }
+
+//    fun updateWishlistState(newWishlistedProductIds: Set<String>) {
+//        Log.d("WishlistDebug", "Starting to update wishlist state.")
+//
+//        // Immediately capture the current state as the old state before any changes
+//        val oldWishlistedProductIds = HashSet(wishlistedProductIds)
+//        Log.d("WishlistDebug", "Old wishlist state captured: $oldWishlistedProductIds")
+//
+//        // Update the adapter's state to the new state
+//        wishlistedProductIds.clear()
+//        Log.d("WishlistDebug", "Cleared old wishlist items.")
+//
+//        wishlistedProductIds.addAll(newWishlistedProductIds)
+//        Log.d("WishlistDebug", "Updated with new wishlist items: $wishlistedProductIds")
+//
+//        // Set up the DiffUtil callback
+//        val diffCallback = object : DiffUtil.Callback() {
+//            override fun getOldListSize(): Int = products.size
+//            override fun getNewListSize(): Int = products.size
+//
+//            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+//                return products[oldItemPosition].id == products[newItemPosition].id
+//            }
+//
+//            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+//                // Now correctly compares old and new state
+//                val oldProduct = products[oldItemPosition]
+//                val isItemWishlistedBefore = oldProduct.id in oldWishlistedProductIds
+//                val isItemWishlistedNow = oldProduct.id in wishlistedProductIds
+//                val contentSame = isItemWishlistedBefore == isItemWishlistedNow
+//
+//                Log.d("WishlistDebug", "Comparing contents for item at position $oldItemPosition: " +
+//                        "Wishlisted before: $isItemWishlistedBefore, Wishlisted now: $isItemWishlistedNow, " +
+//                        "Contents same: $contentSame")
+//
+//                return contentSame
+//            }
+//        }
+//
+//        // Calculate the diff and dispatch updates to the adapter
+//        val diffResult = DiffUtil.calculateDiff(diffCallback)
+//        Log.d("WishlistDebug", "Diff result calculated.")
+//
+//        diffResult.dispatchUpdatesTo(this)
+//        Log.d("WishlistDebug", "Adapter notified of data changes.")
+//    }
+
+
+//    fun updateWishlistState(newWishlistedProductIds: Set<String>) {
+//        // Immediately capture the current state as the old state before any changes
+//        val oldWishlistedProductIds = HashSet(wishlistedProductIds)
+//
+////        Log.d("Test00", "old: $oldWishlistedProductIds")
+//        // Update the adapter's state to the new state
+//        wishlistedProductIds.clear()
+//        wishlistedProductIds.addAll(newWishlistedProductIds)
+//        Log.d("Test00", "updateWishlistState: new wishlist: $wishlistedProductIds")
+//
+////        // Create a copy of the current state for comparison
+////        val oldWishlistedProductIds = wishlistedProductIds.toSet()
+////        Log.d("Test00", "old: $oldWishlistedProductIds")
+////        // Update the adapter's state with the new set
+////        wishlistedProductIds = newWishlistedProductIds
+////        Log.d("Test00", "new: $wishlistedProductIds")
+//
+//        val diffCallback = object : DiffUtil.Callback() {
+//            override fun getOldListSize(): Int = products.size
+//            override fun getNewListSize(): Int = products.size
+//
+//            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+//                return products[oldItemPosition].id == products[newItemPosition].id
+//            }
+//
+//            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+//                // Now correctly compares old and new state
+//                val oldProduct = products[oldItemPosition]
+//                return oldProduct.id in oldWishlistedProductIds == oldProduct.id in wishlistedProductIds
+//            }
+//        }
+//
+//        val diffResult = DiffUtil.calculateDiff(diffCallback)
+//        diffResult.dispatchUpdatesTo(this)
+//    }
 
     fun updateData(newProducts: List<Product>, newOffers: List<Offer>) {
         products = newProducts
