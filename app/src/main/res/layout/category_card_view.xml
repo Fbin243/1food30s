@@ -19,13 +19,13 @@
             android:layout_height="30dp"
             android:layout_gravity="center_horizontal"
             card_view:cardElevation="0dp"
-            app:cardCornerRadius="@dimen/spacing6">
+            app:cardCornerRadius="@dimen/spacing8">
             <ImageView
                 android:id="@+id/cateImg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/cate1"
-                android:scaleType="centerInside"
+                android:scaleType="centerCrop"
                 />
         </androidx.cardview.widget.CardView>
 
