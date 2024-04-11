@@ -131,12 +131,7 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
 
         binding.spinnerPayment.setText(orderDetails.paymentStatus, false)
         binding.spinnerDelivery.setText(orderDetails.orderStatus, false)
-
-////        -----------------Control button-----------------
-//        val layoutParams = LinearLayout.LayoutParams(
-//            LinearLayout.LayoutParams.MATCH_PARENT,
-//            LinearLayout.LayoutParams.WRAP_CONTENT
-//        )
+        
     }
 
 }
