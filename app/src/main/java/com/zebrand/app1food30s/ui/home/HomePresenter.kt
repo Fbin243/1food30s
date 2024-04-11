@@ -10,14 +10,14 @@ class HomePresenter(
 ) {
     suspend fun getDataAndDisplay() {
         coroutineScope {
-            view.showShimmerEffect()
+            view.showShimmerEffects()
 
             val productsLatest =  FirebaseService.getListProducts(db).toMutableList()
             val productsBestSeller =  FirebaseService.getListProducts(db).toMutableList()
             val categories = FirebaseService.getListCategories(db).toMutableList()
             val offers =  FirebaseService.getListOffers(db).toMutableList()
 
-            view.hideShimmerEffect()
+            view.hideShimmerEffects()
 
             view.showCategories(categories)
             view.showProductsLatestDishes(productsLatest, offers)

@@ -53,7 +53,7 @@ class ListProductFragment(
         linearLayoutManager = LinearLayoutManager(requireContext())
         gridLayoutManager = GridLayoutManager(requireContext(), 2)
         listProductPresenter = ListProductPresenter(this, db)
-        if(hasLoading) Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
+        if (hasLoading) Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
         else binding.swipeRefreshLayout.isEnabled = false
 
         return binding.root
@@ -75,6 +75,9 @@ class ListProductFragment(
     fun initProductViewAll() {
         lifecycleScope.launch {
             listProductPresenter.getDataAndDisplay()
+            if (filterBy == "bestSellers") {
+                listProductPresenter.refreshDataAndSortDataBySold(binding.productRcv.adapter as ProductAdapter)
+            }
         }
     }
 
@@ -107,6 +110,14 @@ class ListProductFragment(
             binding.productRcv.adapter as ProductAdapter
         )
         binding.textView.text = categories[0].name
+    }
+
+    fun refreshDataAndFilterByOffer() {
+        refreshData()
+        listProductPresenter.filterProductsByOffer(
+            idFilter!!,
+            binding.productRcv.adapter as ProductAdapter
+        )
     }
 
     private fun refreshData() {
@@ -242,7 +253,21 @@ class ListProductFragment(
     }
 
     override fun onRefresh() {
-        refreshData()
+        Log.i("TAG123", "onRefresh: $filterBy")
+        when (filterBy) {
+            "offer" -> {
+                Log.i("TAG123", "onRefresh: goi ham filter by offer")
+                listProductPresenter.filterProductsByOffer(
+                    idFilter!!,
+                    binding.productRcv.adapter as ProductAdapter
+                )
+            }
+            "bestSellers" -> {
+                Log.i("TAG123", "onRefresh: goi ham sort by sold")
+                listProductPresenter.refreshDataAndSortDataBySold(binding.productRcv.adapter as ProductAdapter)
+            }
+            else -> refreshData()
+        }
         binding.swipeRefreshLayout.isRefreshing = false
     }
 }

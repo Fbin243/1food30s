@@ -318,7 +318,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
     ) {
         view.setOnClickListener {
             val intent = Intent(requireContext(), ProductViewAllActivity::class.java)
-            intent.putExtra("filterBy", "latestDishes")
+            intent.putExtra("filterBy", if(isLatestDishes) "latestDishes" else "bestSellers")
             intent.putExtra("title", title)
             startActivity(intent)
         }
@@ -350,14 +350,14 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         startActivity(intent)
     }
 
-    override fun showShimmerEffect() {
+    override fun showShimmerEffects() {
         showShimmerEffect(binding.cateShimmer, binding.cateRcv)
         showShimmerEffect(binding.product1Shimmer, binding.productRcv1)
         showShimmerEffect(binding.product2Shimmer, binding.productRcv2)
         showShimmerEffect(binding.offerShimmer, binding.offerRcv)
     }
 
-    override fun hideShimmerEffect() {
+    override fun hideShimmerEffects() {
         hideShimmerEffect(binding.cateShimmer, binding.cateRcv)
         hideShimmerEffect(binding.product1Shimmer, binding.productRcv1)
         hideShimmerEffect(binding.product2Shimmer, binding.productRcv2)

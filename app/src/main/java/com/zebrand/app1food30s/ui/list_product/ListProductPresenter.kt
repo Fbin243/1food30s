@@ -25,6 +25,15 @@ class ListProductPresenter(private val view: ListProductMVPView, private val db:
         view.hideShimmerEffectForProducts()
     }
 
+    fun refreshDataAndSortDataBySold(adapter: ProductAdapter) {
+        view.showShimmerEffectForProducts()
+        val products = db.productDao().getAll()
+        val offers = db.offerDao().getAll()
+        adapter.updateData(products.sortedByDescending { it.sold }, offers)
+        view.handleChangeLayout(products)
+        view.hideShimmerEffectForProducts()
+    }
+
     fun filterProductsByOffer(idOffer: String, adapter: ProductAdapter) {
         val products = db.productDao().getByOffer("offers/${idOffer}")
         val offers = db.offerDao().getAll()

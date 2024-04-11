@@ -9,6 +9,6 @@ interface HomeMVPView {
     fun showProductsLatestDishes(products: MutableList<Product>, offers: MutableList<Offer>)
     fun showProductsBestSeller(products: MutableList<Product>, offers: MutableList<Offer>)
     fun showOffers(offers: List<Offer>)
-    fun showShimmerEffect()
-    fun hideShimmerEffect()
+    fun showShimmerEffects()
+    fun hideShimmerEffects()
 }
