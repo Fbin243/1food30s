@@ -221,6 +221,9 @@ class ListProductFragment(
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }
+        adapter.onAddButtonClick = { product ->
+            Utils.addProductToCart(requireContext(), product.id)
+        }
         binding.productRcv.adapter = adapter
     }
 
