@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.ui.my_order.my_order_details
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -13,6 +14,7 @@ import android.view.View
 import android.view.Window
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.RatingBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
@@ -26,9 +28,14 @@ import com.zebrand.app1food30s.data.entity.OrderItem
 import com.zebrand.app1food30s.databinding.ActivityMyOrderDetailsBinding
 import com.zebrand.app1food30s.databinding.DialogDeleteAccountBinding
 import com.zebrand.app1food30s.databinding.TimelineBinding
+import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
+import com.zebrand.app1food30s.utils.FireStoreUtils
+import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.Utils
+import java.util.Date
 
+@Suppress("DEPRECATION")
 class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
     lateinit var binding: ActivityMyOrderDetailsBinding
     private lateinit var presenter: MyOrderDetailsPresenter
@@ -91,6 +98,7 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
     }
 
     override fun getMyOrderDetailsList() {
+        Log.i("TAG123", "getMyOrderDetailsList: ${orderDetails.orderStatus}")
         itemOrderDetailsAdapter = MyOrderDetailsAdapter(this, myOrderDetailsList)
         itemOrderDetailsAdapter.onItemClick = {
 //            Chuyển qua product details
@@ -158,7 +166,7 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
             if (enumList[i] != orderDetails.orderStatus) {
                 intArray.add(init)
 
-            }else{
+            } else {
                 intArray.add(2)
                 init = 3
             }
@@ -194,5 +202,69 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
         }
 
         dialog.show()
+    }
+
+    override fun handleReviewProduct() {
+        itemOrderDetailsAdapter.onReviewBtnClick = { orderItem, holder ->
+            // Initialize the dialog
+            val dialog = Dialog(this)
+            dialog.setContentView(R.layout.dialog_review)
+
+            // Initialize the views
+            val ratingBar = dialog.findViewById<RatingBar>(R.id.rating_bar)
+            val etReview =
+                dialog.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.tvFeedback)
+            val btnSubmit = dialog.findViewById<Button>(R.id.btn_submit)
+
+            // Set up the click listener for the submit button
+            btnSubmit.setOnClickListener {
+                // Retrieve the rating and the review text
+                val rating = ratingBar.rating
+                val review = etReview.text.toString()
+
+                val mySharedPreferences = MySharedPreferences.getInstance(this)
+                val userId =
+                    mySharedPreferences.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
+                Log.d(
+                    "TAG123",
+                    "Rating: $rating, Review: $review, User ID: $userId, Product ID: ${orderItem.productId?.path}"
+                )
+
+                FireStoreUtils.mDBReviewRef.add(
+                    hashMapOf(
+                        "rating" to rating,
+                        "content" to review,
+                        "idAccount" to FireStoreUtils.mDBUserRef.document(userId),
+                        "idProduct" to orderItem.productId,
+                        "date" to Date()
+                    )
+                )
+
+                holder.reviewBtn.text = resources.getString(R.string.txt_reviewed)
+                holder.reviewBtn.setTextColor(resources.getColor(R.color.secondary))
+
+                // Mark isReviewed as true
+                val orderRef = FireStoreUtils.mDBOrderRef.document(idOrder)
+                orderRef.update("items", orderDetails.items.map {
+                    if (it.productId == orderItem.productId) {
+                        it.copy(isReviewed = true)
+                    } else {
+                        it
+                    }
+                })
+
+                // Dismiss the dialog
+                dialog.dismiss()
+            }
+
+            // Show the dialog
+            dialog.show()
+        }
+        itemOrderDetailsAdapter.onReviewBtnClickAfterReview = { orderItem ->
+            val intent = Intent(this, ProductDetailActivity::class.java)
+            intent.putExtra("idProduct", orderItem.productId?.id)
+            Log.i("TAG123", "handleReviewProduct: ${orderItem.productId?.id}")
+            startActivity(intent)
+        }
     }
 }

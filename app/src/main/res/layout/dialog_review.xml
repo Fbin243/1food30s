@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="0dp"
+    app:cardCornerRadius="@dimen/spacing16"
+    >
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical"
+       android:padding="16dp">
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="@string/txt_review_title"
+           android:textSize="18sp"
+           android:textStyle="bold" />
+
+       <RatingBar
+           android:id="@+id/rating_bar"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_gravity="center_horizontal"
+           android:numStars="5"
+           android:stepSize="1"
+           android:progressTint="@color/secondary"/>
+
+       <com.google.android.material.textfield.TextInputLayout
+           android:id="@+id/tvContainer"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           app:boxStrokeColor="@color/primary"
+           app:errorEnabled="true"
+           app:errorIconDrawable="@null"
+           app:boxCornerRadiusTopStart="@dimen/radius8"
+           app:boxCornerRadiusTopEnd="@dimen/radius8"
+           app:boxCornerRadiusBottomStart="@dimen/radius8"
+           app:boxCornerRadiusBottomEnd="@dimen/radius8"
+           app:cursorColor="@color/primary"
+           app:hintTextColor="@color/primary"
+           >
+
+           <com.google.android.material.textfield.TextInputEditText
+               android:id="@+id/tvFeedback"
+               android:layout_width="match_parent"
+               android:layout_height="80dp"
+               android:hint="@string/txt_feedback"
+               android:inputType="textEmailAddress"
+               android:maxLines="10" />
+
+       </com.google.android.material.textfield.TextInputLayout>
+
+       <Button
+           android:id="@+id/btn_submit"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="@string/txt_submit"
+           android:fontFamily="@font/rubik_semibold"/>
+   </LinearLayout>
+
+</androidx.cardview.widget.CardView>

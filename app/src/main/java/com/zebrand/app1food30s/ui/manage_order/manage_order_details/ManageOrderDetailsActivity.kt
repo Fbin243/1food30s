@@ -16,10 +16,10 @@ import com.zebrand.app1food30s.ui.my_order.MyOrderPresenter
 class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPView {
     lateinit var binding: ActivityManageOrderDetailsBinding
     private lateinit var presenter: ManageOrderDetailsPresenter
-    lateinit var paymentArr: Array<String>
+    private lateinit var paymentArr: Array<String>
     private lateinit var idOrder: String
     //    val deliveryArr = resources.getStringArray(R.array.delivery_array)
-    lateinit var deliveryArr: Array<String>
+    private lateinit var deliveryArr: Array<String>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityManageOrderDetailsBinding.inflate(layoutInflater)

@@ -5,4 +5,5 @@ import com.zebrand.app1food30s.data.entity.Order
 interface MyOrderDetailsMVPView {
     fun getMyOrderDetailsList()
     fun setOrderDetailsUI()
+    fun handleReviewProduct()
 }

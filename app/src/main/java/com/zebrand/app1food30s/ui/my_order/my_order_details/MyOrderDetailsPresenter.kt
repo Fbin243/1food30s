@@ -49,9 +49,11 @@ class MyOrderDetailsPresenter(private val context: Context, private val view: My
                         note = newObject.note
                         date = newObject.date
                     }
+                    adapter.updateIsDelivered(newObject.orderStatus)
                     for (item in newObject.items) {
                         adapter.insertData(item)
                     }
+                    view.handleReviewProduct()
                 }
                 view.setOrderDetailsUI()
                 Log.d("Test00", "placeOrder: Starting order placement. $orderDetails")

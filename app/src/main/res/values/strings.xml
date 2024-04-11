@@ -229,4 +229,9 @@
     <string name="manage_offers">Manage offers</string>
     <string name="txt_no">No</string>
     <string name="txt_yes">Yes</string>
+    <string name="txt_review"><![CDATA[Review >]]></string>
+    <string name="txt_feedback">Enter your feedback...</string>
+    <string name="txt_review_title">Review</string>
+    <string name="txt_submit">Submit</string>
+    <string name="txt_reviewed"><![CDATA[View >]]></string>
 </resources>
