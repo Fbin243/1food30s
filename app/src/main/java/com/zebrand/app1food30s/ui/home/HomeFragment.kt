@@ -74,6 +74,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         val userId = mySharedPreferences?.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
         val wishlistRepository = WishlistRepository(userId)
         wishlistPresenter = WishlistPresenter(this, wishlistRepository)
+        Log.d("Test00", "onCreateView: fetchAndUpdateWishlistState()")
         fetchAndUpdateWishlistState()
 
         handleOpenSearchScreen()
@@ -83,10 +84,13 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
 
     private fun fetchAndUpdateWishlistState() {
         wishlistPresenter.fetchAndUpdateWishlistState()
+        // then: view.refreshWishlistState(wishlistedProductIds)
     }
 
     override fun refreshWishlistState(wishlistedProductIds: Set<String>) {
         this.wishlistedProductIds = wishlistedProductIds.toMutableSet()
+//        val thisWishlistedProductIds = this.wishlistedProductIds
+//        Log.d("Test00", "refreshWishlistState: $thisWishlistedProductIds")
         updateAdaptersWithWishlistState() // Update your UI accordingly
     }
 
@@ -149,8 +153,9 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
 
     override fun onResume() {
         super.onResume()
-        fetchAndUpdateWishlistState()
-        refreshWishlistState(wishlistedProductIds)
+        Log.d("Test00", "onResume: ")
+//        fetchAndUpdateWishlistState()
+//        refreshWishlistState(wishlistedProductIds)
         binding.searchInput.clearFocus()
     }
 
