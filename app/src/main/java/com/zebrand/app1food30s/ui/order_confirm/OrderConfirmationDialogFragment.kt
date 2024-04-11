@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.zebrand.app1food30s.R
 
@@ -20,6 +21,10 @@ class OrderConfirmationDialogFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val address = arguments?.getString("address")
+        val addressTextView = view.findViewById<TextView>(R.id.address_text)
+        addressTextView.text = address
 
         // Set up button listeners and handle actions like 'Go to Details' and 'Pay Now'
         view.findViewById<Button>(R.id.btnGoToDetails).setOnClickListener {
@@ -37,7 +42,7 @@ class OrderConfirmationDialogFragment : DialogFragment() {
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
-            val width = (resources.displayMetrics.widthPixels * 0.8).toInt() // 80% of screen width
+            val width = (resources.displayMetrics.widthPixels * 0.9).toInt() // % of screen width
             // The height will be wrapped based on the content, which will automatically adjust to the new width
             setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

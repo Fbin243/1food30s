@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"
+    android:paddingStart="30dp"
+    android:paddingEnd="30dp"
     android:background="@drawable/border_all_side">
 
     <!-- Close Button -->
@@ -84,16 +86,17 @@
     <!-- Address Text -->
     <TextView
         android:id="@+id/address_text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="245 Nguyễn Văn Cừ"
+        android:text="245 Nguyễn Văn Cừ, P.10, Quận 5, Thành phố Hồ Chí Minh, Việt Nam"
         android:textSize="18sp"
         android:textColor="#000000"
         app:layout_constraintTop_toBottomOf="@id/additional_text_2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintVertical_bias="0.05"
-        android:layout_marginTop="14dp"/>
+        android:layout_marginTop="14dp"
+        android:gravity="center"/>
 
     <Button
         android:id="@+id/btnGoToDetails"

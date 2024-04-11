@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -15,6 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.App1food30s"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBQFpHSKFfBqU9XM8ZFGOEHPGyMkh6iCZk"/>
+
         <activity
             android:name=".ui.authentication.SplashActivity"
             android:exported="true">

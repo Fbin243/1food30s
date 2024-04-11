@@ -49,7 +49,8 @@ data class CartItem(
     val productId: DocumentReference? = null, // Adjusted as per your previous structure; consider using String if dealing with Firestore document IDs
     val productCategory: String = "",
     val productName: String = "",
-    val productPrice: Double = 0.0,
+    val productPrice: Double = 0.0, // Price after discount
+    val oldPrice: Double = 0.0, // Original price before discount
     val productImage: String = "",
     val productStock: Int = 0,
     var quantity: Int = 0,

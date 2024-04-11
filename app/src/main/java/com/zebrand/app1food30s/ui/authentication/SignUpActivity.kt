@@ -75,6 +75,8 @@ class SignUpActivity : AppCompatActivity() {
                             )
                         )
 
+                        Toast.makeText(this, "Sign up successfully", Toast.LENGTH_SHORT).show()
+
                         finish()
                     } else {
                         // Đăng ký thất bại
@@ -86,7 +88,6 @@ class SignUpActivity : AppCompatActivity() {
                         }
                     }
                 }
-            Toast.makeText(this, "OK", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this, "Invalid", Toast.LENGTH_SHORT).show()
         }
@@ -98,10 +99,13 @@ class SignUpActivity : AppCompatActivity() {
         val wishListRef = FireStoreUtils.mDBWishlistRef
 
         val userDoc: DocumentReference = userRef.document() // Automatically generates a unique document ID
-        val cartDoc: DocumentReference = cartRef.document() // Automatically generates a unique document ID
+        val userId = userDoc.id
+        // TODO: cart id instead of user id
+        val cartDoc: DocumentReference = cartRef.document(userId) // Use userId as the document ID
+//        val cartDoc: DocumentReference = cartRef.document() // Automatically generates a unique document ID
         val wishListDoc: DocumentReference = wishListRef.document() // Automatically generates a unique document ID
 
-        val userId = userDoc.id
+
         val cartId = cartDoc.id
         val wishListId = wishListDoc.id
 

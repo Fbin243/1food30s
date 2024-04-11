@@ -36,7 +36,7 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
         }
     }
 
-    private fun placeOrder(cartId: String, idAccount: DocumentReference, completion: (Boolean) -> Unit) {
+    private fun placeOrder(cartId: String, idAccount: DocumentReference, address: String, note: String, completion: (Boolean) -> Unit) {
         // Log.d("Test00", "placeOrder: Starting order placement.")
         launch {
             val orderItems = cartItems.map { cartItem ->
@@ -61,9 +61,9 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
                 orderStatus = "Pending", // Consider using constants or enum
                 date = Date(), // Current date
                 cancelReason = null, // No cancel reason at order creation
-                shippingAddress = "shippingAddress", // TODO: Fetch from user input
+                shippingAddress = address,
                 paymentStatus = "Unpaid", // Consider starting with "Unpaid" or similar status
-                note = "note" // TODO: Fetch from user input
+                note = note
             )
 
 //            Log.d("Test00", "Order: Prepared to set in Firestore with ID ${order.id}")
@@ -92,22 +92,8 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
         }
     }
 
-//    private fun placeOrder(cartId: String, completion: (Boolean) -> Unit) {
-//        Log.d("Test00", "Simulating order placement.")
-//
-//        // Simulating a delay to mimic network/database operations
-//        launch {
-//            delay(1000) // Simulate network delay
-//
-//            Log.d("Test00", "Simulated order placement successful.")
-//
-//            // Always invoking completion with true to simulate success
-//            completion(true)
-//        }
-//    }
-
-    fun onPlaceOrderClicked(cartId: String, idAccount: DocumentReference) {
-        placeOrder(cartId, idAccount) { success ->
+    fun onPlaceOrderClicked(cartId: String, idAccount: DocumentReference, address: String, note: String) {
+        placeOrder(cartId, idAccount, address, note) { success ->
             if (success) {
                 view.navigateToOrderConfirmation(true)
             } else {
