@@ -109,11 +109,13 @@ class CartFragment : Fragment(), CartMVPView {
     }
 
     override fun showShimmerEffectForCart() {
-        Utils.showShimmerEffect(binding.cartViewShimmer, binding.cartView)
+        if(_binding == null) return
+        Utils.showShimmerEffect(_binding!!.cartViewShimmer, _binding!!.cartView)
     }
 
     override fun hideShimmerEffectForCart() {
-        Utils.hideShimmerEffect(binding.cartViewShimmer, binding.cartView, false)
+        if(_binding == null) return
+        Utils.hideShimmerEffect(_binding!!.cartViewShimmer, _binding!!.cartView, false)
     }
 
 //    private fun updateCartUI(cartItems: List<CartItem>) {
