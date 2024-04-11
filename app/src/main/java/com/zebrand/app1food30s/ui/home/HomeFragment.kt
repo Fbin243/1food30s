@@ -99,10 +99,6 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         (binding.productRcv2.adapter as? ProductAdapter)?.updateWishlistProductIds(wishlistedProductIds)
     }
 
-//    override fun showRemoveSuccessMessage() {
-//        Toast.makeText(context, "Product was removed from the wishlist", Toast.LENGTH_SHORT).show()
-//    }
-//
 //    override fun showError(message: String) {
 //        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 //    }
