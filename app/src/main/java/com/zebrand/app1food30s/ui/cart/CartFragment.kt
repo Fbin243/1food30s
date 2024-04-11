@@ -22,6 +22,7 @@ import com.zebrand.app1food30s.ui.checkout.CheckoutActivity
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.MySharedPreferences.Companion.defaultStringValue
 import com.zebrand.app1food30s.utils.SingletonKey
+import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -35,7 +36,7 @@ class CartFragment : Fragment(), CartMVPView {
     private lateinit var adapter: CartAdapter
     private lateinit var presenter: CartPresenter
     private lateinit var preferences: MySharedPreferences
-//    private var debounceJob: Job? = null
+    //    private var debounceJob: Job? = null
     private lateinit var userId: String
 
 //    override fun onAttach(context: Context) {
@@ -105,6 +106,16 @@ class CartFragment : Fragment(), CartMVPView {
                 binding.cartView.visibility = View.GONE // Hide the RecyclerView
             }
         }
+    }
+
+    override fun showShimmerEffectForCart() {
+        if(_binding == null) return
+        Utils.showShimmerEffect(_binding!!.cartViewShimmer, _binding!!.cartView)
+    }
+
+    override fun hideShimmerEffectForCart() {
+        if(_binding == null) return
+        Utils.hideShimmerEffect(_binding!!.cartViewShimmer, _binding!!.cartView, false)
     }
 
 //    private fun updateCartUI(cartItems: List<CartItem>) {

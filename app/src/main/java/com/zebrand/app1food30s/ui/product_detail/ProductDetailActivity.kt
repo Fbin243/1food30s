@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.squareup.picasso.Picasso
+import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.adapter.ReviewAdapter
 import com.zebrand.app1food30s.data.AppDatabase
@@ -97,6 +98,9 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
             openDetailProduct(product)
         }
         binding.relatedProductRcv.adapter = adapter
+        if(relatedProducts.isEmpty()) {
+            binding.noRelatedProductText.visibility = View.VISIBLE
+        }
     }
 
     private fun openDetailProduct(product: Product) {
@@ -105,26 +109,21 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
         startActivity(intent)
     }
 
-    override fun showShimmerEffectForProduct() {
+    override fun showShimmerEffects() {
         Utils.showShimmerEffect(binding.productShimmer, binding.cardView)
+        Utils.showShimmerEffect(binding.reviewTitleShimmer.root, binding.reviewTitle)
+        Utils.showShimmerEffect(binding.reviewShimmer, binding.reviewRcv)
+        Utils.showShimmerEffect(binding.viewAllBtnShimmer.root, binding.viewAllBtn)
+        Utils.showShimmerEffect(binding.relatedProductShimmer, binding.relatedProductRcv)
     }
 
     override fun hideShimmerEffectForProduct() {
         Utils.hideShimmerEffect(binding.productShimmer, binding.cardView)
     }
 
-    override fun showShimmerEffectForReviews() {
-        Utils.showShimmerEffect(binding.reviewTitleShimmer, binding.reviewTitle)
-        Utils.showShimmerEffect(binding.reviewShimmer, binding.reviewRcv)
-    }
-
     override fun hideShimmerEffectForReviews() {
-        Utils.hideShimmerEffect(binding.reviewTitleShimmer, binding.reviewTitle)
+        Utils.hideShimmerEffect(binding.reviewTitleShimmer.root, binding.reviewTitle)
         Utils.hideShimmerEffect(binding.reviewShimmer, binding.reviewRcv)
-    }
-
-    override fun showShimmerEffectForRelatedProducts() {
-        Utils.showShimmerEffect(binding.relatedProductShimmer, binding.relatedProductRcv)
     }
 
     override fun hideShimmerEffectForRelatedProducts() {
@@ -147,8 +146,12 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
 
     override fun showReviews(reviews: List<Review>) {
         binding.reviewRcv.layoutManager = LinearLayoutManager(this)
-        binding.reviewRcv.adapter = ReviewAdapter(reviews)
+        binding.reviewRcv.adapter = ReviewAdapter(reviews.take(5))
         binding.reviewTitle.text = "${reviews.size} Reviews"
+        if(reviews.isEmpty()) {
+            binding.noReviewText.visibility = View.VISIBLE
+        }
+        Utils.hideShimmerEffect(binding.viewAllBtnShimmer.root, binding.viewAllBtn, reviews.isNotEmpty())
     }
 
     override fun onRefresh() {

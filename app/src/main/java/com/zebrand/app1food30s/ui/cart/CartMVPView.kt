@@ -9,4 +9,6 @@ interface CartMVPView {
     fun displayError(error: String)
     fun refreshCart(productRef: DocumentReference)
     fun displayEmptyCart()
+    fun showShimmerEffectForCart()
+    fun hideShimmerEffectForCart()
 }

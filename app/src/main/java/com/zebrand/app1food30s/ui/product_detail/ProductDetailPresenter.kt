@@ -19,7 +19,7 @@ class ProductDetailPresenter(
 ) {
     suspend fun getProductDetail(idProduct: String): Boolean {
         try {
-            view.showShimmerEffectForProduct()
+            view.showShimmerEffects()
             val product = FirebaseService.getOneProductByID(db, idProduct)
                 ?: throw Exception("Product not found")
             // Get category
@@ -28,9 +28,8 @@ class ProductDetailPresenter(
             view.showProductDetail(product, category!!, offer)
             view.hideShimmerEffectForProduct()
             // Get related products
-            getRelatedProductsByCategory(product.idCategory!!, product.id)
-            Log.i("TAG123", "getProductDetail:$idProduct")
             getReviews(idProduct)
+            getRelatedProductsByCategory(product.idCategory!!, product.id)
             return true
         } catch (e: Exception) {
             Log.i("Error", "getProductDetail: $e")
@@ -43,7 +42,6 @@ class ProductDetailPresenter(
         idProduct: String
     ) {
         try {
-            view.showShimmerEffectForRelatedProducts()
             val querySnapshot =
                 FirebaseUtils.fireStore.collection("products")
                     .whereEqualTo("idCategory", idCategory)
@@ -66,7 +64,6 @@ class ProductDetailPresenter(
 
     private suspend fun getReviews(idProduct: String) {
         try {
-            view.showShimmerEffectForReviews()
             val reviews = FirebaseService.getListReviewsOfProduct(idProduct)
             view.showReviews(reviews)
             view.hideShimmerEffectForReviews()

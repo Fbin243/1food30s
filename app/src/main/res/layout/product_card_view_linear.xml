@@ -52,9 +52,11 @@
 
                 <ImageView
                     android:id="@+id/ivWishlist"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_marginEnd="5dp"
+                    android:paddingBottom="@dimen/spacing8"
+                    android:paddingLeft="@dimen/spacing8"
                     android:contentDescription="@string/wishlist_button"
                     android:src="@drawable/ic_wishlist" />
             </LinearLayout>
@@ -64,8 +66,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="2"
-                android:text="Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce."
+                android:text="Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce. Sweet and sour chicken with crispy chicken, pineapple and delicious chilly sauce."
                 android:textColor="@color/grey_60"
+                android:ellipsize="end"
                 android:textSize="@dimen/font_size12" />
 
             <LinearLayout

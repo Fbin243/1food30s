@@ -25,6 +25,7 @@ class CartPresenter(private val view: CartMVPView, private val userId: String, c
     private fun setUpCart() {
         repository.getCartRef(userId) { ref ->
             cartRef = ref
+            view.showShimmerEffectForCart()
             loadCart()
         }
     }
@@ -35,9 +36,11 @@ class CartPresenter(private val view: CartMVPView, private val userId: String, c
             repository.loadCart(ref, onResult = { detailedCartItems ->
                 if (detailedCartItems != null) {
                     if (detailedCartItems.isNotEmpty()) {
+                        view.hideShimmerEffectForCart()
                         view.loadCart(detailedCartItems)
                     } else {
                         // TODO: this is called when checkout clears cart
+                        view.hideShimmerEffectForCart()
                         view.displayEmptyCart()
                     }
                 }

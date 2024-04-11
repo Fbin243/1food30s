@@ -191,7 +191,7 @@ object FirebaseService {
                     review.name = user.firstName + user.lastName
                     review
                 }
-                reviewsList
+                reviewsList.sortedByDescending { it.date }
             } catch (e: Exception) {
                 Log.e("getListReviewsOfProduct", "Error getting reviews of product $idProduct", e)
                 emptyList()

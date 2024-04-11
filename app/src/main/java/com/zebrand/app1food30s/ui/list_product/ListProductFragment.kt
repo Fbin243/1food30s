@@ -216,9 +216,8 @@ class ListProductFragment(
     }
 
     override fun showProducts(products: List<Product>, offers: List<Offer>) {
-        Log.i("TAG123", "showProducts: TAO PRODUCT")
         binding.productRcv.layoutManager = if (isGrid) gridLayoutManager else linearLayoutManager
-        val adapter = ProductAdapter(products, offers, mutableSetOf())
+        val adapter = ProductAdapter(products, offers, mutableSetOf(), binding.noItemLayout)
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }

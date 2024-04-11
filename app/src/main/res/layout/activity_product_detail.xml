@@ -75,16 +75,26 @@
                         android:orientation="vertical"
                         android:padding="@dimen/spacing10">
 
-                        <TextView
-                            android:id="@+id/productTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                        <LinearLayout
                             android:layout_marginTop="@dimen/spacing10"
-                            android:ellipsize="end"
-                            android:fontFamily="@font/rubik_bold"
-                            android:maxLines="1"
-                            android:text="Sweet &amp; Sour Chicken"
-                            android:textSize="@dimen/font_header" />
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:id="@+id/productTitle"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:fontFamily="@font/rubik_bold"
+                                android:maxLines="1"
+                                android:text="Sweet &amp; Sour Chicken"
+                                android:textSize="@dimen/font_header" />
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/ic_wishlist"/>
+
+                        </LinearLayout>
 
 
                         <LinearLayout
@@ -300,30 +310,33 @@
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                        android:layout_gravity="center_vertical"
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
-                    <androidx.cardview.widget.CardView
+
+                    <include
+                        android:id="@+id/reviewTitleShimmer"
+                        layout="@layout/general_shimmer_layout"
+                        android:layout_width="150dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:id="@+id/reviewTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:elevation="@dimen/spacing0"
-                        app:cardCornerRadius="@dimen/spacing10"
-                        app:cardElevation="@dimen/spacing0">
-                        <com.facebook.shimmer.ShimmerFrameLayout
-                            android:layout_width="150dp"
-                            android:id="@+id/reviewTitleShimmer"
-                            android:layout_height="24dp"
-                            android:background="@color/shimmer_color" />
-
-                        <TextView
-                            android:id="@+id/reviewTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="6 Reviews"
-                            android:textSize="@dimen/font_size16"
-                            android:textStyle="bold" />
-                    </androidx.cardview.widget.CardView>
+                        android:layout_gravity="center_vertical"
+                        android:text="6 Reviews"
+                        android:textSize="@dimen/font_size16"
+                        android:fontFamily="@font/rubik_semibold"
+                        android:visibility="gone" />
                 </LinearLayout>
+
+                <include
+                    android:id="@+id/viewAllBtnShimmer"
+                    layout="@layout/general_shimmer_layout"
+                    android:layout_width="80dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical" />
 
                 <Button
                     android:id="@+id/viewAllBtn"
@@ -337,6 +350,7 @@
                     android:text="@string/txt_view_all"
                     android:textColor="@color/secondary"
                     android:textSize="@dimen/font_size12"
+                    android:visibility="gone"
                     app:strokeColor="@color/primary" />
             </LinearLayout>
 
@@ -372,27 +386,55 @@
             </com.facebook.shimmer.ShimmerFrameLayout>
 
             <LinearLayout
+                android:id="@+id/noReviewText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone" >
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_horizontal"
+                    >
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="@dimen/spacing8"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_no_review"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/no_reviews"
+                        android:textSize="@dimen/font_size16"
+                        />
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="40dp"
+                    android:background="@color/divider"
+                    android:backgroundTint="@color/grey_30" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/relatedProductTitleContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:gravity="center"
+                android:layout_marginTop="40dp"
                 android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/spacing10"
-                    android:src="@drawable/ic_cook_hat" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="May be you'll like too"
+                    android:text="@string/related_products_title"
                     android:textSize="@dimen/font_size16"
-                    android:textStyle="bold" />
+                    android:fontFamily="@font/rubik_semibold" />
             </LinearLayout>
 
 
@@ -403,10 +445,31 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="-8dp"
                 android:orientation="vertical"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/relatedProductTitleContainer" />
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/noRelatedProductText"
+                android:layout_width="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_horizontal"
+                android:visibility="gone" >
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="@dimen/spacing8"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/ic_no_related_products"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/txt_no_related_products"
+                        android:textSize="@dimen/font_size16"
+                        />
+
+            </LinearLayout>
 
             <com.facebook.shimmer.ShimmerFrameLayout
                 android:id="@+id/relatedProductShimmer"
