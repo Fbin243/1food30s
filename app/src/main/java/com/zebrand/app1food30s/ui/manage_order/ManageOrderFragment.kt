@@ -133,7 +133,8 @@ class ManageOrderFragment : Fragment(), ManageOrderMVPView{
         _binding = null
     }
 
-    override suspend fun getManageOrders() {
+    private suspend fun getManageOrders() {
+        manageOrderList = presenter.getManageOrders()
         manageOrderAdapter = ManageOrderAdapter(manageOrderList)
         manageOrderAdapter.onItemClick = {
             GlobalUtils.myStartActivityWithString(requireContext(), ManageOrderDetailsActivity::class.java, "idOrder", it.id)
@@ -144,6 +145,6 @@ class ManageOrderFragment : Fragment(), ManageOrderMVPView{
         binding.rcvManageOrder.adapter = manageOrderAdapter
 
 //        //getData
-        presenter.getManageOrders(manageOrderAdapter)
+//        presenter.getManageOrders(userId, manageOrderAdapter)
     }
 }

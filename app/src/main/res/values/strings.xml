@@ -236,4 +236,5 @@
     <string name="txt_reviewed"><![CDATA[View >]]></string>
     <string name="txt_thanks_for_your_order">Thanks for your order</string>
     <string name="txt_your_order_has_been_successful">Your order has been successful</string>
+    <string name="txt_manage_order_address">Address:&#160;</string>
 </resources>
