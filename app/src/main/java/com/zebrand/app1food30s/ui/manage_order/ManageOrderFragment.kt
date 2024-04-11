@@ -134,7 +134,6 @@ class ManageOrderFragment : Fragment(), ManageOrderMVPView{
     }
 
     override suspend fun getManageOrders() {
-        manageOrderList = presenter.getManageOrders()
         manageOrderAdapter = ManageOrderAdapter(manageOrderList)
         manageOrderAdapter.onItemClick = {
             GlobalUtils.myStartActivityWithString(requireContext(), ManageOrderDetailsActivity::class.java, "idOrder", it.id)
@@ -145,6 +144,6 @@ class ManageOrderFragment : Fragment(), ManageOrderMVPView{
         binding.rcvManageOrder.adapter = manageOrderAdapter
 
 //        //getData
-//        presenter.getPrevOrderList(userId, myPrevOrderAdapter)
+        presenter.getManageOrders(manageOrderAdapter)
     }
 }

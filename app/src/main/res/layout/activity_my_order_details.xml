@@ -103,17 +103,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/spacing24"
                             android:fontFamily="@font/rubik_semibold"
-                            android:text="@string/txt_estimated_delivery_time"
+                            android:text="@string/txt_thanks_for_your_order"
                             android:textAlignment="center"
-                            android:textSize="@dimen/font_size16" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/rubik_bold"
-                            android:text="@string/txt_estimated_minutes"
-                            android:textAlignment="center"
-                            android:textSize="@dimen/font_super_header" />
+                            android:textSize="@dimen/font_size18" />
 
                         <com.airbnb.lottie.LottieAnimationView
                             android:id="@+id/lottieSuccess"
@@ -299,18 +291,18 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:orientation="horizontal"
-                                        android:weightSum="2">
+                                        android:weightSum="10">
                                         <TextView
                                             android:layout_width="0dp"
-                                            android:layout_weight="1"
+                                            android:layout_weight="5"
                                             android:layout_height="wrap_content"
                                             android:text="@string/txt_deals"/>
 
                                         <TextView
                                             android:id="@+id/tvDiscount"
-                                            android:layout_width="178dp"
+                                            android:layout_width="0dp"
                                             android:layout_height="wrap_content"
-                                            android:layout_weight="1"
+                                            android:layout_weight="5"
                                             android:text="$4.80"
                                             android:textAlignment="viewEnd" />
                                     </LinearLayout>
@@ -362,6 +354,7 @@
         android:layout_marginBottom="@dimen/nev_spacing_12"
         app:cardCornerRadius="@dimen/spacing16"
         app:cardElevation="@dimen/spacing12"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
