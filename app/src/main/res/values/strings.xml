@@ -229,4 +229,6 @@
     <string name="manage_offers">Manage offers</string>
     <string name="txt_from_date_filter">From date</string>
     <string name="txt_to_date_filter">To date</string>
+    <string name="txt_default_filter_from_date">Date</string>
+    <string name="txt_default_filter_to_date">To date</string>
 </resources>

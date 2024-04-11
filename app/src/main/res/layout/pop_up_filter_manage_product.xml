@@ -152,7 +152,7 @@
                     android:layout_height="@dimen/spacing60"
                     android:inputType="none"
                     android:paddingHorizontal="@dimen/spacing16"
-                    android:text="@string/txt_default_filter_date"
+                    android:text="@string/txt_default_filter_from_date"
                     android:focusable="false"
                     />
 
@@ -192,7 +192,7 @@
                     android:layout_height="@dimen/spacing60"
                     android:inputType="none"
                     android:paddingHorizontal="@dimen/spacing16"
-                    android:text="@string/txt_default_filter_date"
+                    android:text="@string/txt_default_filter_from_date"
                     android:focusable="false"
                     />
 
