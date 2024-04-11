@@ -16,7 +16,7 @@
         android:orientation="horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:paddingBottom="@dimen/spacing24"
+        android:paddingBottom="@dimen/spacing12"
         android:paddingHorizontal="@dimen/spacing16">
 
         <include
@@ -37,64 +37,27 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/spacing12"
+            android:orientation="vertical"
             >
 
-            <TextView
-                android:id="@+id/tv_active_orders"
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/txt_active_orders"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:textSize="@dimen/font_header"
-                android:fontFamily="@font/rubik_semibold"
-                android:paddingHorizontal="@dimen/spacing20"/>
+                android:backgroundTint="@color/white"
+                app:tabTextAppearance="@style/CustomTabTextAppearance"
+                app:tabSelectedTextColor="@color/primary"
+                android:paddingBottom="@dimen/spacing12"/>
 
-            <LinearLayout
-                android:id="@+id/order_item_list"
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPager2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@+id/tv_active_orders"
-                android:layout_margin="@dimen/spacing10"
-                >
-                <androidx.recyclerview.widget.RecyclerView
-                    android:nestedScrollingEnabled="false"
-                    android:id="@+id/rcvActiveMyOrder"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
+                android:layout_height="match_parent"/>
 
-            <TextView
-                android:id="@+id/tv_previous_orders"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/txt_previous_orders"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/order_item_list"
-                android:textSize="@dimen/font_header"
-                android:fontFamily="@font/rubik_semibold"
-                android:layout_marginTop="@dimen/spacing12"
-                android:paddingHorizontal="@dimen/spacing20"/>
 
-            <LinearLayout
-                android:id="@+id/order_item_list_2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@+id/tv_previous_orders"
-                android:layout_margin="@dimen/spacing10"
-                >
-                <androidx.recyclerview.widget.RecyclerView
-                    android:nestedScrollingEnabled="false"
-                    android:id="@+id/rcvPrevMyOrder"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>
