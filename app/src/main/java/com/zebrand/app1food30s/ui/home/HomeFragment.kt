@@ -3,7 +3,6 @@ package com.zebrand.app1food30s.ui.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +26,7 @@ import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
 import com.zebrand.app1food30s.ui.authentication.LoginActivity
 import com.zebrand.app1food30s.ui.menu.MenuActivity
+import com.zebrand.app1food30s.ui.offer_detail.OfferDetailActivity
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.product_view_all.ProductViewAllActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
@@ -95,8 +95,12 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
     }
 
     private fun updateAdaptersWishlistProductIds() {
-        (binding.productRcv1.adapter as? ProductAdapter)?.updateWishlistProductIds(wishlistedProductIds)
-        (binding.productRcv2.adapter as? ProductAdapter)?.updateWishlistProductIds(wishlistedProductIds)
+        (binding.productRcv1.adapter as? ProductAdapter)?.updateWishlistProductIds(
+            wishlistedProductIds
+        )
+        (binding.productRcv2.adapter as? ProductAdapter)?.updateWishlistProductIds(
+            wishlistedProductIds
+        )
     }
 
 //    override fun showRemoveSuccessMessage() {
@@ -128,7 +132,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         // updateProductInAllAdapters(product.id, isAdded)
     }
 
-//    private fun updateProductInAllAdapters(productId: String, isWishlisted: Boolean)
+    //    private fun updateProductInAllAdapters(productId: String, isWishlisted: Boolean)
     private fun updateProductInAllAdapters(productId: String) {
         val adapters = listOfNotNull(
             binding.productRcv1.adapter as? ProductAdapter,
@@ -254,7 +258,10 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         }
     }
 
-    override fun showProductsLatestDishes(products: MutableList<Product>, offers: MutableList<Offer>) {
+    override fun showProductsLatestDishes(
+        products: MutableList<Product>,
+        offers: MutableList<Offer>
+    ) {
         for (product in products) {
             product.isGrid = true
         }
@@ -266,7 +273,10 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         handleOpenProductViewAll(binding.btn1, true, binding.textView1.text.toString())
     }
 
-    override fun showProductsBestSeller(products: MutableList<Product>, offers: MutableList<Offer>) {
+    override fun showProductsBestSeller(
+        products: MutableList<Product>,
+        offers: MutableList<Offer>
+    ) {
         currentProducts = products
         binding.productRcv2.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
@@ -311,7 +321,20 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         // Offer
         binding.offerRcv.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        binding.offerRcv.adapter = OfferAdapter(offers.take(2))
+        val adapter = OfferAdapter(offers.take(2))
+        adapter.onItemClick = { holder ->
+            openOfferDetailActivity(offers[holder.adapterPosition])
+        }
+        binding.offerRcv.adapter = adapter
+
+    }
+
+    private fun openOfferDetailActivity(offer: Offer) {
+        val intent = Intent(requireContext(), OfferDetailActivity::class.java)
+        intent.putExtra("offerNameWithDiscount", "${offer.name} (${offer.discountRate}%)")
+        intent.putExtra("offerId", offer.id)
+        intent.putExtra("offerImg", offer.image)
+        startActivity(intent)
     }
 
     override fun showShimmerEffect() {

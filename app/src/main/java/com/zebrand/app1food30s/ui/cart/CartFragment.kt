@@ -31,12 +31,12 @@ import kotlinx.coroutines.launch
 
 class CartFragment : Fragment(), CartMVPView {
 
-    private lateinit var binding: FragmentCartBinding
-//    private var binding get() = binding!!
+    private var _binding: FragmentCartBinding? = null
+    private val binding get() = _binding!!
     private lateinit var adapter: CartAdapter
     private lateinit var presenter: CartPresenter
     private lateinit var preferences: MySharedPreferences
-//    private var debounceJob: Job? = null
+    //    private var debounceJob: Job? = null
     private lateinit var userId: String
 
 //    override fun onAttach(context: Context) {
@@ -49,13 +49,12 @@ class CartFragment : Fragment(), CartMVPView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        preferences = MySharedPreferences.getInstance(requireContext())
+        userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentCartBinding.inflate(inflater, container, false)
-        preferences = MySharedPreferences.getInstance(requireContext())
-        userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
+        _binding = FragmentCartBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -102,7 +101,7 @@ class CartFragment : Fragment(), CartMVPView {
 
     override fun displayEmptyCart() {
         if (isAdded && !isRemoving && !requireActivity().isFinishing) {
-            binding?.let {
+            _binding?.let {
                 binding.emptyCartTextView.visibility = View.VISIBLE // Show the empty cart message
                 binding.cartView.visibility = View.GONE // Hide the RecyclerView
             }
@@ -142,7 +141,7 @@ class CartFragment : Fragment(), CartMVPView {
     // presenter: load cart
     // only called when some items are found
     override fun loadCart(cartItems: List<CartItem>) {
-        binding?.let {
+        _binding?.let {
             adapter.loadItems(cartItems)
             binding.emptyCartTextView.visibility = View.GONE // Hide the empty cart message
             binding.cartView.visibility = View.VISIBLE // Show the RecyclerView
@@ -152,7 +151,7 @@ class CartFragment : Fragment(), CartMVPView {
 
     // presenter: listen to changes
     override fun displayCartItems(cartItems: List<CartItem>) {
-        binding?.let {
+        _binding?.let {
             adapter.updateItems(cartItems)
         }
     }
@@ -185,6 +184,6 @@ class CartFragment : Fragment(), CartMVPView {
 
     override fun onDestroyView() {
         super.onDestroyView()
-//        binding = null
+        _binding = null
     }
 }
