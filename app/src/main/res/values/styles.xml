@@ -85,4 +85,8 @@
     <style name="CircularShapeAppearance" parent="">
         <item name="cornerSize">50%</item>
     </style>
+
+    <style name="CustomTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">16sp</item> <!-- Adjust the font size as needed -->
+    </style>
 </resources>

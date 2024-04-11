@@ -8,9 +8,13 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.zebrand.app1food30s.adapter.MyOrderAdapter
 import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.databinding.ActivityMyOrderBinding
+import com.zebrand.app1food30s.ui.my_order.adapter.MyOrderViewPagerAdapter
 import com.zebrand.app1food30s.ui.my_order.my_order_details.MyOrderDetailsActivity
 import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
@@ -21,10 +25,11 @@ class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
 //    Chưa login nên không có đi qua local db để lấy data được
     private lateinit var mySharePreference: MySharedPreferences
     private lateinit var presenter: MyOrderPresenter
-    private lateinit var myActiveOrderAdapter: MyOrderAdapter
-    private var myActiveOrderList: MutableList<Order> = mutableListOf()
-    private lateinit var myPrevOrderAdapter: MyOrderAdapter
-    private var myPrevOrderList: MutableList<Order> = mutableListOf()
+//    private lateinit var myActiveOrderAdapter: MyOrderAdapter
+//    private var myActiveOrderList: MutableList<Order> = mutableListOf()
+//    private lateinit var myPrevOrderAdapter: MyOrderAdapter
+//    private var myPrevOrderList: MutableList<Order> = mutableListOf()
+    private lateinit var viewPager2Adapter: MyOrderViewPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,13 +47,31 @@ class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
 
         events()
 
-        getActiveMyOrderList()
-        getPrevMyOrderList()
+//        getActiveMyOrderList()
+//        getPrevMyOrderList()
     }
 
     private fun init(){
         presenter = MyOrderPresenter(this)
         mySharePreference = MySharedPreferences.getInstance(this)
+
+//        binding.viewPager2.post {
+//            viewPager2Adapter = MyOrderViewPagerAdapter()
+//            TabLayoutMediator(binding.tabLayout, binding.viewPager2) { tab, position ->
+//                when (position) {
+//                    0 -> tab.text = "Active"
+//                    1 -> tab.text = "Previous"
+//                }
+//            }.attach()
+//        }
+        viewPager2Adapter = MyOrderViewPagerAdapter(supportFragmentManager, lifecycle)
+        binding.viewPager2.adapter = viewPager2Adapter // Set adapter here
+        TabLayoutMediator(binding.tabLayout, binding.viewPager2) { tab, position ->
+            when (position) {
+                0 -> tab.text = "Active"
+                1 -> tab.text = "Previous"
+            }
+        }.attach()
     }
 
     private fun events(){
