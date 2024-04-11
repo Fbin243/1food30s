@@ -43,6 +43,7 @@ import com.zebrand.app1food30s.utils.Utils.hideShimmerEffect
 import com.zebrand.app1food30s.utils.Utils.showShimmerEffect
 import kotlinx.coroutines.launch
 
+@Suppress("DEPRECATION")
 class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
     SwipeRefreshLayout.OnRefreshListener {
     private lateinit var binding: FragmentHomeBinding
@@ -59,13 +60,6 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         binding = FragmentHomeBinding.inflate(inflater)
         db = AppDatabase.getInstance(requireContext())
         homePresenter = HomePresenter(this, db)
-        lifecycleScope.launch {
-            homePresenter.getDataAndDisplay()
-            handleOpenSearchScreen()
-        }
-
-        // Make function reloading data when swipe down
-        Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
 
         // TODO
 //        val userId = SingletonKey.KEY_USER_ID
@@ -75,15 +69,22 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         val wishlistRepository = WishlistRepository(userId)
         wishlistPresenter = WishlistPresenter(this, wishlistRepository)
         Log.d("Test00", "onCreateView: fetchAndUpdateWishlistState()")
-        fetchAndUpdateWishlistState()
+
+        lifecycleScope.launch {
+            homePresenter.getDataAndDisplay()
+            handleOpenSearchScreen()
+        }
+
+        // Make function reloading data when swipe down
+        Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
 
         handleOpenSearchScreen()
 
         return binding.root
     }
 
-    private fun fetchAndUpdateWishlistState() {
-        wishlistPresenter.fetchAndUpdateWishlistState()
+    override fun fetchAndUpdateWishlistState(callback: () -> Unit) {
+        wishlistPresenter.fetchAndUpdateWishlistState(callback)
         // then: view.refreshWishlistState(wishlistedProductIds)
     }
 
@@ -98,19 +99,6 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         (binding.productRcv1.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
         (binding.productRcv2.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
     }
-
-    private fun updateAdaptersWishlistProductIds() {
-        (binding.productRcv1.adapter as? ProductAdapter)?.updateWishlistProductIds(
-            wishlistedProductIds
-        )
-        (binding.productRcv2.adapter as? ProductAdapter)?.updateWishlistProductIds(
-            wishlistedProductIds
-        )
-    }
-
-//    override fun showError(message: String) {
-//        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-//    }
 
     // Implementation of WishlistMVPView methods
     override fun updateWishlistItemStatus(product: Product, isAdded: Boolean) {
@@ -131,6 +119,15 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         // Notify all adapters about the update
         updateProductInAllAdapters(productId)
         // updateProductInAllAdapters(product.id, isAdded)
+    }
+
+    private fun updateAdaptersWishlistProductIds() {
+        (binding.productRcv1.adapter as? ProductAdapter)?.updateWishlistProductIds(
+            wishlistedProductIds
+        )
+        (binding.productRcv2.adapter as? ProductAdapter)?.updateWishlistProductIds(
+            wishlistedProductIds
+        )
     }
 
     //    private fun updateProductInAllAdapters(productId: String, isWishlisted: Boolean)
@@ -159,82 +156,6 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         binding.searchInput.clearFocus()
     }
 
-//    private fun addProductToCart(context: Context, productId: String) {
-//        Log.d("AddToCart", "Starting addProductToCart for productId: $productId")
-//
-//        val db = FirebaseFirestore.getInstance()
-//        val preferences = MySharedPreferences.getInstance(context)
-//        val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
-//        val defaultId = MySharedPreferences.defaultStringValue
-//
-//        // Check if the user is logged in before proceeding
-//        if (userId == defaultId) {
-////            Log.d("AddToCart", "User not logged in, redirecting to LoginActivity")
-//            // User is not logged in, navigate to LoginActivity
-//            val loginIntent = Intent(context, LoginActivity::class.java)
-//            context.startActivity(loginIntent)
-//            return // Stop further execution of this function
-//        }
-//
-////        Log.d("AddToCart", "User is logged in, proceeding with adding to cart")
-//
-//        val cartRef = mDBCartRef.document(userId)
-//        val productRef = mDBProductRef.document(productId)
-//
-//        productRef.get().addOnSuccessListener { productSnapshot ->
-//            Log.d("AddToCart", "Successfully retrieved product details for productId: $productId")
-//            val product = productSnapshot.toObject(Product::class.java)
-//            val stock = product?.stock ?: 0
-//
-//            if (stock > 0) {
-//                Log.d("AddToCart", "Product is in stock, proceeding to add to cart")
-//                cartRef.get().addOnSuccessListener { document ->
-//                    val cart = if (document.exists()) {
-//                        Log.d("AddToCart", "Cart exists, retrieving existing cart")
-//                        document.toObject(Cart::class.java)
-//                    } else {
-//                        Log.d("AddToCart", "Creating new cart for the user")
-//                        Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
-//                    }
-//
-//                    cart?.let {
-//                        val existingItemIndex =
-//                            it.items.indexOfFirst { item -> item.productId == productRef }
-//                        if (existingItemIndex >= 0) {
-//                            // Product exists, update quantity
-//                            Log.d("AddToCart", "Product exists in cart, updating quantity")
-//                            it.items[existingItemIndex].quantity += 1
-//                        } else {
-//                            // New product, add to cart
-//                            Log.d("AddToCart", "Adding new product to cart")
-//                            it.items.add(CartItem(productRef, "", "", 0.0, "", 0, 1))
-//                        }
-//
-//                        cartRef.set(it).addOnSuccessListener {
-//                            Log.d("AddToCart", "Product added to cart successfully")
-//                            Toast.makeText(
-//                                context,
-//                                "Added to cart successfully!",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        }
-//                    }
-//                }.addOnFailureListener { exception ->
-//                    Log.e("AddToCart", "Error updating cart: ", exception)
-//                    Toast.makeText(context, "Failed to add to cart.", Toast.LENGTH_SHORT).show()
-//                }
-//            } else {
-//                Log.d("AddToCart", "Product is out of stock")
-//                Toast.makeText(context, "Product is out of stock.", Toast.LENGTH_SHORT).show()
-//            }
-//        }.addOnFailureListener { exception ->
-//            Log.e("AddToCart", "Error getting product: ", exception)
-//            Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
-//        }
-//    }
-
-
-    // ============= DƯỚI NÀY LÀ HÀM CỦA T
     private fun handleOpenSearchScreen() {
         binding.searchInput.setOnFocusChangeListener { _, focus ->
             if (focus) {
@@ -331,7 +252,6 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
     }
 
     override fun showOffers(offers: List<Offer>) {
-        // Offer
         binding.offerRcv.layoutManager =
             LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
         val adapter = OfferAdapter(offers.take(2))

@@ -91,9 +91,9 @@ class MenuFragment(private val calledFromActivity: Boolean = false) : Fragment()
         // Initialize your adapter here but don't set data yet
 //        setupInitialAdapter()
 
-        lifecycleScope.launch {
-            fetchAndUpdateWishlistState()
-        }
+//        lifecycleScope.launch {
+//            fetchAndUpdateWishlistState()
+//        }
     }
 
 //    private fun setupInitialAdapter() {
@@ -135,11 +135,11 @@ class MenuFragment(private val calledFromActivity: Boolean = false) : Fragment()
 //        adapter?.updateWishlistState(wishlistedProductIds)
     }
 
-    private fun fetchAndUpdateWishlistState() {
-        lifecycleScope.launch {
-            wishlistPresenter.fetchAndUpdateWishlistState()
-        }
-    }
+//    private fun fetchAndUpdateWishlistState() {
+//        lifecycleScope.launch {
+//            wishlistPresenter.fetchAndUpdateWishlistState()
+//        }
+//    }
 
     // called after wishlistPresenter.fetchAndUpdateWishlistState()
     override fun refreshWishlistState(wishlistedProductIds: Set<String>) {

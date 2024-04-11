@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.security.auth.callback.Callback
 
 class WishlistPresenter(
     private val view: WishlistMVPView,
@@ -16,13 +17,14 @@ class WishlistPresenter(
         repository.initialize()
     }
 
-    fun fetchAndUpdateWishlistState() {
+    fun fetchAndUpdateWishlistState(callback: () -> Unit) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val wishlistItems = repository.fetchWishlistForCurrentUser()
                 val wishlistedProductIds = wishlistItems.map { it.productId }.toSet()
                 withContext(Dispatchers.Main) {
                     view.refreshWishlistState(wishlistedProductIds)
+                    callback()
                 }
             } catch (e: Exception) {
                 // Handle error, potentially by informing the view of the failure
