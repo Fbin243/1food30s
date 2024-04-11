@@ -108,27 +108,27 @@
                                             />
 
                                         <TextView
-                                            android:id="@+id/tv_order_id"
+                                            android:id="@+id/tvOrderId"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:textSize="@dimen/font_size16"
                                             android:text=" 1402323" />
                                     </LinearLayout>
 
-                                    <include
-                                        android:id="@+id/statusPayment"
-                                        layout="@layout/my_order_status_span"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="@dimen/spacing20"
-                                        android:layout_marginEnd="@dimen/spacing8"
-                                        />
+<!--                                    <include-->
+<!--                                        android:id="@+id/statusPayment"-->
+<!--                                        layout="@layout/my_order_status_span"-->
+<!--                                        android:layout_width="wrap_content"-->
+<!--                                        android:layout_height="@dimen/spacing20"-->
+<!--                                        android:layout_marginEnd="@dimen/spacing8"-->
+<!--                                        />-->
 
-                                    <include
-                                        android:id="@+id/statusDelivery"
-                                        layout="@layout/my_order_status_span"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="@dimen/spacing20"
-                                        />
+<!--                                    <include-->
+<!--                                        android:id="@+id/statusDelivery"-->
+<!--                                        layout="@layout/my_order_status_span"-->
+<!--                                        android:layout_width="wrap_content"-->
+<!--                                        android:layout_height="@dimen/spacing20"-->
+<!--                                        />-->
 
                                 </LinearLayout>
 
@@ -143,6 +143,7 @@
                                         />
 
                                     <TextView
+                                        android:id="@+id/tvCustomerName"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:text="Tuan Nguyen"
@@ -177,9 +178,28 @@
                                         />
 
                                     <TextView
+                                        android:id="@+id/tvOrderDate"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
                                         android:text="14-02-2024 06:14 PM - 07:14 PM"
+                                        />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/rubik_semibold"
+                                        android:text="@string/txt_manage_order_address"
+                                        />
+
+                                    <TextView
+                                        android:id="@+id/tvAddress"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Hồ Chí Minh"
                                         />
                                 </LinearLayout>
 
@@ -212,15 +232,10 @@
                             android:text="@string/txt_order_details"
                             android:textSize="@dimen/font_size16" />
 
-                        <include layout="@layout/item_order_details" />
-
-                        <include layout="@layout/item_order_details" />
-
-                        <include layout="@layout/item_order_details" />
-                        <include layout="@layout/item_order_details" />
-                        <include layout="@layout/item_order_details" />
-                        <include layout="@layout/item_order_details" />
-                        <include layout="@layout/item_order_details" />
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rcvManageOrderDetails"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
 
                         <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
@@ -244,6 +259,7 @@
                                         android:layout_height="wrap_content"
                                         android:text="@string/txt_subtotal"/>
                                     <TextView
+                                        android:id="@+id/tvSubTotal"
                                         android:layout_width="0dp"
                                         android:layout_weight="1"
                                         android:layout_height="wrap_content"
@@ -261,28 +277,11 @@
                                         android:layout_height="wrap_content"
                                         android:text="@string/txt_deals"/>
                                     <TextView
+                                        android:id="@+id/tvDiscount"
                                         android:layout_width="0dp"
                                         android:layout_weight="1"
                                         android:layout_height="wrap_content"
                                         android:text="$4.80"
-                                        android:textAlignment="viewEnd"/>
-                                </LinearLayout>
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:weightSum="2">
-                                    <TextView
-                                        android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:layout_height="wrap_content"
-                                        android:text="@string/txt_delivery_charge"/>
-                                    <TextView
-                                        android:layout_width="0dp"
-                                        android:layout_weight="1"
-                                        android:layout_height="wrap_content"
-                                        android:text="$2.80"
-                                        android:textColor="@color/kelly_green"
                                         android:textAlignment="viewEnd"/>
                                 </LinearLayout>
 
@@ -305,6 +304,7 @@
                                         android:fontFamily="@font/rubik_semibold"
                                         />
                                     <TextView
+                                        android:id="@+id/tvTotalAmount"
                                         android:layout_width="0dp"
                                         android:layout_weight="1"
                                         android:layout_height="wrap_content"
@@ -329,7 +329,7 @@
         android:id="@+id/cardControl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/nev_spacing_12"
+        android:layout_marginBottom="-12dp"
         app:cardCornerRadius="@dimen/spacing16"
         app:cardElevation="@dimen/spacing12"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -385,7 +385,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingHorizontal="@dimen/spacing16"
+            android:paddingHorizontal="@dimen/spacing12"
             android:paddingTop="@dimen/spacing8"
             android:paddingBottom="@dimen/spacing24"
             android:weightSum="2"

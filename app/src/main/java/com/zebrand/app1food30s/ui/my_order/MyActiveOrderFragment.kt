@@ -123,7 +123,7 @@ class MyActiveOrderFragment : Fragment(), MyOrderMVPView.MyActiveOrderMVPView {
 //        botDialog.show()
 //    }
 
-    override fun getActiveMyOrderList() {
+    private fun getActiveMyOrderList() {
         val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID) as String
 //        Log.d("Test00", "getMyOrderList: ${userId}")
 

@@ -18,6 +18,12 @@ class ManageOrderAdapter(
     RecyclerView.Adapter<ManageOrderAdapter.MyOrderViewHolder>() {
     var onItemClick: ((Order) -> Unit)? = null
 
+    fun setData(orders: List<Order>) {
+        this.orders.clear()
+        this.orders.addAll(orders)
+        notifyDataSetChanged()
+    }
+
     fun insertData(order: Order) {
         this.orders.add(order)
         this.orders.sortByDescending { it.date }

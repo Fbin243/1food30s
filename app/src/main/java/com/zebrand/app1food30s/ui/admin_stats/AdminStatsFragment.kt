@@ -1,6 +1,5 @@
 package com.zebrand.app1food30s.ui.admin_stats
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,11 +21,8 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.ActivityAdminStatisticsBinding
-import com.zebrand.app1food30s.databinding.ActivityMainBinding
-import com.zebrand.app1food30s.ui.my_order.MyOrderPresenter
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBOrderRef
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBProductRef
-import com.zebrand.app1food30s.utils.MySharedPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -38,20 +34,13 @@ import java.util.Calendar
 import java.util.Locale
 
 class AdminStatsFragment : Fragment() {
-//    private lateinit var myGridRecyclerView: RecyclerView
+    //    private lateinit var myGridRecyclerView: RecyclerView
 //    private lateinit var binding: ActivityAdminStatisticsBinding
-//    private var _binding: ActivityAdminStatisticsBinding? = null
-//    private val binding get() = _binding!!
-        private lateinit var binding: ActivityAdminStatisticsBinding
+    private var _binding: ActivityAdminStatisticsBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-//        mySharePreference = MySharedPreferences.getInstance(context)
-//        presenter = MyOrderPresenter(context)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = ActivityAdminStatisticsBinding.inflate(inflater, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = ActivityAdminStatisticsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -66,7 +55,7 @@ class AdminStatsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-//        binding = null
+        _binding = null
     }
 
     override fun onDestroy() {

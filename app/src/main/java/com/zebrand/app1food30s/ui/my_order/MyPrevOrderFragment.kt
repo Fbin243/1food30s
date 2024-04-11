@@ -124,7 +124,7 @@ class MyPrevOrderFragment : Fragment(), MyOrderMVPView.MyPrevOrderMVPView {
 //        botDialog.show()
 //    }
 
-    override fun getPrevMyOrderList() {
+    private fun getPrevMyOrderList() {
         val userId = mySharePreference.getString(SingletonKey.KEY_USER_ID) as String
 //        Log.d("Test00", "getMyOrderList: ${userId}")
 
