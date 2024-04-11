@@ -17,6 +17,7 @@ import android.widget.LinearLayout
 import android.widget.RatingBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -140,6 +141,13 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
         if (orderDetails.orderStatus == SingletonKey.CANCELLED) {
             binding.linearTracking.visibility = View.GONE
             binding.tvHasBeenCancelled.visibility = View.VISIBLE
+            binding.tvHasBeenCancelled.text = resources.getString(R.string.txt_has_been_cancelled)
+            binding.tvHasBeenCancelled.setTextColor(ContextCompat.getColor(this, R.color.orange))
+        } else if(orderDetails.orderStatus == SingletonKey.DELIVERED) {
+            binding.linearTracking.visibility = View.GONE
+            binding.tvHasBeenCancelled.visibility = View.VISIBLE
+            binding.tvHasBeenCancelled.text = resources.getString(R.string.txt_your_order_has_been_successful)
+            binding.tvHasBeenCancelled.setTextColor(ContextCompat.getColor(this, R.color.primary))
         } else {
             val bindingTimeLine = DataBindingUtil.bind<TimelineBinding>(binding.timeLineView.root)
             if (bindingTimeLine != null) {

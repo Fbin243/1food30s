@@ -210,7 +210,7 @@
     <string name="txt_save_category">Update category</string>
     <string name="cart_button">Cart button</string>
 
-    <string name="txt_category_item_order">Category: </string>
+    <string name="txt_category_item_order">Category:&#160;</string>
     <string name="txt_payment">Payment</string>
     <string name="txt_payment_content">Pay for your order</string>
     <string name="txt_cancel_payment">Cancel payment</string>
@@ -234,4 +234,6 @@
     <string name="txt_review_title">Review</string>
     <string name="txt_submit">Submit</string>
     <string name="txt_reviewed"><![CDATA[View >]]></string>
+    <string name="txt_thanks_for_your_order">Thanks for your order</string>
+    <string name="txt_your_order_has_been_successful">Your order has been successful</string>
 </resources>
