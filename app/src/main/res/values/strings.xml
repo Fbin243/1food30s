@@ -224,4 +224,7 @@
     <string name="no_reviews">No reviews yet !</string>
     <string name="related_products_title">May be you\'ll like too</string>
     <string name="txt_no_related_products">No products available !</string>
+    <string name="manage_products">Manage products</string>
+    <string name="manage_categories">Manage categories</string>
+    <string name="manage_offers">Manage offers</string>
 </resources>
