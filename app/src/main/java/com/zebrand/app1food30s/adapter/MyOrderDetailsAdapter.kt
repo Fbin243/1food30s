@@ -15,6 +15,7 @@ import com.zebrand.app1food30s.data.entity.OrderItem
 import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.Utils
 
+@Suppress("DEPRECATION")
 class MyOrderDetailsAdapter(
     private val context: Context,
     private val orderItems: MutableList<OrderItem>,
@@ -83,6 +84,10 @@ class MyOrderDetailsAdapter(
                 }
             }
         }
+    }
+
+    fun refreshAdapter() {
+        notifyDataSetChanged()
     }
 
     fun getSubTotal(): Double {

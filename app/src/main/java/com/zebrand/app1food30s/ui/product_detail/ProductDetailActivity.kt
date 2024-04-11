@@ -82,6 +82,7 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
         }
         Picasso.get().load(product.image).placeholder(Utils.getShimmerDrawable())
             .into(binding.productImage)
+        binding.productRating.text = "${Utils.formatRating(product.avgRating)} / 5"
     }
 
     // TODO

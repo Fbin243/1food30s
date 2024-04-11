@@ -34,5 +34,9 @@ class ReviewAdapter(private val reviews: List<Review>): RecyclerView.Adapter<Rev
         holder.content.text = review.content
         holder.date.text = Utils.formatDate(review.date)
         Picasso.get().load(review.avatar).placeholder(Utils.getShimmerDrawable()).into(holder.avatar)
+        for (i in 0 until review.rating) {
+            val star = holder.rating.getChildAt(i) as ImageView
+            star.setColorFilter(holder.itemView.resources.getColor(R.color.secondary))
+        }
     }
 }

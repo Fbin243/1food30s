@@ -185,6 +185,7 @@ object FirebaseService {
                 val reviews = FireStoreUtils.mDBReviewRef.whereEqualTo("idProduct",
                     FireStoreUtils.mDBProductRef.document(idProduct)
                 ).get().await().toObjects(Review::class.java)
+                Log.i("TAG123", "getListReviewsOfProduct: $reviews")
                 val reviewsList = reviews.map { review ->
                     val user = review.idAccount!!.get().await()?.toObject<User>()
                     review.avatar = FirebaseUtils.fireStorage.reference.child(user!!.avatar).downloadUrl.await().toString()

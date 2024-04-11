@@ -19,6 +19,8 @@ data class Product(
     var stock: Int = 0,
     var sold: Int = 0,
     var date: Date? = Date(), // Date the product is created
+    var avgRating: Double = 0.0,
+    var numReview: Int = 0,
     @Exclude
     var isGrid: Boolean = false
 )

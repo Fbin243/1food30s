@@ -33,6 +33,10 @@ object Utils {
         return String.format("%.2f", price).replace(",", ".")
     }
 
+    fun formatRating(price: Double): String {
+        return String.format("%.1f", price).replace(",", ".")
+    }
+
     fun getShimmerDrawable(): ShimmerDrawable {
         return ShimmerDrawable().apply {
             setShimmer(

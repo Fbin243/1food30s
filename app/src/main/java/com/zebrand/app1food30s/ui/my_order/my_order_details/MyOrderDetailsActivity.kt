@@ -25,6 +25,7 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.MyOrderDetailsAdapter
 import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.data.entity.OrderItem
+import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.ActivityMyOrderDetailsBinding
 import com.zebrand.app1food30s.databinding.DialogDeleteAccountBinding
 import com.zebrand.app1food30s.databinding.TimelineBinding
@@ -33,6 +34,11 @@ import com.zebrand.app1food30s.utils.FireStoreUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.Utils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import java.math.BigDecimal
 import java.util.Date
 
 @Suppress("DEPRECATION")
@@ -252,6 +258,21 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
                         it
                     }
                 })
+                CoroutineScope(Dispatchers.IO).launch {
+                    val product = orderItem.productId!!.get().await().toObject(Product::class.java)
+                    val avgRating = product?.avgRating ?: 0.0
+                    val numReview = product?.numReview ?: 0
+                    val newRating = avgRating * numReview
+                    orderItem.productId.update("avgRating", (newRating + rating) / (numReview + 1))
+                    orderItem.productId.update("numReview", numReview + 1)
+                }
+
+                holder.reviewBtn.setOnClickListener {
+                    val intent = Intent(this, ProductDetailActivity::class.java)
+                    intent.putExtra("idProduct", orderItem.productId?.id)
+                    Log.i("TAG123", "handleReviewProduct: ${orderItem.productId?.id}")
+                    startActivity(intent)
+                }
 
                 // Dismiss the dialog
                 dialog.dismiss()
