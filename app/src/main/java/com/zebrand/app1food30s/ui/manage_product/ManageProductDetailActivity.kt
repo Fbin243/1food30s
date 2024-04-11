@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.ui.manage_product
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
@@ -50,6 +51,11 @@ class ManageProductDetailActivity : AppCompatActivity() {
         productImageView = findViewById(R.id.image_product)
         loadCategoriesFromFirebase()
         loadOffersFromFirebase()
+
+        val backIcon = findViewById<View>(R.id.backIcon)
+        backIcon.setOnClickListener {
+            finish()
+        }
 
         createButton.setOnClickListener {
             saveProductToFirestore()
