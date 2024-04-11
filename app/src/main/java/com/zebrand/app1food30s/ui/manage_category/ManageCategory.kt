@@ -40,6 +40,7 @@ import kotlinx.coroutines.withContext
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 class ManageCategory : AppCompatActivity() {
@@ -54,6 +55,7 @@ class ManageCategory : AppCompatActivity() {
     private lateinit var nameFilterEditText: TextInputEditText
     private lateinit var numProductAutoComplete: AutoCompleteTextView
     private lateinit var datePickerText: TextInputEditText
+    private lateinit var toDatePickerText: TextInputEditText
     val numProductArray = arrayOf("0 to 1", "2 to 10", "11 to 50", "51 to 100", "More than 100")
 
 
@@ -90,6 +92,7 @@ class ManageCategory : AppCompatActivity() {
         nameFilterEditText = dialogView.findViewById(R.id.nameFilter)
         numProductAutoComplete = dialogView.findViewById(R.id.autoCompleteNumProduct)
         datePickerText = dialogView.findViewById(R.id.datePicker)
+        toDatePickerText = dialogView.findViewById(R.id.toDatePicker)
 
         val adapterNumProduct = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, numProductArray)
 //        adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
@@ -97,6 +100,7 @@ class ManageCategory : AppCompatActivity() {
 
         // date picker
         val datePickerText: TextInputEditText = dialogView.findViewById(R.id.datePicker)
+        val toDatePickerText: TextInputEditText = dialogView.findViewById(R.id.toDatePicker)
         val myCalendar = Calendar.getInstance()
         val datePicker = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
             myCalendar.set(Calendar.YEAR, year)
@@ -110,10 +114,31 @@ class ManageCategory : AppCompatActivity() {
             datePickerText.setText(formattedDate)
         }
 
+        val toDatePicker = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+            myCalendar.set(Calendar.YEAR, year)
+            myCalendar.set(Calendar.MONTH, month)
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+            val myFormat = "dd/MM/yyyy"
+            val sdf = SimpleDateFormat(myFormat, Locale.UK)
+            val formattedDate = sdf.format(myCalendar.time)
+            Log.d("dateABC", formattedDate)
+            toDatePickerText.setText(formattedDate)
+        }
+
         datePickerText.setOnClickListener {
             DatePickerDialog(
                 this,
                 R.style.MyDatePickerDialogStyle, datePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(
+                    Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+
+        toDatePickerText.setOnClickListener {
+            DatePickerDialog(
+                this,
+                R.style.MyDatePickerDialogStyle, toDatePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(
                     Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH)
             ).show()
@@ -138,6 +163,7 @@ class ManageCategory : AppCompatActivity() {
             val nameFilter = nameFilterEditText.text.toString().trim()
             val selectedNumProduct = numProductAutoComplete.text.toString()
             val selectedDate = datePickerText.text.toString()
+            val selectedToDate = toDatePickerText.text.toString()
 
             val allCategories = getListCategories()
 
@@ -153,24 +179,47 @@ class ManageCategory : AppCompatActivity() {
                 filteredCategories = filterCategoriesByNumProduct(selectedNumProduct, filteredCategories)
             }
             if (selectedDate != "Choose date") {
-                filteredCategories = filterCategoriesByDate(selectedDate, filteredCategories)
+                filteredCategories = filterCategoriesByDate(selectedDate, selectedToDate ,filteredCategories)
             }
 
             displayFilteredCategories(filteredCategories)
         }
     }
 
-    private fun filterCategoriesByDate(selectedDate: String, categories: List<Category>): List<Category> {
-        // Parse selectedDate and filter products based on this date
-        val sdf = SimpleDateFormat("dd/MM/yy", Locale.US)
+//    private fun filterCategoriesByDate(selectedDate: String, categories: List<Category>): List<Category> {
+//        // Parse selectedDate and filter products based on this date
+//        val sdf = SimpleDateFormat("dd/MM/yy", Locale.US)
+//
+//        return try {
+//            val dateTimeFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+//            categories.filter {
+//                dateTimeFormat.format(it.date) == selectedDate
+//            }
+//        } catch (e: ParseException) {
+//            categories // Trả về tất cả sản phẩm nếu có lỗi khi parse
+//        }
+//    }
 
-        return try {
-            val dateTimeFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
-            categories.filter {
-                dateTimeFormat.format(it.date) == selectedDate
-            }
-        } catch (e: ParseException) {
-            categories // Trả về tất cả sản phẩm nếu có lỗi khi parse
+    private fun filterCategoriesByDate(startDateStr: String, endDateStr: String, categories: List<Category>): List<Category> {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+
+        // Chuyển đổi chuỗi ngày bắt đầu và kết thúc sang kiểu Date
+        var startDate: Date? = try { sdf.parse(startDateStr) } catch (e: ParseException) { null }
+        var endDate: Date? = try { sdf.parse(endDateStr) } catch (e: ParseException) { null }
+
+        // Tăng endDate lên 1 ngày
+        val calendar = Calendar.getInstance()
+        if (endDate != null) {
+            calendar.time = endDate
+            calendar.add(Calendar.DAY_OF_MONTH, 1) // Tăng lên 1 ngày
+            endDate = calendar.time
+        }
+
+        // Lọc offers dựa trên khoảng ngày, bao gồm cả endDate + 1
+        return categories.filter {
+            val categoryDate = it.date
+            categoryDate != null && startDate != null && endDate != null &&
+                    !categoryDate.before(startDate) && categoryDate.before(endDate)
         }
     }
 

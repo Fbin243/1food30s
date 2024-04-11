@@ -53,6 +53,7 @@ class ManageOffer : AppCompatActivity() {
     private lateinit var discountRateAutoComplete: AutoCompleteTextView
     private lateinit var numProductAutoComplete: AutoCompleteTextView
     private lateinit var datePickerText: TextInputEditText
+    private lateinit var toDatePickerText: TextInputEditText
 //    private lateinit var toDatePickerText: TextInputEditText
     val discountArray = arrayOf("1% to 10%", "11% to 50%", "More than 50%")
     val numProductArray = arrayOf("0 to 1", "2 to 10", "11 to 50", "51 to 100", "More than 100")
@@ -92,7 +93,7 @@ class ManageOffer : AppCompatActivity() {
         discountRateAutoComplete = dialogView.findViewById(R.id.autoCompleteDiscountRate)
         numProductAutoComplete = dialogView.findViewById(R.id.autoCompleteNumProduct)
         datePickerText = dialogView.findViewById(R.id.datePicker)
-//        toDatePickerText = dialogView.findViewById(R.id.toDatePicker)
+        toDatePickerText = dialogView.findViewById(R.id.toDatePicker)
 
         val adapterDiscount = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, discountArray)
 //        adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
@@ -104,6 +105,7 @@ class ManageOffer : AppCompatActivity() {
 
         // date picker
         val datePickerText: TextInputEditText = dialogView.findViewById(R.id.datePicker)
+        val toDatePickerText: TextInputEditText = dialogView.findViewById(R.id.datePicker)
         val myCalendar = Calendar.getInstance()
         val datePicker = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
             myCalendar.set(Calendar.YEAR, year)
@@ -117,10 +119,31 @@ class ManageOffer : AppCompatActivity() {
             datePickerText.setText(formattedDate)
         }
 
+        val toDatePicker = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+            myCalendar.set(Calendar.YEAR, year)
+            myCalendar.set(Calendar.MONTH, month)
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+
+            val myFormat = "dd/MM/yyyy"
+            val sdf = SimpleDateFormat(myFormat, Locale.UK)
+            val formattedDate = sdf.format(myCalendar.time)
+            Log.d("dateABC", formattedDate)
+            toDatePickerText.setText(formattedDate)
+        }
+
         datePickerText.setOnClickListener {
             DatePickerDialog(
                 this,
                 R.style.MyDatePickerDialogStyle, datePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(
+                    Calendar.MONTH),
+                myCalendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+
+        toDatePickerText.setOnClickListener {
+            DatePickerDialog(
+                this,
+                R.style.MyDatePickerDialogStyle, toDatePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(
                     Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH)
             ).show()
@@ -146,6 +169,7 @@ class ManageOffer : AppCompatActivity() {
             val selectedDiscount = discountRateAutoComplete.text.toString()
             val selectedNumProduct = numProductAutoComplete.text.toString()
             val selectedDate = datePickerText.text.toString()
+            val selectedToDate = toDatePickerText.text.toString()
 
             val allOffers = getListOffers()
 
@@ -163,42 +187,51 @@ class ManageOffer : AppCompatActivity() {
             if (selectedNumProduct != "Choose number of product") {
                 filteredOffers = filterOffersByNumProduct(selectedNumProduct, filteredOffers)
             }
-            if (selectedDate != "Choose date") {
-                filteredOffers = filterOffersByDate(selectedDate, filteredOffers)
+            if (selectedDate != "Date") {
+                filteredOffers = filterOffersByDate(selectedDate, selectedToDate, filteredOffers)
             }
 
             displayFilteredOffers(filteredOffers)
         }
     }
 
-    private fun filterOffersByDate(selectedDate: String, offers: List<Offer>): List<Offer> {
-        // Parse selectedDate and filter products based on this date
-        val sdf = SimpleDateFormat("dd/MM/yy", Locale.US)
-
-        return try {
-            val dateTimeFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
-            offers.filter {
-                dateTimeFormat.format(it.date) == selectedDate
-            }
-        } catch (e: ParseException) {
-            offers // Trả về tất cả sản phẩm nếu có lỗi khi parse
-        }
-    }
-
-//    private fun filterOffersByDate(startDateStr: String, endDateStr: String, offers: List<Offer>): List<Offer> {
-//        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+//    private fun filterOffersByDate(selectedDate: String, offers: List<Offer>): List<Offer> {
+//        // Parse selectedDate and filter products based on this date
+//        val sdf = SimpleDateFormat("dd/MM/yy", Locale.US)
 //
-//        // Chuyển đổi chuỗi ngày bắt đầu và kết thúc sang kiểu Date
-//        val startDate: Date? = try { sdf.parse(startDateStr) } catch (e: ParseException) { null }
-//        val endDate: Date? = try { sdf.parse(endDateStr) } catch (e: ParseException) { null }
-//
-//        // Lọc offers dựa trên khoảng ngày
-//        return offers.filter {
-//            val offerDate = it.date
-//            offerDate != null && startDate != null && endDate != null &&
-//                    !offerDate.before(startDate) && !offerDate.after(endDate)
+//        return try {
+//            val dateTimeFormat = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+//            offers.filter {
+//                dateTimeFormat.format(it.date) == selectedDate
+//            }
+//        } catch (e: ParseException) {
+//            offers // Trả về tất cả sản phẩm nếu có lỗi khi parse
 //        }
 //    }
+
+
+    private fun filterOffersByDate(startDateStr: String, endDateStr: String, offers: List<Offer>): List<Offer> {
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+
+        // Chuyển đổi chuỗi ngày bắt đầu và kết thúc sang kiểu Date
+        var startDate: Date? = try { sdf.parse(startDateStr) } catch (e: ParseException) { null }
+        var endDate: Date? = try { sdf.parse(endDateStr) } catch (e: ParseException) { null }
+
+        // Tăng endDate lên 1 ngày
+        val calendar = Calendar.getInstance()
+        if (endDate != null) {
+            calendar.time = endDate
+            calendar.add(Calendar.DAY_OF_MONTH, 1) // Tăng lên 1 ngày
+            endDate = calendar.time
+        }
+
+        // Lọc offers dựa trên khoảng ngày, bao gồm cả endDate + 1
+        return offers.filter {
+            val offerDate = it.date
+            offerDate != null && startDate != null && endDate != null &&
+                    !offerDate.before(startDate) && offerDate.before(endDate)
+        }
+    }
 
 
     private fun filterOffersByName(nameFilter: String, offers: List<Offer>): List<Offer> {
