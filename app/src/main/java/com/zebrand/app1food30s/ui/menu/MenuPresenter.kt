@@ -13,7 +13,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
 class MenuPresenter(private val view: MenuMVPView, private val db: AppDatabase) {
-    suspend fun getDataAndDisplay(calledFromActivity: Boolean = false) {
+    suspend fun getDataAndDisplay() {
         coroutineScope {
             view.showShimmerEffectForCategories()
             val categories = FirebaseService.getListCategories(db)

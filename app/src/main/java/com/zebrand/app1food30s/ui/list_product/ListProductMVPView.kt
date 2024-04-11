@@ -8,4 +8,5 @@ interface ListProductMVPView {
     fun showShimmerEffectForProducts()
     fun hideShimmerEffectForProducts()
     fun handleChangeLayout(products: List<Product>)
+    fun fetchAndUpdateWishlistState(callback: () -> Unit)
 }

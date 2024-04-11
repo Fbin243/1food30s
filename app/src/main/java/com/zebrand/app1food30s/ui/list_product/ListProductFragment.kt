@@ -23,6 +23,11 @@ import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentListProductBinding
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
+import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
+import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
+import com.zebrand.app1food30s.ui.wishlist.WishlistRepository
+import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 
@@ -31,7 +36,7 @@ class ListProductFragment(
     private val hasBackBtn: Boolean = false,
     private val hasTitle: Boolean = false,
     private val hasLoading: Boolean = false
-) : Fragment(), ListProductMVPView, SwipeRefreshLayout.OnRefreshListener {
+) : Fragment(), ListProductMVPView, WishlistMVPView, SwipeRefreshLayout.OnRefreshListener {
     private lateinit var binding: FragmentListProductBinding
     private lateinit var listProductPresenter: ListProductPresenter
     private lateinit var db: AppDatabase
@@ -44,6 +49,8 @@ class ListProductFragment(
     private lateinit var searchInput: TextInputEditText
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var categories: List<Category>
+    private lateinit var wishlistPresenter: WishlistPresenter
+    private var wishlistedProductIds: MutableSet<String> = mutableSetOf()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,6 +62,13 @@ class ListProductFragment(
         listProductPresenter = ListProductPresenter(this, db)
         if (hasLoading) Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
         else binding.swipeRefreshLayout.isEnabled = false
+
+        // Wishlist
+        val mySharedPreferences = context?.let { MySharedPreferences.getInstance(it) }
+        val userId = mySharedPreferences?.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
+        val wishlistRepository = WishlistRepository(userId)
+        wishlistPresenter = WishlistPresenter(this, wishlistRepository)
+//        Log.d("Test00", "onCreateView: fetchAndUpdateWishlistState()")
 
         return binding.root
     }
@@ -228,12 +242,15 @@ class ListProductFragment(
 
     override fun showProducts(products: List<Product>, offers: List<Offer>) {
         binding.productRcv.layoutManager = if (isGrid) gridLayoutManager else linearLayoutManager
-        val adapter = ProductAdapter(products, offers, mutableSetOf(), binding.noItemLayout)
+        val adapter = ProductAdapter(products, offers, wishlistedProductIds, binding.noItemLayout)
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }
         adapter.onAddButtonClick = { product ->
             Utils.addProductToCart(requireContext(), product.id)
+        }
+        adapter.onWishlistProductClick = { product ->
+            wishlistPresenter.toggleWishlist(product)
         }
         binding.productRcv.adapter = adapter
     }
@@ -262,12 +279,75 @@ class ListProductFragment(
                     binding.productRcv.adapter as ProductAdapter
                 )
             }
+
             "bestSellers" -> {
                 Log.i("TAG123", "onRefresh: goi ham sort by sold")
                 listProductPresenter.refreshDataAndSortDataBySold(binding.productRcv.adapter as ProductAdapter)
             }
+
             else -> refreshData()
         }
         binding.swipeRefreshLayout.isRefreshing = false
+    }
+
+    // =============== Wishlist =====================
+    override fun fetchAndUpdateWishlistState(callback: () -> Unit) {
+        wishlistPresenter.fetchAndUpdateWishlistState(callback)
+        // then: view.refreshWishlistState(wishlistedProductIds)
+    }
+
+    override fun refreshWishlistState(wishlistedProductIds: Set<String>) {
+        this.wishlistedProductIds = wishlistedProductIds.toMutableSet()
+//        val thisWishlistedProductIds = this.wishlistedProductIds
+//        Log.d("Test00", "refreshWishlistState: $thisWishlistedProductIds")
+        updateAdaptersWithWishlistState() // Update your UI accordingly
+    }
+
+    private fun updateAdaptersWithWishlistState() {
+        (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistState(wishlistedProductIds)
+    }
+
+    // Implementation of WishlistMVPView methods
+    override fun updateWishlistItemStatus(product: Product, isAdded: Boolean) {
+        // Update the set of wishlisted product IDs based on the action
+        val productId = product.id
+//        Log.d("Test00", "updateWishlistItemStatus: $productId")
+        if (isAdded) {
+//            Log.d("Test00", "updateWishlistItemStatus: added")
+            wishlistedProductIds.add(productId)
+        } else {
+//            Log.d("Test00", "updateWishlistItemStatus: removed")
+            wishlistedProductIds.remove(productId)
+        }
+        // updated correctly
+//        Log.d("Test00", "updateWishlistItemStatus: $wishlistedProductIds")
+        updateAdaptersWishlistProductIds()
+
+        // Notify all adapters about the update
+        updateProductInAllAdapters(productId)
+        // updateProductInAllAdapters(product.id, isAdded)
+    }
+
+    private fun updateAdaptersWishlistProductIds() {
+        (binding.productRcv.adapter as? ProductAdapter)?.updateWishlistProductIds(
+            wishlistedProductIds
+        )
+    }
+
+    //    private fun updateProductInAllAdapters(productId: String, isWishlisted: Boolean)
+    private fun updateProductInAllAdapters(productId: String) {
+        val adapters = listOfNotNull(
+            binding.productRcv.adapter as? ProductAdapter
+        )
+
+//        Log.d("Test00", "updateProductInAllAdapters: $adapters")
+
+        adapters.forEach { adapter ->
+            val index = adapter.products.indexOfFirst { it.id == productId }
+            if (index != -1) {
+//                Log.d("Test00", "updateProductInAllAdapters: notified")
+                adapter.notifyItemChanged(index)
+            }
+        }
     }
 }
