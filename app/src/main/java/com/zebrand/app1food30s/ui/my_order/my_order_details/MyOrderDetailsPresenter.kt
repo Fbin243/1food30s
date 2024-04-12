@@ -41,10 +41,11 @@ class MyOrderDetailsPresenter(private val context: Context, private val view: My
                 }
 
                 if(!check){
-                    if (orderDetails?.id?.isEmpty() == false && (orderDetails.orderStatus != newObject.orderStatus)) {
+                    if (orderDetails?.id?.isEmpty() == false && (orderDetails.orderStatus != newObject.orderStatus || orderDetails.paymentStatus != newObject.paymentStatus) ) {
                         // Trạng thái đã được sửa đổi, cập nhật lại trong adapter
                         orderDetails.apply {
                             orderStatus = newObject.orderStatus
+                            paymentStatus = newObject.paymentStatus
                         }
                     } else {
                         // Nếu không có sự thay đổi trạng thái, thêm dữ liệu mới vào adapter
