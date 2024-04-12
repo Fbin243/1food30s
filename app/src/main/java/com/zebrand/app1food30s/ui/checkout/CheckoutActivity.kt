@@ -1,6 +1,8 @@
 package com.zebrand.app1food30s.ui.checkout
 
 import android.content.Intent
+import android.location.Address
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +30,8 @@ import com.zebrand.app1food30s.ui.cart.CartRepository
 import com.zebrand.app1food30s.ui.main.MainActivity
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
+import java.io.IOException
+import java.util.Locale
 
 class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallback {
 
@@ -54,11 +58,13 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         cartRepository = CartRepository(FirebaseFirestore.getInstance())
         presenter = CheckoutPresenter(this, cartRepository)
 
-
+        // -----Maps SDK for Android-----
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
+        // when the map is ready, onMapReady() callback is triggered
         mapFragment.getMapAsync(this)
 
+        // -----Places SDK-----
         if (!Places.isInitialized()) {
             Places.initialize(applicationContext, "AIzaSyBQFpHSKFfBqU9XM8ZFGOEHPGyMkh6iCZk")
         }
@@ -67,6 +73,8 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
             if (hasFocus) {
                 // Launch the Autocomplete intent when the user focuses on the input
                 val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
+                // Full screen search
+                // Return the place ID, name, latitude/longitude, and address
                 val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(this)
                 // TODO
                 startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
@@ -82,46 +90,61 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         handlePlaceOrderButton()
     }
 
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+//        val sydney = LatLng(-34.0, 151.0)
+        val hoChiMinhCity = LatLng(10.776889, 106.700806)
+        val marker = mMap.addMarker(MarkerOptions().position(hoChiMinhCity).title("Marker in Ho Chi Minh City").draggable(true))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hoChiMinhCity, 10f))
+
+        // Add a click listener for the map
+        mMap.setOnMapClickListener { latLng ->
+            // Move the marker to the clicked position
+            if (marker != null) {
+                marker.position = latLng
+            }
+
+            // Optionally, animate the camera to the new position
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+
+            // Use reverse geocoding to update the address
+            val geocoder = Geocoder(this@CheckoutActivity, Locale.getDefault())
+            val addresses: List<Address>?
+            try {
+                addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+                if (!addresses.isNullOrEmpty()) {
+                    val address: Address = addresses[0]
+                    // Fetch the address lines and join them
+                    val addressText = (0..address.maxAddressLineIndex).joinToString(separator = " ") {
+                        address.getAddressLine(it)
+                    }
+                    binding.tvAddress.setText(addressText)
+                }
+            } catch (e: IOException) {
+                Log.e("CheckoutActivity", "Unable to get address from the clicked location", e)
+            }
+        }
+    }
+
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE && resultCode == RESULT_OK) {
             val place = Autocomplete.getPlaceFromIntent(data!!)
-            binding.tvAddress.setText(place.address) // Set the address in the TextInputEditText
-            // Optionally, clear focus from the address input to prevent reopening autocomplete
+            // Get the address
+            binding.tvAddress.setText(place.address)
             binding.tvAddress.clearFocus()
 
-            // Use the place's lat and lng for further processing if needed
             val latLng = place.latLng
-            // You might want to update the map's location here
+            // Use latitude and longitude to update the map's location
             latLng?.let { CameraUpdateFactory.newLatLngZoom(it, 15f) }?.let { mMap.moveCamera(it) }
         } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
             // Handle the error
             val status = Autocomplete.getStatusFromIntent(data!!)
             Log.i("CheckoutActivity", status.statusMessage ?: "Autocomplete error")
         }
-    }
-
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney").draggable(true))
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 10f))
-
-        // Marker drag listener
-        mMap.setOnMarkerDragListener(object : GoogleMap.OnMarkerDragListener {
-            override fun onMarkerDragStart(marker: Marker) {}
-
-            override fun onMarkerDrag(marker: Marker) {}
-
-            override fun onMarkerDragEnd(marker: Marker) {
-                // Here you can get the new position of the marker
-                val newPos = marker.position
-            }
-        })
     }
 
     // TODO: fix snackbar top to bottom of container
