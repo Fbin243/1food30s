@@ -39,6 +39,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 import java.util.Date
 
@@ -252,9 +253,6 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
                     )
                 )
 
-                holder.reviewBtn.text = resources.getString(R.string.txt_reviewed)
-                holder.reviewBtn.setTextColor(resources.getColor(R.color.secondary))
-
                 // Mark isReviewed as true
                 val orderRef = FireStoreUtils.mDBOrderRef.document(idOrder)
                 orderRef.update("items", orderDetails.items.map {
@@ -271,15 +269,17 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
                     val newRating = avgRating * numReview
                     orderItem.productId.update("avgRating", (newRating + rating) / (numReview + 1))
                     orderItem.productId.update("numReview", numReview + 1)
+                    withContext(Dispatchers.Main) {
+                        holder.reviewBtn.text = resources.getString(R.string.txt_reviewed)
+                        holder.reviewBtn.setTextColor(resources.getColor(R.color.secondary))
+                        holder.reviewBtn.setOnClickListener {
+                            val intent = Intent(this@MyOrderDetailsActivity, ProductDetailActivity::class.java)
+                            intent.putExtra("idProduct", orderItem.productId.id)
+                            Log.i("TAG123", "handleReviewProduct: ${orderItem.productId.id}")
+                            startActivity(intent)
+                        }
+                    }
                 }
-
-                holder.reviewBtn.setOnClickListener {
-                    val intent = Intent(this, ProductDetailActivity::class.java)
-                    intent.putExtra("idProduct", orderItem.productId?.id)
-                    Log.i("TAG123", "handleReviewProduct: ${orderItem.productId?.id}")
-                    startActivity(intent)
-                }
-
                 // Dismiss the dialog
                 dialog.dismiss()
             }
