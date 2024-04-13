@@ -7,13 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.zebrand.app1food30s.databinding.FragmentManageBinding
 import com.zebrand.app1food30s.ui.my_order.adapter.MyOrderViewPagerAdapter
+import com.zebrand.app1food30s.ui.admin_manage.ManageViewPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
 class ManageFragment : Fragment() {
     private var _binding: FragmentManageBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewPager2Adapter: MyOrderViewPagerAdapter
+    private lateinit var viewPager2Adapter: ManageViewPagerAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentManageBinding.inflate(inflater, container, false)
@@ -27,12 +28,13 @@ class ManageFragment : Fragment() {
     }
 
     private fun init() {
-        viewPager2Adapter = MyOrderViewPagerAdapter(childFragmentManager, lifecycle)
+        viewPager2Adapter = ManageViewPagerAdapter(childFragmentManager, lifecycle)
         binding.viewPager2.adapter = viewPager2Adapter
         TabLayoutMediator(binding.tabLayout, binding.viewPager2) { tab, position ->
             when (position) {
-                0 -> tab.text = "Active"
-                1 -> tab.text = "Previous"
+                0 -> tab.text = "Product"
+                1 -> tab.text = "Category"
+                2 -> tab.text = "Offer"
             }
         }.attach()
     }

@@ -12,11 +12,13 @@ import androidx.lifecycle.lifecycleScope
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.databinding.ActivityMainBinding
+import com.zebrand.app1food30s.ui.admin_manage.ManageFragment
 import com.zebrand.app1food30s.ui.admin_stats.AdminStatsFragment
 import com.zebrand.app1food30s.ui.authentication.LoginActivity
 import com.zebrand.app1food30s.ui.cart.CartFragment
 import com.zebrand.app1food30s.ui.home.HomeFragment
 import com.zebrand.app1food30s.ui.manage_order.ManageOrderFragment
+import com.zebrand.app1food30s.ui.manage_product.ManageProductFragment
 import com.zebrand.app1food30s.ui.menu.MenuFragment
 import com.zebrand.app1food30s.ui.offers.OffersFragment
 import com.zebrand.app1food30s.ui.order_confirm.OrderConfirmationDialogFragment
@@ -114,7 +116,7 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.ic_dashboard -> replaceFragment(AdminStatsFragment())
                 R.id.ic_order -> replaceFragment(ManageOrderFragment())
-//                R.id.ic_manage -> replaceFragment(ProfileFragment())
+                R.id.ic_manage -> replaceFragment(ManageFragment())
                 R.id.ic_profile -> {
                     if (isLogin) {
                         val fragment = ProfileAdminAfterLogin().apply {

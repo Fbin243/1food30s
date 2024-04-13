@@ -1,14 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.manage_product.ManageProductFragment">
+    tools:context=".ui.manage_product.ManageProductFragment"
+    android:paddingBottom="@dimen/spacing50">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        <ImageView
+        android:id="@+id/filter_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginRight="@dimen/spacing20"
+        android:src="@drawable/ic_filter"/>
 
-</FrameLayout>
+        <ImageView
+        android:id="@+id/add_product_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/filter_btn"
+        android:layout_marginRight="@dimen/spacing10"
+        android:src="@drawable/ic_plus"/>
+
+        <TextView
+        android:id="@+id/tv_active_orders"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/txt_all_product"
+        android:textSize="@dimen/font_header"
+        android:fontFamily="@font/rubik_medium"
+        android:paddingLeft="@dimen/spacing20"
+        android:paddingRight="@dimen/spacing24"
+        android:paddingBottom="@dimen/spacing4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing50"
+            app:layout_constraintTop_toBottomOf="@id/tv_active_orders"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/spacing4"
+            android:paddingHorizontal="@dimen/spacing16">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/productRcv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="-8dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/productShimmer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="-8dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toTopOf="parent" >
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                                <!-- Includes for shimmer effect templates -->
+                                <include layout="@layout/product_card_view_linear_shimmer" />
+                                <include layout="@layout/product_card_view_linear_shimmer" />
+                                <include layout="@layout/product_card_view_linear_shimmer" />
+                                <include layout="@layout/product_card_view_linear_shimmer" />
+                                <include layout="@layout/product_card_view_linear_shimmer" />
+                                <include layout="@layout/product_card_view_linear_shimmer" />
+                                <include layout="@layout/product_card_view_linear_shimmer" />
+
+                        </LinearLayout>
+
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

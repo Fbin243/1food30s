@@ -1,10 +1,13 @@
 package com.zebrand.app1food30s.ui.manage_product
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
@@ -31,7 +34,9 @@ import com.zebrand.app1food30s.databinding.ActivityManageProductBinding
 import com.zebrand.app1food30s.databinding.FragmentManageProductBinding
 import com.zebrand.app1food30s.ui.edit_product.EditProduct
 import com.zebrand.app1food30s.ui.main.MainActivity
+import com.zebrand.app1food30s.ui.my_order.MyOrderPresenter
 import com.zebrand.app1food30s.utils.FirebaseService
+import com.zebrand.app1food30s.utils.MySharedPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -45,6 +50,7 @@ import java.util.Locale
 class ManageProductFragment : Fragment() {
     private var _binding: FragmentManageProductBinding? = null
     private val binding get() = _binding!!
+    private lateinit var mySharePreference: MySharedPreferences
     private lateinit var rcv: RecyclerView
     private val fireStore = FirebaseFirestore.getInstance()
     private val fireStorage = FirebaseStorage.getInstance()
@@ -59,33 +65,11 @@ class ManageProductFragment : Fragment() {
     lateinit var categoryArr: ArrayList<String>
     val priceArr = arrayOf("1$ to 10$", "11$ to 50$", "51$ to 100$", "More than 100$")
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityManageProductBinding.inflate(layoutInflater)
 
-        setContentView(binding.root)
-        handleDisplayProductList()
-
-        addButton = findViewById(R.id.add_product_btn)
-        filterButton = findViewById(R.id.filter_btn)
-
-
-        val backIcon = findViewById<ImageView>(R.id.imageView)
-        backIcon.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
-
-        addButton.setOnClickListener {
-            val intent = Intent(this, ManageProductDetailActivity::class.java)
-            startActivity(intent)
-        }
-
-        filterButton.setOnClickListener {
-//            categoryArr = resources.getStringArray(R.array.delivery_array)
-            showFilterProduct()
-        }
-    }
+//    override fun onAttach(context: Context) {
+//        super.onAttach(context)
+//        mySharePreference = MySharedPreferences.getInstance(context)
+//    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentManageProductBinding.inflate(inflater, container, false)
@@ -105,9 +89,6 @@ class ManageProductFragment : Fragment() {
             showFilterProduct()
         }
 
-        binding.imageView.setOnClickListener {
-            startActivity(Intent(requireContext(), MainActivity::class.java))
-        }
         // Initialize RecyclerView and other UI components here
     }
 
@@ -116,12 +97,12 @@ class ManageProductFragment : Fragment() {
             showShimmerEffectForProducts()
 //            val db = AppDatabase.getInstance(applicationContext)
             val adapter = ManageProductAdapter(getListProducts(), onProductClick = { product ->
-                val intent = Intent(this@ManageProductActivity, EditProduct::class.java).apply {
+                val intent = Intent(requireContext(), EditProduct::class.java).apply {
                     putExtra("PRODUCT_ID", product.id)
                 }
                 startActivity(intent)
             })
-            binding.productRcv.layoutManager = LinearLayoutManager(this@ManageProductActivity)
+            binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
             binding.productRcv.adapter = adapter
             hideShimmerEffectForProducts()
         }
@@ -152,7 +133,7 @@ class ManageProductFragment : Fragment() {
                     categoriesList.add(document.getString("name") ?: "")
                 }
                 // Cập nhật ArrayAdapter và thiết lập nó cho categoryAutoCompleteTextView
-                val adapter = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, categoriesList)
+                val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_menu_popup_item, categoriesList)
                 categoryAutoComplete.setAdapter(adapter)
             }
             .addOnFailureListener { exception ->
@@ -163,7 +144,7 @@ class ManageProductFragment : Fragment() {
 
     private fun showFilterProduct() {
         val dialogView = layoutInflater.inflate(R.layout.pop_up_filter_manage_product, null)
-        botDialog = BottomSheetDialog(this, R.style.BottomSheetDialogTheme)
+        botDialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
         botDialog.setContentView(dialogView)
 
         nameFilterEditText = dialogView.findViewById(R.id.nameFilter)
@@ -178,7 +159,7 @@ class ManageProductFragment : Fragment() {
 //        adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
 //        priceAutoComplete.adapter = adapterPrice
 
-        val adapterPrice = ArrayAdapter(this, R.layout.dropdown_menu_popup_item, priceArr)
+        val adapterPrice = ArrayAdapter(requireContext(), R.layout.dropdown_menu_popup_item, priceArr)
 //        adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
         priceAutoComplete.setAdapter(adapterPrice)
 
@@ -212,7 +193,7 @@ class ManageProductFragment : Fragment() {
 
         datePickerText.setOnClickListener {
             DatePickerDialog(
-                this,
+                requireContext(),
                 R.style.MyDatePickerDialogStyle, datePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH)
             ).show()
@@ -220,7 +201,7 @@ class ManageProductFragment : Fragment() {
 
         toDatePickerText.setOnClickListener {
             DatePickerDialog(
-                this,
+                requireContext(),
                 R.style.MyDatePickerDialogStyle, toDatePicker, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH)
             ).show()
@@ -252,7 +233,7 @@ class ManageProductFragment : Fragment() {
 
 //            val allProducts = getListProducts()
 
-            val db = AppDatabase.getInstance(this@ManageProductActivity)
+            val db = AppDatabase.getInstance(requireContext())
             val allProducts = FirebaseService.getListProducts(db)
 
             var filteredProducts = allProducts
@@ -356,12 +337,12 @@ class ManageProductFragment : Fragment() {
     private fun displayFilteredProducts(filteredProducts: List<Product>) {
         // Update RecyclerView with filteredProducts
         val adapter = ManageProductAdapter(filteredProducts, onProductClick = { product ->
-            val intent = Intent(this@ManageProductActivity, EditProduct::class.java).apply {
+            val intent = Intent(requireContext(), EditProduct::class.java).apply {
                 putExtra("PRODUCT_ID", product.id)
             }
             startActivity(intent)
         })
-        binding.productRcv.layoutManager = LinearLayoutManager(this@ManageProductActivity)
+        binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
         binding.productRcv.adapter = adapter
     }
 
@@ -369,12 +350,12 @@ class ManageProductFragment : Fragment() {
 //        showShimmerEffectForProducts()
 ////            val db = AppDatabase.getInstance(applicationContext)
 //        val adapter = ManageProductAdapter(filteredProducts, onProductClick = { product ->
-//            val intent = Intent(this@ManageProductActivity, EditProduct::class.java).apply {
+//            val intent = Intent(requireContext(), EditProduct::class.java).apply {
 //                putExtra("PRODUCT_ID", product.id)
 //            }
 //            startActivity(intent)
 //        })
-//        binding.productRcv.layoutManager = LinearLayoutManager(this@ManageProductActivity)
+//        binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
 //        binding.productRcv.adapter = adapter
 //        hideShimmerEffectForProducts()
 //    }
@@ -385,6 +366,7 @@ class ManageProductFragment : Fragment() {
     private suspend fun getListProducts(): List<Product> {
         return withContext(Dispatchers.IO) {
             try {
+                Log.d("ListProduct", "getListProduct")
                 val querySnapshot = fireStore.collection("products").orderBy("date", Query.Direction.DESCENDING).get().await()
                 querySnapshot.documents.mapNotNull { document ->
                     val id = document.id
