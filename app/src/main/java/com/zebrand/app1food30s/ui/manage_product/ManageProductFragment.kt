@@ -108,6 +108,11 @@ class ManageProductFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        handleDisplayProductList()
+    }
+
     fun showShimmerEffectForProducts() {
         binding.productShimmer.startShimmer()
     }

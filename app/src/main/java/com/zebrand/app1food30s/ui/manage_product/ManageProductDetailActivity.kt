@@ -162,8 +162,7 @@ class ManageProductDetailActivity : AppCompatActivity() {
                                                                 offerDocumentRef.update("numProduct", newNumProductOffer)
                                                                     .addOnSuccessListener {
                                                                         Toast.makeText(this, "Product and counts updated successfully", Toast.LENGTH_SHORT).show()
-                                                                        val intent = Intent(this, ManageProductActivity::class.java)
-                                                                        startActivity(intent)
+                                                                        finish()
                                                                     }
                                                                     .addOnFailureListener { e ->
                                                                         Toast.makeText(this, "Failed to update offer count: ${e.message}", Toast.LENGTH_SHORT).show()

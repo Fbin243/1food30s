@@ -38,50 +38,67 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/spacing50"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical"
+            android:scrollbars="none"
             app:layout_constraintTop_toBottomOf="@id/tv_active_orders"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="@dimen/spacing4"
-            android:paddingHorizontal="@dimen/spacing16">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/productRcv"
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="-8dp"
-                    android:orientation="vertical"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_height="match_parent"
+                    android:paddingBottom="@dimen/spacing50">
 
-                <com.facebook.shimmer.ShimmerFrameLayout
-                    android:id="@+id/productShimmer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="-8dp"
-                    android:orientation="vertical"
-                    app:layout_constraintTop_toTopOf="parent" >
-
-                        <LinearLayout
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/productRcv"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:layout_marginEnd="-8dp"
+                            android:orientation="vertical"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                                <!-- Includes for shimmer effect templates -->
-                                <include layout="@layout/product_card_view_linear_shimmer" />
-                                <include layout="@layout/product_card_view_linear_shimmer" />
-                                <include layout="@layout/product_card_view_linear_shimmer" />
-                                <include layout="@layout/product_card_view_linear_shimmer" />
-                                <include layout="@layout/product_card_view_linear_shimmer" />
-                                <include layout="@layout/product_card_view_linear_shimmer" />
-                                <include layout="@layout/product_card_view_linear_shimmer" />
+                        <com.facebook.shimmer.ShimmerFrameLayout
+                            android:id="@+id/productShimmer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="-8dp"
+                            android:orientation="vertical"
+                            app:layout_constraintTop_toTopOf="parent" >
 
-                        </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
 
-                </com.facebook.shimmer.ShimmerFrameLayout>
+                                        <include layout="@layout/product_card_view_linear_shimmer" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                                        <include layout="@layout/product_card_view_linear_shimmer" />
+
+                                        <include layout="@layout/product_card_view_linear_shimmer" />
+
+                                        <include layout="@layout/product_card_view_linear_shimmer" />
+
+                                        <include layout="@layout/product_card_view_linear_shimmer" />
+
+                                        <include layout="@layout/product_card_view_linear_shimmer" />
+
+                                        <include layout="@layout/product_card_view_linear_shimmer" />
+
+                                </LinearLayout>
+
+                        </com.facebook.shimmer.ShimmerFrameLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
