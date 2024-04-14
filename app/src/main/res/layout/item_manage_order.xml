@@ -55,10 +55,12 @@
                         android:text=" 1402323" />
                 </LinearLayout>
 
-                <include layout="@layout/my_order_status_span"
+                <include
+                    android:id="@+id/orderStatusSpan"
+                    layout="@layout/my_order_status_span"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/spacing20"
-
+                    app:orderStatusSpan="@{orderStatusSpan}"
                     />
 
             </LinearLayout>

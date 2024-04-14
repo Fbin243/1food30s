@@ -53,7 +53,7 @@ class ManageOrderAdapter(
         val tvCustomerName: TextView = listItemView.findViewById(R.id.tvCustomerName)
         val tvDate: TextView = listItemView.findViewById(R.id.tvDate)
         val tvTotalAmount: TextView = listItemView.findViewById(R.id.tvTotalAmount)
-//        val orderStatusSpan: View = listItemView.findViewById(R.id.orderStatusSpan)
+        val orderStatusSpan: View = listItemView.findViewById(R.id.orderStatusSpan)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyOrderViewHolder {
@@ -81,8 +81,8 @@ class ManageOrderAdapter(
             }
         }
 
-//        val binding = DataBindingUtil.bind<MyOrderStatusSpanBinding>(holder.orderStatusSpan)
-//        binding?.orderStatusSpan = order.orderStatus
+        val binding = DataBindingUtil.bind<MyOrderStatusSpanBinding>(holder.orderStatusSpan)
+        binding?.orderStatusSpan = order.orderStatus
     }
 
     override fun getItemCount(): Int {

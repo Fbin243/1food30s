@@ -211,6 +211,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/rubik_semibold"
                             android:text=" UNPAID"
+                            android:visibility="gone"
                             android:textColor="@color/primary" />
                     </LinearLayout>
                 </LinearLayout>

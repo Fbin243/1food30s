@@ -179,6 +179,12 @@
         <item>Delivered</item>
     </string-array>
 
+    <string-array name="delivery_array_v2">
+        <item>Order accepted</item>
+        <item>On delivery</item>
+        <item>Delivered</item>
+    </string-array>
+
     <string-array name="payment_array">
         <item>Paid</item>
         <item>Unpaid</item>
@@ -242,4 +248,6 @@
     <string name="txt_your_order_has_been_successful">Your order has been successful</string>
     <string name="error_address_required">Address is required</string>
     <string name="txt_manage_order_address">Address:&#160;</string>
+    <string name="txt_note">Note:&#160;</string>
+    <string name="txt_reason_manage_order">Reason:&#160;</string>
 </resources>
