@@ -126,6 +126,8 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
         binding.tvOrderId.text = Utils.formatId(orderDetails.id)
         binding.tvOrderDate.text = Utils.formatDate(orderDetails.date)
         binding.tvAddress.text = orderDetails.shippingAddress
+        binding.tvNote.text = orderDetails.note
+        binding.tvReason.text = orderDetails.cancelReason
         binding.tvPaymentStatus.text = orderDetails.paymentStatus.uppercase()
         binding.tvSubTotal.text = "$" + Utils.formatPrice(itemOrderDetailsAdapter.getSubTotal())
         binding.tvDiscount.text = "$" + Utils.formatPrice(itemOrderDetailsAdapter.getDiscount())
@@ -144,14 +146,24 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
             layoutParams.bottomMargin = 270
         }
 
+        if(orderDetails.note.trim().isEmpty()) {
+            binding.linearNote.visibility = View.GONE
+        }
+
         if (orderDetails.orderStatus == SingletonKey.CANCELLED) {
             binding.linearTracking.visibility = View.GONE
             binding.tvHasBeenCancelled.visibility = View.VISIBLE
+
+            if(orderDetails.cancelReason != null && orderDetails.cancelReason != "") {
+                binding.linearReason.visibility = View.VISIBLE
+            }
+
             binding.tvHasBeenCancelled.text = resources.getString(R.string.txt_has_been_cancelled)
             binding.tvHasBeenCancelled.setTextColor(ContextCompat.getColor(this, R.color.orange))
         } else if(orderDetails.orderStatus == SingletonKey.DELIVERED) {
             binding.linearTracking.visibility = View.GONE
             binding.tvHasBeenCancelled.visibility = View.VISIBLE
+
             binding.tvHasBeenCancelled.text = resources.getString(R.string.txt_your_order_has_been_successful)
             binding.tvHasBeenCancelled.setTextColor(ContextCompat.getColor(this, R.color.primary))
         } else {

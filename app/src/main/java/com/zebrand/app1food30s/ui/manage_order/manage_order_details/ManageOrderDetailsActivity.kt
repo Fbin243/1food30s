@@ -112,10 +112,14 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
         }
 
         cancel.setOnClickListener {
-            presenter.cancelOrder(idOrder, reason.text.toString())
-            handler.postDelayed({
-                dialog.dismiss()
-            }, 500)
+            if(reason.text.toString().trim().isEmpty()){
+                Toast.makeText(this, "Please enter reason", Toast.LENGTH_SHORT).show()
+            }else {
+                presenter.cancelOrder(idOrder, reason.text.toString())
+                handler.postDelayed({
+                    dialog.dismiss()
+                }, 500)
+            }
         }
 
         dialog.show()

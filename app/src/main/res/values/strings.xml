@@ -250,4 +250,5 @@
     <string name="txt_manage_order_address">Address:&#160;</string>
     <string name="txt_note">Note:&#160;</string>
     <string name="txt_reason_manage_order">Reason:&#160;</string>
+    <string name="txt_note_my_order">Note</string>
 </resources>
