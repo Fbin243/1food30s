@@ -74,7 +74,7 @@ class ManageOrderAdapter(
             tvOrderId.text = Utils.formatId(order.id)
             tvCustomerName.text = order.user.firstName + " " + order.user.lastName
             tvDate.text = Utils.formatDate(order.date)
-            tvTotalAmount.text = Utils.formatPrice(order.totalAmount)
+            tvTotalAmount.text = Utils.formatPrice(order.totalAmount, holder.itemView.context)
 
             itemView.setOnClickListener {
                 onItemClick?.invoke(order)

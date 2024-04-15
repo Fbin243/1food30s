@@ -186,7 +186,7 @@ class ListProductFragment(
             pattern,
             binding.productRcv.adapter as ProductAdapter
         )
-        "$searchResultNumber Items Available".also { binding.textView.text = it }
+        "$searchResultNumber ${resources.getString(R.string.txt_items_available)}".also { binding.textView.text = it }
     }
 
     private fun handleDisplayTitle() {

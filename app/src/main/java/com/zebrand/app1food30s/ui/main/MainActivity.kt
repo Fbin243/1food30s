@@ -23,10 +23,12 @@ import com.zebrand.app1food30s.ui.order_confirm.OrderConfirmationDialogFragment
 import com.zebrand.app1food30s.ui.profile.ProfileAdminAfterLogin
 import com.zebrand.app1food30s.ui.profile.ProfileAfterLoginFragment
 import com.zebrand.app1food30s.ui.profile.ProfileFragment
+import com.zebrand.app1food30s.utils.LocaleHelper
 import kotlinx.coroutines.launch
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.MySharedPreferences.Companion.defaultStringValue
 import com.zebrand.app1food30s.utils.SingletonKey
+import com.zebrand.app1food30s.utils.Utils
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
@@ -37,23 +39,16 @@ class MainActivity : AppCompatActivity() {
     private var idUser: String? = null
     private lateinit var mySharedPreferences: MySharedPreferences
 
-    fun setLocale(activity: MainActivity, languageCode: String) {
-        val locale = Locale(languageCode)
-        Locale.setDefault(locale)
-        val resources = activity.resources
-        val config = resources.configuration
-        config.setLocale(locale)
-        resources.updateConfiguration(config, resources.displayMetrics)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setLocale(this, "en")
+//        LocaleHelper.setLocale(this, "en")
         setContentView(binding.root)
 
         mySharedPreferences = MySharedPreferences.getInstance(this)
         db = AppDatabase.getInstance(this)
+        val languageCode = mySharedPreferences.getString(SingletonKey.KEY_LANGUAGE_CODE) ?: "en"
+        Utils.setLocale(this, languageCode)
 //        idUser = intent.getStringExtra("USER_ID") ?: ""
         idUser = mySharedPreferences.getString(SingletonKey.KEY_USER_ID)
         adminLogin = mySharedPreferences.getBoolean(SingletonKey.IS_ADMIN)

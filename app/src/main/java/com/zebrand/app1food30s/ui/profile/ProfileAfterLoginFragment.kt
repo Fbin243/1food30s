@@ -17,6 +17,7 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.databinding.FragmentProfileAfterLoginBinding
 import com.zebrand.app1food30s.ui.authentication.DeleteAccountActivity
+import com.zebrand.app1food30s.ui.change_language.ChangeLanguageActivity
 import com.zebrand.app1food30s.ui.change_password.ChangePasswordActivity
 import com.zebrand.app1food30s.ui.main.MainActivity
 import com.zebrand.app1food30s.ui.my_order.MyOrderActivity
@@ -65,7 +66,6 @@ class ProfileAfterLoginFragment : Fragment() {
         fetchUserInformation(idUser.orEmpty())
         events()
 
-        // ========== Code này ở branch Hai3 (đã sửa lại dùng binding) =========
         binding.ava.setOnClickListener {
             pickImageLauncher.launch("image/*")
         }
@@ -77,6 +77,14 @@ class ProfileAfterLoginFragment : Fragment() {
         }
         // ================================================================
 //        binding.username.setText(idUser)
+        binding.layoutChangeLanguage.setOnClickListener {
+            // Navigate to AdminStatisticsActivity
+            val intent = Intent(activity, ChangeLanguageActivity::class.java).apply {
+//                putExtra("currentLanguage", idUser)
+            }
+            startActivity(intent)
+        }
+
         binding.layoutEditProfile.setOnClickListener {
             // Navigate to AdminStatisticsActivity
             val intent = Intent(activity, EditProfileActivity::class.java).apply {

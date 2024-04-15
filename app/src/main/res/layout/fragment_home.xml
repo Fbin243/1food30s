@@ -21,11 +21,11 @@
         android:id="@+id/ivWishlistScreen"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/ic_wishlist_active"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageView"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        android:src="@drawable/ic_wishlist_active"
-        android:layout_marginEnd="20dp"
         app:tint="@color/primary" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -103,20 +103,13 @@
                     app:layout_constraintBaseline_toBaselineOf="@+id/btn"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <Button
+                <include
                     android:id="@+id/btn"
-                    android:layout_width="70dp"
+                    layout="@layout/view_all_btn"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:backgroundTint="@color/secondary_20"
-                    android:fontFamily="@font/rubik_bold"
-                    android:lineHeight="@dimen/spacing1"
-                    android:padding="0dp"
-                    android:text="@string/txt_view_all"
-                    android:textColor="@color/secondary"
-                    android:textSize="@dimen/font_size12"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:strokeColor="@color/primary" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/cateRcv"
@@ -169,21 +162,14 @@
                     app:layout_constraintBaseline_toBaselineOf="@+id/btn1"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <Button
+                <include
                     android:id="@+id/btn1"
-                    android:layout_width="70dp"
+                    layout="@layout/view_all_btn"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_marginTop="120dp"
-                    android:backgroundTint="@color/secondary_20"
-                    android:fontFamily="@font/rubik_bold"
-                    android:lineHeight="@dimen/spacing1"
-                    android:padding="0dp"
-                    android:text="@string/txt_view_all"
-                    android:textColor="@color/secondary"
-                    android:textSize="@dimen/font_size12"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btn"
-                    app:strokeColor="@color/primary" />
+                    app:layout_constraintTop_toBottomOf="@+id/btn" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/productRcv1"
@@ -307,21 +293,16 @@
                     app:layout_constraintBaseline_toBaselineOf="@+id/btn2"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <Button
+
+                <include
                     android:id="@+id/btn2"
-                    android:layout_width="70dp"
+                    layout="@layout/view_all_btn"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:layout_marginTop="650dp"
-                    android:backgroundTint="@color/secondary_20"
-                    android:fontFamily="@font/rubik_bold"
-                    android:lineHeight="@dimen/spacing1"
-                    android:padding="0dp"
-                    android:text="@string/txt_view_all"
-                    android:textColor="@color/secondary"
-                    android:textSize="@dimen/font_size12"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/btn1"
-                    app:strokeColor="@color/primary" />
+                    app:layout_constraintTop_toBottomOf="@+id/btn1" />
+
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/productRcv2"

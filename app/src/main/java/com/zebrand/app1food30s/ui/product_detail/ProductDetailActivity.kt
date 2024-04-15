@@ -66,18 +66,18 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
             if (it.length > 20) truncatedText = it.substring(0, 20) + "..."
             binding.productCategory.text = truncatedText
         }
-        " | Sold: ${product.sold}".also {
+        " | ${resources.getString(R.string.txt_sold)}: ${product.sold}".also {
             binding.productSold.text = it
         }
         product.description.also { binding.productDescription.text = it }
         "${product.stock}".also { binding.productStock.text = it }
 //        Handle price with offer
         val oldPrice = product.price
-        "$${Utils.formatPrice(oldPrice)}".also { binding.productPrice.text = it }
+        "$${Utils.formatPrice(oldPrice, this)}".also { binding.productPrice.text = it }
         if (offer != null) {
             val newPrice = product.price - offer.discountRate * product.price / 100
-            "$${Utils.formatPrice(oldPrice)}".also { binding.productOldPrice.text = it }
-            "$${Utils.formatPrice(newPrice)}".also { binding.productPrice.text = it }
+            "$${Utils.formatPrice(oldPrice, this)}".also { binding.productOldPrice.text = it }
+            "$${Utils.formatPrice(newPrice, this)}".also { binding.productPrice.text = it }
             binding.productOldPrice.visibility = View.VISIBLE
         }
         Picasso.get().load(product.image).placeholder(Utils.getShimmerDrawable())
@@ -114,7 +114,7 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
         Utils.showShimmerEffect(binding.productShimmer, binding.cardView)
         Utils.showShimmerEffect(binding.reviewTitleShimmer.root, binding.reviewTitle)
         Utils.showShimmerEffect(binding.reviewShimmer, binding.reviewRcv)
-        Utils.showShimmerEffect(binding.viewAllBtnShimmer.root, binding.viewAllBtn)
+        Utils.showShimmerEffect(binding.viewAllBtnShimmer.root, binding.viewAllBtn.root)
         Utils.showShimmerEffect(binding.relatedProductShimmer, binding.relatedProductRcv)
     }
 
@@ -138,7 +138,7 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
     }
 
     private fun handleOpenReviewScreen() {
-        binding.viewAllBtn.setOnClickListener {
+        binding.viewAllBtn.root.setOnClickListener {
             val intent = Intent(this, ReviewActivity::class.java)
             intent.putExtra("idProduct", idProduct)
             startActivity(intent)
@@ -148,11 +148,11 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
     override fun showReviews(reviews: List<Review>) {
         binding.reviewRcv.layoutManager = LinearLayoutManager(this)
         binding.reviewRcv.adapter = ReviewAdapter(reviews.take(5))
-        binding.reviewTitle.text = "${reviews.size} Reviews"
+        binding.reviewTitle.text = "${reviews.size} Đánh giá"
         if(reviews.isEmpty()) {
             binding.noReviewText.visibility = View.VISIBLE
         }
-        Utils.hideShimmerEffect(binding.viewAllBtnShimmer.root, binding.viewAllBtn, reviews.isNotEmpty())
+        Utils.hideShimmerEffect(binding.viewAllBtnShimmer.root, binding.viewAllBtn.root, reviews.isNotEmpty())
     }
 
     override fun onRefresh() {
