@@ -79,7 +79,7 @@ class ProductAdapter(
 
         // Find offer of product
         val oldPrice = product.price
-        "$${formatPrice(oldPrice, holder.itemView.context)}".also { holder.productPrice.text = it }
+        "${formatPrice(oldPrice, holder.itemView.context)}".also { holder.productPrice.text = it }
         if (product.idOffer != null) {
             val idOffer = product.idOffer!!.id
             val offer = offers.find { it.id == idOffer }

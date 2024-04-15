@@ -127,9 +127,9 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
         binding.tvOrderDate.text = Utils.formatDate(orderDetails.date)
         binding.tvAddress.text = orderDetails.shippingAddress
         binding.tvPaymentStatus.text = orderDetails.paymentStatus.uppercase()
-        binding.tvSubTotal.text = "$" + Utils.formatPrice(itemOrderDetailsAdapter.getSubTotal(), this)
-        binding.tvDiscount.text = "$" + Utils.formatPrice(itemOrderDetailsAdapter.getDiscount(), this)
-        binding.tvTotalAmount.text = "$" + Utils.formatPrice(orderDetails.totalAmount,this)
+        binding.tvSubTotal.text = Utils.formatPrice(itemOrderDetailsAdapter.getSubTotal(), this)
+        binding.tvDiscount.text = Utils.formatPrice(itemOrderDetailsAdapter.getDiscount(), this)
+        binding.tvTotalAmount.text = Utils.formatPrice(orderDetails.totalAmount,this)
 
 //        -----------------Control button-----------------
         val layoutParams = LinearLayout.LayoutParams(

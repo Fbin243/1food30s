@@ -73,11 +73,11 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
         "${product.stock}".also { binding.productStock.text = it }
 //        Handle price with offer
         val oldPrice = product.price
-        "$${Utils.formatPrice(oldPrice, this)}".also { binding.productPrice.text = it }
+        "${Utils.formatPrice(oldPrice, this)}".also { binding.productPrice.text = it }
         if (offer != null) {
             val newPrice = product.price - offer.discountRate * product.price / 100
-            "$${Utils.formatPrice(oldPrice, this)}".also { binding.productOldPrice.text = it }
-            "$${Utils.formatPrice(newPrice, this)}".also { binding.productPrice.text = it }
+            "${Utils.formatPrice(oldPrice, this)}".also { binding.productOldPrice.text = it }
+            "${Utils.formatPrice(newPrice, this)}".also { binding.productPrice.text = it }
             binding.productOldPrice.visibility = View.VISIBLE
         }
         Picasso.get().load(product.image).placeholder(Utils.getShimmerDrawable())
