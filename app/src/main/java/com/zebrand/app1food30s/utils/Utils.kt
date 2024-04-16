@@ -55,11 +55,11 @@ object Utils {
     }
 
     fun hideShimmerEffect(shimmer: ShimmerFrameLayout, view: View, wantToShow: Boolean = true) {
-//        Handler().postDelayed({
-        shimmer.stopShimmer()
-        shimmer.visibility = View.GONE
-        if(wantToShow) view.visibility = View.VISIBLE
-//        }, 1000)
+        Handler().postDelayed({
+            shimmer.stopShimmer()
+            shimmer.visibility = View.GONE
+            if(wantToShow) view.visibility = View.VISIBLE
+        }, 500)
     }
 
     fun initSwipeRefreshLayout(

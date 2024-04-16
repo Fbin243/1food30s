@@ -7,7 +7,7 @@
     tools:context=".ui.my_order.MyActiveOrderFragment">
 
     <LinearLayout
-        android:id="@+id/order_item_list"
+        android:id="@+id/orderItemList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -15,9 +15,75 @@
         >
         <androidx.recyclerview.widget.RecyclerView
             android:nestedScrollingEnabled="false"
+            android:visibility="gone"
             android:id="@+id/rcvActiveMyOrder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/noItemLayout"
+        android:layout_width="match_parent"
+        android:layout_height="1000dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:gravity="center_horizontal"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/linearBtn"
+        tools:ignore="UseCompoundDrawables"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="100dp"
+            android:src="@drawable/no_items" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/txt_no_item_available"
+            android:textSize="@dimen/font_size16"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/orderShimmer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewContainer">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/product_card_view_linear_shimmer" />
+
+            <include layout="@layout/product_card_view_linear_shimmer" />
+
+            <include layout="@layout/product_card_view_linear_shimmer" />
+
+            <include layout="@layout/product_card_view_linear_shimmer" />
+
+            <include layout="@layout/product_card_view_linear_shimmer" />
+
+            <include layout="@layout/product_card_view_linear_shimmer" />
+
+            <include layout="@layout/product_card_view_linear_shimmer" />
+
+            <include layout="@layout/product_card_view_linear_shimmer" />
+
+        </LinearLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
 </FrameLayout>

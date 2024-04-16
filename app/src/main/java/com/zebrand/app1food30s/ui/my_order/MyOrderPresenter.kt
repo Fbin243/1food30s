@@ -1,6 +1,7 @@
 package com.zebrand.app1food30s.ui.my_order
 
 import android.content.Context
+import android.view.View
 import android.widget.Toast
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.DocumentReference
@@ -10,8 +11,9 @@ import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.utils.FireStoreUtils
 
 
-class MyOrderPresenter(private val context: Context) {
+class MyOrderPresenter(private val context: Context, private val view: MyOrderMVPView) {
     fun getActiveOrderList(idAccount: String, adapter: MyOrderAdapter) {
+        view.showShimmerEffectForOrders()
         val dOrderRef = FireStoreUtils.mDBOrderRef
         val userDoc: DocumentReference = FireStoreUtils.mDBUserRef.document(idAccount)
 
@@ -44,11 +46,14 @@ class MyOrderPresenter(private val context: Context) {
                         }
                     }
                 }
+                view.setMyActiveOrderUI()
+                view.hideShimmerEffectForOrders()
             }
         }
     }
 
     fun getPrevOrderList(idAccount: String, adapter: MyOrderAdapter) {
+        view.showShimmerEffectForOrders()
         val dOrderRef = FireStoreUtils.mDBOrderRef
         val userDoc: DocumentReference = FireStoreUtils.mDBUserRef.document(idAccount)
 
@@ -81,6 +86,8 @@ class MyOrderPresenter(private val context: Context) {
                         }
                     }
                 }
+                view.setMyPrevOrderUI()
+                view.hideShimmerEffectForOrders()
             }
         }
     }

@@ -28,12 +28,13 @@ import com.zebrand.app1food30s.ui.my_order.my_order_details.MyOrderDetailsActivi
 import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
+import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class MyPrevOrderFragment : Fragment(), MyOrderMVPView.MyPrevOrderMVPView {
+class MyPrevOrderFragment : Fragment(), MyOrderMVPView {
     lateinit var binding: FragmentMyPrevOrderBinding
     //    Chưa login nên không có đi qua local db để lấy data được
     private lateinit var mySharePreference: MySharedPreferences
@@ -44,7 +45,7 @@ class MyPrevOrderFragment : Fragment(), MyOrderMVPView.MyPrevOrderMVPView {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mySharePreference = MySharedPreferences.getInstance(context)
-        presenter = MyOrderPresenter(context)
+        presenter = MyOrderPresenter(context, this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -140,5 +141,26 @@ class MyPrevOrderFragment : Fragment(), MyOrderMVPView.MyPrevOrderMVPView {
 
         //getData
         presenter.getPrevOrderList(userId, myPrevOrderAdapter)
+    }
+
+//    Miss this function
+    override fun setMyActiveOrderUI() {}
+
+    override fun setMyPrevOrderUI() {
+        if(myPrevOrderList.isEmpty()){
+            binding.orderItemList.visibility = View.GONE
+            binding.noItemLayout.visibility = View.VISIBLE
+        }else{
+            binding.rcvActiveMyOrder.visibility = View.VISIBLE
+            binding.noItemLayout.visibility = View.GONE
+        }
+    }
+
+    override fun showShimmerEffectForOrders() {
+        Utils.showShimmerEffect(binding.orderShimmer, binding.orderItemList)
+    }
+
+    override fun hideShimmerEffectForOrders() {
+        Utils.hideShimmerEffect(binding.orderShimmer, binding.orderItemList)
     }
 }

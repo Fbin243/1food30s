@@ -20,11 +20,10 @@ import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
 
-class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
+class MyOrderActivity : AppCompatActivity() {
     lateinit var binding: ActivityMyOrderBinding
 //    Chưa login nên không có đi qua local db để lấy data được
     private lateinit var mySharePreference: MySharedPreferences
-    private lateinit var presenter: MyOrderPresenter
     private lateinit var viewPager2Adapter: MyOrderViewPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +44,6 @@ class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
     }
 
     private fun init(){
-        presenter = MyOrderPresenter(this)
         mySharePreference = MySharedPreferences.getInstance(this)
 
         viewPager2Adapter = MyOrderViewPagerAdapter(supportFragmentManager, lifecycle)

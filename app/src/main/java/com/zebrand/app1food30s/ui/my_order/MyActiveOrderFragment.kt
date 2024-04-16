@@ -27,12 +27,13 @@ import com.zebrand.app1food30s.ui.my_order.my_order_details.MyOrderDetailsActivi
 import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
+import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class MyActiveOrderFragment : Fragment(), MyOrderMVPView.MyActiveOrderMVPView {
+class MyActiveOrderFragment : Fragment(), MyOrderMVPView {
     lateinit var binding: FragmentMyActiveOrderBinding
     //    Chưa login nên không có đi qua local db để lấy data được
     private lateinit var mySharePreference: MySharedPreferences
@@ -43,7 +44,7 @@ class MyActiveOrderFragment : Fragment(), MyOrderMVPView.MyActiveOrderMVPView {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mySharePreference = MySharedPreferences.getInstance(context)
-        presenter = MyOrderPresenter(context)
+        presenter = MyOrderPresenter(context, this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -139,5 +140,25 @@ class MyActiveOrderFragment : Fragment(), MyOrderMVPView.MyActiveOrderMVPView {
 
         //getData
         presenter.getActiveOrderList(userId, myActiveOrderAdapter)
+    }
+
+    override fun setMyActiveOrderUI() {
+        if(myActiveOrderList.isEmpty()){
+            binding.orderItemList.visibility = View.GONE
+            binding.noItemLayout.visibility = View.VISIBLE
+        }else{
+            binding.rcvActiveMyOrder.visibility = View.VISIBLE
+            binding.noItemLayout.visibility = View.GONE
+        }
+    }
+
+//    Miss this function
+    override fun setMyPrevOrderUI() {}
+    override fun showShimmerEffectForOrders() {
+        Utils.showShimmerEffect(binding.orderShimmer, binding.orderItemList)
+    }
+
+    override fun hideShimmerEffectForOrders() {
+        Utils.hideShimmerEffect(binding.orderShimmer, binding.orderItemList)
     }
 }
