@@ -40,8 +40,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import java.math.BigDecimal
 import java.util.Date
+
 
 @Suppress("DEPRECATION")
 class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
@@ -227,6 +227,21 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
         }
 
         dialog.show()
+    }
+
+    override fun showShimmerEffectForOrders(size: Int) {
+        Log.d("Test00", "itemCount" + size)
+        for (i in 0 until size) {
+            val shimmerLayout = layoutInflater.inflate(R.layout.item_order_details_shimmer, binding.linearShimmer, false)
+            // Add the inflated layout to the parent LinearLayout
+            binding.linearShimmer.addView(shimmerLayout)
+        }
+
+        Utils.showShimmerEffect(binding.orderDetailsShimmer, binding.orderItemList)
+    }
+
+    override fun hideShimmerEffectForOrders() {
+        Utils.hideShimmerEffect(binding.orderDetailsShimmer, binding.orderItemList)
     }
 
     override fun handleReviewProduct() {
