@@ -36,8 +36,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:fontFamily="@font/rubik_extrabold"
+                    android:fontFamily="@font/font_family"
                     android:text="@string/txt_details"
+                    android:textFontWeight="800"
                     android:textSize="@dimen/font_header"
                     app:layout_constraintStart_toEndOf="@+id/backFromDetail"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -86,7 +87,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:ellipsize="end"
-                                android:fontFamily="@font/rubik_bold"
+                                android:fontFamily="@font/font_family"
+                                android:textFontWeight="700"
                                 android:maxLines="1"
                                 android:text="Sweet &amp; Sour Chicken"
                                 android:textSize="@dimen/font_header" />
@@ -165,7 +167,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom"
-                                android:fontFamily="@font/rubik_bold"
+                                android:fontFamily="@font/font_family"
+                                android:textFontWeight="700"
                                 android:text="$6.54"
                                 android:textColor="@color/accent"
                                 android:textSize="@dimen/font_header" />
@@ -199,7 +202,8 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/rubik_medium"
+                                android:fontFamily="@font/font_family"
+                                android:textFontWeight="500"
                                 android:text="@string/txt_stock"
                                 android:textSize="@dimen/font_size16" />
 
@@ -224,7 +228,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_weight="1"
-                                android:fontFamily="@font/rubik_medium"
+                                android:fontFamily="@font/font_family"
+                                android:textFontWeight="500"
                                 android:maxLines="2"
                                 android:text="@string/txt_quantity"
                                 android:textSize="@dimen/font_size16" />
@@ -327,7 +332,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:fontFamily="@font/rubik_semibold"
+                        android:fontFamily="@font/font_family"
+                        android:textFontWeight="600"
                         android:text="6 Reviews"
                         android:textSize="@dimen/font_size16"
                         android:visibility="gone" />
@@ -427,7 +433,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:fontFamily="@font/rubik_semibold"
+                    android:fontFamily="@font/font_family"
+                    android:textFontWeight="600"
                     android:text="@string/related_products_title"
                     android:textSize="@dimen/font_size16" />
             </LinearLayout>

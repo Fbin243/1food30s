@@ -69,7 +69,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/rubik_semibold"
+                    android:fontFamily="@font/font_family"
+                    android:textFontWeight="600"
                     android:text="@string/txt_customer_name"
                     />
 
@@ -87,7 +88,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/rubik_semibold"
+                    android:fontFamily="@font/font_family"
+                    android:textFontWeight="600"
                     android:text="@string/txt_date"
                     />
 
@@ -113,7 +115,8 @@
                         android:id="@+id/tv_total_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/rubik_semibold"
+                        android:fontFamily="@font/font_family"
+                        android:textFontWeight="600"
                         android:text="@string/txt_amount"
                         />
 
@@ -121,7 +124,8 @@
                         android:id="@+id/tvTotalAmount"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/rubik_semibold"
+                        android:fontFamily="@font/font_family"
+                        android:textFontWeight="600"
                         android:text=" 14023213213.23"
                         android:ellipsize="end"
                         android:maxLines="1"
@@ -132,7 +136,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="@string/txt_see_order_details"
-                    android:fontFamily="@font/rubik_semibold"
+                    android:fontFamily="@font/font_family"
+                    android:textFontWeight="600"
                     android:textColor="@color/primary"
                     android:layout_marginStart="@dimen/spacing8"
                     android:textStyle="bold"/>

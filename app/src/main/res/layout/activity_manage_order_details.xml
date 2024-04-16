@@ -29,7 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing18"
-            android:fontFamily="@font/rubik_bold"
+            android:fontFamily="@font/font_family"
+            android:textFontWeight="700"
             android:text="@string/txt_order_details"
             android:textSize="@dimen/font_header" />
     </LinearLayout>
@@ -138,7 +139,8 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:fontFamily="@font/rubik_semibold"
+                                        android:fontFamily="@font/font_family"
+                                        android:textFontWeight="600"
                                         android:text="@string/txt_customer_name"
                                         />
 
@@ -156,7 +158,8 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:fontFamily="@font/rubik_semibold"
+                                        android:fontFamily="@font/font_family"
+                                        android:textFontWeight="600"
                                         android:text="@string/txt_payment_type"
                                         />
 
@@ -173,7 +176,8 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:fontFamily="@font/rubik_semibold"
+                                        android:fontFamily="@font/font_family"
+                                        android:textFontWeight="600"
                                         android:text="@string/txt_date"
                                         />
 
@@ -191,7 +195,8 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:fontFamily="@font/rubik_semibold"
+                                        android:fontFamily="@font/font_family"
+                                        android:textFontWeight="600"
                                         android:text="@string/txt_manage_order_address"
                                         />
 
@@ -228,7 +233,8 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/rubik_semibold"
+                            android:fontFamily="@font/font_family"
+                            android:textFontWeight="600"
                             android:text="@string/txt_order_details"
                             android:textSize="@dimen/font_size16" />
 
@@ -301,7 +307,8 @@
                                         android:layout_weight="1"
                                         android:layout_height="wrap_content"
                                         android:text="@string/txt_total"
-                                        android:fontFamily="@font/rubik_semibold"
+                                        android:fontFamily="@font/font_family"
+                                        android:textFontWeight="600"
                                         />
                                     <TextView
                                         android:id="@+id/tvTotalAmount"
@@ -309,7 +316,8 @@
                                         android:layout_weight="1"
                                         android:layout_height="wrap_content"
                                         android:text="$29.80"
-                                        android:fontFamily="@font/rubik_semibold"
+                                        android:fontFamily="@font/font_family"
+                                        android:textFontWeight="600"
                                         android:textAlignment="viewEnd"/>
                                 </LinearLayout>
                             </LinearLayout>

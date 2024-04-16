@@ -31,7 +31,8 @@
                 android:id="@+id/tvHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/rubik_extrabold"
+                android:fontFamily="@font/font_family"
+                android:textFontWeight="800"
                 android:text="@string/admin_statistics"
                 android:textSize="@dimen/font_header"
                 app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +71,8 @@
                     android:id="@+id/tvChartHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/rubik_medium"
+                    android:fontFamily="@font/font_family"
+                    android:textFontWeight="500"
                     android:text="Sales Summary"
                     android:textSize="@dimen/font_size18"
                     app:layout_constraintStart_toStartOf="parent"
@@ -108,7 +110,8 @@
                         app:layout_constraintStart_toEndOf="@id/ivCalendarIcon"
                         android:layout_marginStart="6dp"
                         android:textColor="@color/primary"
-                        android:fontFamily="@font/rubik_medium"/>
+                        android:fontFamily="@font/font_family"
+                        android:textFontWeight="500" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -140,14 +143,16 @@
                         android:text="$0.00"
                         android:textSize="24sp"
                         android:textColor="#000000"
-                        android:fontFamily="@font/rubik_medium"/>
+                        android:fontFamily="@font/font_family"
+                        android:textFontWeight="500" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Total Sales"
                         android:textColor="@color/grey_80"
-                        android:fontFamily="@font/rubik_regular"/>
+                        android:fontFamily="@font/font_family"
+                        android:textFontWeight="400" />
                 </LinearLayout>
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -169,14 +174,16 @@
                         android:text="$0.00"
                         android:textSize="24sp"
                         android:textColor="#000000"
-                        android:fontFamily="@font/rubik_medium"/>
+                        android:fontFamily="@font/font_family"
+                        android:textFontWeight="500" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Average Sales"
                         android:textColor="@color/grey_80"
-                        android:fontFamily="@font/rubik_regular"/>
+                        android:fontFamily="@font/font_family"
+                        android:textFontWeight="400" />
                 </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

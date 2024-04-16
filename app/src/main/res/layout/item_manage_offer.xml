@@ -39,7 +39,8 @@
                 android:maxLines="2"
                 android:text="Uplifting Anytime"
                 android:textSize="@dimen/font_default"
-                android:fontFamily="@font/rubik_semibold" />
+                android:fontFamily="@font/font_family"
+                android:textFontWeight="600" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -48,7 +49,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/rubik_medium"
+                    android:fontFamily="@font/font_family"
+                    android:textFontWeight="500"
                     android:textSize="@dimen/font_size12"
                     android:text="Discount rate: "
                     />
@@ -69,7 +71,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/rubik_medium"
+                    android:fontFamily="@font/font_family"
+                    android:textFontWeight="500"
                     android:text="N.o product: "
                     android:textSize="@dimen/font_size12"
                     />

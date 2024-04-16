@@ -31,7 +31,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:fontFamily="@font/rubik_extrabold"
+            android:fontFamily="@font/font_family"
+            android:textFontWeight="800"
             android:text="@string/checkout"
             android:textSize="@dimen/font_header"
             app:layout_constraintStart_toEndOf="@+id/ivBack"
@@ -44,7 +45,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Shipping Info"
-        android:fontFamily="@font/rubik_bold"
+        android:fontFamily="@font/font_family"
+        android:textFontWeight="700"
         android:textSize="@dimen/font_size18"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@+id/clHeader"
@@ -127,7 +129,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Cart Summary"
-        android:fontFamily="@font/rubik_bold"
+        android:fontFamily="@font/font_family"
+        android:textFontWeight="700"
         android:textSize="@dimen/font_size18"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@+id/map"
@@ -181,7 +184,8 @@
 <!--                android:text="$0.00"-->
 <!--                android:textSize="@dimen/font_size16"-->
 <!--                android:textColor="@color/black"-->
-<!--                android:fontFamily="@font/rubik_regular"-->
+    <!--                android:fontFamily="@font/font_family"
+    android:textFontWeight="400"-->
 <!--                app:layout_constraintBaseline_toBaselineOf="@+id/tvCartTotal"-->
 <!--                app:layout_constraintEnd_toEndOf="parent"-->
 <!--                android:textAppearance="@style/TextAppearance.AppCompat.Large" />-->
@@ -215,7 +219,8 @@
 <!--                android:text="$0.00"-->
 <!--                android:textSize="@dimen/font_size16"-->
 <!--                android:textColor="@color/black"-->
-<!--                android:fontFamily="@font/rubik_regular"-->
+    <!--                android:fontFamily="@font/font_family"
+    android:textFontWeight="400"-->
 <!--                app:layout_constraintBaseline_toBaselineOf="@+id/tvDiscount"-->
 <!--                app:layout_constraintEnd_toEndOf="parent"-->
 <!--                android:textAppearance="@style/TextAppearance.AppCompat.Large" />-->
@@ -247,7 +252,8 @@
 <!--                android:layout_height="wrap_content"-->
 <!--                android:text="Total"-->
 <!--                android:textSize="@dimen/font_size16"-->
-<!--                android:fontFamily="@font/rubik_medium"-->
+    <!--                android:fontFamily="@font/font_family"
+    android:textFontWeight="500"-->
 <!--                app:layout_constraintBottom_toBottomOf="parent"-->
 <!--                app:layout_constraintStart_toStartOf="parent"-->
 <!--                app:layout_constraintTop_toTopOf="parent"-->
@@ -260,7 +266,8 @@
 <!--                android:text="$0.00"-->
 <!--                android:textSize="@dimen/font_size16"-->
 <!--                android:textColor="@color/black"-->
-<!--                android:fontFamily="@font/rubik_medium"-->
+    <!--                android:fontFamily="@font/font_family"
+    android:textFontWeight="500"-->
 <!--                app:layout_constraintBaseline_toBaselineOf="@+id/textView_total"-->
 <!--                app:layout_constraintEnd_toEndOf="parent"-->
 <!--                android:textAppearance="@style/TextAppearance.AppCompat.Large" />-->
@@ -303,7 +310,8 @@
                 android:id="@+id/textView_amount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/rubik_bold"
+                android:fontFamily="@font/font_family"
+                android:textFontWeight="700"
                 android:text="$0.00"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="@color/primary"
