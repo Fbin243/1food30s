@@ -14,8 +14,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
-class ManageOrderPresenter(private val context: Context) {
-    suspend fun getManageOrders(adapter: ManageOrderAdapter) = withContext(Dispatchers.IO) {
+class ManageOrderPresenter(private val context: Context, private val view: ManageOrderMVPView) {
+    fun getManageOrders(adapter: ManageOrderAdapter) {
         val query = FireStoreUtils.mDBOrderRef
         val userDB = FireStoreUtils.mDBUserRef
         query.addSnapshotListener { snapshot, error ->
@@ -25,6 +25,8 @@ class ManageOrderPresenter(private val context: Context) {
                 return@addSnapshotListener
             }
             snapshot?.let { querySnapshot ->
+//                view.showShimmerEffectForOrders(querySnapshot.size())
+                Log.d("Test01", "sizePresenter : ${querySnapshot.size()}")
                 for (dc in querySnapshot.documentChanges) {
                     val newObject: Order = dc.document.toObject(Order::class.java)
 //                    val userRef: DocumentReference = newObject.idAccount
@@ -56,6 +58,8 @@ class ManageOrderPresenter(private val context: Context) {
                         Log.d("ManageOrderPresenter", "User: ${newObject.toString()}")
                     }
                 }
+//                view.setManageOrderUI()
+//                view.hideShimmerEffectForOrders()
             }
         }
     }

@@ -30,6 +30,7 @@ import java.util.Date
 
 
 object Utils {
+    val timeHandler: Long = 800
     fun formatPrice(price: Double): String {
         return String.format("%.2f", price).replace(",", ".")
     }
@@ -59,7 +60,7 @@ object Utils {
             shimmer.stopShimmer()
             shimmer.visibility = View.GONE
             if(wantToShow) view.visibility = View.VISIBLE
-        }, 500)
+        }, timeHandler.toLong())
     }
 
     fun initSwipeRefreshLayout(

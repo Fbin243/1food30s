@@ -4,6 +4,6 @@ interface MyOrderMVPView {
     fun setMyActiveOrderUI()
     fun setMyPrevOrderUI()
 
-    fun showShimmerEffectForOrders()
+    fun showShimmerEffectForOrders(size: Int)
     fun hideShimmerEffectForOrders()
 }

@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.ui.manage_order
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,7 @@ import com.zebrand.app1food30s.databinding.FragmentManageOrderBinding
 import com.zebrand.app1food30s.ui.manage_order.manage_order_details.ManageOrderDetailsActivity
 import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -41,7 +43,7 @@ class ManageOrderFragment : Fragment(), ManageOrderMVPView{
     override fun onAttach(context: Context) {
         super.onAttach(context)
         preferences = MySharedPreferences.getInstance(context)
-        presenter = ManageOrderPresenter(context)
+        presenter = ManageOrderPresenter(context, this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -56,9 +58,9 @@ class ManageOrderFragment : Fragment(), ManageOrderMVPView{
 
         events()
 
-        lifecycleScope.launch {
-            getManageOrders()
-        }
+        getManageOrders()
+//        lifecycleScope.launch {
+//        }
     }
 
     private fun init(){
@@ -133,7 +135,7 @@ class ManageOrderFragment : Fragment(), ManageOrderMVPView{
         _binding = null
     }
 
-    override suspend fun getManageOrders() {
+    override fun getManageOrders() {
         manageOrderAdapter = ManageOrderAdapter(manageOrderList)
         manageOrderAdapter.onItemClick = {
             GlobalUtils.myStartActivityWithString(requireContext(), ManageOrderDetailsActivity::class.java, "idOrder", it.id)
@@ -145,5 +147,31 @@ class ManageOrderFragment : Fragment(), ManageOrderMVPView{
 
 //        //getData
         presenter.getManageOrders(manageOrderAdapter)
+    }
+
+    override fun setManageOrderUI() {
+        Log.d("Test01", "size123 : ${manageOrderAdapter.itemCount}")
+//        if(manageOrderAdapter.itemCount == 0){
+//            binding.rcvManageOrder.visibility = View.GONE
+//            binding.noItemLayout.visibility = View.VISIBLE
+//        }else{
+//        }
+        binding.rcvManageOrder.visibility = View.VISIBLE
+        binding.noItemLayout.visibility = View.GONE
+    }
+
+    override fun showShimmerEffectForOrders(size: Int) {
+        Log.d("Test01", "size345: $size")
+        for (i in 0 until size) {
+            val shimmerLayout = layoutInflater.inflate(R.layout.product_card_view_linear_shimmer, binding.linearShimmer, false)
+            // Add the inflated layout to the parent LinearLayout
+            binding.linearShimmer.addView(shimmerLayout)
+        }
+
+        Utils.showShimmerEffect(binding.orderShimmer, binding.orderItemList)
+    }
+
+    override fun hideShimmerEffectForOrders() {
+        Utils.hideShimmerEffect(binding.orderShimmer, binding.orderItemList)
     }
 }

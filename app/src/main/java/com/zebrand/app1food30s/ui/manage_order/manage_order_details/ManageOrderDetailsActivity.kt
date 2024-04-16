@@ -173,4 +173,19 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
 
     }
 
+    override fun showShimmerEffectForOrders(size: Int) {
+        binding.linearShimmer.removeAllViews()
+        for (i in 0 until size) {
+            val shimmerLayout = layoutInflater.inflate(R.layout.product_card_view_linear_shimmer, binding.linearShimmer, false)
+            // Add the inflated layout to the parent LinearLayout
+            binding.linearShimmer.addView(shimmerLayout)
+        }
+
+        Utils.showShimmerEffect(binding.orderDetailsShimmer, binding.orderItemList)
+    }
+
+    override fun hideShimmerEffectForOrders() {
+        Utils.hideShimmerEffect(binding.orderDetailsShimmer, binding.orderItemList)
+    }
+
 }

@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.ui.my_order
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -147,16 +148,23 @@ class MyPrevOrderFragment : Fragment(), MyOrderMVPView {
     override fun setMyActiveOrderUI() {}
 
     override fun setMyPrevOrderUI() {
-        if(myPrevOrderList.isEmpty()){
-            binding.orderItemList.visibility = View.GONE
-            binding.noItemLayout.visibility = View.VISIBLE
-        }else{
-            binding.rcvActiveMyOrder.visibility = View.VISIBLE
-            binding.noItemLayout.visibility = View.GONE
-        }
+        Handler().postDelayed({
+            if (myPrevOrderAdapter.itemCount == 0) {
+                binding.orderItemList.visibility = View.GONE
+                binding.noItemLayout.visibility = View.VISIBLE
+            } else {
+                binding.orderItemList.visibility = View.VISIBLE
+                binding.noItemLayout.visibility = View.GONE
+            }
+        }, Utils.timeHandler + 200)
     }
 
-    override fun showShimmerEffectForOrders() {
+    override fun showShimmerEffectForOrders(size: Int) {
+        for (i in 0 until size) {
+            val shimmerLayout = layoutInflater.inflate(R.layout.product_card_view_linear_shimmer, binding.linearShimmer, false)
+            // Add the inflated layout to the parent LinearLayout
+            binding.linearShimmer.addView(shimmerLayout)
+        }
         Utils.showShimmerEffect(binding.orderShimmer, binding.orderItemList)
     }
 

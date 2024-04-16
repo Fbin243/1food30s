@@ -40,6 +40,7 @@ class ManageOrderDetailsPresenter(
             val newObject: Order? = snapshot.toObject(Order::class.java)
             Log.d("Test00", "placeOrder: Starting order placement. ${orderDetails?.id} $newObject")
             if (newObject != null && newObject.items.isNotEmpty()) {
+                view.showShimmerEffectForOrders(newObject.items.size)
                 if (orderDetails?.id?.isEmpty() == false && (orderDetails.orderStatus != newObject.orderStatus || orderDetails.paymentStatus != newObject.paymentStatus) ) {
                     // Trạng thái đã được sửa đổi, cập nhật lại trong adapter
                     orderDetails.apply {
@@ -68,6 +69,7 @@ class ManageOrderDetailsPresenter(
                 }
 
                 view.setManageOrderDetailsUI()
+                view.hideShimmerEffectForOrders()
                 Log.d("Test00", "placeOrder: Starting order placement. $orderDetails")
             }
         }
