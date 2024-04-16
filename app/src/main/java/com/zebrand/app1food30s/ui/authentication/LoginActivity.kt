@@ -10,6 +10,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.GraphRequest
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -30,14 +36,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import org.json.JSONException
 import java.io.ByteArrayOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.UUID
 
+
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
     private val mySharePreference = MySharedPreferences.getInstance(this)
+    private lateinit var callbackManager: CallbackManager
 
     companion object {
         private const val RC_SIGN_IN = 9001
@@ -66,6 +75,8 @@ class LoginActivity : AppCompatActivity() {
             binding.tvEmail.setText(email)
             binding.tvPassword.setText(password)
         }
+        // Facebook login
+        handleLoginWithFacebook()
     }
 
     private fun events() {
@@ -85,6 +96,11 @@ class LoginActivity : AppCompatActivity() {
 
         binding.googleLoginBtn.setOnClickListener {
             onClickGoogleLogin()
+        }
+
+        binding.facebookLoginBtn.setOnClickListener {
+            LoginManager.getInstance()
+                .logInWithReadPermissions(this, listOf("email", "public_profile"))
         }
 
         binding.backIcon.root.setOnClickListener {
@@ -245,7 +261,10 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        // Facebook login
+        callbackManager.onActivityResult(requestCode, resultCode, data)
 
+        // Google login
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
@@ -260,7 +279,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        Log.i("TAG123", "firebaseAuthWithGoogle: $credential")
         FirebaseUtils.fireAuth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
@@ -269,52 +287,9 @@ class LoginActivity : AppCompatActivity() {
                         "TAG123",
                         "firebaseAuthWithGoogle: ${user?.displayName} ${user?.email} ${user?.photoUrl}"
                     )
-                    Toast.makeText(this, "Signed in as ${user?.displayName}", Toast.LENGTH_SHORT)
-                        .show()
-//                    user?.let {
-//                        Log.d("TAG123", "Login " + user.toString())
-//                        mySharePreference.setString(SingletonKey.KEY_USER_ID, user.uid)
-//                        mySharePreference.setBoolean(SingletonKey.IS_ADMIN, user.admin)
-//                        myStartActivity(MainActivity::class.java, user.id!!)
-//                    }
 
-                    mySharePreference.setBoolean(SingletonKey.KEY_LOGGED, true)
                     if (user != null) {
-                        FireStoreUtils.mDBUserRef.whereEqualTo("email", user.email).get()
-                            .addOnSuccessListener { queryDocumentSnapshots ->
-                                if (queryDocumentSnapshots.isEmpty) {
-                                    Log.d("TAG123", "User not found in Firestore")
-                                    val fileName = "ava${UUID.randomUUID()}.png"
-                                    CoroutineScope(Dispatchers.IO).launch {
-                                        try {
-                                            val imagePath = "images/avatars/$fileName"
-                                            uploadImageFromUrl(user.photoUrl.toString(), imagePath)
-                                            withContext(Dispatchers.Main) {
-                                                Toast.makeText(this@LoginActivity, "Profile image uploaded successfully", Toast.LENGTH_SHORT).show()
-                                            }
-
-                                            val newUser = User(
-                                                firstName = user.displayName?.split(" ", limit = 2)?.get(0) ?: "",
-                                                lastName = user.displayName?.split(" ", limit = 2)?.get(1) ?: "",
-                                                email = user.email ?: "",
-                                                admin = false,
-                                                avatar = imagePath
-                                            )
-
-                                            Utils.setUserDataInFireStore(newUser) {
-                                                authorization(user.email ?: "", mySharePreference)
-                                            }
-                                        } catch (e: Exception) {
-                                            withContext(Dispatchers.Main) {
-                                                Toast.makeText(this@LoginActivity, "Failed to upload profile image", Toast.LENGTH_SHORT).show()
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    Log.d("TAG123", "User found in Firestore")
-                                    authorization(user.email ?: "", mySharePreference)
-                                }
-                            }
+                        handleLoggedInUser(user.displayName, user.email, user.photoUrl.toString())
                     } else {
                         Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
                     }
@@ -324,7 +299,101 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 
-    suspend fun uploadImageFromUrl(imageUrl: String, storagePath: String) {
+    private fun handleLoginWithFacebook() {
+        callbackManager = CallbackManager.Factory.create()
+        LoginManager.getInstance()
+            .registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
+                override fun onSuccess(result: LoginResult) {
+                    val request = GraphRequest.newMeRequest(
+                        result.accessToken
+                    ) { jsonObject, _ ->
+                        jsonObject?.let {
+                            try {
+                                val name = it.getString("name")
+                                val eMail = it.getString("email")
+                                val fbUserID = it.getString("id")
+                                val url = it.getJSONObject("picture").getJSONObject("data")
+                                    .getString("url")
+
+                                Log.i("TAG123", "onSuccess: $name $fbUserID $eMail $url")
+                                handleLoggedInUser(name, eMail, url)
+                            } catch (e: JSONException) {
+                                e.printStackTrace()
+                            } catch (e: NullPointerException) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+
+                    val parameters = Bundle()
+                    parameters.putString(
+                        "fields",
+                        "id, name, email, gender, birthday, picture.type(large)"
+                    )
+                    request.parameters = parameters
+                    request.executeAsync()
+                }
+
+                override fun onCancel() {
+                    Log.v("LoginScreen", "---onCancel")
+                }
+
+                override fun onError(error: FacebookException) {
+                    Log.v("LoginScreen", "----onError: ${error.message}")
+                }
+            })
+    }
+
+    private fun handleLoggedInUser(name: String?, email: String?, photoUrl: String?) {
+        mySharePreference.setBoolean(SingletonKey.KEY_LOGGED, true)
+        Toast.makeText(this, "Signed in as $name", Toast.LENGTH_SHORT)
+            .show()
+        FireStoreUtils.mDBUserRef.whereEqualTo("email", email).get()
+            .addOnSuccessListener { queryDocumentSnapshots ->
+                if (queryDocumentSnapshots.isEmpty) {
+                    Log.d("TAG123", "User not found in Firestore")
+                    val fileName = "ava${UUID.randomUUID()}.png"
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            val imagePath = "images/avatars/$fileName"
+                            uploadImageFromUrl(photoUrl.toString(), imagePath)
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(
+                                    this@LoginActivity,
+                                    "Profile image uploaded successfully",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            val newUser = User(
+                                firstName = name?.split(" ", limit = 2)?.get(0) ?: "",
+                                lastName = name?.split(" ", limit = 2)?.get(1) ?: "",
+                                email = email ?: "",
+                                admin = false,
+                                avatar = imagePath
+                            )
+
+                            Utils.setUserDataInFireStore(newUser) {
+                                authorization(email ?: "", mySharePreference)
+                            }
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(
+                                    this@LoginActivity,
+                                    "Failed to upload profile image",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                } else {
+                    Log.d("TAG123", "User found in Firestore")
+                    authorization(email ?: "", mySharePreference)
+                }
+            }
+    }
+
+    private suspend fun uploadImageFromUrl(imageUrl: String, storagePath: String) {
         withContext(Dispatchers.IO) {
             val url = URL(imageUrl)
             val connection = url.openConnection() as HttpURLConnection

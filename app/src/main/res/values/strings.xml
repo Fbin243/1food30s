@@ -1,6 +1,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">app1food30s</string>
-    <string name="default_web_client_id">225251472016-sbmqssqsb8h891fvthlagu4h8hdcscup.apps.googleusercontent.com</string>
+    <string name="default_web_client_id" translatable="false">225251472016-sbmqssqsb8h891fvthlagu4h8hdcscup.apps.googleusercontent.com</string>
+    <string name="facebook_app_id" translatable="false">1514836499081410</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb1514836499081410</string>
+    <string name="facebook_client_token" translatable="false">d316b9c3b1effd42fc963a8b109b0e96</string>
+
+
     <string name="txt_uni_address">227 Nguyễn Văn Cừ, phường 4, Quận 5, Thành phố Hồ Chí Minh</string>
 
     <!--    Authentication-->
@@ -252,4 +257,5 @@
     <string name="txt_read_more">Read more</string>
     <string name="txt_read_less">Read less</string>
     <string name="txt_login_with_google">Login with Google</string>
+    <string name="txt_or_continue_with">Or continue with</string>
 </resources>

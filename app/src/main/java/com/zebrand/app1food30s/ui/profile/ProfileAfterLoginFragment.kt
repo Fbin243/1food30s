@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -205,10 +206,14 @@ class ProfileAfterLoginFragment : Fragment() {
         val mAuth = FirebaseUtils.fireAuth
         val mySharedPreferences = MySharedPreferences.getInstance(requireContext())
 
-//            Sign out
+//      Sign out
         mAuth.signOut()
 
+        // Google sign out
         mGoogleSignInClient.signOut()
+
+        // Facebook sign out
+        LoginManager.getInstance().logOut()
 
 //            Clear data in local DB
         GlobalUtils.resetMySharedPreferences(mySharedPreferences)
