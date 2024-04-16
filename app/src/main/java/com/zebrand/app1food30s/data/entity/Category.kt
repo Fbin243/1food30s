@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import java.util.Date
 
 @Entity(tableName = "categories")
+
 data class Category(
     @PrimaryKey
     var id: String = "",
