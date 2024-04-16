@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.ui.profile
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,9 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
@@ -39,6 +43,7 @@ class ProfileAfterLoginFragment : Fragment() {
     private lateinit var avaImageView: ImageView
     private var imageUri: Uri? = null
     private var currentImagePath: String? = null
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
 
     // ResultLauncher for handling image picking result
     private val pickImageLauncher =
@@ -101,14 +106,22 @@ class ProfileAfterLoginFragment : Fragment() {
             startActivity(intent)
         }
 
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
+
         return binding.root
     }
 
 
     override fun onResume() {
         super.onResume()
+        Log.i("TAG123", "onResume: goi ham fetch lai $idUser")
         idUser?.let {
-            fetchUserInformation(it)
+            fetchUserInformation(it, true)
         }
     }
 
@@ -144,7 +157,7 @@ class ProfileAfterLoginFragment : Fragment() {
             }
     }
 
-    private fun fetchUserInformation(userId: String) {
+    private fun fetchUserInformation(userId: String, fetchWithoutImage: Boolean = false) {
         lifecycleScope.launch {
             try {
                 val documentSnapshot = FireStoreUtils.mDBUserRef.document(userId).get().await()
@@ -152,17 +165,19 @@ class ProfileAfterLoginFragment : Fragment() {
                 user?.let {
                     val ava = binding.ava
                     // Check if user's avatar is not null and not empty
-                    if (it.avatar.isNotEmpty()) {
-                        // Fetch and set the user's avatar with resizing
-                        val imageUrl =
-                            fireStorage.reference.child(it.avatar).downloadUrl.await().toString()
-                        Picasso.get().load(imageUrl).placeholder(Utils.getShimmerDrawable())
-                            .into(ava)
-                    } else {
-                        // Load a default image when avatar is null or empty, also with resizing
-                        Picasso.get().load(R.drawable.default_avatar)
-                            .placeholder(Utils.getShimmerDrawable())// Adjust cropping to maintain aspect ratio
-                            .into(ava)
+                    if(!fetchWithoutImage) {
+                        if (it.avatar.isNotEmpty()) {
+                            // Fetch and set the user's avatar with resizing
+                            val imageUrl =
+                                fireStorage.reference.child(it.avatar).downloadUrl.await().toString()
+                            Picasso.get().load(imageUrl).placeholder(Utils.getShimmerDrawable())
+                                .into(ava)
+                        } else {
+                            // Load a default image when avatar is null or empty, also with resizing
+                            Picasso.get().load(R.drawable.default_avatar)
+                                .placeholder(Utils.getShimmerDrawable())// Adjust cropping to maintain aspect ratio
+                                .into(ava)
+                        }
                     }
                     binding.username.text = it.firstName
                     binding.email.text = it.email
@@ -192,6 +207,8 @@ class ProfileAfterLoginFragment : Fragment() {
 
 //            Sign out
         mAuth.signOut()
+
+        mGoogleSignInClient.signOut()
 
 //            Clear data in local DB
         GlobalUtils.resetMySharedPreferences(mySharedPreferences)

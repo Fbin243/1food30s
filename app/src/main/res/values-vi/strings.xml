@@ -1,5 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">app1food30s</string>
+    <string name="default_web_client_id">225251472016-sbmqssqsb8h891fvthlagu4h8hdcscup.apps.googleusercontent.com</string>
     <string name="txt_uni_address">227 Nguyễn Văn Cừ, phường 4, Quận 5, Thành phố Hồ Chí Minh</string>
 
     <!--    Authentication-->
@@ -143,7 +144,7 @@
     <string name="product_price_number">$%.2f</string>
     <string name="close_button_description">Nút đóng</string>
     <string name="admin_statistics">Thống kê</string>
-    <string name="txt_stock">"Hàng tồn: "</string>
+    <string name="txt_stock">"Hàng trong kho: "</string>
     <string name="txt_dashboard">Thống kê</string>
     <string name="txt_orders">Đơn hàng</string>
     <string name="txt_products">Sản phẩm</string>
@@ -249,5 +250,6 @@
     <string name="txt_add_to_cart">Thêm vào giỏ hàng</string>
     <string name="txt_sold">Đã bán</string>
     <string name="txt_read_more">Xem thêm</string>
-    <string name="txt_read_less">Ẩn đi</string>
+    <string name="txt_read_less">Ẩn bớt</string>
+    <string name="txt_login_with_google">Đăng nhập với Google</string>
 </resources>

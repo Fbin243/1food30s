@@ -2,13 +2,20 @@ package com.zebrand.app1food30s.ui.authentication
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import com.google.firebase.auth.FirebaseUser
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.storage.FirebaseStorage
+import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.databinding.ActivityLoginBinding
 import com.zebrand.app1food30s.ui.main.MainActivity
@@ -16,16 +23,25 @@ import com.zebrand.app1food30s.utils.FireStoreUtils
 import com.zebrand.app1food30s.utils.FirebaseUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
+import com.zebrand.app1food30s.utils.Utils
 import com.zebrand.app1food30s.utils.ValidateInput
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
+import java.net.HttpURLConnection
+import java.net.URL
+import java.util.UUID
 
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
     private val mySharePreference = MySharedPreferences.getInstance(this)
+
+    companion object {
+        private const val RC_SIGN_IN = 9001
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +83,10 @@ class LoginActivity : AppCompatActivity() {
             onClickLogin()
         }
 
+        binding.googleLoginBtn.setOnClickListener {
+            onClickGoogleLogin()
+        }
+
         binding.backIcon.root.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
@@ -77,29 +97,6 @@ class LoginActivity : AppCompatActivity() {
 
         ValidateInput.emailFocusListener(this, binding.tvEmail, binding.emailContainer)
         ValidateInput.passwordFocusListener(this, binding.tvPassword, binding.passwordContainer)
-    }
-
-    private fun onClickLogin() {
-        if (checkValid()) {
-            val email = binding.tvEmail.text.toString().trim()
-            val password = binding.tvPassword.text.toString().trim()
-
-            val mAuth = FirebaseUtils.fireAuth
-            mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        // Set KEY_LOGGED
-                        setKeyShareRef(email, password)
-
-                        // Authorization
-                        Log.d("userInfo", "Da di qua 1 " + email)
-                        authorization(email, mySharePreference)
-
-                    } else {
-                        Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-        }
     }
 
 //    private fun authorization(email: String, mySharePreference: MySharedPreferences) {
@@ -209,5 +206,140 @@ class LoginActivity : AppCompatActivity() {
         val validPassword = binding.passwordContainer.error == null
 
         return validEmail && validPassword
+    }
+
+    private fun onClickLogin() {
+        if (checkValid()) {
+            val email = binding.tvEmail.text.toString().trim()
+            val password = binding.tvPassword.text.toString().trim()
+
+            val mAuth = FirebaseUtils.fireAuth
+            mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Set KEY_LOGGED
+                        setKeyShareRef(email, password)
+
+                        // Authorization
+                        Log.d("userInfo", "Da di qua 1 " + email)
+                        authorization(email, mySharePreference)
+
+                    } else {
+                        Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+        }
+    }
+
+    private fun onClickGoogleLogin() {
+        // Configure Google Sign In
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        val mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+        val signInIntent = mGoogleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == RC_SIGN_IN) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                firebaseAuthWithGoogle(account.idToken!!)
+            } catch (e: ApiException) {
+                Toast.makeText(this, "Google sign in failed: ${e.message}", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        Log.i("TAG123", "firebaseAuthWithGoogle: $credential")
+        FirebaseUtils.fireAuth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = FirebaseUtils.fireAuth.currentUser
+                    Log.i(
+                        "TAG123",
+                        "firebaseAuthWithGoogle: ${user?.displayName} ${user?.email} ${user?.photoUrl}"
+                    )
+                    Toast.makeText(this, "Signed in as ${user?.displayName}", Toast.LENGTH_SHORT)
+                        .show()
+//                    user?.let {
+//                        Log.d("TAG123", "Login " + user.toString())
+//                        mySharePreference.setString(SingletonKey.KEY_USER_ID, user.uid)
+//                        mySharePreference.setBoolean(SingletonKey.IS_ADMIN, user.admin)
+//                        myStartActivity(MainActivity::class.java, user.id!!)
+//                    }
+
+                    mySharePreference.setBoolean(SingletonKey.KEY_LOGGED, true)
+                    if (user != null) {
+                        FireStoreUtils.mDBUserRef.whereEqualTo("email", user.email).get()
+                            .addOnSuccessListener { queryDocumentSnapshots ->
+                                if (queryDocumentSnapshots.isEmpty) {
+                                    Log.d("TAG123", "User not found in Firestore")
+                                    val fileName = "ava${UUID.randomUUID()}.png"
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        try {
+                                            val imagePath = "images/avatars/$fileName"
+                                            uploadImageFromUrl(user.photoUrl.toString(), imagePath)
+                                            withContext(Dispatchers.Main) {
+                                                Toast.makeText(this@LoginActivity, "Profile image uploaded successfully", Toast.LENGTH_SHORT).show()
+                                            }
+
+                                            val newUser = User(
+                                                firstName = user.displayName?.split(" ", limit = 2)?.get(0) ?: "",
+                                                lastName = user.displayName?.split(" ", limit = 2)?.get(1) ?: "",
+                                                email = user.email ?: "",
+                                                admin = false,
+                                                avatar = imagePath
+                                            )
+
+                                            Utils.setUserDataInFireStore(newUser) {
+                                                authorization(user.email ?: "", mySharePreference)
+                                            }
+                                        } catch (e: Exception) {
+                                            withContext(Dispatchers.Main) {
+                                                Toast.makeText(this@LoginActivity, "Failed to upload profile image", Toast.LENGTH_SHORT).show()
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    Log.d("TAG123", "User found in Firestore")
+                                    authorization(user.email ?: "", mySharePreference)
+                                }
+                            }
+                    } else {
+                        Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    suspend fun uploadImageFromUrl(imageUrl: String, storagePath: String) {
+        withContext(Dispatchers.IO) {
+            val url = URL(imageUrl)
+            val connection = url.openConnection() as HttpURLConnection
+            connection.doInput = true
+            connection.connect()
+
+            val input = connection.inputStream
+            val bitmap = BitmapFactory.decodeStream(input)
+
+            val baos = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
+            val data = baos.toByteArray()
+
+            val storageRef = FirebaseStorage.getInstance().reference.child(storagePath)
+            storageRef.putBytes(data).await()
+        }
     }
 }

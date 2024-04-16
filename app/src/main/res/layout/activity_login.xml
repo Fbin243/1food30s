@@ -163,6 +163,7 @@
             />
 
         <LinearLayout
+            android:id="@+id/linear_sign_up_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -186,6 +187,40 @@
                 android:textFontWeight="500"
                 android:textColor="@color/primary"
                 android:layout_marginStart="@dimen/spacing12"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/google_border"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linear_sign_up_text">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginLeft="11dp"
+                android:layout_marginRight="11dp"
+                android:background="@color/white"
+                android:src="@drawable/ic_google" />
+
+            <Button
+                android:id="@+id/googleLoginBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:background="@color/blue"
+                android:text="@string/txt_login_with_google"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

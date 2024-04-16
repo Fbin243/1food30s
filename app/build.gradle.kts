@@ -94,6 +94,9 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-auth")
 
+    // ================ Google services =======================
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+
     // ================ ROOM Database =================
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
@@ -102,4 +105,5 @@ dependencies {
     // ================ Map =================
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.google.android.libraries.places:places:3.4.0")
+
 }
