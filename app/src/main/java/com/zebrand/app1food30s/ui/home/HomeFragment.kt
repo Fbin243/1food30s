@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.firebase.firestore.FirebaseFirestore
+import com.zebrand.app1food30s.ui.chat.ChatActivity
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
@@ -88,6 +89,11 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
 
         handleOpenSearchScreen()
+
+        binding.ivWishlistScreen.setOnClickListener{
+            val intent = Intent(requireContext(), ChatActivity::class.java)
+            startActivity(intent)
+        }
 
         return binding.root
     }
