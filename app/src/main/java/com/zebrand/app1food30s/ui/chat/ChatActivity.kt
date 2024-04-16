@@ -1,26 +1,18 @@
 package com.zebrand.app1food30s.ui.chat
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-import com.zebrand.app1food30s.adapter.ManageProductAdapter
 import com.zebrand.app1food30s.adapter.MessageAdapter
-import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Chat
 import com.zebrand.app1food30s.data.entity.Message
 import com.zebrand.app1food30s.databinding.ActivityChatBinding
-import com.zebrand.app1food30s.ui.edit_product.EditProduct
-import com.zebrand.app1food30s.utils.FirebaseUtils.fireStore
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import java.util.*
 
 class ChatActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChatBinding
@@ -32,67 +24,82 @@ class ChatActivity : AppCompatActivity() {
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        setupRecyclerView()
-        handleDisplayMessages()
+        setupRecyclerView()
+        handleDisplayMessages("CaobLG7qUCxM10RxWZAi")
         binding.buttonSend.setOnClickListener {
-            sendMessage()
-        }
-    }
-
-    private fun handleDisplayMessages() {
-        lifecycleScope.launch {
-//            showShimmerEffectForProducts()
-//            val db = AppDatabase.getInstance(applicationContext)
-            Log.e("getListMessages", "Test 1 getting messages")
-            val adapter = MessageAdapter(getListMessages("CaobLG7qUCxM10RxWZAi"))
-            binding.recyclerViewChat.layoutManager = LinearLayoutManager(this@ChatActivity)
-            binding.recyclerViewChat.adapter = adapter
-//            hideShimmerEffectForProducts()
-        }
-    }
-
-//    private fun setupRecyclerView() {
-//        messageAdapter = MessageAdapter(messages)
-//        binding.recyclerViewChat.apply {
-//            layoutManager = LinearLayoutManager(this@ChatActivity)
-//            adapter = messageAdapter
-//        }
-//    }
-
-    private fun sendMessage() {
-        val messageText = binding.editTextMessage.text.toString()
-        if (messageText.isNotEmpty()) {
-            val message = Message("senderId", "receiverId", messageText, Date())
-            messages.add(message)
-            messageAdapter.notifyItemInserted(messages.size - 1)
-            binding.recyclerViewChat.scrollToPosition(messages.size - 1)
-            binding.editTextMessage.text.clear()
-        }
-    }
-
-    private suspend fun getListMessages(chatId: String): List<Message> {
-        return withContext(Dispatchers.IO) {
-            val fireStore = FirebaseFirestore.getInstance()
-            try {
-                // Query the chats collection for documents where idBuyer matches chatId
-                val querySnapshot = fireStore.collection("chats")
-                    .whereEqualTo("idBuyer", chatId)
-                    .get()
-                    .await()
-
-                // Process the first document that matches the query
-                if (querySnapshot.documents.isNotEmpty()) {
-                    val document = querySnapshot.documents.first()
-                    val chat = document.toObject(Chat::class.java)
-                    chat?.messages ?: emptyList()
-                } else {
-                    emptyList()
-                }
-            } catch (e: Exception) {
-                Log.e("getMessagesForBuyer", "Error querying messages for buyer", e)
-                emptyList()
+            val messageText = binding.editTextMessage.text.toString()
+            if (messageText.isNotEmpty()) {
+                val message = Message("CaobLG7qUCxM10RxWZAi", "zErR5nXOOmmqrz1YR5V7", messageText)  // Adjust IDs as needed
+                binding.editTextMessage.text.clear()
+                sendMessageToFirestore("CaobLG7qUCxM10RxWZAi", message)
             }
         }
     }
 
+    private fun setupRecyclerView() {
+        messageAdapter = MessageAdapter(messages)
+        binding.recyclerViewChat.apply {
+            layoutManager = LinearLayoutManager(this@ChatActivity)
+            adapter = messageAdapter
+        }
+    }
+
+    private fun handleDisplayMessages(chatId: String) {
+        val chatsCollection = FirebaseFirestore.getInstance().collection("chats")
+        lifecycleScope.launch {
+            try {
+                val querySnapshot = chatsCollection.whereEqualTo("idBuyer", chatId).get().await()
+
+                if (querySnapshot.documents.isNotEmpty()) {
+                    val document = querySnapshot.documents.first() // Assuming 'idBuyer' is unique and expecting only one document
+
+                    document.reference.addSnapshotListener { snapshot, e ->
+                        if (e != null) {
+                            Log.e("ChatActivity", "Listen failed.", e)
+                            return@addSnapshotListener
+                        }
+
+                        if (snapshot != null && snapshot.exists()) {
+                            Log.d("ChatActivity", "Current data: ${snapshot.data}")
+                            val updatedChat = snapshot.toObject(Chat::class.java)
+                            updatedChat?.messages?.let {
+                                messages.clear()
+                                messages.addAll(it)
+                                messageAdapter.notifyDataSetChanged()
+                                binding.recyclerViewChat.scrollToPosition(messages.size - 1)
+                            }
+                        } else {
+                            Log.d("ChatActivity", "Current data: null")
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("ChatActivity", "Error setting up real-time updates", e)
+            }
+        }
+    }
+
+    private fun sendMessageToFirestore(chatId: String, message: Message) {
+        val chatsCollection = FirebaseFirestore.getInstance().collection("chats")
+        lifecycleScope.launch {
+            try {
+                val querySnapshot = chatsCollection.whereEqualTo("idBuyer", chatId).get().await()
+
+                if (querySnapshot.documents.isNotEmpty()) {
+                    val document = querySnapshot.documents.first() // Assuming 'idBuyer' is unique and expecting only one document
+                    document.reference.update("messages", FieldValue.arrayUnion(message))
+                        .addOnSuccessListener {
+                            Log.d("ChatActivity", "Message successfully added to Firestore")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("ChatActivity", "Failed to send message", e)
+                        }
+                } else {
+                    Log.e("ChatActivity", "No chat document found for idBuyer: $chatId")
+                }
+            } catch (e: Exception) {
+                Log.e("ChatActivity", "Error sending message to Firestore", e)
+            }
+        }
+    }
 }

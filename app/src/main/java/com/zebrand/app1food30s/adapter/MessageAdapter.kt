@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +28,7 @@ class MessageAdapter(private val messages: List<Message>) : RecyclerView.Adapter
         val message = messages[position]
         holder.textViewSender.text = message.idSender // Replace this with sender's name if available
         holder.textViewMessage.text = message.messageString
+        Log.d("adminLogin", "messageStr: ${message.messageString}")
         holder.textViewTimestamp.text = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(message.date)
     }
 
