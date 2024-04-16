@@ -1,6 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">app1food30s</string>
-    <string name="default_web_client_id">225251472016-sbmqssqsb8h891fvthlagu4h8hdcscup.apps.googleusercontent.com</string>
     <string name="txt_uni_address">227 Nguyễn Văn Cừ, phường 4, Quận 5, Thành phố Hồ Chí Minh</string>
 
     <!--    Authentication-->
@@ -252,4 +251,5 @@
     <string name="txt_read_more">Xem thêm</string>
     <string name="txt_read_less">Ẩn bớt</string>
     <string name="txt_login_with_google">Đăng nhập với Google</string>
+    <string name="txt_or_continue_with">Hoặc tiếp tục với</string>
 </resources>

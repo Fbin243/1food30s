@@ -96,6 +96,10 @@ dependencies {
 
     // ================ Google services =======================
     implementation("com.google.android.gms:play-services-auth:21.0.0")
+    // ================ Facebook services =======================
+    implementation("com.facebook.android:facebook-login:latest.release")
+    implementation("com.facebook.android:facebook-android-sdk:[8,9)")
+
 
     // ================ ROOM Database =================
     implementation("androidx.room:room-runtime:2.6.1")
