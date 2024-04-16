@@ -333,8 +333,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:fontFamily="@font/font_family"
-                        android:textFontWeight="600"
                         android:text="6 Reviews"
+                        android:textFontWeight="600"
                         android:textSize="@dimen/font_size16"
                         android:visibility="gone" />
                 </LinearLayout>

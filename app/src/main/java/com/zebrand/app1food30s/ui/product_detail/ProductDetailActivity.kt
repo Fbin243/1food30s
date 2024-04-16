@@ -148,7 +148,7 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView,
     override fun showReviews(reviews: List<Review>) {
         binding.reviewRcv.layoutManager = LinearLayoutManager(this)
         binding.reviewRcv.adapter = ReviewAdapter(reviews.take(5))
-        binding.reviewTitle.text = "${reviews.size} Đánh giá"
+        binding.reviewTitle.text = "${reviews.size} ${resources.getString(R.string.txt_reviews)}"
         if(reviews.isEmpty()) {
             binding.noReviewText.visibility = View.VISIBLE
         }
