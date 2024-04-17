@@ -149,21 +149,21 @@ class ManageOrderFragment : Fragment(), ManageOrderMVPView{
         presenter.getManageOrders(manageOrderAdapter)
     }
 
-    override fun setManageOrderUI() {
-        Log.d("Test01", "size123 : ${manageOrderAdapter.itemCount}")
-//        if(manageOrderAdapter.itemCount == 0){
-//            binding.rcvManageOrder.visibility = View.GONE
-//            binding.noItemLayout.visibility = View.VISIBLE
-//        }else{
-//        }
-        binding.rcvManageOrder.visibility = View.VISIBLE
-        binding.noItemLayout.visibility = View.GONE
+    override fun setManageOrderUI(size: Int) {
+        Log.d("Test01", "size123: ${manageOrderAdapter.itemCount}")
+        if(size == 0){
+            binding.rcvManageOrder.visibility = View.GONE
+            binding.noItemLayout.visibility = View.VISIBLE
+        }else{
+            binding.rcvManageOrder.visibility = View.VISIBLE
+            binding.noItemLayout.visibility = View.GONE
+        }
     }
 
     override fun showShimmerEffectForOrders(size: Int) {
-        Log.d("Test01", "size345: $size")
+        Log.d("Test01", "size345: $size size 2 ${manageOrderList.size} ${manageOrderAdapter.itemCount}")
         for (i in 0 until size) {
-            val shimmerLayout = layoutInflater.inflate(R.layout.product_card_view_linear_shimmer, binding.linearShimmer, false)
+            val shimmerLayout = layoutInflater.inflate(R.layout.item_manage_order_shimmer, binding.linearShimmer, false)
             // Add the inflated layout to the parent LinearLayout
             binding.linearShimmer.addView(shimmerLayout)
         }

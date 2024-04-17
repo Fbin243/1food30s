@@ -25,7 +25,7 @@ class ManageOrderPresenter(private val context: Context, private val view: Manag
                 return@addSnapshotListener
             }
             snapshot?.let { querySnapshot ->
-//                view.showShimmerEffectForOrders(querySnapshot.size())
+                view.showShimmerEffectForOrders(querySnapshot.size())
                 Log.d("Test01", "sizePresenter : ${querySnapshot.size()}")
                 for (dc in querySnapshot.documentChanges) {
                     val newObject: Order = dc.document.toObject(Order::class.java)
@@ -40,26 +40,29 @@ class ManageOrderPresenter(private val context: Context, private val view: Manag
                             phone = user.phone
                         }
 
-                        if (newObject.items.isNotEmpty()) {
-                            when (dc.type) {
-                                DocumentChange.Type.ADDED -> {
-                                    adapter.insertData(newObject)
-                                }
-
-                                DocumentChange.Type.MODIFIED -> {
-                                    adapter.modifyData(newObject)
-                                }
-
-                                DocumentChange.Type.REMOVED -> {
-                                    adapter.removeData(newObject)
-                                }
+                        when (dc.type) {
+                            DocumentChange.Type.ADDED -> {
+                                Log.d("ManageOrderPresenter", "da vo")
+                                adapter.insertData(newObject)
                             }
+
+                            DocumentChange.Type.MODIFIED -> {
+                                adapter.modifyData(newObject)
+                            }
+
+                            DocumentChange.Type.REMOVED -> {
+                                adapter.removeData(newObject)
+                            }
+                        }
+
+                        if (newObject.items.size != 0) {
                         }
                         Log.d("ManageOrderPresenter", "User: ${newObject.toString()}")
                     }
                 }
-//                view.setManageOrderUI()
-//                view.hideShimmerEffectForOrders()
+                Log.d("ManageOrderPresenter", "User: ${querySnapshot.size()}")
+                view.setManageOrderUI(querySnapshot.size())
+                view.hideShimmerEffectForOrders()
             }
         }
     }
