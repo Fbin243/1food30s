@@ -13,6 +13,7 @@ data class Message(
     val idSender: String = "",
     val idReceiver: String = "",
     val messageString: String = "",
+    val nameSender: String = "",
     var date: Date = Date()
 )
 

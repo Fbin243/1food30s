@@ -37,7 +37,7 @@ class ManageChatDetail : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        messageAdapter = MessageAdapter(messages)
+        messageAdapter = MessageAdapter(messages, "CaobLG7qUCxM10RxWZAi")
         binding.recyclerViewChat.apply {
             layoutManager = LinearLayoutManager(this@ManageChatDetail)
             adapter = messageAdapter

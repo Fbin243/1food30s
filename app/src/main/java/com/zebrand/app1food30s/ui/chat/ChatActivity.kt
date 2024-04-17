@@ -11,6 +11,7 @@ import com.zebrand.app1food30s.adapter.MessageAdapter
 import com.zebrand.app1food30s.data.entity.Chat
 import com.zebrand.app1food30s.data.entity.Message
 import com.zebrand.app1food30s.databinding.ActivityChatBinding
+import com.zebrand.app1food30s.utils.FirebaseUtils.fireStorage
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -18,6 +19,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChatBinding
     private lateinit var messageAdapter: MessageAdapter
     private val messages = mutableListOf<Message>()
+    private val currentUserId = "CaobLG7qUCxM10RxWZAi"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,15 +31,23 @@ class ChatActivity : AppCompatActivity() {
         binding.buttonSend.setOnClickListener {
             val messageText = binding.editTextMessage.text.toString()
             if (messageText.isNotEmpty()) {
-                val message = Message("CaobLG7qUCxM10RxWZAi", "zErR5nXOOmmqrz1YR5V7", messageText)  // Adjust IDs as needed
+//                val message = Message("CaobLG7qUCxM10RxWZAi", "zErR5nXOOmmqrz1YR5V7", messageText)  // Adjust IDs as needed
                 binding.editTextMessage.text.clear()
-                sendMessageToFirestore("CaobLG7qUCxM10RxWZAi", message)
+                sendMessageToFirestore("CaobLG7qUCxM10RxWZAi", messageText)
             }
         }
     }
 
+//    private fun setupRecyclerView() {
+//        messageAdapter = MessageAdapter(messages)
+//        binding.recyclerViewChat.apply {
+//            layoutManager = LinearLayoutManager(this@ChatActivity)
+//            adapter = messageAdapter
+//        }
+//    }
+
     private fun setupRecyclerView() {
-        messageAdapter = MessageAdapter(messages)
+        messageAdapter = MessageAdapter(messages, currentUserId) // Chuyển ID người dùng hiện tại tới adapter
         binding.recyclerViewChat.apply {
             layoutManager = LinearLayoutManager(this@ChatActivity)
             adapter = messageAdapter
@@ -79,14 +89,30 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendMessageToFirestore(chatId: String, message: Message) {
+    private fun sendMessageToFirestore(chatId: String, messageText: String) {
+//        var avaSender = "images/avatars/avaeb015d1a-8e43-4baf-aaf6-4639eb258f5e.png"
+        var nameSender = "Admin"
+        val accountsCollection = FirebaseFirestore.getInstance().collection("accounts")
+        accountsCollection.document("zErR5nXOOmmqrz1YR5V7").get().addOnSuccessListener { document ->
+            if (document != null && document.exists()) {
+//                avaSender = document.getString("avatar") ?: "images/avatars/avaeb015d1a-8e43-4baf-aaf6-4639eb258f5e.png"
+                nameSender = document.getString("firstName") ?: "Admin"
+            } else {
+                nameSender = "Admin"
+            }
+        }.addOnFailureListener {
+            nameSender = "Admin"
+        }
         val chatsCollection = FirebaseFirestore.getInstance().collection("chats")
         lifecycleScope.launch {
             try {
                 val querySnapshot = chatsCollection.whereEqualTo("idBuyer", chatId).get().await()
+//                val image = document.getString("image") ?: "images/product/product3.png"
+//                val imageUrl = fireStorage.reference.child(avaSender).downloadUrl.await().toString()
 
                 if (querySnapshot.documents.isNotEmpty()) {
                     val document = querySnapshot.documents.first() // Assuming 'idBuyer' is unique and expecting only one document
+                    val message = Message("CaobLG7qUCxM10RxWZAi", "zErR5nXOOmmqrz1YR5V7", messageText, nameSender)
                     document.reference.update("messages", FieldValue.arrayUnion(message))
                         .addOnSuccessListener {
                             Log.d("ChatActivity", "Message successfully added to Firestore")
