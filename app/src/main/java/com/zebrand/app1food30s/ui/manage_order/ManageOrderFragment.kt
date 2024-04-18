@@ -181,7 +181,7 @@ class ManageOrderFragment : Fragment(), ManageOrderMVPView, SwipeRefreshLayout.O
         searchBtn.setOnClickListener {
 //            manageOrderAdapter.filterOrders()
             searchOrders()
-//            botDialog?.dismiss()
+            botDialog?.dismiss()
         }
 
         clearBtn.setOnClickListener {
@@ -238,6 +238,76 @@ class ManageOrderFragment : Fragment(), ManageOrderMVPView, SwipeRefreshLayout.O
         val dateText = botDialog?.findViewById<TextInputEditText>(R.id.datePicker)?.text.toString().trim()
 
         Log.d("filterOrders", manageOrderList.size.toString())
+        val filterOrders = mutableListOf<Order>()
+
+        for (order in manageOrderList) {
+            var check = true
+
+            if (orderID.trim().isNotEmpty()) {
+                check = Utils.formatId(order.id).contains(orderID)
+            }
+            if (!check) continue
+
+            if (filterStatus != resources.getString(R.string.txt_status)) {
+                check = order.orderStatus == filterStatus
+            }
+            if (!check) continue
+
+            if (filterCustomer != resources.getString(R.string.txt_customer)) {
+                check = "${order.user.firstName} ${order.user.lastName}" == filterCustomer
+                Log.d("filterOrders", "${order.user.firstName} ${order.user.lastName} $filterCustomer")
+            }
+            if (!check) continue
+
+            if (selectedBool && dateText != resources.getString(R.string.txt_default_date)) {
+                val sdf = SimpleDateFormat("hh:MM:ss dd/MM/yyyy", Locale.getDefault())
+                val startDateParse = sdf.parse("00:00:00 $startDate")
+                val endDatParse = sdf.parse("23:59:59 $endDate")
+
+                check = order.date.after(startDateParse) && order.date.before(endDatParse)
+            }
+
+            if (check) {
+                filterOrders.add(order)
+            }
+        }
+
+//        Log.d("filterOrders", manageOrderList.toString() + " " + filterOrders.size.toString())
+        manageOrderAdapter.setData(filterOrders)
+
+        if(filterOrders.size == 0){
+            binding.rcvManageOrder.visibility = View.GONE
+            binding.noItemLayout.visibility = View.VISIBLE
+        }else{
+            binding.rcvManageOrder.visibility = View.VISIBLE
+            binding.noItemLayout.visibility = View.GONE
+        }
+    }
+
+    override fun showShimmerEffectForOrders(size: Int) {
+//        Log.d("Test01", "size345: $size size 2 ${manageOrderList.size} ${manageOrderAdapter.itemCount}")
+        for (i in 0 until size) {
+            val shimmerLayout = layoutInflater.inflate(R.layout.item_manage_order_shimmer, binding.linearShimmer, false)
+            // Add the inflated layout to the parent LinearLayout
+            binding.linearShimmer.addView(shimmerLayout)
+        }
+
+        Utils.showShimmerEffect(binding.orderShimmer, binding.orderItemList)
+    }
+
+    override fun hideShimmerEffectForOrders() {
+        Utils.hideShimmerEffect(binding.orderShimmer, binding.orderItemList)
+    }
+
+    override fun onRefresh() {
+        presenter.getManageOrders(manageOrderAdapter, manageOrderList ,customerArr)
+//        Log.d("manageOrderRefresh", "onRefresh")
+        Utils.handler.postDelayed({
+            binding.swipeRefreshLayout.isRefreshing = false
+        }, 500)
+    }
+}
+
 //        val filterOrders = manageOrderList.filter {order ->
 //            Log.d("filterOrders", manageOrderList.size.toString() + "item")
 //            var check = true
@@ -274,65 +344,3 @@ class ManageOrderFragment : Fragment(), ManageOrderMVPView, SwipeRefreshLayout.O
 //            }
 //            return@filter check
 //        }.toMutableList()
-        val filterOrders = mutableListOf<Order>()
-        val sdf = SimpleDateFormat("hh:MM:ss dd/MM/yyyy", Locale.getDefault())
-        val startDateParse = sdf.parse("00:00:00 $startDate")
-        val endDatParse = sdf.parse("23:59:59 $endDate")
-
-        for (order in manageOrderList) {
-            var check = true
-
-            if (orderID.trim().isNotEmpty()) {
-                check = Utils.formatId(order.id).contains(orderID)
-            }
-            if (!check) continue
-
-            if (filterStatus != resources.getString(R.string.txt_status)) {
-                check = order.orderStatus == filterStatus
-            }
-            if (!check) continue
-
-            if (filterCustomer != resources.getString(R.string.txt_customer)) {
-                check = "${order.user.firstName} ${order.user.lastName}" == filterCustomer
-                Log.d("filterOrders", "${order.user.firstName} ${order.user.lastName} $filterCustomer")
-            }
-            if (!check) continue
-
-            if (selectedBool && dateText != resources.getString(R.string.txt_default_date)) {
-                check = order.date.after(startDateParse) && order.date.before(endDatParse)
-                if (startDateParse != null && endDatParse != null) {
-                    // Log.d("filterOrders", "${startDateParse.toString()} ${endDatParse.toString()}")
-                }
-            }
-
-            if (check) {
-                filterOrders.add(order)
-            }
-        }
-//        Log.d("filterOrders", manageOrderList.toString() + " " + filterOrders.size.toString())
-        manageOrderAdapter.setData(filterOrders)
-    }
-
-    override fun showShimmerEffectForOrders(size: Int) {
-//        Log.d("Test01", "size345: $size size 2 ${manageOrderList.size} ${manageOrderAdapter.itemCount}")
-        for (i in 0 until size) {
-            val shimmerLayout = layoutInflater.inflate(R.layout.item_manage_order_shimmer, binding.linearShimmer, false)
-            // Add the inflated layout to the parent LinearLayout
-            binding.linearShimmer.addView(shimmerLayout)
-        }
-
-        Utils.showShimmerEffect(binding.orderShimmer, binding.orderItemList)
-    }
-
-    override fun hideShimmerEffectForOrders() {
-        Utils.hideShimmerEffect(binding.orderShimmer, binding.orderItemList)
-    }
-
-    override fun onRefresh() {
-        presenter.getManageOrders(manageOrderAdapter, manageOrderList ,customerArr)
-//        Log.d("manageOrderRefresh", "onRefresh")
-        Utils.handler.postDelayed({
-            binding.swipeRefreshLayout.isRefreshing = false
-        }, 500)
-    }
-}
