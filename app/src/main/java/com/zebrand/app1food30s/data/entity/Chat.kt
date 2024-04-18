@@ -6,6 +6,8 @@ import java.util.Date
 
 data class Chat(
     val idBuyer: String = "",
+    val nameBuyer: String = "",
+    val avaBuyer: String = "",
     val messages: List<Message> = listOf()
 )
 
