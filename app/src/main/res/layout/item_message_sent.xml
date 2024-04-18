@@ -26,6 +26,7 @@
                 android:textSize="16sp"
                 android:textColor="@color/white"
                 tools:text="Hello, how are you?"
+                android:paddingHorizontal="@dimen/spacing8"
                 android:gravity="end"/>
 
         </LinearLayout>
