@@ -21,31 +21,30 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChatBinding
     private lateinit var messageAdapter: MessageAdapter
     private val messages = mutableListOf<Message>()
-//    private var idUser: String? = null
+    private var currentUserId: String? = null
     private lateinit var mySharedPreferences: MySharedPreferences
 //    idUser = mySharedPreferences.getString(SingletonKey.KEY_USER_ID)
 //    private val currentUserId = "CaobLG7qUCxM10RxWZAi"
-    private val currentUserId = mySharedPreferences.getString(SingletonKey.KEY_USER_ID)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        mySharedPreferences = MySharedPreferences.getInstance(this)
+        currentUserId = mySharedPreferences.getString(SingletonKey.KEY_USER_ID)
         setupRecyclerView()
+//        Log.d("ChatActivity", "current id user: ${currentUserId}")
 //        handleDisplayMessages("CaobLG7qUCxM10RxWZAi")
-        if (currentUserId != null) {
-            handleDisplayMessages(currentUserId)
-        }
+        currentUserId?.let { handleDisplayMessages(it) }
         binding.buttonSend.setOnClickListener {
             val messageText = binding.editTextMessage.text.toString()
             if (messageText.isNotEmpty()) {
 //                val message = Message("CaobLG7qUCxM10RxWZAi", "zErR5nXOOmmqrz1YR5V7", messageText)  // Adjust IDs as needed
                 binding.editTextMessage.text.clear()
 //                sendMessageToFirestore("CaobLG7qUCxM10RxWZAi", messageText)
-                if (currentUserId != null) {
-                    sendMessageToFirestore(currentUserId, messageText)
-                }
+                currentUserId?.let { sendMessageToFirestore(it, messageText) }
             }
         }
     }
@@ -111,7 +110,7 @@ class ChatActivity : AppCompatActivity() {
         var nameSender = "Admin"
         val accountsCollection = FirebaseFirestore.getInstance().collection("accounts")
         if (currentUserId != null) {
-            accountsCollection.document(currentUserId).get().addOnSuccessListener { document ->
+            accountsCollection.document(currentUserId!!).get().addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
                     avaSender = document.getString("avatar") ?: "images/avatars/avaeb015d1a-8e43-4baf-aaf6-4639eb258f5e.png"
                     nameSender = document.getString("firstName") ?: "Admin"
