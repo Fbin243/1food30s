@@ -17,6 +17,7 @@ import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.util.Date
 
 class ManageChatDetail : AppCompatActivity() {
     private lateinit var binding: ActivityManageChatDetailBinding
@@ -65,20 +66,27 @@ class ManageChatDetail : AppCompatActivity() {
 
     private fun fetchChatDetails(chatId: String) {
         val db = FirebaseFirestore.getInstance()
-        db.collection("chats").document(chatId).get().addOnSuccessListener { document ->
-            if (document.exists()) {
-//                val chat = document.toObject(Chat::class.java)
-                val avaUrl = document.getString("avaBuyer") ?: ""
-                val nameBuyer = document.getString("nameBuyer") ?: ""
-                Picasso.get().load(avaUrl).into(binding.imageBuyer)
-                binding.tvBuyerName.text = nameBuyer
-            } else {
-                Log.e("ChatActivity", "Chat not found")
+        db.collection("chats")
+            .whereEqualTo("idBuyer", chatId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    for (document in querySnapshot.documents) {
+                        val chat = document.toObject(Chat::class.java)
+                        Picasso.get().load(chat?.avaBuyer).into(binding.imageBuyer)
+                        binding.tvBuyerName.text = chat?.nameBuyer
+                        // Possibly break after the first result if you only need one
+                        break
+                    }
+                } else {
+                    Log.e("ChatActivity", "No chats found with idBuyer: $chatId")
+                }
             }
-        }.addOnFailureListener {
-            Log.e("ChatActivity", "Failed to retrieve chat details", it)
-        }
+            .addOnFailureListener { e ->
+                Log.e("ChatActivity", "Failed to retrieve chat details", e)
+            }
     }
+
 
     private fun handleDisplayMessages(chatId: String) {
         val chatsCollection = FirebaseFirestore.getInstance().collection("chats")
@@ -109,12 +117,23 @@ class ManageChatDetail : AppCompatActivity() {
                 if (querySnapshot.documents.isNotEmpty()) {
                     val document = querySnapshot.documents.first() // Assuming 'idBuyer' is unique and expecting only one document
                     val message = currentUserId?.let { Message("zErR5nXOOmmqrz1YR5V7", it, messageText) }
-                    document.reference.update("messages", FieldValue.arrayUnion(message))
+//                    document.reference.update("messages", FieldValue.arrayUnion(message))
+//                        .addOnSuccessListener {
+//                            Log.d("ChatActivity", "Message successfully added to Firestore")
+//                        }
+//                        .addOnFailureListener { e ->
+//                            Log.e("ChatActivity", "Failed to send message", e)
+//                        }
+                    val chatUpdateMap = hashMapOf<String, Any>(
+                        "messages" to FieldValue.arrayUnion(message),
+                        "date" to Date()  // Cập nhật thời gian hiện tại cho chat
+                    )
+                    document.reference.update(chatUpdateMap)
                         .addOnSuccessListener {
-                            Log.d("ChatActivity", "Message successfully added to Firestore")
+                            Log.d("ChatActivity", "Message and date successfully updated in Firestore")
                         }
                         .addOnFailureListener { e ->
-                            Log.e("ChatActivity", "Failed to send message", e)
+                            Log.e("ChatActivity", "Failed to update message and date", e)
                         }
                 } else {
                     Log.e("ChatActivity", "No chat document found for idBuyer: $chatId")

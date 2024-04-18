@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.ChatClickListener
@@ -29,6 +30,7 @@ class ChatManager : AppCompatActivity(), ChatClickListener {
     private fun fetchData() {
         val db = Firebase.firestore
         db.collection("chats")
+            .orderBy("date", Query.Direction.DESCENDING) // Sắp xếp các chat theo trường 'date' giảm dần
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     Log.w("ChatManagerActivity", "Listen failed.", e)
@@ -36,15 +38,17 @@ class ChatManager : AppCompatActivity(), ChatClickListener {
                 }
 
                 val chats = mutableListOf<Chat>()
-                for (doc in snapshots!!) {
+                snapshots?.documents?.forEach { doc ->
                     doc.toObject(Chat::class.java)?.let {
                         chats.add(it)
                     }
                 }
+                // Luôn tạo lại adapter với danh sách chat mới để cập nhật UI
                 chatAdapter = ManageChatAdapter(chats, this)
                 recyclerView.adapter = chatAdapter
             }
     }
+
 
     override fun onChatClicked(chatId: String) {
         val intent = Intent(this, ManageChatDetail::class.java)

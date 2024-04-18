@@ -16,6 +16,7 @@ import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.util.Date
 
 class ChatActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChatBinding
@@ -106,7 +107,8 @@ class ChatActivity : AppCompatActivity() {
                             idBuyer = chatId,
                             nameBuyer = nameSender,
                             avaBuyer = avaSenderUrl,
-                            messages = listOf()
+                            messages = listOf(),
+                            date = Date(),
                         )
                         chatsCollection.add(newChat).addOnSuccessListener {
                             Log.d("ChatActivity", "New chat created successfully for buyer ID: $chatId")
@@ -125,12 +127,10 @@ class ChatActivity : AppCompatActivity() {
 
 
     private fun sendMessageToFirestore(chatId: String, messageText: String) {
-//        var avaSender = "images/avatars/avaeb015d1a-8e43-4baf-aaf6-4639eb258f5e.png"
         var nameSender = "Admin"
         val accountsCollection = FirebaseFirestore.getInstance().collection("accounts")
         accountsCollection.document("zErR5nXOOmmqrz1YR5V7").get().addOnSuccessListener { document ->
             if (document != null && document.exists()) {
-//                avaSender = document.getString("avatar") ?: "images/avatars/avaeb015d1a-8e43-4baf-aaf6-4639eb258f5e.png"
                 nameSender = document.getString("firstName") ?: "Admin"
             } else {
                 nameSender = "Admin"
@@ -142,25 +142,27 @@ class ChatActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val querySnapshot = chatsCollection.whereEqualTo("idBuyer", chatId).get().await()
-//                val image = document.getString("image") ?: "images/product/product3.png"
-//                val imageUrl = fireStorage.reference.child(avaSender).downloadUrl.await().toString()
-
                 if (querySnapshot.documents.isNotEmpty()) {
-                    val document = querySnapshot.documents.first() // Assuming 'idBuyer' is unique and expecting only one document
+                    val document = querySnapshot.documents.first() // Assuming 'idBuyer' is unique
                     val message = currentUserId?.let { Message(it, "zErR5nXOOmmqrz1YR5V7", messageText) }
-                    document.reference.update("messages", FieldValue.arrayUnion(message))
+                    val chatUpdateMap = hashMapOf<String, Any>(
+                        "messages" to FieldValue.arrayUnion(message),
+                        "date" to Date()  // Cập nhật thời gian hiện tại cho chat
+                    )
+                    document.reference.update(chatUpdateMap)
                         .addOnSuccessListener {
-                            Log.d("ChatActivity", "Message successfully added to Firestore")
+                            Log.d("ChatActivity", "Message and date successfully updated in Firestore")
                         }
                         .addOnFailureListener { e ->
-                            Log.e("ChatActivity", "Failed to send message", e)
+                            Log.e("ChatActivity", "Failed to update message and date", e)
                         }
                 } else {
                     Log.e("ChatActivity", "No chat document found for idBuyer: $chatId")
                 }
             } catch (e: Exception) {
-                Log.e("ChatActivity", "Error sending message to Firestore", e)
+                Log.e("ChatActivity", "Error updating message and date in Firestore", e)
             }
         }
     }
+
 }

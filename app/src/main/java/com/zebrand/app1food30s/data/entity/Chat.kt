@@ -8,7 +8,8 @@ data class Chat(
     val idBuyer: String = "",
     val nameBuyer: String = "",
     val avaBuyer: String = "",
-    val messages: List<Message> = listOf()
+    val messages: List<Message> = listOf(),
+    var date: Date? = Date()
 )
 
 data class Message(
