@@ -7,10 +7,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.adapter.MessageAdapter
 import com.zebrand.app1food30s.data.entity.Chat
 import com.zebrand.app1food30s.data.entity.Message
-import com.zebrand.app1food30s.databinding.ActivityChatBinding
+import com.zebrand.app1food30s.databinding.ActivityManageChatDetailBinding
 import com.zebrand.app1food30s.utils.FirebaseUtils.fireStorage
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
@@ -18,53 +19,64 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class ManageChatDetail : AppCompatActivity() {
-    private lateinit var binding: ActivityChatBinding
+    private lateinit var binding: ActivityManageChatDetailBinding
     private lateinit var messageAdapter: MessageAdapter
     private val messages = mutableListOf<Message>()
     private var currentUserId: String? = null
     private lateinit var mySharedPreferences: MySharedPreferences
-//    idUser = mySharedPreferences.getString(SingletonKey.KEY_USER_ID)
-//    private val currentUserId = "CaobLG7qUCxM10RxWZAi"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityChatBinding.inflate(layoutInflater)
+        binding = ActivityManageChatDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
 
         val chatId = intent.getStringExtra("chatId")
         currentUserId = chatId
-//        mySharedPreferences = MySharedPreferences.getInstance(this)
-//        currentUserId = mySharedPreferences.getString(SingletonKey.KEY_USER_ID)
         setupRecyclerView()
-//        Log.d("ChatActivity", "current id user: ${currentUserId}")
-//        handleDisplayMessages("CaobLG7qUCxM10RxWZAi")
+        currentUserId?.let { fetchChatDetails(it) }
+//        val chatsCollection = FirebaseFirestore.getInstance().collection("chats")
+//        chatsCollection.whereEqualTo("idBuyer", chatId).get().addOnSuccessListener { document ->
+//            val avaSender = document.getString("avaBuyer") ?: "images/avatars/avaeb015d1a-8e43-4baf-aaf6-4639eb258f5e.png"
+//            Picasso.get().load(avaSender).into(binding.imageBuyer)
+//            binding.tvBuyerName.text = document.getString("nameBuyer")
+//        }.addOnFailureListener {
+//            Log.e("ChatActivity", "Failed to retrieve user information", it)
+//        }
+
         currentUserId?.let { handleDisplayMessages(it) }
         binding.buttonSend.setOnClickListener {
             val messageText = binding.editTextMessage.text.toString()
             if (messageText.isNotEmpty()) {
-//                val message = Message("CaobLG7qUCxM10RxWZAi", "zErR5nXOOmmqrz1YR5V7", messageText)  // Adjust IDs as needed
                 binding.editTextMessage.text.clear()
-//                sendMessageToFirestore("CaobLG7qUCxM10RxWZAi", messageText)
                 currentUserId?.let { sendMessageToFirestore(it, messageText) }
             }
         }
     }
-
-//    private fun setupRecyclerView() {
-//        messageAdapter = MessageAdapter(messages)
-//        binding.recyclerViewChat.apply {
-//            layoutManager = LinearLayoutManager(this@ChatActivity)
-//            adapter = messageAdapter
-//        }
-//    }
 
     private fun setupRecyclerView() {
         messageAdapter = MessageAdapter(messages, "zErR5nXOOmmqrz1YR5V7") // Chuyển ID người dùng hiện tại tới adapter
         binding.recyclerViewChat.apply {
             layoutManager = LinearLayoutManager(this@ManageChatDetail)
             adapter = messageAdapter
+        }
+    }
+
+    private fun fetchChatDetails(chatId: String) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("chats").document(chatId).get().addOnSuccessListener { document ->
+            if (document.exists()) {
+//                val chat = document.toObject(Chat::class.java)
+                val avaUrl = document.getString("avaBuyer") ?: ""
+                val nameBuyer = document.getString("nameBuyer") ?: ""
+                Picasso.get().load(avaUrl).into(binding.imageBuyer)
+                binding.tvBuyerName.text = nameBuyer
+            } else {
+                Log.e("ChatActivity", "Chat not found")
+            }
+        }.addOnFailureListener {
+            Log.e("ChatActivity", "Failed to retrieve chat details", it)
         }
     }
 
@@ -94,9 +106,6 @@ class ManageChatDetail : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 val querySnapshot = chatsCollection.whereEqualTo("idBuyer", chatId).get().await()
-//                val image = document.getString("image") ?: "images/product/product3.png"
-//                val imageUrl = fireStorage.reference.child(avaSender).downloadUrl.await().toString()
-
                 if (querySnapshot.documents.isNotEmpty()) {
                     val document = querySnapshot.documents.first() // Assuming 'idBuyer' is unique and expecting only one document
                     val message = currentUserId?.let { Message("zErR5nXOOmmqrz1YR5V7", it, messageText) }

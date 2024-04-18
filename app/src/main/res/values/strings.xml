@@ -244,4 +244,5 @@
     <string name="txt_manage_order_address">Address:&#160;</string>
     <string name="txt_all_categories">All categories</string>
     <string name="txt_all_offers">All offers</string>
+    <string name="txt_chat_detail">Shop owner</string>
 </resources>
