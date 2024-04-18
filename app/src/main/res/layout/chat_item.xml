@@ -15,8 +15,8 @@
 
         <ImageView
             android:id="@+id/imageBuyer"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:src="@drawable/default_avatar"
             android:layout_gravity="center_vertical"
             android:padding="4dp"/>
@@ -36,13 +36,31 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/black"/>
 
-            <TextView
-                android:id="@+id/tvLastMessage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Last message text here..."
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/black"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_gravity="bottom">
+
+                <TextView
+                    android:id="@+id/tvNameSender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Name: "
+                    android:gravity="bottom"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/grey_60"/>
+
+                <TextView
+                    android:id="@+id/tvLastMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Last message"
+                    android:gravity="bottom"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/grey_60"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -50,10 +68,11 @@
             android:id="@+id/tvTimestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:text="10:30 AM"
+            android:gravity="top"
+            android:textSize="@dimen/spacing10"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
-            android:textColor="@color/black"/>
+            android:textColor="@color/grey_60"/>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

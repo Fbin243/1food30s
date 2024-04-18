@@ -27,9 +27,7 @@ class MessageAdapter(private val messages: List<Message>, private val currentUse
         return if (messages[position].idSender == currentUserId) MESSAGE_TYPE_SENT else MESSAGE_TYPE_RECEIVED
     }
     class MessageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val textViewSender: TextView = view.findViewById(R.id.textViewSender)
         val textViewMessage: TextView = view.findViewById(R.id.textViewMessage)
-        val textViewTimestamp: TextView = view.findViewById(R.id.textViewTimestamp)
     }
 
 //    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
@@ -51,11 +49,11 @@ class MessageAdapter(private val messages: List<Message>, private val currentUse
         val message = messages[position]
 //        val imageUrl = fireStorage.reference.child(message.avaSender).downloadUrl.await().toString()
 //        Picasso.get().load(message.avaSender).into(holder.avatar)
-        holder.textViewSender.text = message.nameSender
+//        holder.textViewSender.text = message.nameSender
         holder.textViewMessage.text = message.messageString
 //        Picasso.get().load(message.avaSender).into(holder.avatar)
-        Log.d("adminLogin", "messageStr: ${message.messageString}")
-        holder.textViewTimestamp.text = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(message.date)
+//        Log.d("adminLogin", "messageStr: ${message.messageString}")
+//        holder.textViewTimestamp.text = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(message.date)
     }
 
     override fun getItemCount(): Int = messages.size

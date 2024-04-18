@@ -68,80 +68,61 @@ class ChatActivity : AppCompatActivity() {
 
     private fun handleDisplayMessages(chatId: String) {
         val chatsCollection = FirebaseFirestore.getInstance().collection("chats")
-        lifecycleScope.launch {
-            try {
-                val querySnapshot = chatsCollection.whereEqualTo("idBuyer", chatId).get().await()
-
-                if (querySnapshot.documents.isNotEmpty()) {
-                    val document = querySnapshot.documents.first() // Assuming 'idBuyer' is unique and expecting only one document
-
-                    document.reference.addSnapshotListener { snapshot, e ->
-                        if (e != null) {
-                            Log.e("ChatActivity", "Listen failed.", e)
-                            return@addSnapshotListener
-                        }
-
-                        if (snapshot != null && snapshot.exists()) {
-                            Log.d("ChatActivity", "Current data: ${snapshot.data}")
-                            val updatedChat = snapshot.toObject(Chat::class.java)
-                            updatedChat?.messages?.let {
-                                messages.clear()
-                                messages.addAll(it)
-                                messageAdapter.notifyDataSetChanged()
-                                binding.recyclerViewChat.scrollToPosition(messages.size - 1)
-                            }
-                        } else {
-                            Log.d("ChatActivity", "Current data: null")
-                        }
-                    }
+        val chatQuery = chatsCollection.whereEqualTo("idBuyer", chatId)
+        chatQuery.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.e("ChatActivity", "Listen failed.", e)
+                return@addSnapshotListener
+            }
+            if (snapshot != null && !snapshot.isEmpty) {
+                val document = snapshot.documents.first()
+                val updatedChat = document.toObject(Chat::class.java)
+                updatedChat?.messages?.let {
+                    messages.clear()
+                    messages.addAll(it)
+                    messageAdapter.notifyDataSetChanged()
+                    binding.recyclerViewChat.scrollToPosition(messages.size - 1)
                 }
-                else{
-                    createNewChat(chatId)
-                }
-            } catch (e: Exception) {
-                Log.e("ChatActivity", "Error setting up real-time updates", e)
+            } else {
+                // Handle the case where no chat is found by creating a new one
+                createNewChat(chatId)
             }
         }
     }
 
+
     private fun createNewChat(chatId: String) {
-        var avaSender = ""
-        var avaSenderUrl = ""
-        var nameSender = "Admin"
         val accountsCollection = FirebaseFirestore.getInstance().collection("accounts")
         if (currentUserId != null) {
             accountsCollection.document(currentUserId!!).get().addOnSuccessListener { document ->
-                if (document != null && document.exists()) {
-                    avaSender = document.getString("avatar") ?: "images/avatars/avaeb015d1a-8e43-4baf-aaf6-4639eb258f5e.png"
-                    nameSender = document.getString("firstName") ?: "Admin"
-                    lifecycleScope.launch {
-                        try {
-    //                val image = document.getString("image") ?: "images/product/product3.png"
-                            avaSenderUrl = fireStorage.reference.child(avaSender).downloadUrl.await().toString()
-                        } catch (e: Exception) {
-                            Log.e("ChatActivity", "Error sending message to Firestore", e)
+                val avaSender = document.getString("avatar") ?: "images/avatars/avaeb015d1a-8e43-4baf-aaf6-4639eb258f5e.png"
+                val nameSender = document.getString("firstName") ?: "Admin"
+                lifecycleScope.launch {
+                    try {
+                        val avaSenderUrl = fireStorage.reference.child(avaSender).downloadUrl.await().toString()
+                        // Create the new chat here inside the coroutine after all data is fetched.
+                        val chatsCollection = FirebaseFirestore.getInstance().collection("chats")
+                        val newChat = Chat(
+                            idBuyer = chatId,
+                            nameBuyer = nameSender,
+                            avaBuyer = avaSenderUrl,
+                            messages = listOf()
+                        )
+                        chatsCollection.add(newChat).addOnSuccessListener {
+                            Log.d("ChatActivity", "New chat created successfully for buyer ID: $chatId")
+                        }.addOnFailureListener { e ->
+                            Log.e("ChatActivity", "Failed to create new chat for buyer ID: $chatId", e)
                         }
+                    } catch (e: Exception) {
+                        Log.e("ChatActivity", "Error retrieving avatar URL", e)
                     }
-                } else {
-                    nameSender = "Admin"
                 }
             }.addOnFailureListener {
-                nameSender = "Admin"
+                Log.e("ChatActivity", "Failed to retrieve user information", it)
             }
         }
-        val chatsCollection = FirebaseFirestore.getInstance().collection("chats")
-        val newChat = Chat(
-            idBuyer = chatId,
-            nameBuyer = nameSender, // Replace with actual data
-            avaBuyer = avaSenderUrl, // Replace with actual data
-            messages = listOf()
-        )
-        chatsCollection.add(newChat).addOnSuccessListener {
-            Log.d("ChatActivity", "New chat created successfully for buyer ID: $chatId")
-        }.addOnFailureListener { e ->
-            Log.e("ChatActivity", "Failed to create new chat for buyer ID: $chatId", e)
-        }
     }
+
 
     private fun sendMessageToFirestore(chatId: String, messageText: String) {
 //        var avaSender = "images/avatars/avaeb015d1a-8e43-4baf-aaf6-4639eb258f5e.png"
@@ -166,7 +147,7 @@ class ChatActivity : AppCompatActivity() {
 
                 if (querySnapshot.documents.isNotEmpty()) {
                     val document = querySnapshot.documents.first() // Assuming 'idBuyer' is unique and expecting only one document
-                    val message = currentUserId?.let { Message(it, "zErR5nXOOmmqrz1YR5V7", messageText, nameSender) }
+                    val message = currentUserId?.let { Message(it, "zErR5nXOOmmqrz1YR5V7", messageText) }
                     document.reference.update("messages", FieldValue.arrayUnion(message))
                         .addOnSuccessListener {
                             Log.d("ChatActivity", "Message successfully added to Firestore")
