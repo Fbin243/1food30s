@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="@dimen/spacing8"
+        app:cardElevation="@dimen/spacing4">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minWidth="320dp"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/spacing24">
+
+            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing24"
+                app:mcv_showOtherDates="all"
+                app:mcv_selectionColor="@color/primary"
+                app:mcv_selectionMode="range"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing8"
+                android:orientation="horizontal"
+                android:paddingTop="@dimen/spacing8"
+                android:paddingBottom="@dimen/spacing20"
+                android:weightSum="2">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cancelBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/spacing56"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/deep_orange"
+                    android:text="@string/txt_cancel"
+                    android:textSize="@dimen/font_size16"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/confirmBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/spacing56"
+                    android:layout_marginStart="@dimen/spacing24"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/primary"
+                    android:text="@string/txt_confirm"
+                    android:textAlignment="center"
+                    android:textSize="@dimen/font_size16"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

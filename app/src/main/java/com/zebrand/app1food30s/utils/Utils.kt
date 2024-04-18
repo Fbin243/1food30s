@@ -6,10 +6,10 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -17,7 +17,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerDrawable
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.google.firebase.firestore.FirebaseFirestore
+import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Cart
 import com.zebrand.app1food30s.data.entity.CartItem
@@ -31,6 +31,8 @@ import java.util.Date
 
 object Utils {
     val timeHandler: Long = 800
+    val handler = Handler(Looper.getMainLooper())
+
     fun formatPrice(price: Double): String {
         return String.format("%.2f", price).replace(",", ".")
     }
@@ -91,6 +93,10 @@ object Utils {
             return localDateTime.format(formatter)
         }
         return null
+    }
+
+    fun formatCalendarView(date: CalendarDay): String {
+        return "${date.day}/${date.month}/${date.year}"
     }
 
     fun formatId(id: String): String {

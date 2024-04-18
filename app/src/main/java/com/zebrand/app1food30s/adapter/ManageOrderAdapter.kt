@@ -18,9 +18,11 @@ class ManageOrderAdapter(
 ) :
     RecyclerView.Adapter<ManageOrderAdapter.ManageOrderViewHolder>() {
     var onItemClick: ((Order) -> Unit)? = null
+//    var onFilterOrders: ((MutableList<Order>) -> Unit)? = null
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(orders: List<Order>) {
-        this.orders.clear()
+        clear()
         this.orders.addAll(orders)
         notifyDataSetChanged()
     }
@@ -87,7 +89,17 @@ class ManageOrderAdapter(
         binding?.orderStatusSpan = order.orderStatus
     }
 
+//    fun filterOrders(){
+//        onFilterOrders?.invoke(orders)
+//    }
+
     override fun getItemCount(): Int {
         return orders.size
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun clear() {
+        orders.clear()
+        notifyDataSetChanged()
     }
 }
