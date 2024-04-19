@@ -53,7 +53,7 @@ class ManageChatDetail : AppCompatActivity() {
         binding.buttonSend.setOnClickListener {
             val messageText = binding.editTextMessage.text.toString()
             if (messageText.isNotEmpty()) {
-                binding.editTextMessage.text.clear()
+                binding.editTextMessage.text?.clear()
                 currentUserId?.let { sendMessageToFirestore(it, messageText) }
             }
         }

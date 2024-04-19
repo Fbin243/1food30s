@@ -6,9 +6,46 @@
     android:orientation="vertical"
     tools:context=".ui.chat.ChatManager">
 
+    <LinearLayout
+        android:id="@+id/linear_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing20"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/spacing16"
+        android:paddingBottom="@dimen/spacing10">
+
+        <include
+            android:id="@+id/backIcon"
+            layout="@layout/item_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing18"
+            android:fontFamily="@font/rubik_bold"
+            android:text="@string/Chat"
+            android:textSize="@dimen/font_header" />
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/linear_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="bottom"
+        android:background="#28000000"
+        android:layout_marginLeft="@dimen/spacing18"
+        android:layout_marginRight="@dimen/spacing16"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvChatList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/spacing16"/>
 
 </LinearLayout>

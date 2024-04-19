@@ -47,7 +47,7 @@ class ChatActivity : AppCompatActivity() {
             val messageText = binding.editTextMessage.text.toString()
             if (messageText.isNotEmpty()) {
 //                val message = Message("CaobLG7qUCxM10RxWZAi", "zErR5nXOOmmqrz1YR5V7", messageText)  // Adjust IDs as needed
-                binding.editTextMessage.text.clear()
+                binding.editTextMessage.text?.clear()
 //                sendMessageToFirestore("CaobLG7qUCxM10RxWZAi", messageText)
                 currentUserId?.let { sendMessageToFirestore(it, messageText) }
             }
