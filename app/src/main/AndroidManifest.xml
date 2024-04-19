@@ -24,11 +24,11 @@
         <activity
             android:name=".ui.chat.ChatManager"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity
             android:name=".ui.chat.ChatActivity"
@@ -50,12 +50,12 @@
             android:name=".ui.authentication.SplashActivity"
             android:exported="true">
 
-<!--             <intent-filter>-->
-<!--             <action android:name="android.intent.action.MAIN" />-->
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
 
 
-<!--             <category android:name="android.intent.category.LAUNCHER" />-->
-<!--             </intent-filter>-->
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
         </activity>
         <activity
             android:name=".ui.offer_detail.OfferDetailActivity"
@@ -170,12 +170,12 @@
             android:configChanges="orientation|screenSize"
             android:exported="true">
 
-<!--             <intent-filter>-->
-<!--             <action android:name="android.intent.action.MAIN" />-->
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
 
 
-<!--             <category android:name="android.intent.category.LAUNCHER" />-->
-<!--             </intent-filter>-->
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
         </activity>
     </application>
 

@@ -39,6 +39,10 @@ class ChatActivity : AppCompatActivity() {
 //        Log.d("ChatActivity", "current id user: ${currentUserId}")
 //        handleDisplayMessages("CaobLG7qUCxM10RxWZAi")
         currentUserId?.let { handleDisplayMessages(it) }
+//        currentUserId?.let {
+//            handleDisplayMessages(it)
+//            markChatAsRead(it)  // Mark the chat as read upon opening the activity
+//        }
         binding.buttonSend.setOnClickListener {
             val messageText = binding.editTextMessage.text.toString()
             if (messageText.isNotEmpty()) {
@@ -91,7 +95,6 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-
     private fun createNewChat(chatId: String) {
         val accountsCollection = FirebaseFirestore.getInstance().collection("accounts")
         if (currentUserId != null) {
@@ -108,6 +111,7 @@ class ChatActivity : AppCompatActivity() {
                             nameBuyer = nameSender,
                             avaBuyer = avaSenderUrl,
                             messages = listOf(),
+                            seen = false,
                             date = Date(),
                         )
                         chatsCollection.add(newChat).addOnSuccessListener {
@@ -147,6 +151,7 @@ class ChatActivity : AppCompatActivity() {
                     val message = currentUserId?.let { Message(it, "zErR5nXOOmmqrz1YR5V7", messageText) }
                     val chatUpdateMap = hashMapOf<String, Any>(
                         "messages" to FieldValue.arrayUnion(message),
+                        "seen" to false,
                         "date" to Date()  // Cập nhật thời gian hiện tại cho chat
                     )
                     document.reference.update(chatUpdateMap)

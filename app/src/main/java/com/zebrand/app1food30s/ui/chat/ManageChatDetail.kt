@@ -36,7 +36,10 @@ class ManageChatDetail : AppCompatActivity() {
         val chatId = intent.getStringExtra("chatId")
         currentUserId = chatId
         setupRecyclerView()
-        currentUserId?.let { fetchChatDetails(it) }
+        currentUserId?.let {
+            fetchChatDetails(it)
+            markChatAsRead(it)
+        }
 //        val chatsCollection = FirebaseFirestore.getInstance().collection("chats")
 //        chatsCollection.whereEqualTo("idBuyer", chatId).get().addOnSuccessListener { document ->
 //            val avaSender = document.getString("avaBuyer") ?: "images/avatars/avaeb015d1a-8e43-4baf-aaf6-4639eb258f5e.png"
@@ -88,6 +91,25 @@ class ManageChatDetail : AppCompatActivity() {
     }
 
 
+    private fun markChatAsRead(chatId: String) {
+        val chatsCollection = FirebaseFirestore.getInstance().collection("chats")
+        val chatQuery = chatsCollection.whereEqualTo("idBuyer", chatId).limit(1)
+        chatQuery.get().addOnSuccessListener { querySnapshot ->
+            if (!querySnapshot.isEmpty) {
+                val document = querySnapshot.documents.first()
+                document.reference.update("seen", true)
+                    .addOnSuccessListener {
+                        Log.d("ChatActivity", "Chat marked as read successfully.")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("ChatActivity", "Failed to mark chat as read.", e)
+                    }
+            }
+        }.addOnFailureListener { e ->
+            Log.e("ChatActivity", "Error fetching chat document.", e)
+        }
+    }
+
     private fun handleDisplayMessages(chatId: String) {
         val chatsCollection = FirebaseFirestore.getInstance().collection("chats")
         val chatQuery = chatsCollection.whereEqualTo("idBuyer", chatId)
@@ -105,6 +127,15 @@ class ManageChatDetail : AppCompatActivity() {
                     messageAdapter.notifyDataSetChanged()
                     binding.recyclerViewChat.scrollToPosition(messages.size - 1)
                 }
+//                if (updatedChat?.seen == false) {
+//                    document.reference.update("seen", true)
+//                        .addOnSuccessListener {
+//                            Log.d("ChatActivity", "Chat marked as read successfully.")
+//                        }
+//                        .addOnFailureListener { ex ->
+//                            Log.e("ChatActivity", "Failed to mark chat as read.", ex)
+//                        }
+//                }
             }
         }
     }

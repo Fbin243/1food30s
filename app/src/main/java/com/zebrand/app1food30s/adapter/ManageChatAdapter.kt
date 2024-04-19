@@ -15,6 +15,15 @@ import java.util.Locale
 
 class ManageChatAdapter(private val chats: List<Chat>, private val listener: ChatClickListener) : RecyclerView.Adapter<ManageChatAdapter.ChatViewHolder>() {
 
+    companion object {
+        const val CHAT_IS_READ = 1
+        const val CHAT_NOT_READ = 2
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (chats[position].seen) ManageChatAdapter.CHAT_IS_READ else ManageChatAdapter.CHAT_NOT_READ
+    }
+
     class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textViewNameBuyer: TextView = itemView.findViewById(R.id.tvBuyerName)
         val textViewNameSender: TextView = itemView.findViewById(R.id.tvNameSender)
@@ -48,8 +57,18 @@ class ManageChatAdapter(private val chats: List<Chat>, private val listener: Cha
         }
     }
 
+//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
+//        val view = LayoutInflater.from(parent.context).inflate(R.layout.chat_item, parent, false)
+//        return ChatViewHolder(view)
+//    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.chat_item, parent, false)
+        val layout = when (viewType) {
+            ManageChatAdapter.CHAT_IS_READ -> R.layout.chat_item
+            ManageChatAdapter.CHAT_NOT_READ -> R.layout.chat_item_new
+            else -> throw IllegalArgumentException("Invalid view type")
+        }
+        val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
         return ChatViewHolder(view)
     }
 

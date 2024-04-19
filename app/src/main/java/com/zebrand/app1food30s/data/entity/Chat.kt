@@ -9,6 +9,7 @@ data class Chat(
     val nameBuyer: String = "",
     val avaBuyer: String = "",
     val messages: List<Message> = listOf(),
+    var seen: Boolean = false,
     var date: Date? = Date()
 )
 
