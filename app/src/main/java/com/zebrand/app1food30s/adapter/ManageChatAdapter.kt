@@ -10,6 +10,7 @@ import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Chat
 import com.zebrand.app1food30s.data.entity.Message
+import com.zebrand.app1food30s.utils.Utils.getShimmerDrawable
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -47,9 +48,18 @@ class ManageChatAdapter(private val chats: List<Chat>, private val listener: Cha
 
             Picasso.get()
                 .load(chat.avaBuyer)
-                .placeholder(R.drawable.default_avatar)  // Ensure you have a placeholder image in your resources
+                .placeholder(getShimmerDrawable())  // Ensure you have a placeholder image in your resources
                 .error(R.drawable.default_avatar)  // Ensure you have an error image in your resources
                 .into(avatar)
+
+            chat.date?.let {
+                // Định dạng giờ và ngày để giờ đứng trước và ngày theo sau, được ngăn cách bằng "-"
+                val dateTimeFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+                textViewTime.text = dateTimeFormat.format(it)
+            } ?: run {
+                // Handle case where date is null
+                textViewTime.text = "Long time ago"
+            }
 
             itemView.setOnClickListener {
                 listener.onChatClicked(chat.idBuyer)
