@@ -2,11 +2,13 @@ package com.zebrand.app1food30s.ui.chat
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.MessageAdapter
 import com.zebrand.app1food30s.data.entity.Chat
 import com.zebrand.app1food30s.data.entity.Message
@@ -43,6 +45,12 @@ class ChatActivity : AppCompatActivity() {
 //            handleDisplayMessages(it)
 //            markChatAsRead(it)  // Mark the chat as read upon opening the activity
 //        }
+
+        val backIcon = findViewById<View>(R.id.backIcon)
+        backIcon.setOnClickListener {
+            finish() // Kết thúc Activity hiện tại
+        }
+
         binding.buttonSend.setOnClickListener {
             val messageText = binding.editTextMessage.text.toString()
             if (messageText.isNotEmpty()) {

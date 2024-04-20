@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Firebase
@@ -24,6 +25,10 @@ class ChatManager : AppCompatActivity(), ChatClickListener {
 
         recyclerView = findViewById(R.id.rvChatList)
         recyclerView.layoutManager = LinearLayoutManager(this)
+        val backIcon = findViewById<View>(R.id.backIcon)
+        backIcon.setOnClickListener {
+            finish() // Kết thúc Activity hiện tại
+        }
         fetchData()
     }
 

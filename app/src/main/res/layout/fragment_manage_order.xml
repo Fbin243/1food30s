@@ -60,7 +60,15 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_filter"
                 android:padding="@dimen/spacing4"
+                android:layout_marginEnd="@dimen/spacing4"
                 android:background="@color/transparent"/>
+
+            <ImageView
+                android:id="@+id/ivChatScreen"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/chat_round_line_svgrepo_com"
+                app:tint="@color/primary" />
         </LinearLayout>
 
         <ScrollView

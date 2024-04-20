@@ -90,7 +90,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
 
         handleOpenSearchScreen()
 
-        binding.ivWishlistScreen.setOnClickListener{
+        binding.ivChatScreen.setOnClickListener{
             val intent = Intent(requireContext(), ChatActivity::class.java)
             startActivity(intent)
         }

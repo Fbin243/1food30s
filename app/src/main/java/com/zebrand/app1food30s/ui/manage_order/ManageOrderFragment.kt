@@ -2,6 +2,7 @@ package com.zebrand.app1food30s.ui.manage_order
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,8 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.ManageOrderAdapter
 import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.databinding.FragmentManageOrderBinding
+import com.zebrand.app1food30s.ui.chat.ChatActivity
+import com.zebrand.app1food30s.ui.chat.ChatManager
 import com.zebrand.app1food30s.ui.manage_order.manage_order_details.ManageOrderDetailsActivity
 import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
@@ -73,6 +76,10 @@ class ManageOrderFragment : Fragment(), ManageOrderMVPView{
 
         binding.root.findViewById<View>(R.id.filterBtn).setOnClickListener {
             showBottomSheet()
+        }
+        binding.root.findViewById<View>(R.id.ivChatScreen).setOnClickListener {
+            val intent = Intent(requireContext(), ChatManager::class.java)
+            startActivity(intent)
         }
     }
 
