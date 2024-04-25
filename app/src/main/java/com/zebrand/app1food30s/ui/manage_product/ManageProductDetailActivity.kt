@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.ui.manage_product
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -205,6 +206,7 @@ class ManageProductDetailActivity : AppCompatActivity() {
 //            }
 //    }
 
+
     private fun createAndSaveProduct(imagePath: String) {
         val productName = nameEditText.text.toString().trim()
         val productPrice = priceEditText.text.toString().toDoubleOrNull() ?: 0.0
@@ -220,19 +222,22 @@ class ManageProductDetailActivity : AppCompatActivity() {
                 if (categoryDocuments.documents.isNotEmpty()) {
                     val categoryDocumentRef = categoryDocuments.documents.first().reference
 
-                    // Chỉ truy vấn ưu đãi nếu selectedOfferName không rỗng
                     if (selectedOfferName.isNotEmpty()) {
                         db.collection("offers").whereEqualTo("name", selectedOfferName).limit(1).get()
                             .addOnSuccessListener { offerDocuments ->
                                 if (offerDocuments.documents.isNotEmpty()) {
                                     val offerDocumentRef = offerDocuments.documents.first().reference
                                     createProduct(productName, productPrice, productStock, productDescription, imagePath, db, categoryDocumentRef, offerDocumentRef)
+                                } else {
+                                    // Handle no matching offer found
                                 }
                             }
                     } else {
-                        // Không có ưu đãi được chọn, tạo sản phẩm không có tham chiếu đến offer
+                        // No offer selected, create product without offer reference
                         createProduct(productName, productPrice, productStock, productDescription, imagePath, db, categoryDocumentRef, null)
                     }
+                } else {
+                    // Handle no matching category found
                 }
             }
     }
@@ -254,13 +259,39 @@ class ManageProductDetailActivity : AppCompatActivity() {
 
         newProductRef.set(newProduct)
             .addOnSuccessListener {
-                // Handle success
+                // Update numProduct in the category
+                updateCategoryProductCount(categoryRef)
+
+                // Update numProduct in the offer if offer is not null
+                offerRef?.let { updateOfferProductCount(it) }
+
                 Toast.makeText(this, "Product created successfully", Toast.LENGTH_SHORT).show()
                 finish()
             }
             .addOnFailureListener { e ->
-                // Handle failure
                 Toast.makeText(this, "Failed to create product: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun updateCategoryProductCount(categoryRef: DocumentReference) {
+        categoryRef.get()
+            .addOnSuccessListener { doc ->
+                val currentNumProduct = doc.getLong("numProduct") ?: 0
+                categoryRef.update("numProduct", currentNumProduct + 1)
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Failed to update category product count: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun updateOfferProductCount(offerRef: DocumentReference) {
+        offerRef.get()
+            .addOnSuccessListener { doc ->
+                val currentNumProduct = doc.getLong("numProduct") ?: 0
+                offerRef.update("numProduct", currentNumProduct + 1)
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Failed to update offer product count: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 

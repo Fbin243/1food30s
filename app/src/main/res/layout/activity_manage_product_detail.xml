@@ -115,7 +115,7 @@
 
                 android:paddingHorizontal="@dimen/spacing8"
                 android:dropDownHeight="150dp"
-                android:text="@string/txt_choose_category"
+                android:hint="@string/txt_choose_category"
                 android:scrollbars="vertical"
                 android:fadeScrollbars="false"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -187,7 +187,7 @@
                 android:inputType="none"
                 android:paddingHorizontal="@dimen/spacing8"
                 android:dropDownHeight="150dp"
-                android:text="@string/txt_choose_offer"
+                android:hint="@string/txt_choose_offer"
                 android:scrollbars="vertical"
                 android:fadeScrollbars="false"/>
         </com.google.android.material.textfield.TextInputLayout>
