@@ -64,8 +64,7 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
         }
 
         binding.acceptBtn.setOnClickListener {
-            presenter.changeOrderStatus(idOrder, SingletonKey.ORDER_ACCEPTED)
-            Toast.makeText(this, "Order accepted", Toast.LENGTH_SHORT).show()
+            presenter.acceptOrder(idOrder, itemOrderDetailsAdapter)
         }
 
         binding.rejectBtn.setOnClickListener {
@@ -100,18 +99,11 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
         dialog.setContentView(R.layout.dialog_reason_order)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        val acceptBtn: Button = dialog.findViewById(R.id.cancelBtn)
-        val cancel: Button = dialog.findViewById(R.id.saveBtn)
+        val acceptBtn: Button = dialog.findViewById(R.id.saveBtn)
+        val cancel: Button = dialog.findViewById(R.id.cancelBtn)
         val reason: TextInputEditText = dialog.findViewById(R.id.tvReason)
 
         acceptBtn.setOnClickListener {
-            presenter.changeOrderStatus(idOrder, SingletonKey.ON_DELIVERY)
-            handler.postDelayed({
-                dialog.dismiss()
-            }, 500)
-        }
-
-        cancel.setOnClickListener {
             if(reason.text.toString().trim().isEmpty()){
                 Toast.makeText(this, "Please enter reason", Toast.LENGTH_SHORT).show()
             }else {
@@ -120,6 +112,10 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
                     dialog.dismiss()
                 }, 500)
             }
+        }
+
+        cancel.setOnClickListener {
+            dialog.dismiss()
         }
 
         dialog.show()
@@ -155,7 +151,12 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
         binding.tvDiscount.text = "$" + Utils.formatPrice(itemOrderDetailsAdapter.getDiscount())
         binding.tvTotalAmount.text = "$" + Utils.formatPrice(orderDetails.totalAmount)
 
-        if(orderDetails.orderStatus == SingletonKey.CANCELLED){
+        if(orderDetails.orderStatus == SingletonKey.DELIVERED){
+            binding.linearControls.visibility = View.GONE
+            binding.linearDropDown.visibility = View.GONE
+            binding.linearReason.visibility = View.GONE
+        }
+        else if(orderDetails.orderStatus == SingletonKey.CANCELLED){
             binding.linearControls.visibility = View.GONE
             binding.linearDropDown.visibility = View.GONE
             binding.linearReason.visibility = View.VISIBLE

@@ -6,6 +6,7 @@ import android.widget.Toast
 import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.adapter.MyOrderDetailsAdapter
 import com.zebrand.app1food30s.data.entity.Order
+import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.ui.my_order.my_order_details.MyOrderDetailsMVPView
 import com.zebrand.app1food30s.utils.FireStoreUtils
@@ -41,11 +42,14 @@ class ManageOrderDetailsPresenter(
             Log.d("Test00", "placeOrder: Starting order placement. ${orderDetails?.id} $newObject")
             if (newObject != null && newObject.items.isNotEmpty()) {
                 view.showShimmerEffectForOrders(newObject.items.size)
-                if (orderDetails?.id?.isEmpty() == false && (orderDetails.orderStatus != newObject.orderStatus || orderDetails.paymentStatus != newObject.paymentStatus) ) {
+                if (orderDetails?.id?.isEmpty() == false && (orderDetails.orderStatus != newObject.orderStatus
+                            || orderDetails.paymentStatus != newObject.paymentStatus
+                            || orderDetails.cancelReason != newObject.cancelReason) ) {
                     // Trạng thái đã được sửa đổi, cập nhật lại trong adapter
                     orderDetails.apply {
                         orderStatus = newObject.orderStatus
                         paymentStatus = newObject.paymentStatus
+                        cancelReason = newObject.cancelReason
                     }
                 } else {
                     // Nếu không có sự thay đổi trạng thái, thêm dữ liệu mới vào adapter
@@ -81,6 +85,43 @@ class ManageOrderDetailsPresenter(
         val doc: DocumentReference = dOrderRef.document(idOrder)
 
         doc.update("orderStatus", status)
+
+        view.setManageOrderDetailsUI()
+    }
+
+    fun acceptOrder(idOrder: String, adapter: MyOrderDetailsAdapter) {
+        val dOrderRef = FireStoreUtils.mDBOrderRef
+        val dProductRef = FireStoreUtils.mDBProductRef
+        val doc: DocumentReference = dOrderRef.document(idOrder)
+
+        val orderDetailsList = adapter.orderItems
+
+        for (orderItem in orderDetailsList) {
+            orderItem.productId?.get()?.addOnSuccessListener {
+                val product = it.toObject(Product::class.java)
+                if (product != null) {
+                    if (product.stock < orderItem.quantity) {
+                        Toast.makeText(context, "Product ${product.name} is out of stock", Toast.LENGTH_SHORT).show()
+                        return@addOnSuccessListener
+                    }
+                }
+            }
+        }
+
+        for (orderItem in orderDetailsList) {
+            orderItem.productId?.get()?.addOnSuccessListener {
+                val product = it.toObject(Product::class.java)
+                if (product != null) {
+                    Log.d("ManageOrderDetailsPresenter", "acceptOrder: $product")
+                    val newStock = product.stock - orderItem.quantity
+                    dProductRef.document(product.id).update("sold", orderItem.quantity)
+                    dProductRef.document(product.id).update("stock", newStock)
+                }
+            }
+        }
+
+        doc.update("orderStatus", SingletonKey.ORDER_ACCEPTED)
+        Toast.makeText(context, "Order accepted", Toast.LENGTH_SHORT).show()
         view.setManageOrderDetailsUI()
     }
 
