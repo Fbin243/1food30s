@@ -12,6 +12,8 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.zebrand.app1food30s.data.entity.Product
@@ -103,6 +105,106 @@ class ManageProductDetailActivity : AppCompatActivity() {
         }
     }
 
+//    private fun createAndSaveProduct(imagePath: String) {
+//        val productName = nameEditText.text.toString().trim()
+//        val productPrice = priceEditText.text.toString().toDoubleOrNull() ?: 0.0
+//        val productStock = stockEditText.text.toString().toIntOrNull() ?: 0
+//        val productDescription = descriptionEditText.text.toString().trim()
+//        val db = Firebase.firestore
+//
+//        val selectedCategoryName = categoryAutoComplete.text.toString()
+//        val selectedOfferName = offerAutoComplete.text.toString()
+//
+//        db.collection("categories").whereEqualTo("name", selectedCategoryName).limit(1).get()
+//            .addOnSuccessListener { categoryDocuments ->
+//                if (categoryDocuments.documents.isNotEmpty()) {
+//                    val categoryDocumentRef = categoryDocuments.documents.first().reference
+//
+//                    db.collection("offers").whereEqualTo("name", selectedOfferName).limit(1).get()
+//                        .addOnSuccessListener { offerDocuments ->
+//                            if (offerDocuments.documents.isNotEmpty()) {
+//                                val offerDocumentRef = offerDocuments.documents.first().reference
+//
+//                                val newProductRef = db.collection("products").document()
+//
+//                                val newProduct = Product(
+//                                    id = newProductRef.id,
+//                                    name = productName,
+//                                    idCategory = categoryDocumentRef,
+//                                    idOffer =                                 offerDocumentRef,
+//                                    price = productPrice,
+//                                    description = productDescription,
+//                                    stock = productStock,
+//                                    image = imagePath, // Sử dụng URL của hình ảnh đã tải lên
+//                                    date = Date(),
+//                                )
+//
+////                                newProductRef.set(newProduct)
+////                                    .addOnSuccessListener {
+////                                        // Xử lý thành công, ví dụ: hiển thị thông báo thành công cho người dùng
+////                                        val intent = Intent(this, ManageProductActivity::class.java)
+////                                        startActivity(intent)
+////                                    }
+////                                    .addOnFailureListener { e ->
+////                                        // Xử lý thất bại, ví dụ: hiển thị thông báo lỗi cho người dùng
+////                                    }
+//
+//                                newProductRef.set(newProduct)
+//                                    .addOnSuccessListener {
+//                                        categoryDocumentRef.get()
+//                                            .addOnSuccessListener { documentSnapshot ->
+//                                                val currentNumProductCategory = documentSnapshot.getLong("numProduct") ?: 0
+//                                                val newNumProductCategory = currentNumProductCategory + 1
+//                                                categoryDocumentRef.update("numProduct", newNumProductCategory)
+//                                                    .addOnSuccessListener {
+//                                                        offerDocumentRef.get()
+//                                                            .addOnSuccessListener { offerSnapshot ->
+//                                                                val currentNumProductOffer = offerSnapshot.getLong("numProduct") ?: 0
+//                                                                val newNumProductOffer = currentNumProductOffer + 1
+//                                                                offerDocumentRef.update("numProduct", newNumProductOffer)
+//                                                                    .addOnSuccessListener {
+//                                                                        Toast.makeText(this, "Product and counts updated successfully", Toast.LENGTH_SHORT).show()
+//                                                                        finish()
+//                                                                    }
+//                                                                    .addOnFailureListener { e ->
+//                                                                        Toast.makeText(this, "Failed to update offer count: ${e.message}", Toast.LENGTH_SHORT).show()
+//                                                                    }
+//                                                            }
+//                                                            .addOnFailureListener { e ->
+//                                                                Toast.makeText(this, "Failed to get current offer count: ${e.message}", Toast.LENGTH_SHORT).show()
+//                                                            }
+//                                                    }
+//                                                    .addOnFailureListener { e ->
+//                                                        // Handle failure for updating the category
+//                                                        Toast.makeText(this, "Failed to update category count: ${e.message}", Toast.LENGTH_SHORT).show()
+//                                                    }
+//                                            }
+//                                            .addOnFailureListener { e ->
+//                                                // Handle failure for getting the current category count
+//                                                Toast.makeText(this, "Failed to get current category count: ${e.message}", Toast.LENGTH_SHORT).show()
+//                                            }
+//                                    }
+//                                    .addOnFailureListener { e ->
+//                                        // Handle failure for creating the new product
+//                                        Toast.makeText(this, "Failed to create product: ${e.message}", Toast.LENGTH_SHORT).show()
+//                                    }
+//
+//                            } else {
+//                                // Xử lý trường hợp không tìm thấy ưu đãi phù hợp
+//                            }
+//                        }
+//                        .addOnFailureListener { exception ->
+//                            // Xử lý lỗi khi tìm kiếm ưu đãi
+//                        }
+//                } else {
+//                    // Xử lý trường hợp không tìm thấy danh mục phù hợp
+//                }
+//            }
+//            .addOnFailureListener { exception ->
+//                // Xử lý lỗi khi tìm kiếm danh mục
+//            }
+//    }
+
     private fun createAndSaveProduct(imagePath: String) {
         val productName = nameEditText.text.toString().trim()
         val productPrice = priceEditText.text.toString().toDoubleOrNull() ?: 0.0
@@ -118,90 +220,50 @@ class ManageProductDetailActivity : AppCompatActivity() {
                 if (categoryDocuments.documents.isNotEmpty()) {
                     val categoryDocumentRef = categoryDocuments.documents.first().reference
 
-                    db.collection("offers").whereEqualTo("name", selectedOfferName).limit(1).get()
-                        .addOnSuccessListener { offerDocuments ->
-                            if (offerDocuments.documents.isNotEmpty()) {
-                                val offerDocumentRef = offerDocuments.documents.first().reference
-
-                                val newProductRef = db.collection("products").document()
-
-                                val newProduct = Product(
-                                    id = newProductRef.id,
-                                    name = productName,
-                                    idCategory = categoryDocumentRef,
-                                    idOffer =                                 offerDocumentRef,
-                                    price = productPrice,
-                                    description = productDescription,
-                                    stock = productStock,
-                                    image = imagePath, // Sử dụng URL của hình ảnh đã tải lên
-                                    date = Date(),
-                                )
-
-//                                newProductRef.set(newProduct)
-//                                    .addOnSuccessListener {
-//                                        // Xử lý thành công, ví dụ: hiển thị thông báo thành công cho người dùng
-//                                        val intent = Intent(this, ManageProductActivity::class.java)
-//                                        startActivity(intent)
-//                                    }
-//                                    .addOnFailureListener { e ->
-//                                        // Xử lý thất bại, ví dụ: hiển thị thông báo lỗi cho người dùng
-//                                    }
-
-                                newProductRef.set(newProduct)
-                                    .addOnSuccessListener {
-                                        categoryDocumentRef.get()
-                                            .addOnSuccessListener { documentSnapshot ->
-                                                val currentNumProductCategory = documentSnapshot.getLong("numProduct") ?: 0
-                                                val newNumProductCategory = currentNumProductCategory + 1
-                                                categoryDocumentRef.update("numProduct", newNumProductCategory)
-                                                    .addOnSuccessListener {
-                                                        offerDocumentRef.get()
-                                                            .addOnSuccessListener { offerSnapshot ->
-                                                                val currentNumProductOffer = offerSnapshot.getLong("numProduct") ?: 0
-                                                                val newNumProductOffer = currentNumProductOffer + 1
-                                                                offerDocumentRef.update("numProduct", newNumProductOffer)
-                                                                    .addOnSuccessListener {
-                                                                        Toast.makeText(this, "Product and counts updated successfully", Toast.LENGTH_SHORT).show()
-                                                                        finish()
-                                                                    }
-                                                                    .addOnFailureListener { e ->
-                                                                        Toast.makeText(this, "Failed to update offer count: ${e.message}", Toast.LENGTH_SHORT).show()
-                                                                    }
-                                                            }
-                                                            .addOnFailureListener { e ->
-                                                                Toast.makeText(this, "Failed to get current offer count: ${e.message}", Toast.LENGTH_SHORT).show()
-                                                            }
-                                                    }
-                                                    .addOnFailureListener { e ->
-                                                        // Handle failure for updating the category
-                                                        Toast.makeText(this, "Failed to update category count: ${e.message}", Toast.LENGTH_SHORT).show()
-                                                    }
-                                            }
-                                            .addOnFailureListener { e ->
-                                                // Handle failure for getting the current category count
-                                                Toast.makeText(this, "Failed to get current category count: ${e.message}", Toast.LENGTH_SHORT).show()
-                                            }
-                                    }
-                                    .addOnFailureListener { e ->
-                                        // Handle failure for creating the new product
-                                        Toast.makeText(this, "Failed to create product: ${e.message}", Toast.LENGTH_SHORT).show()
-                                    }
-
-                            } else {
-                                // Xử lý trường hợp không tìm thấy ưu đãi phù hợp
+                    // Chỉ truy vấn ưu đãi nếu selectedOfferName không rỗng
+                    if (selectedOfferName.isNotEmpty()) {
+                        db.collection("offers").whereEqualTo("name", selectedOfferName).limit(1).get()
+                            .addOnSuccessListener { offerDocuments ->
+                                if (offerDocuments.documents.isNotEmpty()) {
+                                    val offerDocumentRef = offerDocuments.documents.first().reference
+                                    createProduct(productName, productPrice, productStock, productDescription, imagePath, db, categoryDocumentRef, offerDocumentRef)
+                                }
                             }
-                        }
-                        .addOnFailureListener { exception ->
-                            // Xử lý lỗi khi tìm kiếm ưu đãi
-                        }
-                } else {
-                    // Xử lý trường hợp không tìm thấy danh mục phù hợp
+                    } else {
+                        // Không có ưu đãi được chọn, tạo sản phẩm không có tham chiếu đến offer
+                        createProduct(productName, productPrice, productStock, productDescription, imagePath, db, categoryDocumentRef, null)
+                    }
                 }
             }
-            .addOnFailureListener { exception ->
-                // Xử lý lỗi khi tìm kiếm danh mục
+    }
+
+    private fun createProduct(name: String, price: Double, stock: Int, description: String, imagePath: String, db: FirebaseFirestore, categoryRef: DocumentReference, offerRef: DocumentReference?) {
+        val newProductRef = db.collection("products").document()
+
+        val newProduct = Product(
+            id = newProductRef.id,
+            name = name,
+            idCategory = categoryRef,
+            idOffer = offerRef,
+            price = price,
+            description = description,
+            stock = stock,
+            image = imagePath,
+            date = Date(),
+        )
+
+        newProductRef.set(newProduct)
+            .addOnSuccessListener {
+                // Handle success
+                Toast.makeText(this, "Product created successfully", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            .addOnFailureListener { e ->
+                // Handle failure
+                Toast.makeText(this, "Failed to create product: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
 
     private fun loadCategoriesFromFirebase() {
         val db = Firebase.firestore
