@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -19,9 +20,16 @@ class ManageProductAdapter(private val products: List<Product>, private val onPr
         val productDescription: TextView = itemView.findViewById(R.id.productDescription)
         val productPrice: TextView = itemView.findViewById(R.id.productPrice)
         val productDate: TextView = itemView.findViewById(R.id.productDate)
+        val editBtn: Button = itemView.findViewById(R.id.addBtn)
 
         init {
             itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onProductClick(products[position])
+                }
+            }
+            editBtn.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     onProductClick(products[position])
