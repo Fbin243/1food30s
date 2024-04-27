@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -98,9 +99,9 @@
             android:exported="true">
 
         </activity>
-        <activity
-            android:name=".ui.manage_order.ManageOrderActivity"
-            android:exported="true"/>
+<!--        <activity-->
+<!--            android:name=".ui.manage_order.ManageOrderActivity"-->
+<!--            android:exported="true"/>-->
         <activity
             android:name=".ui.review.ReviewActivity"
             android:exported="false" />
@@ -130,20 +131,22 @@
 
         </activity>
         <!-- ADMIN -->
-        <activity
-            android:name=".ui.admin_stats.AdminStatsActivity"
-            android:exported="true">
+<!--        <activity-->
+<!--            android:name=".ui.admin_stats.AdminStatsActivity"-->
+<!--            android:exported="true">-->
 
-        </activity>
+<!--        </activity>-->
         <activity
             android:name=".ui.checkout.CheckoutActivity"
-            android:exported="true" >
-<!--                <intent-filter>-->
-<!--                        <action android:name="android.intent.action.MAIN" />-->
-
-
-<!--                        <category android:name="android.intent.category.LAUNCHER" />-->
-<!--                </intent-filter>-->
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="demozpdk"
+                    android:host="app" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ui.main.MainActivity"

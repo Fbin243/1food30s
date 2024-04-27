@@ -2,9 +2,10 @@ package com.zebrand.app1food30s.ui.checkout
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.StrictMode
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -21,13 +22,18 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CheckoutItemsAdapter
-import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.CartItem
+import com.zebrand.app1food30s.data.zalopay.CreateOrder
 import com.zebrand.app1food30s.databinding.ActivityCheckoutBinding
 import com.zebrand.app1food30s.ui.cart.CartRepository
 import com.zebrand.app1food30s.ui.main.MainActivity
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
+import vn.zalopay.sdk.Environment
+import vn.zalopay.sdk.ZaloPayError
+import vn.zalopay.sdk.ZaloPaySDK
+import vn.zalopay.sdk.listeners.PayOrderListener
+
 
 class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallback {
 
@@ -46,6 +52,11 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         super.onCreate(savedInstanceState)
         binding = ActivityCheckoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
+        StrictMode.setThreadPolicy(policy)
+        // ZaloPay SDK Init
+        ZaloPaySDK.init(553, Environment.SANDBOX);
 
         preferences = MySharedPreferences.getInstance(this)
         userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
@@ -103,6 +114,39 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         }
     }
 
+    private fun requestZalo(){
+        val orderApi = CreateOrder()
+
+        try {
+            val data = orderApi.createOrder("20000")
+            val code = data.getString("returncode")
+            if (code == "1") {
+                val token = data.getString("zptranstoken")
+                ZaloPaySDK.getInstance().payOrder(this, token, "demozpdk://app", object : PayOrderListener {
+                    override fun onPaymentSucceeded(p0: String?, p1: String?, p2: String?) {
+                        Toast.makeText(this@CheckoutActivity, "Payment success", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onPaymentCanceled(p0: String?, p1: String?) {
+                        Toast.makeText(this@CheckoutActivity, "Payment canceled", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onPaymentError(p0: ZaloPayError?, p1: String?, p2: String?) {
+                        Toast.makeText(this@CheckoutActivity, "Payment error", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        ZaloPaySDK.getInstance().onResult(intent)
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
@@ -155,6 +199,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 
             // Proceed with the place order logic if address is not empty
             // TODO: add to utils
+            requestZalo()
             val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
             presenter.onPlaceOrderClicked(cartId, userDocRef, address, note)
         }
