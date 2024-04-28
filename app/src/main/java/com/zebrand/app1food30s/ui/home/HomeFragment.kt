@@ -96,7 +96,11 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
 
     private fun handleDisplayWishlistActivity() {
         binding.ivWishlistScreen.setOnClickListener {
-            val intent = Intent(requireContext(), WishlistActivity::class.java)
+//            val intent = Intent(requireContext(), WishlistActivity::class.java)
+//            startActivity(intent)
+            val intent = Intent(requireContext(), ProductViewAllActivity::class.java)
+            intent.putExtra("filterBy", "wishlist")
+            intent.putExtra("title", "Wishlist")
             startActivity(intent)
         }
     }

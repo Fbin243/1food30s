@@ -15,7 +15,7 @@ import com.zebrand.app1food30s.utils.Utils.formatPrice
 import com.zebrand.app1food30s.utils.Utils.getShimmerDrawable
 
 class ProductAdapter(
-    var products: List<Product>,
+    var products: MutableList<Product>,
     private var offers: List<Offer>,
     private var wishlistedProductIds: MutableSet<String>,
     private var noItemLayout: View? = null
@@ -216,7 +216,7 @@ class ProductAdapter(
 //    }
 
     fun updateData(newProducts: List<Product>, newOffers: List<Offer>) {
-        products = newProducts
+        products = newProducts.toMutableList()
         offers = newOffers
         if (products.isEmpty()) {
             noItemLayout?.visibility = View.VISIBLE

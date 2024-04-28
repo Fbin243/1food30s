@@ -1,6 +1,8 @@
 package com.zebrand.app1food30s.utils
 
 import android.util.Log
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.toObject
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Category
@@ -8,13 +10,19 @@ import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.data.entity.Review
 import com.zebrand.app1food30s.data.entity.User
+import com.zebrand.app1food30s.data.entity.WishlistItem
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBWishlistRef
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 object FirebaseService {
     private var firstTimeGetProducts: Boolean = true
@@ -96,6 +104,77 @@ object FirebaseService {
             }
         }
     }
+
+    suspend fun getWishlistProducts(userId: String): List<Product> {
+        return withContext(Dispatchers.IO) {
+            try {
+                // Retrieve wishlist reference and extract product IDs
+                val wishlistRef = mDBWishlistRef.document(userId)
+                val documentSnapshot = wishlistRef.get().await()
+                val productIds = documentSnapshot.get("productIds")
+                    .let { it as? List<*>? }
+                    ?.filterIsInstance<String>()
+                    ?: listOf()
+                // Prepare Firestore read tasks for each product ID
+                val tasks = productIds.map { productId ->
+                    async { FireStoreUtils.mDBProductRef.document(productId).get().await() }
+                }
+
+                // Await all tasks to finish and collect their results as Product objects
+                val products = tasks.awaitAll().mapNotNull { document ->
+                    if (document.exists()) {
+                        document.toObject<Product>().apply {
+                            // Optionally fetch and update the image URL if necessary
+                            this?.image = FirebaseUtils.fireStorage.reference.child(
+                                this?.image ?: ""
+                            ).downloadUrl.await().toString()
+                        }
+                    } else null
+                }
+
+                products // Return the list of Products
+            } catch (e: Exception) {
+                Log.e("getWishlistProducts", "Error getting wishlist products", e)
+                emptyList<Product>() // Return an empty list in case of error
+            }
+        }
+    }
+
+//    suspend fun getWishlistProducts(userId: String): List<WishlistItem> {
+//        return withContext(Dispatchers.IO) {
+//            try {
+//                val wishlistRef = mDBWishlistRef.document(userId)
+//                val documentSnapshot = wishlistRef.get().await()
+//                val productIds = documentSnapshot.get("productIds")
+//                    .let { it as? List<*>? }
+//                    ?.filterIsInstance<String>()
+//                    ?: listOf()
+//                // Prepare Firestore read tasks for each product ID
+//                val tasks = productIds.map { productId ->
+//                    async { FireStoreUtils.mDBProductRef.document(productId).get().await() }
+//                }
+//
+//                // Await all tasks to finish and process their results
+//                val wishlistItems = tasks.awaitAll().mapNotNull { document ->
+//                    if (document.exists()) {
+//                        WishlistItem(
+//                            productId = document.id,
+//                            name = document.getString("name") ?: "",
+//                            price = document.getDouble("price") ?: 0.0,
+//                            image = document.getString("image") ?: ""
+//                        )
+//                    } else {
+//                        null
+//                    }
+//                }
+//
+//                wishlistItems // Return the list of WishlistItems
+//            } catch (e: Exception) {
+//                Log.e("getWishlistProducts", "Error getting wishlist products", e)
+//                emptyList<WishlistItem>() // Return an empty list in case of error
+//            }
+//        }
+//    }
 
     suspend fun getListOffers(db: AppDatabase): List<Offer> {
         return withContext(Dispatchers.IO) {
