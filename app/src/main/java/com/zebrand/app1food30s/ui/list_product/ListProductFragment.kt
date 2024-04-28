@@ -76,12 +76,16 @@ class ListProductFragment(
         return binding.root
     }
 
+    fun setWishlistFilter() {
+        filterBy = "wishlist"  // Adding a new filter type
+    }
+
     // Hàm nhận dữ liệu từ các activity, fragment khác
     fun setInfo(title: String, filterBy: String, idFilter: String? = null) {
         this.title = title
         this.filterBy = filterBy
         this.idFilter = idFilter
-        Log.i("TAG123", "setInfo: $title $idFilter")
+//        Log.i("TAG123", "setInfo: $title $idFilter")
         handleDisplayTitle()
     }
 
@@ -276,7 +280,7 @@ class ListProductFragment(
         Log.i("TAG123", "onRefresh: $filterBy")
         when (filterBy) {
             "offer" -> {
-                Log.i("TAG123", "onRefresh: goi ham filter by offer")
+//                Log.i("TAG123", "onRefresh: goi ham filter by offer")
                 listProductPresenter.filterProductsByOffer(
                     idFilter!!,
                     binding.productRcv.adapter as ProductAdapter
@@ -284,7 +288,7 @@ class ListProductFragment(
             }
 
             "bestSellers" -> {
-                Log.i("TAG123", "onRefresh: goi ham sort by sold")
+//                Log.i("TAG123", "onRefresh: goi ham sort by sold")
                 listProductPresenter.refreshDataAndSortDataBySold(binding.productRcv.adapter as ProductAdapter)
             }
 

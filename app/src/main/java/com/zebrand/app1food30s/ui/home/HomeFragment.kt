@@ -31,6 +31,7 @@ import com.zebrand.app1food30s.ui.offer_detail.OfferDetailActivity
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.product_view_all.ProductViewAllActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
+import com.zebrand.app1food30s.ui.wishlist.WishlistActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
 import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
 import com.zebrand.app1food30s.ui.wishlist.WishlistRepository
@@ -88,8 +89,16 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
 
         handleOpenSearchScreen()
+        handleDisplayWishlistActivity()
 
         return binding.root
+    }
+
+    private fun handleDisplayWishlistActivity() {
+        binding.ivWishlistScreen.setOnClickListener {
+            val intent = Intent(requireContext(), WishlistActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     override fun fetchAndUpdateWishlistState(callback: () -> Unit) {

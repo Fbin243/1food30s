@@ -77,6 +77,15 @@ class  WishlistRepository(private val userId: String) {
         }
     }
 
+    suspend fun fetchWishlistProductIds(): List<String> = suspendCancellableCoroutine { cont ->
+        wishlistRef.get().addOnSuccessListener { document ->
+            val productIds = document.get("productIds") as? List<String> ?: emptyList()
+            cont.resume(productIds)
+        }.addOnFailureListener { e ->
+            cont.resumeWithException(e)
+        }
+    }
+
     private suspend fun addToWishlist(productId: String): Boolean = suspendCancellableCoroutine { cont ->
         wishlistRef.update("productIds", FieldValue.arrayUnion(productId))
             .addOnSuccessListener { cont.resume(true) }

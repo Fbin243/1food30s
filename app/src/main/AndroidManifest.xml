@@ -156,6 +156,10 @@
             android:exported="true" >
         </activity>
         <activity
+            android:name=".ui.wishlist.WishlistActivity"
+            android:exported="true" >
+        </activity>
+        <activity
             android:name=".ui.checkout.CheckoutActivity"
             android:exported="true" >
 

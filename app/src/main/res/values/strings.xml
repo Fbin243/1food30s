@@ -258,4 +258,5 @@
     <string name="txt_read_less">Read less</string>
     <string name="txt_login_with_google">Login with Google</string>
     <string name="txt_or_continue_with">Or continue with</string>
+    <string name="wishlist">Wishlist</string>
 </resources>

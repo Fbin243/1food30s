@@ -60,4 +60,16 @@ class ListProductPresenter(private val view: ListProductMVPView, private val db:
     private fun fetchAndUpdateWishlistBeforeHideShimmer() {
         view.fetchAndUpdateWishlistState { view.hideShimmerEffectForProducts() }
     }
+
+//    suspend fun updateViewWithWishlistIds() {
+//        view.showShimmerEffectForProducts()
+//        try {
+//            val wishlistedIds = wishlistRepository.fetchWishlistProductIds()
+//            view.updateWishlistIndicator(wishlistedIds)
+//        } catch (e: Exception) {
+////            view.showError("Failed to fetch wishlist")
+//        } finally {
+//            view.hideShimmerEffectForProducts()
+//        }
+//    }
 }
