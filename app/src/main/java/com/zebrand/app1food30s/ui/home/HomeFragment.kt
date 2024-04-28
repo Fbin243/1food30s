@@ -160,7 +160,9 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
     override fun onResume() {
         super.onResume()
 //        Log.d("Test00", "onResume: ")
-//        fetchAndUpdateWishlistState()
+        wishlistPresenter.fetchAndUpdateWishlistState {
+            // Optional: Do something after wishlist state is updated, if necessary
+        }
 //        refreshWishlistState(wishlistedProductIds)
         binding.searchInput.clearFocus()
     }
@@ -312,7 +314,8 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         adapter.onWishlistProductClick = { product ->
             if (userId == defaultUserId) {
                 val loginIntent = Intent(requireContext(), LoginActivity::class.java)
-                startActivity(loginIntent)
+                loginIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                this.startActivity(loginIntent)
             } else {
                 wishlistPresenter.toggleWishlist(product)
             }
