@@ -125,9 +125,9 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
         binding.tvOrderDate.text = Utils.formatDate(orderDetails.date)
         binding.tvAddress.text = orderDetails.shippingAddress
 //        binding.tvPaymentStatus.text = orderDetails.paymentStatus.uppercase()
-        binding.tvSubTotal.text = "$" + Utils.formatPrice(itemOrderDetailsAdapter.getSubTotal())
-        binding.tvDiscount.text = "$" + Utils.formatPrice(itemOrderDetailsAdapter.getDiscount())
-        binding.tvTotalAmount.text = "$" + Utils.formatPrice(orderDetails.totalAmount)
+        binding.tvSubTotal.text = Utils.formatPrice(itemOrderDetailsAdapter.getSubTotal(), this)
+        binding.tvDiscount.text = Utils.formatPrice(itemOrderDetailsAdapter.getDiscount(), this)
+        binding.tvTotalAmount.text = Utils.formatPrice(orderDetails.totalAmount, this)
 
         binding.spinnerPayment.setText(orderDetails.paymentStatus, false)
         binding.spinnerDelivery.setText(orderDetails.orderStatus, false)

@@ -269,7 +269,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
             )
         }
         binding.cateRcv.adapter = adapter
-        binding.btn.setOnClickListener {
+        binding.btn.root.setOnClickListener {
             openMenuActivityWithCategory(categories[0].id, 0)
         }
     }
@@ -286,7 +286,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         val adapter = ProductAdapter(products.take(4).toMutableList(), offers, wishlistedProductIds)
         addCallBacksForAdapter(adapter)
         binding.productRcv1.adapter = adapter
-        handleOpenProductViewAll(binding.btn1, true, binding.textView1.text.toString())
+        handleOpenProductViewAll(binding.btn1.root, true, binding.textView1.text.toString())
     }
 
     override fun showProductsBestSeller(
@@ -299,7 +299,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         val adapter = ProductAdapter(products.sortedByDescending { it.sold }.take(4).toMutableList(), offers, wishlistedProductIds)
         addCallBacksForAdapter(adapter)
         binding.productRcv2.adapter = adapter
-        handleOpenProductViewAll(binding.btn2, false, binding.textView2.text.toString())
+        handleOpenProductViewAll(binding.btn2.root, false, binding.textView2.text.toString())
     }
 
     private fun addCallBacksForAdapter(adapter: ProductAdapter) {

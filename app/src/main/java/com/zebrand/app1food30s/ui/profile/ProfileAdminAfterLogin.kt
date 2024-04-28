@@ -22,6 +22,7 @@ import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.databinding.FragmentProfileAdminAfterLoginBinding
+import com.zebrand.app1food30s.ui.change_language.ChangeLanguageActivity
 import com.zebrand.app1food30s.ui.change_password.ChangePasswordActivity
 import com.zebrand.app1food30s.ui.manage_category.ManageCategory
 import com.zebrand.app1food30s.ui.manage_product.ManageProductActivity
@@ -65,7 +66,6 @@ class ProfileAdminAfterLogin : Fragment() {
         fetchUserInformation(idUser.orEmpty())
         events()
 
-        // ========== Code này ở branch Hai3 (đã sửa lại dùng binding) =========
         binding.ava.setOnClickListener {
             pickImageLauncher.launch("image/*")
         }
@@ -77,6 +77,7 @@ class ProfileAdminAfterLogin : Fragment() {
         }
         // ================================================================
 //        binding.username.setText(idUser)
+
         binding.layoutEditProfile.setOnClickListener {
             // Navigate to AdminStatisticsActivity
             val intent = Intent(activity, EditProfileActivity::class.java).apply {

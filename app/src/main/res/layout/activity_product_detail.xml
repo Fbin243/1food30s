@@ -36,8 +36,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:fontFamily="@font/rubik_extrabold"
+                    android:fontFamily="@font/font_family"
                     android:text="@string/txt_details"
+                    android:textFontWeight="800"
                     android:textSize="@dimen/font_header"
                     app:layout_constraintStart_toEndOf="@+id/backFromDetail"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -76,23 +77,26 @@
                         android:padding="@dimen/spacing10">
 
                         <LinearLayout
-                            android:layout_marginTop="@dimen/spacing10"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing10">
+
                             <TextView
                                 android:id="@+id/productTitle"
                                 android:layout_width="0dp"
-                                android:layout_weight="1"
                                 android:layout_height="wrap_content"
+                                android:layout_weight="1"
                                 android:ellipsize="end"
-                                android:fontFamily="@font/rubik_bold"
+                                android:fontFamily="@font/font_family"
+                                android:textFontWeight="700"
                                 android:maxLines="1"
                                 android:text="Sweet &amp; Sour Chicken"
                                 android:textSize="@dimen/font_header" />
+
                             <ImageView
                                 android:layout_width="30dp"
                                 android:layout_height="30dp"
-                                android:src="@drawable/ic_wishlist"/>
+                                android:src="@drawable/ic_wishlist" />
 
                         </LinearLayout>
 
@@ -163,7 +167,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="bottom"
-                                android:fontFamily="@font/rubik_bold"
+                                android:fontFamily="@font/font_family"
+                                android:textFontWeight="700"
                                 android:text="$6.54"
                                 android:textColor="@color/accent"
                                 android:textSize="@dimen/font_header" />
@@ -181,8 +186,8 @@
                             android:textColor="@color/grey_60"
                             android:textSize="@dimen/font_default"
                             app:colorClickableText="#039BE5"
-                            app:trimCollapsedText="@string/read_more"
-                            app:trimExpandedText="@string/read_less"
+                            app:trimCollapsedText="@string/txt_read_more"
+                            app:trimExpandedText="@string/txt_read_less"
                             app:trimLength="150"
                             app:trimMode="trimModeLength" />
 
@@ -197,7 +202,8 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:fontFamily="@font/rubik_medium"
+                                android:fontFamily="@font/font_family"
+                                android:textFontWeight="500"
                                 android:text="@string/txt_stock"
                                 android:textSize="@dimen/font_size16" />
 
@@ -222,7 +228,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_weight="1"
-                                android:fontFamily="@font/rubik_medium"
+                                android:fontFamily="@font/font_family"
+                                android:textFontWeight="500"
                                 android:maxLines="2"
                                 android:text="@string/txt_quantity"
                                 android:textSize="@dimen/font_size16" />
@@ -271,9 +278,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
                             android:layout_marginTop="20dp"
-                            android:paddingStart="70dp"
-                            android:paddingEnd="70dp"
-                            android:text="Add to cart"
+                            android:paddingStart="60dp"
+                            android:paddingEnd="60dp"
+                            android:text="@string/txt_add_to_cart"
                             android:textAlignment="center"
                             android:textAllCaps="true"
                             android:textStyle="bold"
@@ -325,9 +332,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+                        android:fontFamily="@font/font_family"
                         android:text="6 Reviews"
+                        android:textFontWeight="600"
                         android:textSize="@dimen/font_size16"
-                        android:fontFamily="@font/rubik_semibold"
                         android:visibility="gone" />
                 </LinearLayout>
 
@@ -338,20 +346,12 @@
                     android:layout_height="24dp"
                     android:layout_gravity="center_vertical" />
 
-                <Button
+                <include
                     android:id="@+id/viewAllBtn"
-                    android:layout_width="70dp"
+                    layout="@layout/view_all_btn"
+                    android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
-                    android:backgroundTint="@color/secondary_20"
-                    android:fontFamily="@font/rubik_bold"
-                    android:lineHeight="@dimen/spacing1"
-                    android:padding="0dp"
-                    android:text="@string/txt_view_all"
-                    android:textColor="@color/secondary"
-                    android:textSize="@dimen/font_size12"
-                    android:visibility="gone"
-                    app:strokeColor="@color/primary" />
+                    android:visibility="gone" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -390,26 +390,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone" >
+                android:visibility="gone">
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_gravity="center_horizontal"
-                    >
+                    android:orientation="horizontal">
+
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_marginEnd="@dimen/spacing8"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/ic_no_review"/>
+                        android:layout_marginEnd="@dimen/spacing8"
+                        android:src="@drawable/ic_no_review" />
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:text="@string/no_reviews"
-                        android:textSize="@dimen/font_size16"
-                        />
+                        android:textSize="@dimen/font_size16" />
                 </LinearLayout>
 
 
@@ -432,9 +433,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/font_family"
+                    android:textFontWeight="600"
                     android:text="@string/related_products_title"
-                    android:textSize="@dimen/font_size16"
-                    android:fontFamily="@font/rubik_semibold" />
+                    android:textSize="@dimen/font_size16" />
             </LinearLayout>
 
 
@@ -450,24 +452,25 @@
             <LinearLayout
                 android:id="@+id/noRelatedProductText"
                 android:layout_width="match_parent"
-                android:layout_marginTop="20dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
                 android:gravity="center_horizontal"
-                android:visibility="gone" >
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_marginEnd="@dimen/spacing8"
-                        android:layout_gravity="center_vertical"
-                        android:src="@drawable/ic_no_related_products"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/txt_no_related_products"
-                        android:textSize="@dimen/font_size16"
-                        />
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/spacing8"
+                    android:src="@drawable/ic_no_related_products" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/txt_no_related_products"
+                    android:textSize="@dimen/font_size16" />
 
             </LinearLayout>
 

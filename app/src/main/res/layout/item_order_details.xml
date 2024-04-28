@@ -75,7 +75,8 @@
                     android:layout_height="wrap_content"
 
                     android:layout_weight="2"
-                    android:fontFamily="@font/rubik_semibold"
+                    android:fontFamily="@font/font_family"
+                    android:textFontWeight="600"
                     android:text="@string/txt_review"
                     android:textAlignment="viewEnd"
                     android:textColor="@color/primary"

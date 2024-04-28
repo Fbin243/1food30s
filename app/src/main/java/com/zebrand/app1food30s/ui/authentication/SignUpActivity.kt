@@ -13,6 +13,7 @@ import com.zebrand.app1food30s.data.entity.Wishlist
 import com.zebrand.app1food30s.databinding.ActivitySignUpBinding
 import com.zebrand.app1food30s.utils.FireStoreUtils
 import com.zebrand.app1food30s.utils.FirebaseUtils
+import com.zebrand.app1food30s.utils.Utils
 import com.zebrand.app1food30s.utils.ValidateInput
 
 
@@ -94,40 +95,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setUserData(user: User) {
-        val userRef = FireStoreUtils.mDBUserRef
-        val cartRef = FireStoreUtils.mDBCartRef
-        val wishListRef = FireStoreUtils.mDBWishlistRef
-
-        val userDoc: DocumentReference = userRef.document() // Automatically generates a unique document ID
-        val userId = userDoc.id
-        // TODO: cart id instead of user id
-        val cartDoc: DocumentReference = cartRef.document(userId) // Use userId as the document ID
-//        val cartDoc: DocumentReference = cartRef.document() // Automatically generates a unique document ID
-        val wishListDoc: DocumentReference = wishListRef.document() // Automatically generates a unique document ID
-
-
-        val cartId = cartDoc.id
-        val wishListId = wishListDoc.id
-
-        val cart = Cart(id = cartId, userId = userDoc)
-        val wishList = Wishlist(id = wishListId, userId = userDoc)
-        user.id = userId
-        user.cartRef = cartDoc
-        user.wishlistRef = wishListDoc
-
-        Log.d("userInfo", "Sign up " + user.toString())
-
-        userDoc.set(user)
-        cartDoc.set(cart)
-            .addOnSuccessListener {
-                // Xử lý khi tài liệu được thêm thành công
-                println("Document added with ID: ${userDoc.id}")
-            }
-            .addOnFailureListener { e ->
-                // Xử lý lỗi nếu có
-                println("Error adding document: $e")
-            }
-        wishListDoc.set(wishList)
+        Utils.setUserDataInFireStore(user)
     }
 
     private fun checkValid(): Boolean {

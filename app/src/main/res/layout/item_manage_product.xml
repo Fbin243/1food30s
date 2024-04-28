@@ -38,7 +38,8 @@
                 android:maxLines="1"
                 android:text="Sweet &amp; Sour Chicken"
                 android:textSize="@dimen/font_default"
-                android:fontFamily="@font/rubik_semibold" />
+                android:fontFamily="@font/font_family"
+                android:textFontWeight="600" />
 
             <LinearLayout
                 android:layout_width="match_parent"

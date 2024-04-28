@@ -30,33 +30,33 @@
         android:font="@font/rubik_medium_italic" />
 <!--    600-->
     <font
-        android:fontStyle="italic"
+        android:fontStyle="normal"
         android:fontWeight="600"
         android:font="@font/rubik_semibold" />
 
     <font
-        android:fontStyle="normal"
+        android:fontStyle="italic"
         android:fontWeight="600"
         android:font="@font/rubik_semibold_italic" />
 
 <!--    700-->
     <font
-        android:fontStyle="italic"
+        android:fontStyle="normal"
         android:fontWeight="700"
         android:font="@font/rubik_bold" />
 
     <font
-        android:fontStyle="normal"
+        android:fontStyle="italic"
         android:fontWeight="700"
         android:font="@font/rubik_bold_italic" />
 <!--    800-->
     <font
-        android:fontStyle="italic"
+        android:fontStyle="normal"
         android:fontWeight="800"
         android:font="@font/rubik_extrabold" />
 
     <font
-        android:fontStyle="normal"
+        android:fontStyle="italic"
         android:fontWeight="800"
         android:font="@font/rubik_extrabold_italic" />
 <!--    900-->

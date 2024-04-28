@@ -40,7 +40,8 @@
             android:text="@string/txt_welcome_back"
             android:textSize="@dimen/font_super_header"
             android:textStyle="bold"
-            android:fontFamily="@font/rubik_bold"
+            android:fontFamily="@font/font_family"
+            android:textFontWeight="700"
             app:layout_constraintTop_toBottomOf="@+id/img_logo"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -143,7 +144,8 @@
                 android:textAlignment="viewEnd"
                 android:textSize="@dimen/font_size15"
                 android:text="@string/txt_forgot_password"
-                android:fontFamily="@font/rubik_medium"
+                android:fontFamily="@font/font_family"
+                android:textFontWeight="500"
                 android:textColor="@color/primary"/>
         </LinearLayout>
 
@@ -161,6 +163,7 @@
             />
 
         <LinearLayout
+            android:id="@+id/linear_sign_up_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -180,9 +183,59 @@
                 android:textAlignment="viewEnd"
                 android:textSize="@dimen/font_size16"
                 android:text="@string/txt_sign_up"
-                android:fontFamily="@font/rubik_medium"
+                android:fontFamily="@font/font_family"
+                android:textFontWeight="500"
                 android:textColor="@color/primary"
                 android:layout_marginStart="@dimen/spacing12"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_or_continue_with"
+            android:textColor="@color/grey"
+            android:layout_marginBottom="@dimen/spacing16"
+            android:fontFamily="@font/font_family"
+            android:textFontWeight="700"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linear_sign_up_text">
+
+            <ImageView
+                android:id="@+id/googleLoginBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginLeft="11dp"
+                android:layout_marginRight="11dp"
+                android:background="@color/white"
+                android:src="@drawable/ic_google" />
+
+            <ImageView
+                android:id="@+id/facebookLoginBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginLeft="11dp"
+                android:layout_marginRight="11dp"
+                android:background="@color/white"
+                android:src="@drawable/ic_facebook" />
+
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

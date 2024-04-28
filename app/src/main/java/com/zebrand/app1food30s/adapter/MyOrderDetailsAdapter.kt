@@ -64,7 +64,7 @@ class MyOrderDetailsAdapter(
             productName.text = orderItem.name
             productCategory.text =
                 context.resources.getString(R.string.txt_category_item_order) + orderItem.category
-            productPrice.text = Utils.formatPrice(orderItem.price)
+            productPrice.text = Utils.formatPrice(orderItem.price, holder.itemView.context)
 
             itemView.setOnClickListener {
                 onItemClick?.invoke(orderItem)

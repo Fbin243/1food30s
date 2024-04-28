@@ -1,0 +1,255 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">app1food30s</string>
+    <string name="txt_uni_address">227 Nguyễn Văn Cừ, phường 4, Quận 5, Thành phố Hồ Chí Minh</string>
+
+    <!--    Authentication-->
+    <string name="txt_welcome_back">Chào mừng trở lại!</string>
+    <string name="txt_email">Email</string>
+    <string name="txt_password">Mật khẩu</string>
+    <string name="txt_remember_me">Nhớ mật khẩu</string>
+    <string name="txt_forgot_password">Quên mật khẩu</string>
+    <string name="txt_login">Đăng nhập</string>
+    <string name="txt_no_account">Chưa có tài khoản?</string>
+    <string name="txt_sign_up">Đăng ký</string>
+    <string name="txt_let_get_started">Bắt đầu!</string>
+    <string name="txt_confirm">Xác nhận</string>
+    <string name="txt_confirm_password">Xác nhận mật khẩu</string>
+    <string name="txt_already_have_an_account">Đã có tài khoản?</string>
+
+    <!--    Bottom navigation -->
+    <string name="txt_home">Trang chủ</string>
+    <string name="txt_menu">Danh mục</string>
+    <string name="txt_offers">Ưu đãi</string>
+    <string name="txt_profile">Hồ sơ</string>
+
+    <!--    Home -->
+    <string name="txt_our_menu">Danh mục</string>
+    <string name="txt_latest_dishes">Món mới nhất</string>
+    <string name="txt_best_sellers">Bán chạy nhất</string>
+    <string name="txt_search">Tìm kiếm</string>
+    <string name="txt_view_all">Xem tất cả</string>
+    <string name="txt_add">Thêm</string>
+
+    <!--    Product detail -->
+    <string name="txt_details">Chi tiết sản phẩm</string>
+    <string name="txt_quantity">Số lượng :</string>
+    <string name="txt_reviews">Đánh giá</string>
+
+    <string name="txt_first_name">Tên</string>
+    <string name="txt_last_name">Họ</string>
+
+    <!--  My order  -->
+    <string name="txt_my_order">Đơn hàng của tôi</string>
+    <string name="txt_active_orders">Đơn hàng đang hoạt động</string>
+    <string name="txt_order_id">Mã đơn hàng: # </string>
+    <string name="txt_delivery_status">Giao hàng</string>
+    <string name="txt_pending_status">Đang chờ</string>
+    <string name="txt_order_accepted_status">Đã chấp nhận đơn hàng</string>
+    <string name="txt_on_delivery_status">Đang giao hàng</string>
+    <string name="txt_delivered_status">Đã giao hàng</string>
+    <string name="txt_order_total">Tổng: </string>
+    <string name="txt_see_order_status">Trạng thái đơn ></string>
+    <string name="txt_previous_orders">Đơn hàng trước đó</string>
+    <string name="txt_order_status">Trạng thái đơn</string>
+    <string name="txt_estimated_delivery_time">Thời gian giao hàng ước tính</string>
+    <string name="txt_got_your_order">Đã nhận đơn hàng của bạn</string>
+    <string name="txt_estimated_minutes">30 phút</string>
+    <string name="txt_pay_now">Thanh toán ngay</string>
+    <string name="txt_cancel_order">Hủy đơn hàng</string>
+    <string-array name="txt_delivery_status">
+        <item>Đang chờ</item>
+        <item>Đã chấp nhận đơn hàng</item>
+        <item>Đang giao hàng</item>
+        <item>Đã giao hàng</item>
+    </string-array>
+    <string name="txt_address">Địa chỉ</string>
+    <string name="txt_payment_info">Thông tin thanh toán</string>
+    <string name="txt_payment_method">Phương thức thanh toán:&#160;</string>
+    <string name="txt_payment_status">Trạng thái:&#160;</string>
+    <string name="txt_order_details">Chi tiết đơn hàng</string>
+    <string name="txt_subtotal">Tổng:&#160;</string>
+    <string name="txt_deals">Giảm giá</string>
+    <string name="txt_delivery_charge">Phí giao hàng</string>
+    <string name="txt_total">Tổng:&#160;</string>
+    <string name="txt_category">Danh mục</string>
+    <string name="my_profile">Hồ sơ của tôi</string>
+    <string name="login_to_see_your_info">Đăng nhập để xem thông tin của bạn</string>
+    <string name="login">Đăng nhập</string>
+    <string name="change_language">Thay đổi ngôn ngữ</string>
+
+    <!-- Manage order   -->
+    <string name="txt_manage_order">Quản lý đơn hàng</string>
+    <string name="txt_customer_name">Khách hàng:&#160;</string>
+    <string name="txt_amount">Số tiền:&#160;</string>
+    <string name="txt_date">Ngày:&#160;</string>
+    <string name="txt_see_order_details">Chi tiết đơn hàng ></string>
+    <string name="txt_payment_type">Loại thanh toán:&#160;</string>
+    <string name="txt_order_type">Loại đơn hàng:&#160;</string>
+    <string name="txt_delivery_time">Thời gian giao hàng: &#160;</string>
+    <string name="txt_unpaid">Chưa thanh toán</string>
+    <string name="txt_cash_on_delivery">Thanh toán khi nhận hàng</string>
+    <string name="txt_accept">Chấp nhận</string>
+    <string name="txt_reject">Từ chối</string>
+    <string name="txt_edit">Chỉnh sửa</string>
+    <string name="txt_add_product">Thêm sản phẩm</string>
+    <string name="product_name">Tên</string>
+    <string name="product_price">Giá</string>
+    <string name="text_category">Danh mục</string>
+    <string name="title_price">Giá ($)</string>
+    <string name="id_offer">Ưu đãi</string>
+    <string name="text_stock">Hàng trong kho</string>
+    <string name="txt_create">Tạo sản phẩm</string>
+    <string name="txt_description">Mô tả</string>
+    <string name="txt_edit_profile">Chỉnh sửa hồ sơ</string>
+    <string name="txt_my_profile">Hồ sơ của tôi</string>
+    <string name="txt_phone">Số di động</string>
+    <string name="txt_save">Lưu</string>
+    <string name="text_address">Địa chỉ</string>
+    <string name="txt_all_product">Tất cả sản phẩm</string>
+    <string name="txt_manage_products">Quản lý sản phẩm</string>
+
+    <string name="ava">ava</string>
+    <string name="ic_change_language">ic_change_language</string>
+    <string name="log_out">Đăng xuất</string>
+    <string name="ic_my_orders">my_orders</string>
+    <string name="my_orders">Đơn hàng của tôi</string>
+    <string name="edit_profile">Chỉnh sửa hồ sơ</string>
+    <string name="ic_edit_profile">ic_edit_profile</string>
+    <string name="ic_change_password">ic_change_password</string>
+    <string name="change_password">Đổi mật khẩu</string>
+    <string name="cart">Giỏ hàng</string>
+    <string name="my_cart">Giỏ hàng của tôi</string>
+    <string name="minus_button">Nút trừ</string>
+    <string name="plus_button">Nút cộng</string>
+    <string name="checkout">Thanh toán</string>
+    <string name="back_button">Nút quay lại</string>
+    <string name="place_order">Đặt hàng</string>
+    <string name="txt_new_product">Sản phẩm mới</string>
+    <string name="txt_manage_offers">Quản lý ưu đãi</string>
+    <string name="txt_manage_categories">Quản lý danh mục</string>
+
+    <string-array name="prices_array">
+        <item>Thịt</item>
+        <item>Rau củ</item>
+        <item>Canh</item>
+    </string-array>
+
+    <string-array name="offers_array">
+        <item>5%</item>
+        <item>10%</item>
+        <item>15%</item>
+    </string-array>
+
+    <string name="product_price_number">$%.2f</string>
+    <string name="close_button_description">Nút đóng</string>
+    <string name="admin_statistics">Thống kê</string>
+    <string name="txt_stock">"Hàng trong kho: "</string>
+    <string name="txt_dashboard">Thống kê</string>
+    <string name="txt_orders">Đơn hàng</string>
+    <string name="txt_products">Sản phẩm</string>
+    <string name="txt_manage">Quản lý</string>
+    <string name="txt_reason">Lý do</string>
+    <string name="txt_cancel">Hủy</string>
+    <string name="txt_clear">Xóa</string>
+    <string name="txt_filter">Lọc</string>
+    <string name="txt_order_id_filter">Mã đơn hàng</string>
+    <string name="txt_status">Trạng thái</string>
+    <string name="txt_customer">Khách hàng</string>
+    <string name="txt_date_filter">Ngày</string>
+    <string name="txt_default_date">01/01/2024</string>
+    <string name="txt_delete_account">Xóa tài khoản</string>
+    <string name="txt_confirm_delete_account">Bạn có chắc muốn xóa tài khoản của bạn không?</string>
+    <string name="txt_confirm_forgot_password">Bạn có chắc muốn đặt lại mật khẩu của mình không?</string>
+    <string name="txt_required">* Bắt buộc</string>
+    <string name="txt_invalid_email">"* Địa chỉ email không hợp lệ"</string>
+    <string name="txt_minimum_password">"* Mật khẩu tối thiểu 6 ký tự"</string>
+    <string name="txt_confirm_password_not_match">* Mật khẩu xác nhận không khớp</string>
+    <string name="txt_delete_email_not_match">* Email không chính xác</string>
+    <string name="txt_name_product_filter">Tên</string>
+    <string name="txt_price">Giá</string>
+    <string name="txt_default_filter_date">Chọn ngày</string>
+    <string name="txt_current_password">Mật khẩu hiện tại</string>
+    <string name="txt_change_password">Đổi mật khẩu</string>
+    <string name="txt_let_reset_your_password">Hãy đặt lại mật khẩu</string>
+
+    <string-array name="delivery_array">
+        <item>Đang chờ</item>
+        <item>Đã chấp nhận đơn hàng</item>
+        <item>Đang giao hàng</item>
+        <item>Đã giao hàng</item>
+    </string-array>
+
+    <string-array name="payment_array">
+        <item>Đã thanh toán</item>
+        <item>Chưa thanh toán</item>
+    </string-array>
+    <string name="formatted_currency">%.2f</string>
+    <string name="formatted_currency_dollar">$%.2f</string>
+    <string name="wishlist_button">Nút danh sách mong muốn</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Xin chào, đoạn văn trắng</string>
+    <string name="txt_choose_range_price">Chọn khoảng giá</string>
+    <string name="txt_choose_category">Chọn danh mục</string>
+    <string name="txt_choose_offer">Chọn ưu đãi</string>
+    <string name="txt_edit_product">Chỉnh sửa sản phẩm</string>
+    <string name="txt_new_offer">Ưu đãi mới</string>
+    <string name="title_discount_rate">Tỷ lệ giảm giá</string>
+    <string name="text_num_product">Số lượng sản phẩm</string>
+    <string name="txt_create_offer">Tạo ưu đãi</string>
+    <string name="txt_edi_offer">Chỉnh sửa ưu đãi</string>
+    <string name="txt_save_offer">Cập nhật ưu đãi</string>
+    <string name="txt_discount_rate">Tỷ lệ giảm giá</string>
+    <string name="txt_num_product">Số lượng sản phẩm</string>
+    <string name="txt_choose_discount">Chọn tỷ lệ giảm giá</string>
+    <string name="txt_choose_num_product">Chọn số lượng sản phẩm</string>
+    <string name="txt_delete_product">Xóa</string>
+    <string name="txt_remove_offer">Xóa</string>
+    <string name="txt_new_category">Danh mục mới</string>
+    <string name="txt_create_category">Tạo danh mục</string>
+    <string name="txt_edi_category">Chỉnh sửa danh mục</string>
+    <string name="txt_save_category">Cập nhật danh mục</string>
+    <string name="cart_button">Nút giỏ hàng</string>
+
+    <string name="txt_category_item_order">Danh mục:&#160;</string>
+    <string name="txt_payment">Thanh toán</string>
+    <string name="txt_payment_content">Thanh toán cho đơn hàng của bạn</string>
+    <string name="txt_cancel_payment">Hủy thanh toán</string>
+    <string name="txt_cancel_payment_content">Bạn có chắc muốn hủy đơn hàng của mình không?</string>
+    <string name="txt_has_been_cancelled">Đơn hàng đã bị hủy</string>
+    <string name="no_items_added">Chưa có sản phẩm nào được thêm vào</string>
+    <string name="no_items_in_cart">Giỏ hàng trống</string>
+    <string name="txt_new_password">Mật khẩu mới</string>
+    <string name="txt_confirm_new_password">Xác nhận mật khẩu mới</string>
+    <string name="txt_no_item_available">Không có sản phẩm nào</string>
+    <string name="no_reviews">Chưa có đánh giá nào!</string>
+    <string name="related_products_title">Có lẽ bạn cũng thích</string>
+    <string name="txt_no_related_products">Không có sản phẩm nào!</string>
+    <string name="manage_products">Quản lý sản phẩm</string>
+    <string name="manage_categories">Quản lý danh mục</string>
+    <string name="manage_offers">Quản lý ưu đãi</string>
+    <string name="txt_no">Không</string>
+    <string name="txt_yes">Có</string>
+    <string name="txt_review"><![CDATA[Đánh giá >]]></string>
+    <string name="txt_feedback">Nhập phản hồi của bạn</string>
+    <string name="txt_review_title">Đánh giá</string>
+    <string name="txt_submit">Gửi</string>
+    <string name="txt_reviewed"><![CDATA[Xem >]]></string>
+    <string name="txt_from_date_filter">Từ ngày</string>
+    <string name="txt_to_date_filter">Đến ngày</string>
+    <string name="txt_default_filter_from_date">Ngày</string>
+    <string name="txt_default_filter_to_date">Đến ngày</string>
+    <string name="txt_thanks_for_your_order">Cảm ơn bạn đã đặt hàng</string>
+    <string name="txt_your_order_has_been_successful">Đơn hàng của bạn đã thành công</string>
+    <string name="error_address_required">Địa chỉ là bắt buộc</string>
+    <string name="txt_manage_order_address">Địa chỉ:&#160;</string>
+    <string name="txt_english">Tiếng Anh</string>
+    <string name="txt_vietnamese">Tiếng Việt</string>
+    <string name="txt_change_language">Đổi ngôn ngữ</string>
+    <string name="txt_items_available">Sản phẩm có sẵn</string>
+    <string name="txt_add_to_cart">Thêm vào giỏ hàng</string>
+    <string name="txt_sold">Đã bán</string>
+    <string name="txt_read_more">Xem thêm</string>
+    <string name="txt_read_less">Ẩn bớt</string>
+    <string name="txt_login_with_google">Đăng nhập với Google</string>
+    <string name="txt_or_continue_with">Hoặc tiếp tục với</string>
+</resources>
