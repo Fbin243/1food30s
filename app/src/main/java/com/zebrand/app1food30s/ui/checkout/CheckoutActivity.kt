@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -21,7 +20,6 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CheckoutItemsAdapter
-import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.databinding.ActivityCheckoutBinding
 import com.zebrand.app1food30s.ui.cart.CartRepository

@@ -2,13 +2,11 @@ package com.zebrand.app1food30s.ui.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.lifecycleScope
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.databinding.ActivityMainBinding
@@ -18,14 +16,12 @@ import com.zebrand.app1food30s.ui.authentication.LoginActivity
 import com.zebrand.app1food30s.ui.cart.CartFragment
 import com.zebrand.app1food30s.ui.home.HomeFragment
 import com.zebrand.app1food30s.ui.manage_order.ManageOrderFragment
-import com.zebrand.app1food30s.ui.manage_product.ManageProductFragment
 import com.zebrand.app1food30s.ui.menu.MenuFragment
 import com.zebrand.app1food30s.ui.offers.OffersFragment
 import com.zebrand.app1food30s.ui.order_confirm.OrderConfirmationDialogFragment
 import com.zebrand.app1food30s.ui.profile.ProfileAdminAfterLogin
 import com.zebrand.app1food30s.ui.profile.ProfileAfterLoginFragment
 import com.zebrand.app1food30s.ui.profile.ProfileFragment
-import kotlinx.coroutines.launch
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.MySharedPreferences.Companion.defaultStringValue
 import com.zebrand.app1food30s.utils.SingletonKey
@@ -119,7 +115,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.ic_manage -> replaceFragment(ManageFragment())
                 R.id.ic_profile -> {
                     if (isLogin) {
-                        val fragment = ProfileAdminAfterLogin().apply {
+                        val fragment = ProfileAfterLoginFragment().apply {
                             arguments = Bundle().apply {
                                 putString("USER_ID", idUser)
                             }

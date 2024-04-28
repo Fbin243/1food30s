@@ -19,7 +19,6 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.ManageOrderAdapter
 import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.databinding.FragmentManageOrderBinding
-import com.zebrand.app1food30s.ui.chat.ChatActivity
 import com.zebrand.app1food30s.ui.chat.ChatManager
 import com.zebrand.app1food30s.ui.manage_order.manage_order_details.ManageOrderDetailsActivity
 import com.zebrand.app1food30s.utils.GlobalUtils
