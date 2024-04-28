@@ -1,18 +1,13 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
     <style name="Base.Theme.App1food30s" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-         <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimary">@color/primary</item>
         <item name="colorBackgroundFloating">@color/white</item>
         <item name="android:windowBackground">@color/white</item>
         <item name="android:fontFamily">@font/rubik_regular</item>
         <item name="android:textSize">@dimen/font_default</item>
+        <item name="android:forceDarkAllowed">false</item>
     </style>
-
-    <style name="Theme.App1food30s" parent="Base.Theme.App1food30s">
-<!--        <item name="android:fontFamily">@font/rubik_regular</item>-->
-<!--        <item name="android:textSize">@dimen/font_default</item>-->
-
-    </style>
-
 </resources>

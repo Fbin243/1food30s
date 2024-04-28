@@ -199,7 +199,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 
             // Proceed with the place order logic if address is not empty
             // TODO: add to utils
-            requestZalo()
+//            requestZalo()
             val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
             presenter.onPlaceOrderClicked(cartId, userDocRef, address, note)
         }

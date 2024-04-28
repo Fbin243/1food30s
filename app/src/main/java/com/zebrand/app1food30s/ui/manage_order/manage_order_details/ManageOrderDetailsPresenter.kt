@@ -96,33 +96,41 @@ class ManageOrderDetailsPresenter(
 
         val orderDetailsList = adapter.orderItems
 
+        var checked = false
+        var counter = 0
+
         for (orderItem in orderDetailsList) {
             orderItem.productId?.get()?.addOnSuccessListener {
                 val product = it.toObject(Product::class.java)
                 if (product != null) {
                     if (product.stock < orderItem.quantity) {
+                        checked = true
                         Toast.makeText(context, "Product ${product.name} is out of stock", Toast.LENGTH_SHORT).show()
                         return@addOnSuccessListener
+                    }
+                    counter++
+                    if (counter == orderDetailsList.size) {
+                        if(!checked){
+                            for (orderItem in orderDetailsList) {
+                                orderItem.productId?.get()?.addOnSuccessListener {
+                                    val product = it.toObject(Product::class.java)
+                                    if (product != null) {
+                                        Log.d("ManageOrderDetailsPresenter", "acceptOrder: $product")
+                                        val newStock = product.stock - orderItem.quantity
+                                        dProductRef.document(product.id).update("sold", product.sold + orderItem.quantity)
+                                        dProductRef.document(product.id).update("stock", newStock)
+                                    }
+                                }
+                            }
+
+                            doc.update("orderStatus", SingletonKey.ORDER_ACCEPTED)
+                            Toast.makeText(context, "Order accepted", Toast.LENGTH_SHORT).show()
+                            view.setManageOrderDetailsUI()
+                        }
                     }
                 }
             }
         }
-
-        for (orderItem in orderDetailsList) {
-            orderItem.productId?.get()?.addOnSuccessListener {
-                val product = it.toObject(Product::class.java)
-                if (product != null) {
-                    Log.d("ManageOrderDetailsPresenter", "acceptOrder: $product")
-                    val newStock = product.stock - orderItem.quantity
-                    dProductRef.document(product.id).update("sold", orderItem.quantity)
-                    dProductRef.document(product.id).update("stock", newStock)
-                }
-            }
-        }
-
-        doc.update("orderStatus", SingletonKey.ORDER_ACCEPTED)
-        Toast.makeText(context, "Order accepted", Toast.LENGTH_SHORT).show()
-        view.setManageOrderDetailsUI()
     }
 
     fun cancelOrder(idOrder: String, reason: String) {
