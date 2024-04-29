@@ -126,9 +126,11 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
         binding.tvOrderId.text = Utils.formatId(orderDetails.id)
         binding.tvOrderDate.text = Utils.formatDate(orderDetails.date)
         binding.tvAddress.text = orderDetails.shippingAddress
+        binding.tvPhone.text = orderDetails.user.phone
         binding.tvNote.text = orderDetails.note
         binding.tvReason.text = orderDetails.cancelReason
         binding.tvPaymentStatus.text = orderDetails.paymentStatus.uppercase()
+        binding.tvPaymentMethod.text = orderDetails.paymentMethod
         binding.tvSubTotal.text = Utils.formatPrice(itemOrderDetailsAdapter.getSubTotal(), this)
         binding.tvDiscount.text = Utils.formatPrice(itemOrderDetailsAdapter.getDiscount(), this)
         binding.tvTotalAmount.text = Utils.formatPrice(orderDetails.totalAmount,this)

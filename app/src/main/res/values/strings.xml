@@ -70,7 +70,7 @@
     </string-array>
     <string name="txt_address">Address</string>
     <string name="txt_payment_info">Payment info</string>
-    <string name="txt_payment_method">Method:&#160;</string>
+    <string name="txt_payment_method">Payment method:&#160;</string>
     <string name="txt_payment_status">Status:&#160;</string>
     <string name="txt_order_details">Order details</string>
     <string name="txt_subtotal">Subtotal:&#160;</string>
@@ -93,7 +93,6 @@
     <string name="txt_order_type">Order Type:&#160;</string>
     <string name="txt_delivery_time">Delivery Time: &#160;</string>
     <string name="txt_unpaid">Unpaid</string>
-    <string name="txt_cash_on_delivery">Cash on Delivery</string>
     <string name="txt_accept">Accept</string>
     <string name="txt_reject">Reject</string>
     <string name="txt_edit">Edit</string>
@@ -269,4 +268,15 @@
     <string name="txt_note_my_order">Note</string>
     <string name="txt_please_enter_order_id">Please enter order ID</string>
     <string name="wishlist">Wishlist</string>
+
+    <string name="txt_cash_on_delivery" translatable="false">Cash on Delivery</string>
+    <string name="txt_online_payment" translatable="false">Banking</string>
+    <string name="txt_phone_2">Phone:&#160;</string>
+    <string-array name="payment_method_array" translatable="false">
+        <item >Cash on Delivery</item>
+        <item>Banking</item>
+    </string-array>
+
+    <string name="txt_visible" translatable="false">visible</string>
+    <string name="txt_gone" translatable="false">gone</string>
 </resources>

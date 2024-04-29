@@ -12,9 +12,11 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
@@ -37,6 +39,8 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
     private lateinit var itemOrderDetailsAdapter: MyOrderDetailsAdapter
     private var manageOrderDetailsList: MutableList<OrderItem> = mutableListOf()
     val handler = Handler(Looper.getMainLooper())
+//    private lateinit var spinnerPayment: AutoCompleteTextView
+//    private lateinit var spinnerDelivery: AutoCompleteTextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityManageOrderDetailsBinding.inflate(layoutInflater)
@@ -54,6 +58,9 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
         presenter = ManageOrderDetailsPresenter(this, this)
         paymentArr = resources.getStringArray(R.array.payment_array)
         deliveryArr = resources.getStringArray(R.array.delivery_array_v2)
+
+//        spinnerPayment = binding.paymentStatusControls.root.findViewById(R.id.spinnerPayment)
+//        spinnerDelivery = binding.paymentStatusControls.root.findViewById(R.id.spinnerDelivery)
 
         idOrder = intent.getStringExtra("idOrder").toString()
     }
@@ -75,21 +82,22 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
     @SuppressLint("ResourceAsColor")
     private fun handleDropDown() {
         // status dropdown
+
         val adapterStatus = ArrayAdapter(this, R.layout.item_drop_down_filter, paymentArr)
         binding.spinnerPayment.setAdapter(adapterStatus)
-        binding.spinnerPayment.setOnItemClickListener { _, _, position, _ ->
-            val selectedText = adapterStatus.getItem(position)
-            presenter.changePaymentStatus(idOrder, selectedText.toString())
-//            Toast.makeText(this, selectedText, Toast.LENGTH_LONG).show()
-        }
+//        binding.spinnerPayment.setOnItemClickListener { _, _, position, _ ->
+//            val selectedText = adapterStatus.getItem(position)
+//            presenter.changePaymentStatus(idOrder, selectedText.toString())
+////            Toast.makeText(this, selectedText, Toast.LENGTH_LONG).show()
+//        }
 
         // customer dropdown
         val adapterCus = ArrayAdapter(this, R.layout.item_drop_down_filter, deliveryArr)
         binding.spinnerDelivery.setAdapter(adapterCus)
-        binding.spinnerDelivery.setOnItemClickListener { _, view, position, _ ->
-            val selectedText = adapterCus.getItem(position)
-            presenter.changeOrderStatus(idOrder, selectedText.toString())
-        }
+//        binding.spinnerDelivery.setOnItemClickListener { _, view, position, _ ->
+//            val selectedText = adapterCus.getItem(position)
+//            presenter.changeOrderStatus(idOrder, selectedText.toString())
+//        }
     }
 
     private fun showCustomRejectDialogBox() {
@@ -144,12 +152,26 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
         binding.tvCustomerName.text = orderDetails.user.firstName + " " + orderDetails.user.lastName
         binding.tvOrderDate.text = Utils.formatDate(orderDetails.date)
         binding.tvAddress.text = orderDetails.shippingAddress
+        binding.tvPhone.text = orderDetails.user.phone
+        binding.tvPaymentMethod.text = orderDetails.paymentMethod
 //        binding.tvPaymentStatus.text = orderDetails.paymentStatus.uppercase()
-        binding.tvSubTotal.text = Utils.formatPrice(itemOrderDetailsAdapter.getSubTotal(), this)
+        binding.tvSubTotal.text = Utils.formatPrice(orderDetails.originAmount, this)
+        binding.tvShippingFee.text = Utils.formatPrice(orderDetails.shippingFee, this)
         binding.tvDiscount.text = Utils.formatPrice(itemOrderDetailsAdapter.getDiscount(), this)
         binding.tvTotalAmount.text = Utils.formatPrice(orderDetails.totalAmount, this)
         binding.tvNote.text = orderDetails.note
         binding.tvReason.text = orderDetails.cancelReason
+
+        Log.e("orderDetails", orderDetails.paymentMethod)
+
+        if(orderDetails.paymentMethod == SingletonKey.BANKING) {
+            binding.layoutPaymentStatus.endIconDrawable = null
+            binding.layoutPaymentStatus.isEnabled = false
+        }else{
+            binding.layoutPaymentStatus.isEnabled = true
+        }
+
+
 
         if(orderDetails.orderStatus == SingletonKey.DELIVERED){
             binding.linearControls.visibility = View.GONE

@@ -20,4 +20,8 @@ object SingletonKey {
     //Paid - Unpaid
     const val PAID = "Paid"
     const val UNPAID = "Unpaid"
+
+    const val BANKING = "Banking"
+    const val CASH = "Cash on Delivery"
+
 }

@@ -28,6 +28,7 @@ import android.os.Bundle
 import android.os.StrictMode
 import android.util.Base64
 import android.util.Log
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -94,6 +95,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     private lateinit var defaultLatLng: LatLng
     private var totalPrice: Double = 0.0
     private var shippingFee: Double = 0.0
+    private lateinit var paymentArr: Array<String>
 
     private lateinit var queue: RequestQueue
     var orderId = ""
@@ -124,6 +126,13 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         // TODO: pass from cart fragment?
         cartRepository = CartRepository(FirebaseFirestore.getInstance())
         presenter = CheckoutPresenter(this, cartRepository)
+
+//        21127197
+        paymentArr = resources.getStringArray(R.array.payment_method_array)
+        // payment method dropdown
+        val adapterStatus = ArrayAdapter(this, R.layout.item_drop_down_filter, paymentArr)
+        binding.spinnerPayment.setAdapter(adapterStatus)
+//    --------------------
 
         // -----Maps SDK for Android-----
         val mapFragment = supportFragmentManager
@@ -261,7 +270,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
             val amount = JSONObject()
             amount.put("currency_code", "USD")
             amount.put("value", "5.00")
-//            amount.put("value", amountInput.toString())
+//            amount.put("value", (amountInput + shippingFee).toString())
             purchaseUnits.put("amount", amount)
             val purchaseUnitsArray = JSONArray()
             purchaseUnitsArray.put(purchaseUnits)
@@ -315,7 +324,8 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
                         Log.d("PayPalCheckoutPayPalCheckout", "Order captured successfully!")
                         val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
                         val note = binding.tvNote.text.toString()
-                        presenter.onPlaceOrderClicked(cartId, userDocRef, address, note, shippingFee)
+                        val paymentMethod = binding.spinnerPayment.text.toString()
+                        presenter.onPlaceOrderClicked(cartId, userDocRef, address, note, shippingFee, paymentMethod)
                     } catch (e: Exception) {
                         // Handle exceptions
                         e.printStackTrace()
@@ -468,19 +478,23 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
                 binding.addressContainer.error = null
             }
 
-            GlobalScope.launch {
-                try {
-                    token += getPayPalToken(urlToken)
-                    orderId = createPayPalOrder(url, token, checkoutItemsAdapter.getPrice())
-                    launchPayPalCheckout(orderId)
-                } catch (e: Exception) {
-                    // Handle exceptions
-                    e.printStackTrace()
+            val paymentMethod = binding.spinnerPayment.text.toString()
+            if(paymentMethod == resources.getString(R.string.txt_cash_on_delivery)){
+                val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
+                presenter.onPlaceOrderClicked(cartId, userDocRef, address, note, shippingFee, paymentMethod)
+            } else {
+                GlobalScope.launch {
+                    try {
+                        token += getPayPalToken(urlToken)
+                        orderId = createPayPalOrder(url, token, checkoutItemsAdapter.getPrice())
+                        launchPayPalCheckout(orderId)
+                    } catch (e: Exception) {
+                        // Handle exceptions
+                        e.printStackTrace()
+                    }
                 }
             }
 
-//            val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
-//            presenter.onPlaceOrderClicked(cartId, userDocRef, address, note, shippingFee)
         }
     }
 

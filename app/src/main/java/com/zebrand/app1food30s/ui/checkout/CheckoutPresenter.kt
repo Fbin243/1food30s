@@ -7,8 +7,10 @@ import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.data.entity.OrderItem
 import com.zebrand.app1food30s.ui.cart.CartRepository
+import com.zebrand.app1food30s.utils.FireStoreUtils
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBCartRef
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBOrderRef
+import com.zebrand.app1food30s.utils.SingletonKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -20,6 +22,7 @@ import java.util.UUID
 class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepository: CartRepository) : CoroutineScope by CoroutineScope(Dispatchers.Main) {
     private var cartItems: List<CartItem> = emptyList()
     private var totalPrice: Double = 0.0
+    private var originPrice: Double = 0.0
 
     fun loadCartData(cartId: String) {
         launch {
@@ -29,6 +32,7 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
                 if (detailedCartItemsResult != null) {
                     cartItems = detailedCartItemsResult
                     totalPrice = detailedCartItemsResult.sumOf { it.productPrice * it.quantity }
+                    originPrice = detailedCartItemsResult.sumOf { it.oldPrice * it.quantity }
                     view.displayCartItems(cartItems, totalPrice)
                 } else {
                     view.displayError("Failed to fetch cart details")
@@ -37,7 +41,7 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
         }
     }
 
-    private fun placeOrder(cartId: String, idAccount: DocumentReference, address: String, note: String, shippingFee: Double, completion: (Boolean, String) -> Unit) {
+    private fun placeOrder(cartId: String, idAccount: DocumentReference, address: String, note: String, shippingFee: Double, paymentMethod: String, completion: (Boolean, String) -> Unit) {
         // Log.d("Test00", "placeOrder: Starting order placement.")
         launch {
             val orderItems = cartItems.map { cartItem ->
@@ -54,17 +58,21 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
                 )
             }
 
+            val paymentStatus = if (paymentMethod == SingletonKey.BANKING) "Paid" else "Unpaid"
+
             val order = Order(
                 id = UUID.randomUUID().toString(),
                 idAccount = idAccount,
                 items = orderItems.toMutableList(),
                 totalAmount = totalPrice,
+                originAmount = originPrice,
                 orderStatus = "Pending", // Consider using constants or enum
                 date = Date(), // Current date
                 cancelReason = null, // No cancel reason at order creation
                 shippingAddress = address,
                 shippingFee = shippingFee,
-                paymentStatus = "Unpaid", // Consider starting with "Unpaid" or similar status
+                paymentMethod = paymentMethod,
+                paymentStatus = paymentStatus, // Consider starting with "Unpaid" or similar status
                 note = note
             )
 
@@ -94,8 +102,8 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
         }
     }
 
-    fun onPlaceOrderClicked(cartId: String, idAccount: DocumentReference, address: String, note: String, shippingFee: Double) {
-        placeOrder(cartId, idAccount, address, note, shippingFee) { success, orderId ->
+    fun onPlaceOrderClicked(cartId: String, idAccount: DocumentReference, address: String, note: String, shippingFee: Double, paymentMethod: String) {
+        placeOrder(cartId, idAccount, address, note, shippingFee, paymentMethod) { success, orderId ->
             if (success) {
                 view.navigateToOrderConfirmation(true, orderId)
                 Log.e("PayPalCheckoutPayPalCheckout", "Order placement success.")
@@ -105,5 +113,13 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
                 Log.e("PayPalCheckoutPayPalCheckout", "Order placement failed.")
             }
         }
+    }
+
+    fun changePaymentMethod(idOrder: String, status: String) {
+        val dOrderRef = mDBOrderRef
+
+        val doc: DocumentReference = dOrderRef.document(idOrder)
+
+        doc.update("paymentMethod", status)
     }
 }

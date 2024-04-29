@@ -177,6 +177,21 @@
                         android:layout_marginTop="@dimen/spacing16"
                         android:fontFamily="@font/font_family"
                         android:textFontWeight="600"
+                        android:text="@string/txt_phone"
+                        android:textSize="@dimen/font_size16" />
+
+                    <TextView
+                        android:id="@+id/tvPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="0912345678" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing16"
+                        android:fontFamily="@font/font_family"
+                        android:textFontWeight="600"
                         android:text="@string/txt_payment_info"
                         android:textSize="@dimen/font_size16" />
 
@@ -195,6 +210,7 @@
                             />
 
                         <TextView
+                            android:id="@+id/tvPaymentMethod"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/font_family"

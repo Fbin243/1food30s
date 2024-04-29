@@ -40,6 +40,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="10"
+            android:layout_marginHorizontal="@dimen/spacing16"
             android:layout_marginTop="@dimen/spacing10"
             android:gravity="center_vertical">
             <TextView

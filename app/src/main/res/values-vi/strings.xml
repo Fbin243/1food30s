@@ -82,7 +82,6 @@
     <string name="txt_order_type">Loại đơn hàng:&#160;</string>
     <string name="txt_delivery_time">Thời gian giao hàng: &#160;</string>
     <string name="txt_unpaid">Chưa thanh toán</string>
-    <string name="txt_cash_on_delivery">Thanh toán khi nhận hàng</string>
     <string name="txt_accept">Chấp nhận</string>
     <string name="txt_reject">Từ chối</string>
     <string name="txt_edit">Chỉnh sửa</string>
@@ -232,5 +231,7 @@
     <string name="txt_reason_manage_order">Lý do:&#160;</string>
     <string name="txt_note_my_order">Ghi chú</string>
     <string name="txt_please_enter_order_id">Vui lòng nhập ID đơn hàng</string>
+    <string name="wishlist">Danh sách yêu thích</string>
+    <string name="txt_phone_2">Số điện thoại:&#160;</string>
 
 </resources>

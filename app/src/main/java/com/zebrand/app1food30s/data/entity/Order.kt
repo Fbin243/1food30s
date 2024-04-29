@@ -23,6 +23,7 @@ data class Order(
     var idAccount: DocumentReference? = null,
     var items: MutableList<OrderItem> = mutableListOf(),
     var totalAmount: Double = 0.0,
+    var originAmount: Double = 0.0,
     var orderStatus: String = "",
     //    User: Pending - Order accepted - On delivery - Delivered // Cancelled
     //Admin: Accept (Pending -> Order accepted), On delivery, Delivered
@@ -30,6 +31,7 @@ data class Order(
     var shippingAddress: String = "",
     var shippingFee: Double = 0.0,
     var paymentStatus: String = "",
+    var paymentMethod: String = "",
     var note: String = "",
     @get:ServerTimestamp
     var date: Date = Date()
