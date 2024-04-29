@@ -203,14 +203,6 @@
                             />
                     </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing8"
-                        android:fontFamily="@font/rubik_semibold"
-                        android:text="@string/txt_address"
-                        android:textSize="@dimen/font_size16" />
-
                     <LinearLayout
                         android:id="@+id/linearNote"
                         android:layout_width="match_parent"
