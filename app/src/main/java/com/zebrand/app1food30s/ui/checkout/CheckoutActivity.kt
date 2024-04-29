@@ -63,6 +63,17 @@ import java.io.IOException
 import java.util.Locale
 import android.location.Location
 import com.google.gson.Gson
+import com.paypal.android.corepayments.CoreConfig
+import com.paypal.android.corepayments.Environment
+import com.paypal.android.corepayments.PayPalSDKError
+import com.paypal.android.paypalnativepayments.PayPalNativeCheckoutClient
+import com.paypal.android.paypalnativepayments.PayPalNativeCheckoutListener
+import com.paypal.android.paypalnativepayments.PayPalNativeCheckoutRequest
+import com.paypal.android.paypalnativepayments.PayPalNativeCheckoutResult
+import com.paypal.android.paypalnativepayments.PayPalNativePaysheetActions
+import com.paypal.android.paypalnativepayments.PayPalNativeShippingAddress
+import com.paypal.android.paypalnativepayments.PayPalNativeShippingListener
+import com.paypal.android.paypalnativepayments.PayPalNativeShippingMethod
 import com.zebrand.app1food30s.utils.Utils
 import okhttp3.*
 import org.osmdroid.util.GeoPoint
@@ -340,27 +351,86 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     // presenter.onPlaceOrderClicked(cartId)
     private fun handlePlaceOrderButton() {
         binding.btnPlaceOrder.setOnClickListener {
-            address = binding.tvAddress.text.toString()
-            val note = binding.tvNote.text.toString()
-            if (address.isEmpty()) {
-                // Show error message
-                binding.addressContainer.isErrorEnabled = true
-                binding.addressContainer.error = getString(R.string.error_address_required)
-                return@setOnClickListener
-            } else {
-                // Clear error
-                binding.addressContainer.isErrorEnabled = false
-                binding.addressContainer.error = null
+            Toast.makeText(this@CheckoutActivity, "TEST", Toast.LENGTH_LONG).show()
+
+            // Thêm client id vào
+            val coreConfig = CoreConfig("", environment = Environment.SANDBOX)
+
+            val payPalNativeClient = PayPalNativeCheckoutClient(
+                application = this@CheckoutActivity.application,
+                coreConfig = coreConfig,
+                returnUrl = "com.zebrand.app1food30s://paypalpay"
+            )
+
+            payPalNativeClient.listener = object : PayPalNativeCheckoutListener {
+                override fun onPayPalCheckoutStart() {
+                    // the PayPal paysheet is about to show up
+                }
+                override fun onPayPalCheckoutSuccess(result: PayPalNativeCheckoutResult) {
+                    // order was approved and is ready to be captured/authorized
+                }
+                override fun onPayPalCheckoutFailure(error: PayPalSDKError) {
+                    // handle the error
+                }
+                override fun onPayPalCheckoutCanceled() {
+                    // the user canceled the flow
+                }
             }
 
-            // Proceed with the place order logic if address is not empty
-            // TODO: add to utils
-//            requestZalo()
-//            requestVNPay()
+            payPalNativeClient.shippingListener = object : PayPalNativeShippingListener {
+                override fun onPayPalNativeShippingAddressChange(
+                    actions: PayPalNativePaysheetActions,
+                    shippingAddress: PayPalNativeShippingAddress
+                ) {
+                    // called when the user updates their chosen shipping address
+                    // you must call actions.approve() or actions.reject() in this callback
+                    actions.approve()
+                    // OPTIONAL: you can optionally patch your order. Once complete, call actions.approve() if successful or actions.reject() if not.
+                }
+                override fun onPayPalNativeShippingMethodChange(
+                    actions: PayPalNativePaysheetActions,
+                    shippingMethod: PayPalNativeShippingMethod
+                ) {
+                    // called when the user updates their chosen shipping method
+                    // patch your order server-side with the updated shipping amount.
+                    // Once complete, call `actions.approve()` or `actions.reject()`
+                    try {
+                        // TODO: patch order on server side, notify SDK of success by calling actions.approve()
+                        actions.approve()
+                    } catch (e: Exception) {
+                        // catch any errors from patching the order e.g. network unavailable
+                        // and notify SDK that the update was unsuccessful
+                        actions.reject()
+                    }
+                }
+            }
+
+            //00W40240UH618401H
+            val request = PayPalNativeCheckoutRequest("00W40240UH618401H")
+            payPalNativeClient.startCheckout(request)
+
+
+//            address = binding.tvAddress.text.toString()
+//            val note = binding.tvNote.text.toString()
+//            if (address.isEmpty()) {
+//                // Show error message
+//                binding.addressContainer.isErrorEnabled = true
+//                binding.addressContainer.error = getString(R.string.error_address_required)
+//                return@setOnClickListener
+//            } else {
+//                // Clear error
+//                binding.addressContainer.isErrorEnabled = false
+//                binding.addressContainer.error = null
+//            }
+//
+//            // Proceed with the place order logic if address is not empty
+//            // TODO: add to utils
+////            requestZalo()
+////            requestVNPay()
+////            val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
+////            presenter.onPlaceOrderClicked(cartId, userDocRef, address, note)
 //            val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
-//            presenter.onPlaceOrderClicked(cartId, userDocRef, address, note)
-            val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
-            presenter.onPlaceOrderClicked(cartId, userDocRef, address, note, shippingFee)
+//            presenter.onPlaceOrderClicked(cartId, userDocRef, address, note, shippingFee)
         }
     }
 

@@ -130,4 +130,5 @@ dependencies {
 //    implementation("com.paypal.android:paypal-web-payments:1.3.0")
     implementation("org.osmdroid:osmdroid-android:6.1.10")
 //    implementation("com.here.sdk:search:4.9.0.0")
+    implementation("com.paypal.android:paypal-native-payments:1.3.0")
 }
