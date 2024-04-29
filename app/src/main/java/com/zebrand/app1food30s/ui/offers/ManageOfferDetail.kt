@@ -112,8 +112,7 @@ class ManageOfferDetail : AppCompatActivity() {
         newOfferRef.set(newOffer)
             .addOnSuccessListener {
                 // Xử lý thành công, ví dụ: hiển thị thông báo thành công cho người dùng
-                val intent = Intent(this, ManageOffer::class.java)
-                startActivity(intent)
+                finish()
             }
             .addOnFailureListener { e ->
                 // Xử lý thất bại, ví dụ: hiển thị thông báo lỗi cho người dùng

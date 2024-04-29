@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
@@ -150,8 +151,6 @@ class EditProduct : AppCompatActivity() {
                     }
                 }
                 Toast.makeText(this, "Product deleted successfully", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, ManageProductActivity::class.java)
-                startActivity(intent)
                 finish()
             }
             .addOnFailureListener { e ->
@@ -179,7 +178,116 @@ class EditProduct : AppCompatActivity() {
         }
     }
 
-    private fun updateProductDetails(productId: String, imagePath: String, idCategory: String, idOffer: String) {
+//    private fun updateProductDetails(productId: String, imagePath: String, idCategory: String, idOffer: String) {
+//        val productName = nameEditText.text.toString().trim()
+//        val productPrice = priceEditText.text.toString().toDoubleOrNull() ?: 0.0
+//        val productStock = stockEditText.text.toString().toIntOrNull() ?: 0
+//        val productDescription = descriptionEditText.text.toString().trim()
+//
+//        val selectedCategoryName = categoryAutoComplete.text.toString()
+//        val selectedOfferName = offerAutoComplete.text.toString()
+//
+//        val offersCollection = FirebaseFirestore.getInstance().collection("offers")
+////        Log.d("EditProduct", "idCategoryEdit: $idCategory")
+////        Log.d("EditProduct", "idOfferEdit: $idOffer")
+//        offersCollection.document(idOffer).get().addOnSuccessListener { document ->
+//            if (document != null && document.exists()) {
+//                offersCollection.document(idOffer).update("numProduct", FieldValue.increment(-1))
+//            }
+//        }.addOnFailureListener {
+//
+//        }
+//
+//        val categoriesCollection = FirebaseFirestore.getInstance().collection("categories")
+//        categoriesCollection.document(idCategory).get().addOnSuccessListener { document ->
+//            if (document != null && document.exists()) {
+//                categoriesCollection.document(idCategory).update("numProduct", FieldValue.increment(-1))
+//            }
+//        }.addOnFailureListener {
+//
+//        }
+//
+//        fireStore.collection("categories").whereEqualTo("name", selectedCategoryName).limit(1).get()
+//            .addOnSuccessListener { categoryDocuments ->
+//                if (categoryDocuments.documents.isNotEmpty()) {
+//                    val categoryDocumentRef = categoryDocuments.documents.first().reference
+//
+//                    fireStore.collection("offers").whereEqualTo("name", selectedOfferName).limit(1).get()
+//                        .addOnSuccessListener { offerDocuments ->
+//                            if (offerDocuments.documents.isNotEmpty()) {
+//                                val offerDocumentRef = offerDocuments.documents.first().reference
+//
+//                                val productUpdate = hashMapOf<String, Any>(
+//                                    "name" to productName,
+//                                    "idCategory" to categoryDocumentRef,
+//                                    "idOffer" to offerDocumentRef,
+//                                    "price" to productPrice,
+//                                    "description" to productDescription,
+//                                    "stock" to productStock,
+//                                    "image" to imagePath,
+//                                    "date" to Date()
+//                                )
+//
+//                                fireStore.collection("products").document(productId).update(productUpdate)
+////                                    .addOnSuccessListener {
+////                                        Toast.makeText(this, "Product updated successfully", Toast.LENGTH_LONG).show()
+////                                        val intent = Intent(this, ManageProductActivity::class.java)
+////                                        startActivity(intent)
+////                                    }
+//                                    .addOnSuccessListener {
+//                                        categoryDocumentRef.get()
+//                                            .addOnSuccessListener { documentSnapshot ->
+//                                                val currentNumProductCategory = documentSnapshot.getLong("numProduct") ?: 0
+//                                                val newNumProductCategory = currentNumProductCategory + 1
+//                                                categoryDocumentRef.update("numProduct", newNumProductCategory)
+//                                                    .addOnSuccessListener {
+//                                                        offerDocumentRef.get()
+//                                                            .addOnSuccessListener { offerSnapshot ->
+//                                                                val currentNumProductOffer = offerSnapshot.getLong("numProduct") ?: 0
+//                                                                val newNumProductOffer = currentNumProductOffer + 1
+//                                                                offerDocumentRef.update("numProduct", newNumProductOffer)
+//                                                                    .addOnSuccessListener {
+//                                                                        Toast.makeText(this, "Product updated successfully", Toast.LENGTH_SHORT).show()
+//                                                                        finish()
+//                                                                    }
+//                                                                    .addOnFailureListener { e ->
+//                                                                        Toast.makeText(this, "Failed to update offer count: ${e.message}", Toast.LENGTH_SHORT).show()
+//                                                                    }
+//                                                            }
+//                                                            .addOnFailureListener { e ->
+//                                                                Toast.makeText(this, "Failed to get current offer count: ${e.message}", Toast.LENGTH_SHORT).show()
+//                                                            }
+//                                                    }
+//                                                    .addOnFailureListener { e ->
+//                                                        // Handle failure for updating the category
+//                                                        Toast.makeText(this, "Failed to update category count: ${e.message}", Toast.LENGTH_SHORT).show()
+//                                                    }
+//                                            }
+//                                            .addOnFailureListener { e ->
+//                                                // Handle failure for getting the current category count
+//                                                Toast.makeText(this, "Failed to get current category count: ${e.message}", Toast.LENGTH_SHORT).show()
+//                                            }
+//                                    }
+//                                    .addOnFailureListener { e ->
+//                                        Toast.makeText(this, "Error updating product: ${e.message}", Toast.LENGTH_LONG).show()
+//                                    }
+//                            } else {
+//                                Toast.makeText(this, "Offer not found", Toast.LENGTH_SHORT).show()
+//                            }
+//                        }
+//                        .addOnFailureListener { e ->
+//                            Toast.makeText(this, "Error finding offer: ${e.message}", Toast.LENGTH_LONG).show()
+//                        }
+//                } else {
+//                    Toast.makeText(this, "Category not found", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//            .addOnFailureListener { e ->
+//                Toast.makeText(this, "Error finding category: ${e.message}", Toast.LENGTH_LONG).show()
+//            }
+//    }
+
+    private fun updateProductDetails(productId: String, imagePath: String, idCategory: String, idOffer: String?) {
         val productName = nameEditText.text.toString().trim()
         val productPrice = priceEditText.text.toString().toDoubleOrNull() ?: 0.0
         val productStock = stockEditText.text.toString().toIntOrNull() ?: 0
@@ -188,106 +296,90 @@ class EditProduct : AppCompatActivity() {
         val selectedCategoryName = categoryAutoComplete.text.toString()
         val selectedOfferName = offerAutoComplete.text.toString()
 
-        val offersCollection = FirebaseFirestore.getInstance().collection("offers")
-//        Log.d("EditProduct", "idCategoryEdit: $idCategory")
-//        Log.d("EditProduct", "idOfferEdit: $idOffer")
-        offersCollection.document(idOffer).get().addOnSuccessListener { document ->
-            if (document != null && document.exists()) {
-                offersCollection.document(idOffer).update("numProduct", FieldValue.increment(-1))
-            }
-        }.addOnFailureListener {
-
-        }
-
+        // Kiểm tra và cập nhật số lượng sản phẩm trong categories
         val categoriesCollection = FirebaseFirestore.getInstance().collection("categories")
         categoriesCollection.document(idCategory).get().addOnSuccessListener { document ->
             if (document != null && document.exists()) {
                 categoriesCollection.document(idCategory).update("numProduct", FieldValue.increment(-1))
             }
-        }.addOnFailureListener {
-
         }
 
-        fireStore.collection("categories").whereEqualTo("name", selectedCategoryName).limit(1).get()
+        // Kiểm tra và cập nhật số lượng sản phẩm trong offers nếu có idOffer
+        val offersCollection = FirebaseFirestore.getInstance().collection("offers")
+        idOffer?.let {
+            offersCollection.document(it).get().addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    offersCollection.document(it).update("numProduct", FieldValue.increment(-1))
+                }
+            }
+        }
+
+        // Tìm danh mục mới và cập nhật sản phẩm
+        FirebaseFirestore.getInstance().collection("categories").whereEqualTo("name", selectedCategoryName).limit(1).get()
             .addOnSuccessListener { categoryDocuments ->
                 if (categoryDocuments.documents.isNotEmpty()) {
                     val categoryDocumentRef = categoryDocuments.documents.first().reference
 
-                    fireStore.collection("offers").whereEqualTo("name", selectedOfferName).limit(1).get()
-                        .addOnSuccessListener { offerDocuments ->
-                            if (offerDocuments.documents.isNotEmpty()) {
-                                val offerDocumentRef = offerDocuments.documents.first().reference
-
-                                val productUpdate = hashMapOf<String, Any>(
-                                    "name" to productName,
-                                    "idCategory" to categoryDocumentRef,
-                                    "idOffer" to offerDocumentRef,
-                                    "price" to productPrice,
-                                    "description" to productDescription,
-                                    "stock" to productStock,
-                                    "image" to imagePath,
-                                    "date" to Date()
-                                )
-
-                                fireStore.collection("products").document(productId).update(productUpdate)
-//                                    .addOnSuccessListener {
-//                                        Toast.makeText(this, "Product updated successfully", Toast.LENGTH_LONG).show()
-//                                        val intent = Intent(this, ManageProductActivity::class.java)
-//                                        startActivity(intent)
-//                                    }
-                                    .addOnSuccessListener {
-                                        categoryDocumentRef.get()
-                                            .addOnSuccessListener { documentSnapshot ->
-                                                val currentNumProductCategory = documentSnapshot.getLong("numProduct") ?: 0
-                                                val newNumProductCategory = currentNumProductCategory + 1
-                                                categoryDocumentRef.update("numProduct", newNumProductCategory)
-                                                    .addOnSuccessListener {
-                                                        offerDocumentRef.get()
-                                                            .addOnSuccessListener { offerSnapshot ->
-                                                                val currentNumProductOffer = offerSnapshot.getLong("numProduct") ?: 0
-                                                                val newNumProductOffer = currentNumProductOffer + 1
-                                                                offerDocumentRef.update("numProduct", newNumProductOffer)
-                                                                    .addOnSuccessListener {
-                                                                        Toast.makeText(this, "Product updated successfully", Toast.LENGTH_SHORT).show()
-                                                                        val intent = Intent(this, ManageProductActivity::class.java)
-                                                                        startActivity(intent)
-                                                                    }
-                                                                    .addOnFailureListener { e ->
-                                                                        Toast.makeText(this, "Failed to update offer count: ${e.message}", Toast.LENGTH_SHORT).show()
-                                                                    }
-                                                            }
-                                                            .addOnFailureListener { e ->
-                                                                Toast.makeText(this, "Failed to get current offer count: ${e.message}", Toast.LENGTH_SHORT).show()
-                                                            }
-                                                    }
-                                                    .addOnFailureListener { e ->
-                                                        // Handle failure for updating the category
-                                                        Toast.makeText(this, "Failed to update category count: ${e.message}", Toast.LENGTH_SHORT).show()
-                                                    }
-                                            }
-                                            .addOnFailureListener { e ->
-                                                // Handle failure for getting the current category count
-                                                Toast.makeText(this, "Failed to get current category count: ${e.message}", Toast.LENGTH_SHORT).show()
-                                            }
-                                    }
-                                    .addOnFailureListener { e ->
-                                        Toast.makeText(this, "Error updating product: ${e.message}", Toast.LENGTH_LONG).show()
-                                    }
-                            } else {
-                                Toast.makeText(this, "Offer not found", Toast.LENGTH_SHORT).show()
+                    // Kiểm tra và cập nhật offers nếu selectedOfferName không rỗng
+                    if (selectedOfferName != "Choose offer" && selectedOfferName != "None") {
+                        FirebaseFirestore.getInstance().collection("offers").whereEqualTo("name", selectedOfferName).limit(1).get()
+                            .addOnSuccessListener { offerDocuments ->
+                                if (offerDocuments.documents.isNotEmpty()) {
+                                    val offerDocumentRef = offerDocuments.documents.first().reference
+                                    updateProduct(productId, productName, productPrice, productStock, productDescription, imagePath, categoryDocumentRef, offerDocumentRef)
+                                } else {
+                                    Toast.makeText(this, "Offer not found", Toast.LENGTH_SHORT).show()
+                                }
                             }
-                        }
-                        .addOnFailureListener { e ->
-                            Toast.makeText(this, "Error finding offer: ${e.message}", Toast.LENGTH_LONG).show()
-                        }
+                    } else {
+                        // Cập nhật sản phẩm không có offer
+                        updateProduct(productId, productName, productPrice, productStock, productDescription, imagePath, categoryDocumentRef, null)
+                    }
                 } else {
                     Toast.makeText(this, "Category not found", Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+    private fun updateProduct(productId: String, productName: String, productPrice: Double, productStock: Int, productDescription: String, imagePath: String, categoryRef: DocumentReference, offerRef: DocumentReference?) {
+        val productUpdate = hashMapOf<String, Any>(
+            "name" to productName,
+            "idCategory" to categoryRef,
+            "price" to productPrice,
+            "description" to productDescription,
+            "stock" to productStock,
+            "image" to imagePath,
+            "date" to Date()
+        )
+        offerRef?.let {
+            productUpdate["idOffer"] = it
+        }
+
+        FirebaseFirestore.getInstance().collection("products").document(productId).update(productUpdate)
+            .addOnSuccessListener {
+                // Cập nhật số lượng sản phẩm mới
+                updateCategoryAndOfferCount(categoryRef, offerRef)
+                Toast.makeText(this, "Product updated successfully", Toast.LENGTH_LONG).show()
+                finish()
+            }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Error finding category: ${e.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Error updating product: ${e.message}", Toast.LENGTH_LONG).show()
             }
     }
+
+    private fun updateCategoryAndOfferCount(categoryRef: DocumentReference, offerRef: DocumentReference?) {
+        categoryRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                val currentNumProductCategory = documentSnapshot.getLong("numProduct") ?: 0
+                categoryRef.update("numProduct", currentNumProductCategory + 1)
+            }
+
+        offerRef?.get()?.addOnSuccessListener { offerSnapshot ->
+            val currentNumProductOffer = offerSnapshot.getLong("numProduct") ?: 0
+            offerRef.update("numProduct", currentNumProductOffer + 1)
+        }
+    }
+
 
     private fun loadCategoriesFromFirebase(categoryStr: String) {
         val db = Firebase.firestore
@@ -316,6 +408,7 @@ class EditProduct : AppCompatActivity() {
     private fun loadOffersFromFirebase(offerStr: String) {
         val db = Firebase.firestore
         val offerList = ArrayList<String>()
+        offerList.add("None")
 
         db.collection("offers").get()
             .addOnSuccessListener { documents ->

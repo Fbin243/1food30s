@@ -1,26 +1,22 @@
 package com.zebrand.app1food30s.ui.home
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.firebase.firestore.FirebaseFirestore
+import com.zebrand.app1food30s.ui.chat.ChatActivity
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.data.AppDatabase
-import com.zebrand.app1food30s.data.entity.Cart
-import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
@@ -34,9 +30,6 @@ import com.zebrand.app1food30s.ui.search.SearchActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
 import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
 import com.zebrand.app1food30s.ui.wishlist.WishlistRepository
-import com.zebrand.app1food30s.utils.FireStoreUtils.mDBCartRef
-import com.zebrand.app1food30s.utils.FireStoreUtils.mDBProductRef
-import com.zebrand.app1food30s.utils.FireStoreUtils.mDBUserRef
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.Utils
@@ -56,6 +49,8 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
     private lateinit var preferences: MySharedPreferences
     private lateinit var userId: String
     private lateinit var defaultUserId: String
+    private lateinit var mySharedPreferences: MySharedPreferences
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,6 +61,8 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         preferences = context?.let { MySharedPreferences.getInstance(it) }!!
         userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
         defaultUserId = MySharedPreferences.defaultStringValue
+        mySharedPreferences = MySharedPreferences.getInstance(requireContext())
+        val isLogin = mySharedPreferences.getBoolean(SingletonKey.KEY_LOGGED)
 
         homePresenter = HomePresenter(this, db)
 
@@ -88,6 +85,17 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
 
         handleOpenSearchScreen()
+
+        binding.ivChatScreen.setOnClickListener{
+            if(isLogin){
+                val intent = Intent(requireContext(), ChatActivity::class.java)
+                startActivity(intent)
+            } else {
+                val intent = Intent(requireContext(), LoginActivity::class.java)
+                startActivity(intent)
+            }
+
+        }
 
         return binding.root
     }

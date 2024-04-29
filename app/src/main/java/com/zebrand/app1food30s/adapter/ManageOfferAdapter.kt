@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -19,9 +20,16 @@ class ManageOfferAdapter(private val offers: List<Offer>, private val onOfferCli
         val offerRate: TextView = listItemView.findViewById(R.id.offerRate)
         val offerNumProduct: TextView = listItemView.findViewById(R.id.noProduct)
         val offerDate: TextView = listItemView.findViewById(R.id.productDate)
+        val editBtn: Button = listItemView.findViewById(R.id.addBtn)
 
         init {
             itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onOfferClick(offers[position])
+                }
+            }
+            editBtn.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     onOfferClick(offers[position])

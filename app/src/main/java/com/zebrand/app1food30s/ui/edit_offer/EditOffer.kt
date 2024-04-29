@@ -119,8 +119,7 @@ class EditOffer : AppCompatActivity() {
                 Toast.makeText(this, "Offer deleted successfully", Toast.LENGTH_SHORT).show()
                 // Cập nhật các sản phẩm có idOffer là offerRef
                 unsetOfferIdInProducts(offerRef)
-                val intent = Intent(this, ManageOffer::class.java)
-                startActivity(intent)
+                finish()
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Error deleting offer: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -182,8 +181,7 @@ class EditOffer : AppCompatActivity() {
         fireStore.collection("offers").document(offerId).update(offerUpdate)
             .addOnSuccessListener {
                 // Xử lý thành công, ví dụ: hiển thị thông báo thành công cho người dùng
-                val intent = Intent(this, ManageOffer::class.java)
-                startActivity(intent)
+                finish()
             }
             .addOnFailureListener { e ->
                 // Xử lý thất bại, ví dụ: hiển thị thông báo lỗi cho người dùng

@@ -1,36 +1,22 @@
 package com.zebrand.app1food30s.ui.my_order
 
-import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.textfield.TextInputEditText
-import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.adapter.ManageOrderAdapter
 import com.zebrand.app1food30s.adapter.MyOrderAdapter
 import com.zebrand.app1food30s.data.entity.Order
-import com.zebrand.app1food30s.databinding.ActivityMyOrderBinding
-import com.zebrand.app1food30s.databinding.FragmentManageOrderBinding
 import com.zebrand.app1food30s.databinding.FragmentMyActiveOrderBinding
-import com.zebrand.app1food30s.ui.manage_order.ManageOrderPresenter
-import com.zebrand.app1food30s.ui.manage_order.manage_order_details.ManageOrderDetailsActivity
 import com.zebrand.app1food30s.ui.my_order.my_order_details.MyOrderDetailsActivity
 import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
 class MyActiveOrderFragment : Fragment(), MyOrderMVPView.MyActiveOrderMVPView {
     lateinit var binding: FragmentMyActiveOrderBinding

@@ -57,6 +57,53 @@
         <activity
             android:name=".ui.offer_detail.OfferDetailActivity"
             android:exported="true" >
+        tools:targetApi="31">
+        <activity
+            android:name=".ui.chat.ManageChatDetail"
+            android:exported="false" />
+        <activity
+            android:name=".ui.chat.ChatManager"
+            android:exported="true">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity
+            android:name=".ui.chat.ChatActivity"
+            android:exported="true" >
+
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBQFpHSKFfBqU9XM8ZFGOEHPGyMkh6iCZk" />
+
+        <activity
+            android:name=".ui.authentication.SplashActivity"
+            android:exported="true">
+
+             <intent-filter>
+             <action android:name="android.intent.action.MAIN" />
+
+
+             <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.offer_detail.OfferDetailActivity"
+            android:exported="true">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -109,7 +156,7 @@
             android:exported="true" />
         <activity
             android:name=".ui.manage_product.ManageProductActivity"
-            android:exported="true" >
+            android:exported="true">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -120,8 +167,7 @@
         </activity>
         <activity
             android:name=".ui.manage_order.manage_order_details.ManageOrderDetailsActivity"
-            android:exported="true" >
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".ui.manage_order.ManageOrderActivity"
             android:exported="true" />
@@ -136,8 +182,7 @@
             android:exported="true" />
         <activity
             android:name=".ui.my_order.MyOrderActivity"
-            android:exported="true" >
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".ui.my_order.my_order_details.MyOrderDetailsActivity"
             android:exported="false" />
@@ -149,15 +194,13 @@
             android:exported="true" />
         <activity
             android:name=".ui.authentication.LoginActivity"
-            android:exported="true" >
-        </activity> <!-- ADMIN -->
+            android:exported="true" /> <!-- ADMIN -->
         <activity
             android:name=".ui.admin_stats.AdminStatsActivity"
-            android:exported="true" >
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".ui.checkout.CheckoutActivity"
-            android:exported="true" >
+            android:exported="true">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
