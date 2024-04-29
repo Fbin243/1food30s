@@ -10,6 +10,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.Volley
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -47,6 +49,14 @@ class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
     private val mySharePreference = MySharedPreferences.getInstance(this)
     private lateinit var callbackManager: CallbackManager
+
+    private lateinit var queue: RequestQueue
+    var orderId = ""
+    val url = "https://api-m.sandbox.paypal.com/v2/checkout/orders/"
+    val urlToken = "https://api-m.sandbox.paypal.com/v1/oauth2/token"
+    var token = "Bearer "
+    val clientId = "AXpqoGgnoXww1RmM2N15AKI7LV4es1uEB-kk0qO1X9OwdELkXnS18nTQ50Kdt9ERQQUoVOsGvOolFgWI"
+    val clientSecret = "EO0MxmLuQfbA0Cq8PSNbDA6JHHims1JBMjG4gCLLmjMesgI0tpIdWYyIJMBjsPCuRzltRQdbQaWIAIc4"
 
     companion object {
         private const val RC_SIGN_IN = 9001
@@ -115,32 +125,6 @@ class LoginActivity : AppCompatActivity() {
         ValidateInput.passwordFocusListener(this, binding.tvPassword, binding.passwordContainer)
     }
 
-//    private fun authorization(email: String, mySharePreference: MySharedPreferences) {
-//        val query = FireStoreUtils.mDBUserRef.whereEqualTo("email", email)
-//        query.get().addOnSuccessListener { queryDocumentSnapshots ->
-//            Log.d("userInfo", "Success")
-//            Log.d("userInfo", queryDocumentSnapshots.size().toString() + queryDocumentSnapshots.isEmpty.toString())
-////            Log.d("userInfo", queryDocumentSnapshots?.get.toString())
-//
-//            for (documentSnapshot in queryDocumentSnapshots) {
-//                val userInfo = documentSnapshot.toObject(User::class.java)
-//                Log.d("userInfo", "Da di qua")
-//                Log.d("userInfo", "Login " + userInfo.toString())
-//
-//                mySharePreference.setString(SingletonKey.KEY_USER_ID, userInfo.id.toString())
-//                mySharePreference.setBoolean(SingletonKey.IS_ADMIN, userInfo.admin)
-//                Log.d("userInfo", "Login 2 " + userInfo.toString())
-////                myStartActivity(MainActivity::class.java, userInfo.id!!)
-//            }
-////            if (!queryDocumentSnapshots.isEmpty) {
-////            } else {
-////                Log.d("userInfo", "No documents found")
-////            }
-//        }.addOnFailureListener { exception ->
-//            Log.e("userInfo", "Error getting documents: ", exception)
-//        }
-//    }
-
     private fun authorization(email: String, mySharePreference: MySharedPreferences) {
         CoroutineScope(Dispatchers.Main).launch {
             val userInfo = getUserInfo(email)
@@ -171,34 +155,6 @@ class LoginActivity : AppCompatActivity() {
             return@withContext null
         }
     }
-
-//    private fun authorization(user: FirebaseUser?, mySharePreference: MySharedPreferences) {
-//        val query = FireStoreUtils.mDBUserRef.whereEqualTo("email", user?.email).limit(1)
-//        query.get().addOnSuccessListener { queryDocumentSnapshots ->
-//            for (documentSnapshot in queryDocumentSnapshots) {
-//                val userInfo = documentSnapshot.toObject(User::class.java)
-////                userInfo.id = documentSnapshot.id
-//
-//                Log.d("userInfo", "Da di qua")
-//                Log.d("userInfo", "Login " + userInfo.toString())
-//
-//                // da login //changed
-////                if (userInfo.admin) {
-////                    mySharePreference.setBoolean(SingletonKey.IS_ADMIN, true)
-////                    myStartActivity(AdminActivity::class.java, userInfo.id!!)
-////                } else {
-////
-////                }
-//
-//                mySharePreference.setString(SingletonKey.KEY_USER_ID, userInfo.id.toString())
-//
-//                mySharePreference.setBoolean(SingletonKey.IS_ADMIN, userInfo.admin)
-//                myStartActivity(MainActivity::class.java, userInfo.id!!)
-//            }
-//        }.addOnFailureListener {
-//            Log.d("userInfo", "Error getting documents: ", it)
-//        }
-//    }
 
     private fun myStartActivity(cls: Class<*>, idUser: String) {
         val intent = Intent(this, cls).apply {

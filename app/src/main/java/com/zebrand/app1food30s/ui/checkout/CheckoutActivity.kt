@@ -1,30 +1,7 @@
 package com.zebrand.app1food30s.ui.checkout
 
+
 import android.content.Context
-import android.content.Intent
-import android.net.ConnectivityManager
-import android.location.Address
-import android.location.Geocoder
-import android.os.Bundle
-import android.os.StrictMode
-import android.util.Log
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.android.volley.BuildConfig
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.AutocompleteActivity
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import com.google.firebase.firestore.FirebaseFirestore
 //import com.paypal.checkout.PayPalCheckout
 //import com.paypal.checkout.approve.OnApprove
 //import com.paypal.checkout.config.CheckoutConfig
@@ -38,31 +15,38 @@ import com.google.firebase.firestore.FirebaseFirestore
 //import com.paypal.checkout.order.AppContext
 //import com.paypal.checkout.order.OrderRequest
 //import com.paypal.checkout.order.PurchaseUnit
-import com.vnpay.authentication.VNP_AuthenticationActivity
-import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.adapter.CheckoutItemsAdapter
-import com.zebrand.app1food30s.data.entity.CartItem
 //import com.zebrand.app1food30s.data.zalopay.CreateOrder
-import com.zebrand.app1food30s.databinding.ActivityCheckoutBinding
-import com.zebrand.app1food30s.ui.cart.CartRepository
-import com.zebrand.app1food30s.ui.main.MainActivity
-import com.zebrand.app1food30s.utils.MySharedPreferences
-import com.zebrand.app1food30s.utils.SingletonKey
 //import vn.zalopay.sdk.ZaloPayError
 //import vn.zalopay.sdk.ZaloPaySDK
 //import vn.zalopay.sdk.listeners.PayOrderListener
-import java.net.URLEncoder
-import java.util.logging.Formatter
-
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import java.io.IOException
-import java.util.Locale
+import android.content.Intent
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
-import com.google.gson.Gson
+import android.net.ConnectivityManager
+import android.os.Bundle
+import android.os.StrictMode
+import android.util.Base64
+import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.google.firebase.firestore.FirebaseFirestore
 import com.paypal.android.corepayments.CoreConfig
 import com.paypal.android.corepayments.Environment
 import com.paypal.android.corepayments.PayPalSDKError
@@ -74,12 +58,25 @@ import com.paypal.android.paypalnativepayments.PayPalNativePaysheetActions
 import com.paypal.android.paypalnativepayments.PayPalNativeShippingAddress
 import com.paypal.android.paypalnativepayments.PayPalNativeShippingListener
 import com.paypal.android.paypalnativepayments.PayPalNativeShippingMethod
+import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.adapter.CheckoutItemsAdapter
+import com.zebrand.app1food30s.data.entity.CartItem
+import com.zebrand.app1food30s.databinding.ActivityCheckoutBinding
+import com.zebrand.app1food30s.ui.cart.CartRepository
+import com.zebrand.app1food30s.ui.main.MainActivity
+import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.Utils
-import okhttp3.*
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.MapView
-import org.osmdroid.config.Configuration
-import java.io.File
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.IOException
+import java.util.Locale
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallback {
 
@@ -93,12 +90,20 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     private lateinit var address: String
     private lateinit var mMap: GoogleMap
     private val AUTOCOMPLETE_REQUEST_CODE = 100 // Class constant
-    private val YOUR_CLIENT_ID = "AXpqoGgnoXww1RmM2N15AKI7LV4es1uEB-kk0qO1X9OwdELkXnS18nTQ50Kdt9ERQQUoVOsGvOolFgWI"
     private lateinit var apiKey: String
     private lateinit var defaultLatLng: LatLng
     private var totalPrice: Double = 0.0
     private var shippingFee: Double = 0.0
 
+    private lateinit var queue: RequestQueue
+    var orderId = ""
+    private val url = "https://api-m.sandbox.paypal.com/v2/checkout/orders/"
+    private val urlToken = "https://api-m.sandbox.paypal.com/v1/oauth2/token"
+    var token = "Bearer "
+    val clientId = "AXpqoGgnoXww1RmM2N15AKI7LV4es1uEB-kk0qO1X9OwdELkXnS18nTQ50Kdt9ERQQUoVOsGvOolFgWI"
+//    val clientId = "AQi0jeUAAGwLBWPY-_J-KqReZQ5udKOfjEH17RwJGuzrRFqn-RKKiBoOtdSF1AOEd6yVw_tzGM1sbvzd"
+    val clientSecret = "EO0MxmLuQfbA0Cq8PSNbDA6JHHims1JBMjG4gCLLmjMesgI0tpIdWYyIJMBjsPCuRzltRQdbQaWIAIc4"
+//    val clientSecret = "AQi0jeUAAGwLBWPY-_J-KqReZQ5udKOfjEH17RwJGuzrRFqn-RKKiBoOtdSF1AOEd6yVw_tzGM1sbvzd"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCheckoutBinding.inflate(layoutInflater)
@@ -130,6 +135,9 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         if (!Places.isInitialized()) {
             Places.initialize(applicationContext, apiKey)
         }
+
+//        Paypal
+        queue = Volley.newRequestQueue(this)
 
         binding.tvAddress.setOnFocusChangeListener { v, hasFocus ->
 //            Log.d("FocusChange", "Focus change detected. Has focus: $hasFocus")
@@ -245,7 +253,169 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         }
     }
 
+    private suspend fun getPayPalToken(url: String): String {
+        return suspendCoroutine { continuation ->
+            val jsonObjectRequest = object : JsonObjectRequest(
+                Method.POST, url, null,
+                Response.Listener { response ->
+                    val jsonResponse = JSONObject(response.toString())
+                    val accessToken = jsonResponse.getString("access_token")
+//                    Toast.makeText(this@MainActivity, accessToken.toString(), Toast.LENGTH_SHORT).show()
 
+                    continuation.resume(accessToken)
+                },
+                Response.ErrorListener { error ->
+//                    Toast.makeText(this@MainActivity, "Failed", Toast.LENGTH_SHORT).show()
+                    continuation.resumeWithException(error)
+                }) {
+
+                override fun getHeaders(): Map<String, String> {
+                    val headers = HashMap<String, String>()
+                    headers["Accept"] = "application/json"
+                    headers["Accept-Language"] = "en_US"
+                    headers["Authorization"] = "Basic " + Base64.encodeToString("$clientId:$clientSecret".toByteArray(), Base64.NO_WRAP)
+                    return headers
+                }
+
+                override fun getBody(): ByteArray {
+                    // Set the request body
+                    return ("grant_type=client_credentials").toByteArray()
+                }
+
+                override fun getBodyContentType(): String {
+                    // Set the request body content type
+                    return "application/x-www-form-urlencoded"
+                }
+            }
+
+            queue.add(jsonObjectRequest)
+        }
+    }
+
+    private suspend fun createPayPalOrder(url: String, token: String): String {
+        return suspendCoroutine { continuation ->
+            val requestObject = JSONObject()
+            requestObject.put("intent", "CAPTURE")
+            val purchaseUnits = JSONObject()
+            val amount = JSONObject()
+            amount.put("currency_code", "USD")
+            amount.put("value", "5.00")
+            purchaseUnits.put("amount", amount)
+            val purchaseUnitsArray = JSONArray()
+            purchaseUnitsArray.put(purchaseUnits)
+            requestObject.put("purchase_units", purchaseUnitsArray)
+
+            val jsonObjectRequest = object : JsonObjectRequest(
+                Method.POST, url, requestObject,
+                Response.Listener { response ->
+                    val orderId = response.optString("id")
+                    continuation.resume(orderId)
+                },
+                Response.ErrorListener { error ->
+                    continuation.resumeWithException(error)
+                }) {
+                override fun getHeaders(): Map<String, String> {
+                    val headers = HashMap<String, String>()
+                    headers["Authorization"] = token
+                    headers["Content-Type"] = "application/json"
+                    return headers
+                }
+            }
+
+            queue.add(jsonObjectRequest)
+        }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun launchPayPalCheckout(orderId: String) {
+        val coreConfig = CoreConfig(
+            clientId,
+            environment = Environment.SANDBOX
+        )
+
+        val payPalNativeClient = PayPalNativeCheckoutClient(
+            application = application,
+            coreConfig = coreConfig,
+            returnUrl = "com.zebrand.app1food30s://paypalpay"
+        )
+
+        payPalNativeClient.listener = object : PayPalNativeCheckoutListener {
+            override fun onPayPalCheckoutStart() {
+                // the PayPal paysheet is about to show up
+//                Toast.makeText(activity, "STARTING", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onPayPalCheckoutSuccess(result: PayPalNativeCheckoutResult) {
+                GlobalScope.launch {
+                    try {
+                        val tmp = capturePayPalOrder(token, orderId)
+                        Toast.makeText(applicationContext, tmp, Toast.LENGTH_SHORT).show()
+
+                    } catch (e: Exception) {
+                        // Handle exceptions
+                        e.printStackTrace()
+                    }
+                }
+            }
+
+            override fun onPayPalCheckoutFailure(error: PayPalSDKError) {
+            }
+
+            override fun onPayPalCheckoutCanceled() {
+            }
+        }
+
+        payPalNativeClient.shippingListener = object : PayPalNativeShippingListener {
+            override fun onPayPalNativeShippingAddressChange(
+                actions: PayPalNativePaysheetActions,
+                shippingAddress: PayPalNativeShippingAddress
+            ) {
+                actions.approve()
+            }
+
+            override fun onPayPalNativeShippingMethodChange(
+                actions: PayPalNativePaysheetActions,
+                shippingMethod: PayPalNativeShippingMethod
+            ) {
+                try {
+                    actions.approve()
+                } catch (e: Exception) {
+                    actions.reject()
+                }
+            }
+        }
+
+        val request = PayPalNativeCheckoutRequest(orderId)
+        payPalNativeClient.startCheckout(request)
+    }
+
+    private suspend fun capturePayPalOrder(token: String, orderId: String): String {
+        return suspendCoroutine { continuation ->
+            var url = url + orderId + "/capture"
+
+            val jsonObjectRequest = object : JsonObjectRequest(
+                Method.POST, url, null,
+                Response.Listener { response ->
+                    Log.d("CaptureResponse", response.toString())
+//                    Toast.makeText(this, "Order captured successfully!", Toast.LENGTH_SHORT).show()
+                    continuation.resume("SUCCESSFULL")
+                },
+                Response.ErrorListener { error ->
+                    Log.e("CaptureError", error.toString())
+//                    Toast.makeText(this, "Error capturing order: ${error.message}", Toast.LENGTH_SHORT).show()
+                    continuation.resumeWithException(error)
+                }) {
+                override fun getHeaders(): Map<String, String> {
+                    val headers = HashMap<String, String>()
+                    headers["Authorization"] = token
+                    headers["Content-Type"] = "application/json"
+                    return headers
+                }
+            }
+
+            queue.add(jsonObjectRequest)
+        }
+    }
 
     private fun requestZalo(){
 //        val orderApi = CreateOrder()
@@ -351,63 +521,18 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     // presenter.onPlaceOrderClicked(cartId)
     private fun handlePlaceOrderButton() {
         binding.btnPlaceOrder.setOnClickListener {
-            Toast.makeText(this@CheckoutActivity, "TEST", Toast.LENGTH_LONG).show()
+//            Toast.makeText(this@CheckoutActivity, "TEST", Toast.LENGTH_LONG).show()
 
-            // Thêm client id vào
-            val coreConfig = CoreConfig("", environment = Environment.SANDBOX)
-
-            val payPalNativeClient = PayPalNativeCheckoutClient(
-                application = this@CheckoutActivity.application,
-                coreConfig = coreConfig,
-                returnUrl = "com.zebrand.app1food30s://paypalpay"
-            )
-
-            payPalNativeClient.listener = object : PayPalNativeCheckoutListener {
-                override fun onPayPalCheckoutStart() {
-                    // the PayPal paysheet is about to show up
-                }
-                override fun onPayPalCheckoutSuccess(result: PayPalNativeCheckoutResult) {
-                    // order was approved and is ready to be captured/authorized
-                }
-                override fun onPayPalCheckoutFailure(error: PayPalSDKError) {
-                    // handle the error
-                }
-                override fun onPayPalCheckoutCanceled() {
-                    // the user canceled the flow
+            GlobalScope.launch {
+                try {
+                    token += getPayPalToken(urlToken)
+                    orderId = createPayPalOrder(url, token)
+                    launchPayPalCheckout(orderId)
+                } catch (e: Exception) {
+                    // Handle exceptions
+                    e.printStackTrace()
                 }
             }
-
-            payPalNativeClient.shippingListener = object : PayPalNativeShippingListener {
-                override fun onPayPalNativeShippingAddressChange(
-                    actions: PayPalNativePaysheetActions,
-                    shippingAddress: PayPalNativeShippingAddress
-                ) {
-                    // called when the user updates their chosen shipping address
-                    // you must call actions.approve() or actions.reject() in this callback
-                    actions.approve()
-                    // OPTIONAL: you can optionally patch your order. Once complete, call actions.approve() if successful or actions.reject() if not.
-                }
-                override fun onPayPalNativeShippingMethodChange(
-                    actions: PayPalNativePaysheetActions,
-                    shippingMethod: PayPalNativeShippingMethod
-                ) {
-                    // called when the user updates their chosen shipping method
-                    // patch your order server-side with the updated shipping amount.
-                    // Once complete, call `actions.approve()` or `actions.reject()`
-                    try {
-                        // TODO: patch order on server side, notify SDK of success by calling actions.approve()
-                        actions.approve()
-                    } catch (e: Exception) {
-                        // catch any errors from patching the order e.g. network unavailable
-                        // and notify SDK that the update was unsuccessful
-                        actions.reject()
-                    }
-                }
-            }
-
-            //00W40240UH618401H
-            val request = PayPalNativeCheckoutRequest("00W40240UH618401H")
-            payPalNativeClient.startCheckout(request)
 
 
 //            address = binding.tvAddress.text.toString()
@@ -439,7 +564,6 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     fun getIpAddress(context: Context) = with(context.getConnectivityManager()) {
         getLinkProperties(activeNetwork)!!.linkAddresses[1].address.hostAddress!!
     }
-
 
     private fun setupRecyclerView() {
         binding.checkoutItemsRecyclerView.layoutManager = LinearLayoutManager(this)
