@@ -264,10 +264,10 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 //
     }
 
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-//        ZaloPaySDK.getInstance().onResult(intent)
-    }
+//    override fun onNewIntent(intent: Intent?) {
+//        super.onNewIntent(intent)
+////        ZaloPaySDK.getInstance().onResult(intent)
+//    }
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
