@@ -30,6 +30,7 @@ import com.zebrand.app1food30s.ui.offers.ManageOffer
 import com.zebrand.app1food30s.utils.FireStoreUtils
 import com.zebrand.app1food30s.utils.FirebaseUtils.fireStorage
 import com.zebrand.app1food30s.utils.FirebaseUtils.fireStore
+import com.zebrand.app1food30s.utils.SingletonKey
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
@@ -41,6 +42,7 @@ class ProfileAdminAfterLogin : Fragment() {
     private lateinit var avaImageView: ImageView
     private var imageUri: Uri? = null
     private var currentImagePath: String? = null
+    private lateinit var mySharePreference: MySharedPreferences
 
     // ResultLauncher for handling image picking result
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -65,16 +67,25 @@ class ProfileAdminAfterLogin : Fragment() {
         fetchUserInformation(idUser.orEmpty())
         events()
 
+        mySharePreference = MySharedPreferences.getInstance(requireContext())
+
+        Log.e("ProfileAfterLogin", mySharePreference.getBoolean(SingletonKey.IS_ADMIN).toString())
+        if(mySharePreference.getBoolean(SingletonKey.IS_ADMIN)){
+            binding.layoutMyOrders.visibility = View.GONE
+        }else{
+            // Set up the click listener for the layoutMyOrders
+            binding.layoutMyOrders.setOnClickListener {
+                // Navigate to AdminStatisticsActivity
+                val intent = Intent(activity, MyOrderActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
         // ========== Code này ở branch Hai3 (đã sửa lại dùng binding) =========
         binding.ava.setOnClickListener {
             pickImageLauncher.launch("image/*")
         }
-        // Set up the click listener for the layoutMyOrders
-        binding.layoutMyOrders.setOnClickListener {
-            // Navigate to AdminStatisticsActivity
-            val intent = Intent(activity, MyOrderActivity::class.java)
-            startActivity(intent)
-        }
+
         // ================================================================
 //        binding.username.setText(idUser)
         binding.layoutEditProfile.setOnClickListener {

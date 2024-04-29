@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.ui.profile
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ import com.zebrand.app1food30s.utils.FirebaseUtils.fireStorage
 import com.zebrand.app1food30s.utils.FirebaseUtils.fireStore
 import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -69,12 +71,14 @@ class ProfileAfterLoginFragment : Fragment() {
         binding.ava.setOnClickListener {
             pickImageLauncher.launch("image/*")
         }
+
         // Set up the click listener for the layoutMyOrders
         binding.layoutMyOrders.setOnClickListener {
             // Navigate to AdminStatisticsActivity
             val intent = Intent(activity, MyOrderActivity::class.java)
             startActivity(intent)
         }
+
         // ================================================================
 //        binding.username.setText(idUser)
         binding.layoutEditProfile.setOnClickListener {
@@ -94,6 +98,10 @@ class ProfileAfterLoginFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
 
