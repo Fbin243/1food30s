@@ -57,7 +57,7 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
                 id = UUID.randomUUID().toString(),
                 idAccount = idAccount,
                 items = orderItems.toMutableList(),
-                totalAmount = totalPrice,
+                totalAmount = totalPrice + shippingFee,
                 orderStatus = "Pending", // Consider using constants or enum
                 date = Date(), // Current date
                 cancelReason = null, // No cancel reason at order creation
