@@ -30,8 +30,16 @@ import com.zebrand.app1food30s.ui.cart.CartRepository
 import com.zebrand.app1food30s.ui.main.MainActivity
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import java.io.IOException
 import java.util.Locale
+import android.location.Location
+import com.google.gson.Gson
+import okhttp3.*
 
 class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallback {
 
@@ -45,11 +53,16 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     private lateinit var address: String
     private lateinit var mMap: GoogleMap
     private val AUTOCOMPLETE_REQUEST_CODE = 100 // Class constant
+    private lateinit var apiKey: String
+    private lateinit var defaultLatLng: LatLng
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCheckoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        apiKey = "AIzaSyBQFpHSKFfBqU9XM8ZFGOEHPGyMkh6iCZk"
+        defaultLatLng = LatLng(10.780889, 106.699306) // Central Post Office coordinates
 
         preferences = MySharedPreferences.getInstance(this)
         userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
@@ -66,7 +79,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 
         // -----Places SDK-----
         if (!Places.isInitialized()) {
-            Places.initialize(applicationContext, "AIzaSyBQFpHSKFfBqU9XM8ZFGOEHPGyMkh6iCZk")
+            Places.initialize(applicationContext, apiKey)
         }
 
         binding.tvAddress.setOnFocusChangeListener { v, hasFocus ->
@@ -92,8 +105,6 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
-//        val sydney = LatLng(-34.0, 151.0)
         val hoChiMinhCity = LatLng(10.776889, 106.700806)
         val marker = mMap.addMarker(MarkerOptions().position(hoChiMinhCity).title("Marker in Ho Chi Minh City").draggable(true))
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hoChiMinhCity, 10f))
@@ -103,6 +114,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
             // Move the marker to the clicked position
             if (marker != null) {
                 marker.position = latLng
+                calculateDistance(defaultLatLng, latLng)
             }
 
             // Optionally, animate the camera to the new position
@@ -147,6 +159,48 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         }
     }
 
+    private fun calculateDistance(from: LatLng, to: LatLng) {
+        val origin = "${from.latitude},${from.longitude}"
+        val destination = "${to.latitude},${to.longitude}"
+        val url = "https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination&key=$apiKey"
+
+        val client = OkHttpClient()
+        val request = Request.Builder().url(url).build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("CheckoutActivity", "Failed to fetch directions", e)
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.use {
+                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
+
+                    val responseData = response.body?.string()
+                    if (responseData != null) {
+                        val gson = Gson()
+                        val directionsResult = gson.fromJson(responseData, DirectionsResult::class.java)
+                        val route = directionsResult.routes.firstOrNull()
+                        val leg = route?.legs?.firstOrNull()
+                        runOnUiThread {
+                            if (leg != null) {
+                                binding.tvShipFee.text = "Distance: ${leg.distance.text}, Duration: ${leg.duration.text}"
+                            } else {
+                                binding.tvShipFee.text = "0"
+                            }
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    data class DirectionsResult(val routes: List<Route>)
+    data class Route(val legs: List<Leg>)
+    data class Leg(val distance: Distance, val duration: Duration)
+    data class Distance(val text: String, val value: Int)
+    data class Duration(val text: String, val value: Int)
+
     // TODO: fix snackbar top to bottom of container
     override fun navigateToOrderConfirmation(showOrderConfirmation: Boolean, orderId: String) {
         if (showOrderConfirmation) {
@@ -169,10 +223,12 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
             val note = binding.tvNote.text.toString()
             if (address.isEmpty()) {
                 // Show error message
+                binding.addressContainer.isErrorEnabled = true
                 binding.addressContainer.error = getString(R.string.error_address_required)
                 return@setOnClickListener
             } else {
                 // Clear error
+                binding.addressContainer.isErrorEnabled = false
                 binding.addressContainer.error = null
             }
 
