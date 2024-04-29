@@ -39,7 +39,12 @@ import java.io.IOException
 import java.util.Locale
 import android.location.Location
 import com.google.gson.Gson
+import com.zebrand.app1food30s.utils.Utils
 import okhttp3.*
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.config.Configuration
+import java.io.File
 
 class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallback {
 
@@ -160,40 +165,55 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     }
 
     private fun calculateDistance(from: LatLng, to: LatLng) {
-        val origin = "${from.latitude},${from.longitude}"
-        val destination = "${to.latitude},${to.longitude}"
-        val url = "https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination&key=$apiKey"
+        val results = FloatArray(1)
+        Location.distanceBetween(from.latitude, from.longitude, to.latitude, to.longitude, results)
+        val distance = String.format("%.1f", results[0]/1000.0).toDouble() // distance in km
 
-        val client = OkHttpClient()
-        val request = Request.Builder().url(url).build()
-
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                Log.e("CheckoutActivity", "Failed to fetch directions", e)
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                response.use {
-                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
-
-                    val responseData = response.body?.string()
-                    if (responseData != null) {
-                        val gson = Gson()
-                        val directionsResult = gson.fromJson(responseData, DirectionsResult::class.java)
-                        val route = directionsResult.routes.firstOrNull()
-                        val leg = route?.legs?.firstOrNull()
-                        runOnUiThread {
-                            if (leg != null) {
-                                binding.tvShipInfo.text = "Distance: ${leg.distance.text}, Duration: ${leg.duration.text}"
-                            } else {
-                                binding.tvShipInfo.text = "0"
-                            }
-                        }
-                    }
-                }
-            }
-        })
+        runOnUiThread {
+            val shipFee = Utils.formatPrice(distance * 0.2, this@CheckoutActivity)  // Assume 0.2 as your rate
+            binding.tvShipInfo.text = "Ship: $shipFee - Distance: ${distance} km"
+        }
     }
+
+//    private fun calculateDistance(from: LatLng, to: LatLng) {
+//        val origin = "${from.latitude},${from.longitude}"
+//        val destination = "${to.latitude},${to.longitude}"
+//        val url = "https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination&key=$apiKey"
+//        Log.d("Test00", "calculateDistance: $url")
+//
+//        val client = OkHttpClient()
+//        val request = Request.Builder().url(url).build()
+//
+//        client.newCall(request).enqueue(object : Callback {
+//            override fun onFailure(call: Call, e: IOException) {
+//                Log.e("Test00", "Failed to fetch directions", e)
+//            }
+//
+//            override fun onResponse(call: Call, response: Response) {
+//                response.use {
+//                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
+//
+//                    val responseData = response.body?.string()
+//                    if (responseData != null) {
+//                        val gson = Gson()
+//                        val directionsResult = gson.fromJson(responseData, DirectionsResult::class.java)
+//                        Log.d("Test00", "onResponse: $directionsResult")
+//                        val route = directionsResult.routes.firstOrNull()
+//                        val leg = route?.legs?.firstOrNull()
+//                        runOnUiThread {
+//                            if (leg != null) {
+//                                val distanceValue = leg.distance.text.substringBefore(" ").toDoubleOrNull()
+//                                val shipFee = Utils.formatPrice(distanceValue?.times(0.2) ?: 0.0, this@CheckoutActivity)
+//                                binding.tvShipInfo.text = "Ship: ${shipFee} - ${leg.distance.text} - ${leg.duration.text}"
+//                            } else {
+//                                binding.tvShipInfo.text = "Unsupported address"
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        })
+//    }
 
     data class DirectionsResult(val routes: List<Route>)
     data class Route(val legs: List<Leg>)
