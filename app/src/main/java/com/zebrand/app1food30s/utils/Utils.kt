@@ -9,6 +9,11 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -17,6 +22,7 @@ import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerDrawable
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.firebase.firestore.DocumentReference
+import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Cart
 import com.zebrand.app1food30s.data.entity.CartItem
@@ -32,6 +38,9 @@ import java.util.Locale
 
 
 object Utils {
+    val timeHandler: Long = 800
+    val handler = Handler(Looper.getMainLooper())
+
     fun formatPrice(price: Double, context: Context): String {
         val mySharedPreferences = MySharedPreferences.getInstance(context)
         val languageCode = mySharedPreferences.getString(SingletonKey.KEY_LANGUAGE_CODE) ?: "en"
@@ -62,11 +71,9 @@ object Utils {
     }
 
     fun hideShimmerEffect(shimmer: ShimmerFrameLayout, view: View, wantToShow: Boolean = true) {
-//        Handler().postDelayed({
         shimmer.stopShimmer()
         shimmer.visibility = View.GONE
         if (wantToShow) view.visibility = View.VISIBLE
-//        }, 1000)
     }
 
     fun initSwipeRefreshLayout(
@@ -97,6 +104,10 @@ object Utils {
             return localDateTime.format(formatter)
         }
         return null
+    }
+
+    fun formatCalendarView(date: CalendarDay): String {
+        return "${date.day}/${date.month}/${date.year}"
     }
 
     fun formatId(id: String): String {

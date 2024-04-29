@@ -162,7 +162,7 @@
     <string name="txt_status">Status</string>
     <string name="txt_customer">Customer</string>
     <string name="txt_date_filter">Date</string>
-    <string name="txt_default_date">01/01/2024</string>
+    <string name="txt_default_date">dd/MM/yyyy</string>
     <string name="txt_delete_account">Delete account</string>
     <string name="txt_confirm_delete_account">Are you sure you want to delete your account?</string>
     <string name="txt_confirm_forgot_password">Are you sure you want to reset your password?</string>
@@ -185,10 +185,26 @@
         <item>Delivered</item>
     </string-array>
 
+    <string-array name="delivery_array_v2">
+        <item>Order accepted</item>
+        <item>On delivery</item>
+        <item>Delivered</item>
+    </string-array>
+
+    <string-array name="delivery_array_v3">
+        <item>Pending</item>
+        <item>Order accepted</item>
+        <item>On delivery</item>
+        <item>Delivered</item>
+        <item>Cancelled</item>
+    </string-array>
+
+
     <string-array name="payment_array">
         <item>Paid</item>
         <item>Unpaid</item>
     </string-array>
+
     <string name="formatted_currency">%.2f</string>
     <string name="formatted_currency_dollar">$%.2f</string>
     <string name="wishlist_button">Wishlist button</string>
@@ -262,4 +278,8 @@
     <string name="txt_all_offers">All offers</string>
     <string name="txt_chat_detail">Shop owner</string>
     <string name="Chat">Chat</string>
+    <string name="txt_note">Note:&#160;</string>
+    <string name="txt_reason_manage_order">Reason:&#160;</string>
+    <string name="txt_note_my_order">Note</string>
+    <string name="txt_please_enter_order_id">Please enter order ID</string>
 </resources>

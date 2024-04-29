@@ -6,4 +6,7 @@ interface MyOrderDetailsMVPView {
 //    fun getMyOrderDetailsList()
     fun setOrderDetailsUI()
     fun handleReviewProduct()
+
+    fun showShimmerEffectForOrders(size: Int)
+    fun hideShimmerEffectForOrders()
 }

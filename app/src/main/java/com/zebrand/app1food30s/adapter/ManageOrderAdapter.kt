@@ -1,6 +1,7 @@
 package com.zebrand.app1food30s.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,16 +16,19 @@ import com.zebrand.app1food30s.utils.Utils
 class ManageOrderAdapter(
     private val orders: MutableList<Order>,
 ) :
-    RecyclerView.Adapter<ManageOrderAdapter.MyOrderViewHolder>() {
+    RecyclerView.Adapter<ManageOrderAdapter.ManageOrderViewHolder>() {
     var onItemClick: ((Order) -> Unit)? = null
+//    var onFilterOrders: ((MutableList<Order>) -> Unit)? = null
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(orders: List<Order>) {
-        this.orders.clear()
+        clear()
         this.orders.addAll(orders)
         notifyDataSetChanged()
     }
 
     fun insertData(order: Order) {
+        Log.d("Test02", "adapter ${orders.size}: ${order.toString()}")
         this.orders.add(order)
         this.orders.sortByDescending { it.date }
         val insertedIndex = this.orders.indexOf(order)
@@ -48,26 +52,26 @@ class ManageOrderAdapter(
         }
     }
 
-    inner class MyOrderViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
+    inner class ManageOrderViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
         val tvOrderId: TextView = listItemView.findViewById(R.id.tvOrderId)
         val tvCustomerName: TextView = listItemView.findViewById(R.id.tvCustomerName)
         val tvDate: TextView = listItemView.findViewById(R.id.tvDate)
         val tvTotalAmount: TextView = listItemView.findViewById(R.id.tvTotalAmount)
-//        val orderStatusSpan: View = listItemView.findViewById(R.id.orderStatusSpan)
+        val orderStatusSpan: View = listItemView.findViewById(R.id.orderStatusSpan)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyOrderViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ManageOrderViewHolder {
         val orderCardView =
             LayoutInflater.from(parent.context).inflate(
                 R.layout.item_manage_order,
                 parent,
                 false
             )
-        return MyOrderViewHolder(orderCardView)
+        return ManageOrderViewHolder(orderCardView)
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: MyOrderViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ManageOrderViewHolder, position: Int) {
         val order: Order = orders[position]
 
         with(holder){
@@ -81,11 +85,21 @@ class ManageOrderAdapter(
             }
         }
 
-//        val binding = DataBindingUtil.bind<MyOrderStatusSpanBinding>(holder.orderStatusSpan)
-//        binding?.orderStatusSpan = order.orderStatus
+        val binding = DataBindingUtil.bind<MyOrderStatusSpanBinding>(holder.orderStatusSpan)
+        binding?.orderStatusSpan = order.orderStatus
     }
+
+//    fun filterOrders(){
+//        onFilterOrders?.invoke(orders)
+//    }
 
     override fun getItemCount(): Int {
         return orders.size
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun clear() {
+        orders.clear()
+        notifyDataSetChanged()
     }
 }

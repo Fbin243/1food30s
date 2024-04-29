@@ -2,6 +2,7 @@ package com.zebrand.app1food30s.ui.my_order
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +17,10 @@ import com.zebrand.app1food30s.ui.my_order.my_order_details.MyOrderDetailsActivi
 import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
+import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 
-class MyPrevOrderFragment : Fragment(), MyOrderMVPView.MyPrevOrderMVPView {
+class MyPrevOrderFragment : Fragment(), MyOrderMVPView {
     lateinit var binding: FragmentMyPrevOrderBinding
     //    Chưa login nên không có đi qua local db để lấy data được
     private lateinit var mySharePreference: MySharedPreferences
@@ -29,7 +31,7 @@ class MyPrevOrderFragment : Fragment(), MyOrderMVPView.MyPrevOrderMVPView {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mySharePreference = MySharedPreferences.getInstance(context)
-        presenter = MyOrderPresenter(context)
+        presenter = MyOrderPresenter(context, this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -125,5 +127,33 @@ class MyPrevOrderFragment : Fragment(), MyOrderMVPView.MyPrevOrderMVPView {
 
         //getData
         presenter.getPrevOrderList(userId, myPrevOrderAdapter)
+    }
+
+//    Miss this function
+    override fun setMyActiveOrderUI() {}
+
+    override fun setMyPrevOrderUI() {
+        Handler().postDelayed({
+            if (myPrevOrderAdapter.itemCount == 0) {
+                binding.orderItemList.visibility = View.GONE
+                binding.noItemLayout.visibility = View.VISIBLE
+            } else {
+                binding.orderItemList.visibility = View.VISIBLE
+                binding.noItemLayout.visibility = View.GONE
+            }
+        }, Utils.timeHandler + 200)
+    }
+
+    override fun showShimmerEffectForOrders(size: Int) {
+        for (i in 0 until size) {
+            val shimmerLayout = layoutInflater.inflate(R.layout.product_card_view_linear_shimmer, binding.linearShimmer, false)
+            // Add the inflated layout to the parent LinearLayout
+            binding.linearShimmer.addView(shimmerLayout)
+        }
+        Utils.showShimmerEffect(binding.orderShimmer, binding.orderItemList)
+    }
+
+    override fun hideShimmerEffectForOrders() {
+        Utils.hideShimmerEffect(binding.orderShimmer, binding.orderItemList)
     }
 }

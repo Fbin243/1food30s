@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-<androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:padding="16dp"
@@ -321,7 +321,20 @@
                 app:layout_constraintEnd_toEndOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+<!--        <com.paypal.checkout.paymentbutton.PaymentButtonContainer-->
+<!--            app:layout_constraintTop_toBottomOf="bottomContainer"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            android:id="@+id/payment_button_container"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="60dp"-->
+<!--            app:paypal_button_color="@color/primary"-->
+<!--            app:paypal_button_label="pay"-->
+<!--            app:paypal_button_shape="rectangle"-->
+<!--            app:paypal_button_size="large"-->
+<!--            app:paypal_button_enabled="true" />-->
+
         <Button
+            android:visibility="gone"
             android:id="@+id/btnPlaceOrder"
             android:layout_width="match_parent"
             android:layout_height="@dimen/spacing60"

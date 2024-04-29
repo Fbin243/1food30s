@@ -6,17 +6,24 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.view.View
 import android.view.Window
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputEditText
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.MyOrderDetailsAdapter
 import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.data.entity.OrderItem
 import com.zebrand.app1food30s.databinding.ActivityManageOrderDetailsBinding
+import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.Utils
 
 class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPView {
@@ -29,6 +36,7 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
     var orderDetails: Order = Order()
     private lateinit var itemOrderDetailsAdapter: MyOrderDetailsAdapter
     private var manageOrderDetailsList: MutableList<OrderItem> = mutableListOf()
+    val handler = Handler(Looper.getMainLooper())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityManageOrderDetailsBinding.inflate(layoutInflater)
@@ -45,7 +53,7 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
     private fun init() {
         presenter = ManageOrderDetailsPresenter(this, this)
         paymentArr = resources.getStringArray(R.array.payment_array)
-        deliveryArr = resources.getStringArray(R.array.delivery_array)
+        deliveryArr = resources.getStringArray(R.array.delivery_array_v2)
 
         idOrder = intent.getStringExtra("idOrder").toString()
     }
@@ -55,11 +63,16 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
             onBackPressedDispatcher.onBackPressed()
         }
 
+        binding.acceptBtn.setOnClickListener {
+            presenter.acceptOrder(idOrder, itemOrderDetailsAdapter)
+        }
+
         binding.rejectBtn.setOnClickListener {
             showCustomRejectDialogBox()
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     private fun handleDropDown() {
         // status dropdown
         val adapterStatus = ArrayAdapter(this, R.layout.item_drop_down_filter, paymentArr)
@@ -73,10 +86,9 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
         // customer dropdown
         val adapterCus = ArrayAdapter(this, R.layout.item_drop_down_filter, deliveryArr)
         binding.spinnerDelivery.setAdapter(adapterCus)
-        binding.spinnerDelivery.setOnItemClickListener { _, _, position, _ ->
+        binding.spinnerDelivery.setOnItemClickListener { _, view, position, _ ->
             val selectedText = adapterCus.getItem(position)
             presenter.changeOrderStatus(idOrder, selectedText.toString())
-//            Toast.makeText(this, selectedText, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -87,11 +99,19 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
         dialog.setContentView(R.layout.dialog_reason_order)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        val acceptBtn: Button = dialog.findViewById(R.id.cancelBtn)
-        val cancel: Button = dialog.findViewById(R.id.saveBtn)
+        val acceptBtn: Button = dialog.findViewById(R.id.saveBtn)
+        val cancel: Button = dialog.findViewById(R.id.cancelBtn)
+        val reason: TextInputEditText = dialog.findViewById(R.id.tvReason)
 
         acceptBtn.setOnClickListener {
-            dialog.dismiss()
+            if(reason.text.toString().trim().isEmpty()){
+                Toast.makeText(this, "Please enter reason", Toast.LENGTH_SHORT).show()
+            }else {
+                presenter.cancelOrder(idOrder, reason.text.toString())
+                handler.postDelayed({
+                    dialog.dismiss()
+                }, 500)
+            }
         }
 
         cancel.setOnClickListener {
@@ -128,10 +148,45 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
         binding.tvSubTotal.text = Utils.formatPrice(itemOrderDetailsAdapter.getSubTotal(), this)
         binding.tvDiscount.text = Utils.formatPrice(itemOrderDetailsAdapter.getDiscount(), this)
         binding.tvTotalAmount.text = Utils.formatPrice(orderDetails.totalAmount, this)
+        binding.tvNote.text = orderDetails.note
+        binding.tvReason.text = orderDetails.cancelReason
 
-        binding.spinnerPayment.setText(orderDetails.paymentStatus, false)
-        binding.spinnerDelivery.setText(orderDetails.orderStatus, false)
-        
+        if(orderDetails.orderStatus == SingletonKey.DELIVERED){
+            binding.linearControls.visibility = View.GONE
+            binding.linearDropDown.visibility = View.GONE
+            binding.linearReason.visibility = View.GONE
+        }
+        else if(orderDetails.orderStatus == SingletonKey.CANCELLED){
+            binding.linearControls.visibility = View.GONE
+            binding.linearDropDown.visibility = View.GONE
+            binding.linearReason.visibility = View.VISIBLE
+        } else if(orderDetails.orderStatus == SingletonKey.PENDING){
+            binding.linearControls.visibility = View.VISIBLE
+            binding.linearDropDown.visibility = View.GONE
+        }else{
+            binding.linearControls.visibility = View.GONE
+            binding.linearDropDown.visibility = View.VISIBLE
+
+            binding.spinnerPayment.setText(orderDetails.paymentStatus, false)
+            binding.spinnerDelivery.setText(orderDetails.orderStatus, false)
+        }
+
+
+    }
+
+    override fun showShimmerEffectForOrders(size: Int) {
+        binding.linearShimmer.removeAllViews()
+        for (i in 0 until size) {
+            val shimmerLayout = layoutInflater.inflate(R.layout.product_card_view_linear_shimmer, binding.linearShimmer, false)
+            // Add the inflated layout to the parent LinearLayout
+            binding.linearShimmer.addView(shimmerLayout)
+        }
+
+        Utils.showShimmerEffect(binding.orderDetailsShimmer, binding.orderItemList)
+    }
+
+    override fun hideShimmerEffectForOrders() {
+        Utils.hideShimmerEffect(binding.orderDetailsShimmer, binding.orderItemList)
     }
 
 }
