@@ -184,9 +184,9 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
                         val leg = route?.legs?.firstOrNull()
                         runOnUiThread {
                             if (leg != null) {
-                                binding.tvShipFee.text = "Distance: ${leg.distance.text}, Duration: ${leg.duration.text}"
+                                binding.tvShipInfo.text = "Distance: ${leg.distance.text}, Duration: ${leg.duration.text}"
                             } else {
-                                binding.tvShipFee.text = "0"
+                                binding.tvShipInfo.text = "0"
                             }
                         }
                     }
