@@ -115,6 +115,29 @@ class LoginActivity : AppCompatActivity() {
         ValidateInput.passwordFocusListener(this, binding.tvPassword, binding.passwordContainer)
     }
 
+    private fun onClickLogin() {
+        if (checkValid()) {
+            val email = binding.tvEmail.text.toString().trim()
+            val password = binding.tvPassword.text.toString().trim()
+
+            val mAuth = FirebaseUtils.fireAuth
+            mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Set KEY_LOGGED
+                        setKeyShareRef(email, password)
+
+                        // Authorization
+                        Log.d("userInfo", "Da di qua 1 " + email)
+                        authorization(email, mySharePreference)
+
+                    } else {
+                        Toast.makeText(this, "Incorrect email or password", Toast.LENGTH_SHORT).show()
+                    }
+                }
+        }
+    }
+
 //    private fun authorization(email: String, mySharePreference: MySharedPreferences) {
 //        val query = FireStoreUtils.mDBUserRef.whereEqualTo("email", email)
 //        query.get().addOnSuccessListener { queryDocumentSnapshots ->
