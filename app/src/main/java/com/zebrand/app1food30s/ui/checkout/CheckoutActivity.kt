@@ -88,14 +88,22 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         }
 
         binding.tvAddress.setOnFocusChangeListener { v, hasFocus ->
+//            Log.d("FocusChange", "Focus change detected. Has focus: $hasFocus")
             if (hasFocus) {
-                // Launch the Autocomplete intent when the user focuses on the input
+                // Log the beginning of the Autocomplete intent action
+//                Log.d("FocusChange", "Launching Autocomplete intent.")
+
+                // Define the fields to be retrieved
                 val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
                 // Full screen search
-                // Return the place ID, name, latitude/longitude, and address
                 val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(this)
-                // TODO
+
+                // Launch the Autocomplete intent when the user focuses on the input
                 startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+//                Log.d("FocusChange", "Intent for Autocomplete started.")
+            } else {
+                // Optionally log when the user moves focus away
+//                Log.d("FocusChange", "Focus lost from tvAddress.")
             }
         }
 
@@ -147,22 +155,37 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+//        Log.d("ActivityResult", "Request Code: $requestCode, Result Code: $resultCode")
 
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE && resultCode == RESULT_OK) {
-            val place = Autocomplete.getPlaceFromIntent(data!!)
-            // Get the address
-            binding.tvAddress.setText(place.address)
-            binding.tvAddress.clearFocus()
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK && data != null) {
+                val place = Autocomplete.getPlaceFromIntent(data)
+//                Log.d("ActivityResult", "Place found: ${place.name}")
 
-            val latLng = place.latLng
-            // Use latitude and longitude to update the map's location
-            latLng?.let { CameraUpdateFactory.newLatLngZoom(it, 15f) }?.let { mMap.moveCamera(it) }
-        } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-            // Handle the error
-            val status = Autocomplete.getStatusFromIntent(data!!)
-            Log.i("CheckoutActivity", status.statusMessage ?: "Autocomplete error")
+                // Get the address
+                binding.tvAddress.setText(place.address)
+                binding.tvAddress.clearFocus()
+//                Log.d("ActivityResult", "Address set: ${place.address}")
+
+                val latLng = place.latLng
+                // Use latitude and longitude to update the map's location
+                latLng?.let {
+                    val cameraUpdate = CameraUpdateFactory.newLatLngZoom(it, 15f)
+                    mMap.moveCamera(cameraUpdate)
+//                    Log.d("ActivityResult", "Map camera moved to: ${latLng.latitude}, ${latLng.longitude}")
+                }
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR && data != null) {
+                // Handle the error
+                val status = Autocomplete.getStatusFromIntent(data)
+//                Log.e("ActivityResult", "Autocomplete error: ${status.statusMessage}")
+            } else {
+//                Log.w("ActivityResult", "Result not OK or data is null")
+            }
+        } else {
+//            Log.d("ActivityResult", "Unhandled request code")
         }
     }
+
 
     private fun calculateDistance(from: LatLng, to: LatLng) {
         val results = FloatArray(1)

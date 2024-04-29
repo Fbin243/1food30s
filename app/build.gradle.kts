@@ -109,6 +109,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.google.android.libraries.places:places:3.4.0")
     implementation("org.osmdroid:osmdroid-android:6.1.10")
+    implementation("com.here.sdk:search:4.9.0.0")
     // ================ Map distance =================
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
     implementation("com.google.code.gson:gson:2.10.1")
