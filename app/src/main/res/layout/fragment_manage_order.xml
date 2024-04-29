@@ -40,6 +40,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="10"
+                android:layout_marginTop="@dimen/spacing10"
             android:paddingHorizontal="@dimen/spacing16"
             android:gravity="center_vertical">
             <TextView
@@ -51,7 +52,6 @@
                 android:textSize="@dimen/font_header"
                 android:fontFamily="@font/font_family"
                 android:textFontWeight="600"
-
                 android:paddingBottom="@dimen/spacing4"
                 />
 
@@ -66,9 +66,9 @@
 
             <ImageView
                 android:id="@+id/ivChatScreen"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/chat_round_line_svgrepo_com"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:src="@drawable/ic_chat"
                 app:tint="@color/primary" />
         </LinearLayout>
 
@@ -87,14 +87,16 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:layout_margin="@dimen/spacing10"
+                    android:paddingStart="@dimen/spacing10"
+                    android:paddingEnd="@dimen/spacing10"
                     >
+
                     <androidx.recyclerview.widget.RecyclerView
-                        android:nestedScrollingEnabled="false"
                         android:id="@+id/rcvManageOrder"
-                        android:paddingTop="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false"
+                        android:paddingTop="10dp" />
                 </LinearLayout>
 
 

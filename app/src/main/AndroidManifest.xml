@@ -56,8 +56,7 @@
         </activity>
         <activity
             android:name=".ui.offer_detail.OfferDetailActivity"
-            android:exported="true" >
-        tools:targetApi="31">
+            android:exported="true" />
         <activity
             android:name=".ui.chat.ManageChatDetail"
             android:exported="false" />
@@ -89,29 +88,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBQFpHSKFfBqU9XM8ZFGOEHPGyMkh6iCZk" />
-
-        <activity
-            android:name=".ui.authentication.SplashActivity"
-            android:exported="true">
-
-             <intent-filter>
-             <action android:name="android.intent.action.MAIN" />
-
-
-             <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
-        </activity>
-        <activity
-            android:name=".ui.offer_detail.OfferDetailActivity"
-            android:exported="true">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
         <activity
             android:name=".ui.product_view_all.ProductViewAllActivity"
             android:exported="true" />
