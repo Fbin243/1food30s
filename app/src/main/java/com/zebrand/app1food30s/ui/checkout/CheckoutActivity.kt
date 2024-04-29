@@ -85,6 +85,8 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     private val YOUR_CLIENT_ID = "AXpqoGgnoXww1RmM2N15AKI7LV4es1uEB-kk0qO1X9OwdELkXnS18nTQ50Kdt9ERQQUoVOsGvOolFgWI"
     private lateinit var apiKey: String
     private lateinit var defaultLatLng: LatLng
+    private var totalPrice: Double = 0.0
+    private var shippingFee: Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -301,57 +303,18 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         }
     }
 
-
     private fun calculateDistance(from: LatLng, to: LatLng) {
         val results = FloatArray(1)
         Location.distanceBetween(from.latitude, from.longitude, to.latitude, to.longitude, results)
         val distance = String.format("%.1f", results[0]/1000.0).toDouble() // distance in km
 
         runOnUiThread {
-            val shipFee = Utils.formatPrice(distance * 0.2, this@CheckoutActivity)  // Assume 0.2 as your rate
-            binding.tvShipInfo.text = "Ship: $shipFee - Distance: ${distance} km"
+            shippingFee = distance * 0.2
+            val formattedShipFee = Utils.formatPrice(shippingFee, this@CheckoutActivity)  // Assume 0.2 as your rate
+            binding.tvShipInfo.text = "Ship: $formattedShipFee - Distance: ${distance} km"
+            updateTotalPrice()
         }
     }
-
-//    private fun calculateDistance(from: LatLng, to: LatLng) {
-//        val origin = "${from.latitude},${from.longitude}"
-//        val destination = "${to.latitude},${to.longitude}"
-//        val url = "https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination&key=$apiKey"
-//        Log.d("Test00", "calculateDistance: $url")
-//
-//        val client = OkHttpClient()
-//        val request = Request.Builder().url(url).build()
-//
-//        client.newCall(request).enqueue(object : Callback {
-//            override fun onFailure(call: Call, e: IOException) {
-//                Log.e("Test00", "Failed to fetch directions", e)
-//            }
-//
-//            override fun onResponse(call: Call, response: Response) {
-//                response.use {
-//                    if (!response.isSuccessful) throw IOException("Unexpected code $response")
-//
-//                    val responseData = response.body?.string()
-//                    if (responseData != null) {
-//                        val gson = Gson()
-//                        val directionsResult = gson.fromJson(responseData, DirectionsResult::class.java)
-//                        Log.d("Test00", "onResponse: $directionsResult")
-//                        val route = directionsResult.routes.firstOrNull()
-//                        val leg = route?.legs?.firstOrNull()
-//                        runOnUiThread {
-//                            if (leg != null) {
-//                                val distanceValue = leg.distance.text.substringBefore(" ").toDoubleOrNull()
-//                                val shipFee = Utils.formatPrice(distanceValue?.times(0.2) ?: 0.0, this@CheckoutActivity)
-//                                binding.tvShipInfo.text = "Ship: ${shipFee} - ${leg.distance.text} - ${leg.duration.text}"
-//                            } else {
-//                                binding.tvShipInfo.text = "Unsupported address"
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        })
-//    }
 
     data class DirectionsResult(val routes: List<Route>)
     data class Route(val legs: List<Leg>)
@@ -414,16 +377,21 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     override fun displayCartItems(cartItems: List<CartItem>, totalPrice: Double) {
         runOnUiThread {
             checkoutItemsAdapter.setItems(cartItems)
-//            binding.tvCartTotalAmount.text = getString(R.string.product_price_number, totalPrice)
-            binding.textViewAmount.text = getString(R.string.product_price_number, totalPrice)
+            this.totalPrice = totalPrice // Update the internal total price
+            updateTotalPrice() // Update UI
         }
+    }
+
+    private fun updateTotalPrice() {
+        val finalTotal = totalPrice + shippingFee
+        binding.textViewAmount.text = Utils.formatPrice(finalTotal, this)
     }
 
     override fun displayError(error: String) {
         runOnUiThread {
             // Handle error or empty state
 //            binding.tvCartTotalAmount.text = getString(R.string.product_price_number, 0.0)
-            binding.textViewAmount.text = getString(R.string.product_price_number, 0.0)
+            binding.textViewAmount.text = Utils.formatPrice(0.0, this)
         }
     }
 
