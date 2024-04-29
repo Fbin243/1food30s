@@ -122,6 +122,16 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         val marker = mMap.addMarker(MarkerOptions().position(hoChiMinhCity).title("Marker in Ho Chi Minh City").draggable(true))
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hoChiMinhCity, 10f))
 
+        mMap.setOnCameraMoveStartedListener {
+            val scrollView = findViewById<LockableNestedScrollView>(R.id.scrollView)
+            scrollView.setScrollingEnabled(false)
+        }
+
+        mMap.setOnCameraIdleListener {
+            val scrollView = findViewById<LockableNestedScrollView>(R.id.scrollView)
+            scrollView.setScrollingEnabled(true)
+        }
+
         // Add a click listener for the map
         mMap.setOnMapClickListener { latLng ->
             // Move the marker to the clicked position
