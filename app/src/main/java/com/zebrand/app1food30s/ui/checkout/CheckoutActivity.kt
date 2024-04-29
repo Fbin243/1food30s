@@ -168,45 +168,6 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         handlePlaceOrderButton()
     }
 
-    private fun paypalConfig(){
-//        val config = CheckoutConfig(
-//            application = application,
-//            clientId = YOUR_CLIENT_ID,
-//            environment = Environment.SANDBOX,
-//            returnUrl = "com.zebrand.app1food30s://paypalpay",
-//            currencyCode = CurrencyCode.USD,
-//            userAction = UserAction.PAY_NOW,
-//            settingsConfig = SettingsConfig(
-//                loggingEnabled = true,
-//                showWebCheckout = false
-//            )
-//        )
-//        PayPalCheckout.setConfig(config)
-//
-//        binding.paymentButtonContainer.setup(
-//            createOrder =
-//            CreateOrder { createOrderActions ->
-//                val order =
-//                    OrderRequest(
-//                        intent = OrderIntent.CAPTURE,
-//                        appContext = AppContext(userAction = UserAction.PAY_NOW),
-//                        purchaseUnitList =
-//                        listOf(
-//                            PurchaseUnit(
-//                                amount =
-//                                Amount(currencyCode = CurrencyCode.USD, value = "10.00")
-//                            )
-//                        )
-//                    )
-//                createOrderActions.create(order)
-//            },
-//            onApprove =
-//            OnApprove { approval ->
-//                Log.i("paypal", "OrderId: ${approval.data.orderId}")
-//            }
-//        )
-    }
-
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         val hoChiMinhCity = LatLng(10.776889, 106.700806)
@@ -292,7 +253,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         }
     }
 
-    private suspend fun createPayPalOrder(url: String, token: String): String {
+    private suspend fun createPayPalOrder(url: String, token: String, amountInput: Double): String {
         return suspendCoroutine { continuation ->
             val requestObject = JSONObject()
             requestObject.put("intent", "CAPTURE")
@@ -300,6 +261,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
             val amount = JSONObject()
             amount.put("currency_code", "USD")
             amount.put("value", "5.00")
+//            amount.put("value", amountInput.toString())
             purchaseUnits.put("amount", amount)
             val purchaseUnitsArray = JSONArray()
             purchaseUnitsArray.put(purchaseUnits)
@@ -326,8 +288,8 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun launchPayPalCheckout(orderId: String) {
+//    @OptIn(DelicateCoroutinesApi::class)
+    private fun launchPayPalCheckout(orderId: String){
         val coreConfig = CoreConfig(
             clientId,
             environment = Environment.SANDBOX
@@ -342,15 +304,18 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         payPalNativeClient.listener = object : PayPalNativeCheckoutListener {
             override fun onPayPalCheckoutStart() {
                 // the PayPal paysheet is about to show up
-//                Toast.makeText(activity, "STARTING", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this@CheckoutActivity, "STARTING", Toast.LENGTH_SHORT).show()
             }
 
             override fun onPayPalCheckoutSuccess(result: PayPalNativeCheckoutResult) {
                 GlobalScope.launch {
                     try {
                         val tmp = capturePayPalOrder(token, orderId)
-                        Toast.makeText(applicationContext, tmp, Toast.LENGTH_SHORT).show()
-
+//                        Log.d("PayPalCheckoutPayPalCheckout", "Order captured successfully 2!")
+                        Log.d("PayPalCheckoutPayPalCheckout", "Order captured successfully!")
+                        val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
+                        val note = binding.tvNote.text.toString()
+                        presenter.onPlaceOrderClicked(cartId, userDocRef, address, note, shippingFee)
                     } catch (e: Exception) {
                         // Handle exceptions
                         e.printStackTrace()
@@ -416,39 +381,6 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
             queue.add(jsonObjectRequest)
         }
     }
-
-    private fun requestZalo(){
-//        val orderApi = CreateOrder()
-//
-//        try {
-//            val data = orderApi.createOrder("20000")
-//            val code = data.getString("returncode")
-//            if (code == "1") {
-//                val token = data.getString("zptranstoken")
-//                ZaloPaySDK.getInstance().payOrder(this, token, "demozpdk://app", object : PayOrderListener {
-//                    override fun onPaymentSucceeded(p0: String?, p1: String?, p2: String?) {
-//                        Toast.makeText(this@CheckoutActivity, "Payment success", Toast.LENGTH_SHORT).show()
-//                    }
-//
-//                    override fun onPaymentCanceled(p0: String?, p1: String?) {
-//                        Toast.makeText(this@CheckoutActivity, "Payment canceled", Toast.LENGTH_SHORT).show()
-//                    }
-//
-//                    override fun onPaymentError(p0: ZaloPayError?, p1: String?, p2: String?) {
-//                        Toast.makeText(this@CheckoutActivity, "Payment error", Toast.LENGTH_SHORT).show()
-//                    }
-//                })
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-//
-    }
-
-//    override fun onNewIntent(intent: Intent?) {
-//        super.onNewIntent(intent)
-////        ZaloPaySDK.getInstance().onResult(intent)
-//    }
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -523,10 +455,23 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         binding.btnPlaceOrder.setOnClickListener {
 //            Toast.makeText(this@CheckoutActivity, "TEST", Toast.LENGTH_LONG).show()
 
+            address = binding.tvAddress.text.toString()
+            val note = binding.tvNote.text.toString()
+            if (address.isEmpty()) {
+                // Show error message
+                binding.addressContainer.isErrorEnabled = true
+                binding.addressContainer.error = getString(R.string.error_address_required)
+                return@setOnClickListener
+            } else {
+                // Clear error
+                binding.addressContainer.isErrorEnabled = false
+                binding.addressContainer.error = null
+            }
+
             GlobalScope.launch {
                 try {
                     token += getPayPalToken(urlToken)
-                    orderId = createPayPalOrder(url, token)
+                    orderId = createPayPalOrder(url, token, checkoutItemsAdapter.getPrice())
                     launchPayPalCheckout(orderId)
                 } catch (e: Exception) {
                     // Handle exceptions
@@ -534,26 +479,6 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
                 }
             }
 
-
-//            address = binding.tvAddress.text.toString()
-//            val note = binding.tvNote.text.toString()
-//            if (address.isEmpty()) {
-//                // Show error message
-//                binding.addressContainer.isErrorEnabled = true
-//                binding.addressContainer.error = getString(R.string.error_address_required)
-//                return@setOnClickListener
-//            } else {
-//                // Clear error
-//                binding.addressContainer.isErrorEnabled = false
-//                binding.addressContainer.error = null
-//            }
-//
-//            // Proceed with the place order logic if address is not empty
-//            // TODO: add to utils
-////            requestZalo()
-////            requestVNPay()
-////            val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
-////            presenter.onPlaceOrderClicked(cartId, userDocRef, address, note)
 //            val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
 //            presenter.onPlaceOrderClicked(cartId, userDocRef, address, note, shippingFee)
         }

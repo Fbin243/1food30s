@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.ui.checkout
 
+import android.util.Log
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zebrand.app1food30s.data.entity.CartItem
@@ -97,10 +98,11 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
         placeOrder(cartId, idAccount, address, note, shippingFee) { success, orderId ->
             if (success) {
                 view.navigateToOrderConfirmation(true, orderId)
+                Log.e("PayPalCheckoutPayPalCheckout", "Order placement success.")
             } else {
-//                Log.e("Test00", "Order placement failed.")
                 // You can handle the failure by invoking a different method in the view to show an error message, or pass false to navigateToOrderConfirmation if it's set up to handle failure.
                 view.navigateToOrderConfirmation(false, orderId)
+                Log.e("PayPalCheckoutPayPalCheckout", "Order placement failed.")
             }
         }
     }
