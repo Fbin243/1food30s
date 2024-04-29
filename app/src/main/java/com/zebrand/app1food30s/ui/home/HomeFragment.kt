@@ -27,6 +27,7 @@ import com.zebrand.app1food30s.ui.offer_detail.OfferDetailActivity
 import com.zebrand.app1food30s.ui.product_detail.ProductDetailActivity
 import com.zebrand.app1food30s.ui.product_view_all.ProductViewAllActivity
 import com.zebrand.app1food30s.ui.search.SearchActivity
+import com.zebrand.app1food30s.ui.wishlist.WishlistActivity
 import com.zebrand.app1food30s.ui.wishlist.WishlistMVPView
 import com.zebrand.app1food30s.ui.wishlist.WishlistPresenter
 import com.zebrand.app1food30s.ui.wishlist.WishlistRepository
@@ -74,7 +75,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
 //        val userId = mySharedPreferences?.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
         val wishlistRepository = WishlistRepository(userId)
         wishlistPresenter = WishlistPresenter(this, wishlistRepository)
-        Log.d("Test00", "onCreateView: fetchAndUpdateWishlistState()")
+//        Log.d("Test00", "onCreateView: fetchAndUpdateWishlistState()")
 
         lifecycleScope.launch {
             homePresenter.getDataAndDisplay()
@@ -85,6 +86,7 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
 
         handleOpenSearchScreen()
+        handleDisplayWishlistActivity()
 
         binding.ivChatScreen.setOnClickListener{
             if(isLogin){
@@ -98,6 +100,17 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         }
 
         return binding.root
+    }
+
+    private fun handleDisplayWishlistActivity() {
+        binding.ivWishlistScreen.setOnClickListener {
+//            val intent = Intent(requireContext(), WishlistActivity::class.java)
+//            startActivity(intent)
+            val intent = Intent(requireContext(), ProductViewAllActivity::class.java)
+            intent.putExtra("filterBy", "wishlist")
+            intent.putExtra("title", "Wishlist")
+            startActivity(intent)
+        }
     }
 
     override fun fetchAndUpdateWishlistState(callback: () -> Unit) {
@@ -167,8 +180,10 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
 
     override fun onResume() {
         super.onResume()
-        Log.d("Test00", "onResume: ")
-//        fetchAndUpdateWishlistState()
+//        Log.d("Test00", "onResume: ")
+        wishlistPresenter.fetchAndUpdateWishlistState {
+            // Optional: Do something after wishlist state is updated, if necessary
+        }
 //        refreshWishlistState(wishlistedProductIds)
         binding.searchInput.clearFocus()
     }
@@ -320,7 +335,8 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
         adapter.onWishlistProductClick = { product ->
             if (userId == defaultUserId) {
                 val loginIntent = Intent(requireContext(), LoginActivity::class.java)
-                startActivity(loginIntent)
+                loginIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                this.startActivity(loginIntent)
             } else {
                 wishlistPresenter.toggleWishlist(product)
             }

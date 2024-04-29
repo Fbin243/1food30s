@@ -45,6 +45,7 @@ class  WishlistRepository(private val userId: String) {
         }
     }
 
+    // TODO: reuse in firebase service
     suspend fun fetchWishlistForCurrentUser(): List<WishlistItem> = suspendCoroutine { continuation ->
         val wishlistRef = mDBWishlistRef.document(userId)
         wishlistRef.get().addOnSuccessListener { documentSnapshot ->
@@ -90,7 +91,7 @@ class  WishlistRepository(private val userId: String) {
     }
 
     suspend fun toggleWishlist(productId: String): Boolean {
-        val document = wishlistRef.get().await()  // Assuming this is a call to Firebase Firestore.
+        val document = wishlistRef.get().await()
         val productIds = (document["productIds"] as? List<*>)?.filterIsInstance<String>() ?: listOf()
 
         val isProductWishlisted = productId in productIds

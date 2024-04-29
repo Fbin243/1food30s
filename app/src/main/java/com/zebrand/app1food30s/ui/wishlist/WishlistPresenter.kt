@@ -42,4 +42,8 @@ class WishlistPresenter(
 //            withContext(Dispatchers.Main) { view.showError(e.message ?: "An error occurred") }
         }
     }
+
+    fun toggleWishlistProductDetail(product: Product) = CoroutineScope(Dispatchers.IO).launch {
+        repository.toggleWishlist(product.id)
+    }
 }

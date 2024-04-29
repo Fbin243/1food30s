@@ -268,4 +268,5 @@
     <string name="txt_reason_manage_order">Reason:&#160;</string>
     <string name="txt_note_my_order">Note</string>
     <string name="txt_please_enter_order_id">Please enter order ID</string>
+    <string name="wishlist">Wishlist</string>
 </resources>

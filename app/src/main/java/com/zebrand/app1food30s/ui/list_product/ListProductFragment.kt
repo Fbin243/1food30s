@@ -59,16 +59,19 @@ class ListProductFragment(
     ): View {
         binding = FragmentListProductBinding.inflate(inflater)
         db = AppDatabase.getInstance(requireContext())
+
+        // get userId
+        val mySharedPreferences = context?.let { MySharedPreferences.getInstance(it) }
+        userId = mySharedPreferences?.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
+        defaultUserId = MySharedPreferences.defaultStringValue
+
         linearLayoutManager = LinearLayoutManager(requireContext())
         gridLayoutManager = GridLayoutManager(requireContext(), 2)
-        listProductPresenter = ListProductPresenter(this, db)
+        listProductPresenter = ListProductPresenter(this, db, userId)
         if (hasLoading) Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
         else binding.swipeRefreshLayout.isEnabled = false
 
         // Wishlist
-        val mySharedPreferences = context?.let { MySharedPreferences.getInstance(it) }
-        userId = mySharedPreferences?.getString(SingletonKey.KEY_USER_ID) ?: "Default Value"
-        defaultUserId = MySharedPreferences.defaultStringValue
         val wishlistRepository = WishlistRepository(userId)
         wishlistPresenter = WishlistPresenter(this, wishlistRepository)
 //        Log.d("Test00", "onCreateView: fetchAndUpdateWishlistState()")
@@ -81,7 +84,7 @@ class ListProductFragment(
         this.title = title
         this.filterBy = filterBy
         this.idFilter = idFilter
-        Log.i("TAG123", "setInfo: $title $idFilter")
+//        Log.i("TAG123", "setInfo: $title $idFilter")
         handleDisplayTitle()
     }
 
@@ -91,9 +94,14 @@ class ListProductFragment(
 
     fun initProductViewAll() {
         lifecycleScope.launch {
-            listProductPresenter.getDataAndDisplay()
-            if (filterBy == "bestSellers") {
-                listProductPresenter.refreshDataAndSortDataBySold(binding.productRcv.adapter as ProductAdapter)
+            if (filterBy == "wishlist") {
+                listProductPresenter.getDataAndDisplayWishlist()
+            }
+            else {
+                listProductPresenter.getDataAndDisplay()
+                if (filterBy == "bestSellers") {
+                    listProductPresenter.refreshDataAndSortDataBySold(binding.productRcv.adapter as ProductAdapter)
+                }
             }
         }
     }
@@ -109,7 +117,7 @@ class ListProductFragment(
     }
 
     fun initCategory(initialPosition: Int) {
-        Log.i("TAG123", "initCategory: vi tri ban dau $initialPosition")
+//        Log.i("TAG123", "initCategory: vi tri ban dau $initialPosition")
         lifecycleScope.launch {
             listProductPresenter.getDataAndDisplay()
             listProductPresenter.filterProductsByCategory(
@@ -245,7 +253,7 @@ class ListProductFragment(
 
     override fun showProducts(products: List<Product>, offers: List<Offer>) {
         binding.productRcv.layoutManager = if (isGrid) gridLayoutManager else linearLayoutManager
-        val adapter = ProductAdapter(products, offers, wishlistedProductIds, binding.noItemLayout)
+        val adapter = ProductAdapter(products.toMutableList(), offers, wishlistedProductIds, binding.noItemLayout)
         adapter.onItemClick = { product ->
             openDetailProduct(product)
         }
@@ -273,10 +281,10 @@ class ListProductFragment(
     }
 
     override fun onRefresh() {
-        Log.i("TAG123", "onRefresh: $filterBy")
+//        Log.i("TAG123", "onRefresh: $filterBy")
         when (filterBy) {
             "offer" -> {
-                Log.i("TAG123", "onRefresh: goi ham filter by offer")
+//                Log.i("TAG123", "onRefresh: goi ham filter by offer")
                 listProductPresenter.filterProductsByOffer(
                     idFilter!!,
                     binding.productRcv.adapter as ProductAdapter
@@ -284,7 +292,7 @@ class ListProductFragment(
             }
 
             "bestSellers" -> {
-                Log.i("TAG123", "onRefresh: goi ham sort by sold")
+//                Log.i("TAG123", "onRefresh: goi ham sort by sold")
                 listProductPresenter.refreshDataAndSortDataBySold(binding.productRcv.adapter as ProductAdapter)
             }
 
@@ -311,6 +319,7 @@ class ListProductFragment(
     }
 
     // Implementation of WishlistMVPView methods
+    // last thing called in UI when clicking on wishlist of a product
     override fun updateWishlistItemStatus(product: Product, isAdded: Boolean) {
         // Update the set of wishlisted product IDs based on the action
         val productId = product.id
@@ -321,6 +330,10 @@ class ListProductFragment(
         } else {
 //            Log.d("Test00", "updateWishlistItemStatus: removed")
             wishlistedProductIds.remove(productId)
+            // If viewing the wishlist, remove the product from the list and update the adapter
+            if (filterBy == "wishlist") {
+                removeProductFromDisplay(productId)
+            }
         }
         // updated correctly
 //        Log.d("Test00", "updateWishlistItemStatus: $wishlistedProductIds")
@@ -329,6 +342,16 @@ class ListProductFragment(
         // Notify all adapters about the update
         updateProductInAllAdapters(productId)
         // updateProductInAllAdapters(product.id, isAdded)
+    }
+
+    private fun removeProductFromDisplay(productId: String) {
+        (binding.productRcv.adapter as? ProductAdapter)?.let { adapter ->
+            val index = adapter.products.indexOfFirst { it.id == productId }
+            if (index != -1) {
+                adapter.products.removeAt(index)  // Remove the product from the list
+                adapter.notifyItemRemoved(index)  // Notify the adapter about the item removal
+            }
+        }
     }
 
     private fun updateAdaptersWishlistProductIds() {

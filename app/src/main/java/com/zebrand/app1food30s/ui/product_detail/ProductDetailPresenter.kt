@@ -72,6 +72,8 @@ class ProductDetailPresenter(
         }
     }
 
+
+
 //    suspend fun fetchRelatedProductsAndOffers(idCategory: DocumentReference, idProduct: String, onResult: (List<Product>, List<Offer>) -> Unit) {
 //        try {
 //            val querySnapshot = FirebaseUtils.fireStore.collection("products")

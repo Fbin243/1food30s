@@ -127,7 +127,10 @@ object Utils {
         defaultUserId: String = MySharedPreferences.defaultStringValue
     ) {
         if (userId == defaultUserId) {
+//            val loginIntent = Intent(context, LoginActivity::class.java)
+//            context.startActivity(loginIntent)
             val loginIntent = Intent(context, LoginActivity::class.java)
+            loginIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             context.startActivity(loginIntent)
             return
         }
