@@ -40,8 +40,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="10"
-                android:layout_marginTop="@dimen/spacing10"
-            android:paddingHorizontal="@dimen/spacing16"
+            android:layout_marginTop="@dimen/spacing10"
             android:gravity="center_vertical">
             <TextView
                 android:id="@+id/tv_active_orders"
@@ -52,6 +51,7 @@
                 android:textSize="@dimen/font_header"
                 android:fontFamily="@font/font_family"
                 android:textFontWeight="600"
+
                 android:paddingBottom="@dimen/spacing4"
                 />
 
@@ -61,7 +61,6 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_filter"
                 android:padding="@dimen/spacing4"
-                android:layout_marginEnd="@dimen/spacing4"
                 android:background="@color/transparent"/>
 
             <ImageView
@@ -86,17 +85,7 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="@dimen/spacing12"
                     android:orientation="vertical"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:paddingStart="@dimen/spacing10"
-                    android:paddingEnd="@dimen/spacing10"
                     >
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rcvManageOrder"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"
-                        android:paddingTop="10dp" />
 
                     <LinearLayout
                         android:id="@+id/orderItemList"
@@ -158,7 +147,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
-                                
+
                         </LinearLayout>
 
                     </com.facebook.shimmer.ShimmerFrameLayout>

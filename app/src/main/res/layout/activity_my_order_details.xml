@@ -211,12 +211,6 @@
                         android:text="@string/txt_address"
                         android:textSize="@dimen/font_size16" />
 
-                    <TextView
-                        android:id="@+id/tvAddress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/txt_uni_address" />
-
                     <LinearLayout
                         android:id="@+id/linearNote"
                         android:layout_width="match_parent"

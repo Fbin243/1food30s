@@ -62,7 +62,7 @@
     <string name="txt_estimated_minutes">30 minutes</string>
     <string name="txt_pay_now">Pay Now</string>
     <string name="txt_cancel_order">Cancel Order</string>
-    <string-array name="txt_delivery_status">
+    <string-array name="txt_delivery_status" translatable="false">
         <item>Pending</item>
         <item>Order accepted</item>
         <item>On delivery</item>
@@ -113,7 +113,6 @@
     <string name="text_address">Address</string>
     <string name="txt_all_product">All products</string>
     <string name="txt_manage_products">Manage products</string>
-
     <string name="ava">ava</string>
     <string name="ic_change_language">ic_change_language</string>
     <string name="log_out">Log Out</string>
@@ -133,19 +132,6 @@
     <string name="txt_new_product">New product</string>
     <string name="txt_manage_offers">Manage offers</string>
     <string name="txt_manage_categories">Manage categories</string>
-
-    <string-array name="prices_array">
-        <item>Meat</item>
-        <item>Vegetable</item>
-        <item>Soup</item>
-    </string-array>
-
-    <string-array name="offers_array">
-        <item>5%</item>
-        <item>10%</item>
-        <item>15%</item>
-    </string-array>
-
     <string name="product_price_number">$%.2f</string>
     <string name="close_button_description">Close button</string>
     <string name="admin_statistics">Admin Statistics</string>
@@ -178,20 +164,20 @@
     <string name="txt_change_password">Change password</string>
     <string name="txt_let_reset_your_password">Let\'s reset password</string>
 
-    <string-array name="delivery_array">
+    <string-array name="delivery_array" translatable="false">
         <item>Pending</item>
         <item>Order accepted</item>
         <item>On delivery</item>
         <item>Delivered</item>
     </string-array>
 
-    <string-array name="delivery_array_v2">
+    <string-array name="delivery_array_v2" translatable="false">
         <item>Order accepted</item>
         <item>On delivery</item>
         <item>Delivered</item>
     </string-array>
 
-    <string-array name="delivery_array_v3">
+    <string-array name="delivery_array_v3" translatable="false">
         <item>Pending</item>
         <item>Order accepted</item>
         <item>On delivery</item>
@@ -200,7 +186,7 @@
     </string-array>
 
 
-    <string-array name="payment_array">
+    <string-array name="payment_array" translatable="false">
         <item>Paid</item>
         <item>Unpaid</item>
     </string-array>

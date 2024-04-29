@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.MyOrderAdapter
 import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.databinding.FragmentMyActiveOrderBinding

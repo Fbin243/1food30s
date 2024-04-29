@@ -46,9 +46,9 @@ import com.zebrand.app1food30s.ui.cart.CartRepository
 import com.zebrand.app1food30s.ui.main.MainActivity
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
-import vn.zalopay.sdk.ZaloPayError
-import vn.zalopay.sdk.ZaloPaySDK
-import vn.zalopay.sdk.listeners.PayOrderListener
+//import vn.zalopay.sdk.ZaloPayError
+//import vn.zalopay.sdk.ZaloPaySDK
+//import vn.zalopay.sdk.listeners.PayOrderListener
 import java.net.URLEncoder
 import java.util.logging.Formatter
 
@@ -206,7 +206,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        ZaloPaySDK.getInstance().onResult(intent)
+//        ZaloPaySDK.getInstance().onResult(intent)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
