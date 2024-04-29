@@ -1,12 +1,16 @@
 package com.zebrand.app1food30s.ui.checkout
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.volley.BuildConfig
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -20,19 +24,34 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.firestore.FirebaseFirestore
+//import com.paypal.checkout.PayPalCheckout
+//import com.paypal.checkout.approve.OnApprove
+//import com.paypal.checkout.config.CheckoutConfig
+//import com.paypal.checkout.config.Environment
+//import com.paypal.checkout.config.SettingsConfig
+//import com.paypal.checkout.createorder.CreateOrder
+//import com.paypal.checkout.createorder.CurrencyCode
+//import com.paypal.checkout.createorder.OrderIntent
+//import com.paypal.checkout.createorder.UserAction
+//import com.paypal.checkout.order.Amount
+//import com.paypal.checkout.order.AppContext
+//import com.paypal.checkout.order.OrderRequest
+//import com.paypal.checkout.order.PurchaseUnit
+import com.vnpay.authentication.VNP_AuthenticationActivity
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.CheckoutItemsAdapter
 import com.zebrand.app1food30s.data.entity.CartItem
-import com.zebrand.app1food30s.data.zalopay.CreateOrder
+//import com.zebrand.app1food30s.data.zalopay.CreateOrder
 import com.zebrand.app1food30s.databinding.ActivityCheckoutBinding
 import com.zebrand.app1food30s.ui.cart.CartRepository
 import com.zebrand.app1food30s.ui.main.MainActivity
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
-import vn.zalopay.sdk.Environment
 import vn.zalopay.sdk.ZaloPayError
 import vn.zalopay.sdk.ZaloPaySDK
 import vn.zalopay.sdk.listeners.PayOrderListener
+import java.net.URLEncoder
+import java.util.logging.Formatter
 
 
 class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallback {
@@ -47,6 +66,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     private lateinit var address: String
     private lateinit var mMap: GoogleMap
     private val AUTOCOMPLETE_REQUEST_CODE = 100 // Class constant
+    private val YOUR_CLIENT_ID = "AXpqoGgnoXww1RmM2N15AKI7LV4es1uEB-kk0qO1X9OwdELkXnS18nTQ50Kdt9ERQQUoVOsGvOolFgWI"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +76,9 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
         // ZaloPay SDK Init
-        ZaloPaySDK.init(553, Environment.SANDBOX);
+//        ZaloPaySDK.init(553, Environment.SANDBOX);
+
+//        paypalConfig()
 
         preferences = MySharedPreferences.getInstance(this)
         userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
@@ -93,6 +115,45 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         handlePlaceOrderButton()
     }
 
+    private fun paypalConfig(){
+//        val config = CheckoutConfig(
+//            application = application,
+//            clientId = YOUR_CLIENT_ID,
+//            environment = Environment.SANDBOX,
+//            returnUrl = "com.zebrand.app1food30s://paypalpay",
+//            currencyCode = CurrencyCode.USD,
+//            userAction = UserAction.PAY_NOW,
+//            settingsConfig = SettingsConfig(
+//                loggingEnabled = true,
+//                showWebCheckout = false
+//            )
+//        )
+//        PayPalCheckout.setConfig(config)
+//
+//        binding.paymentButtonContainer.setup(
+//            createOrder =
+//            CreateOrder { createOrderActions ->
+//                val order =
+//                    OrderRequest(
+//                        intent = OrderIntent.CAPTURE,
+//                        appContext = AppContext(userAction = UserAction.PAY_NOW),
+//                        purchaseUnitList =
+//                        listOf(
+//                            PurchaseUnit(
+//                                amount =
+//                                Amount(currencyCode = CurrencyCode.USD, value = "10.00")
+//                            )
+//                        )
+//                    )
+//                createOrderActions.create(order)
+//            },
+//            onApprove =
+//            OnApprove { approval ->
+//                Log.i("paypal", "OrderId: ${approval.data.orderId}")
+//            }
+//        )
+    }
+
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -114,32 +175,34 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         }
     }
 
+
+
     private fun requestZalo(){
-        val orderApi = CreateOrder()
-
-        try {
-            val data = orderApi.createOrder("20000")
-            val code = data.getString("returncode")
-            if (code == "1") {
-                val token = data.getString("zptranstoken")
-                ZaloPaySDK.getInstance().payOrder(this, token, "demozpdk://app", object : PayOrderListener {
-                    override fun onPaymentSucceeded(p0: String?, p1: String?, p2: String?) {
-                        Toast.makeText(this@CheckoutActivity, "Payment success", Toast.LENGTH_SHORT).show()
-                    }
-
-                    override fun onPaymentCanceled(p0: String?, p1: String?) {
-                        Toast.makeText(this@CheckoutActivity, "Payment canceled", Toast.LENGTH_SHORT).show()
-                    }
-
-                    override fun onPaymentError(p0: ZaloPayError?, p1: String?, p2: String?) {
-                        Toast.makeText(this@CheckoutActivity, "Payment error", Toast.LENGTH_SHORT).show()
-                    }
-                })
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
+//        val orderApi = CreateOrder()
+//
+//        try {
+//            val data = orderApi.createOrder("20000")
+//            val code = data.getString("returncode")
+//            if (code == "1") {
+//                val token = data.getString("zptranstoken")
+//                ZaloPaySDK.getInstance().payOrder(this, token, "demozpdk://app", object : PayOrderListener {
+//                    override fun onPaymentSucceeded(p0: String?, p1: String?, p2: String?) {
+//                        Toast.makeText(this@CheckoutActivity, "Payment success", Toast.LENGTH_SHORT).show()
+//                    }
+//
+//                    override fun onPaymentCanceled(p0: String?, p1: String?) {
+//                        Toast.makeText(this@CheckoutActivity, "Payment canceled", Toast.LENGTH_SHORT).show()
+//                    }
+//
+//                    override fun onPaymentError(p0: ZaloPayError?, p1: String?, p2: String?) {
+//                        Toast.makeText(this@CheckoutActivity, "Payment error", Toast.LENGTH_SHORT).show()
+//                    }
+//                })
+//            }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
+//
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -200,9 +263,16 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
             // Proceed with the place order logic if address is not empty
             // TODO: add to utils
 //            requestZalo()
-            val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
-            presenter.onPlaceOrderClicked(cartId, userDocRef, address, note)
+//            requestVNPay()
+//            val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
+//            presenter.onPlaceOrderClicked(cartId, userDocRef, address, note)
         }
+    }
+
+    fun Context.getConnectivityManager() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+    fun getIpAddress(context: Context) = with(context.getConnectivityManager()) {
+        getLinkProperties(activeNetwork)!!.linkAddresses[1].address.hostAddress!!
     }
 
 

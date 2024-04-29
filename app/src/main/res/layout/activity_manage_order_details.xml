@@ -465,7 +465,7 @@
                 app:boxCornerRadiusBottomStart="@dimen/spacing12"
                 app:boxCornerRadiusTopEnd="@dimen/spacing12"
                 app:boxCornerRadiusTopStart="@dimen/spacing12"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@+id/header_title"
                 >
 
@@ -483,8 +483,9 @@
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
                 android:layout_width="0dp"
-                android:layout_weight="2"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing16"
                 app:boxCornerRadiusBottomEnd="@dimen/spacing12"
                 app:boxCornerRadiusBottomStart="@dimen/spacing12"
                 app:boxCornerRadiusTopEnd="@dimen/spacing12"

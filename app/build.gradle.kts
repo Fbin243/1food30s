@@ -110,8 +110,14 @@ dependencies {
 //    implementation("org.threeten:threetenbp:1.5.1")
 //    implementation("com.android.support:multidex:2.0.1")
 //    ZaloPay
-    implementation("com.squareup.okhttp3:okhttp:4.6.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("commons-codec:commons-codec:1.14")
 
     implementation(files("libs/merchant-1.0.25.aar"))
+
+//    implementation("com.paypal.android:paypal-native-payments:1.3.2")
+//    implementation("com.paypal.android:card-payments:1.3.2")
+//    implementation("com.paypal.checkout:android-sdk:1.3.2")
+//    implementation("com.paypal.android:card-payments:1.3.0")
+//    implementation("com.paypal.android:paypal-web-payments:1.3.0")
 }

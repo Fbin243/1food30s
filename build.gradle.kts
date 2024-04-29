@@ -1,3 +1,6 @@
+import java.net.URI
+import javax.print.DocFlavor.URL
+
 buildscript {
     dependencies {
         classpath("com.google.gms:google-services:4.4.1")
@@ -19,9 +22,11 @@ allprojects {
         google()
         mavenCentral()
         maven(url = "https://jitpack.io")
-        flatDir {
-            dirs("libs")
-        }
+
+//        maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
+//        flatDir {
+//            dirs("libs")
+//        }
     }
 }
 
