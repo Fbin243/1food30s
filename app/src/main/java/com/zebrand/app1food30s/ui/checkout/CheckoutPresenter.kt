@@ -36,7 +36,7 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
         }
     }
 
-    private fun placeOrder(cartId: String, idAccount: DocumentReference, address: String, note: String, completion: (Boolean, String) -> Unit) {
+    private fun placeOrder(cartId: String, idAccount: DocumentReference, address: String, note: String, shippingFee: Double, completion: (Boolean, String) -> Unit) {
         // Log.d("Test00", "placeOrder: Starting order placement.")
         launch {
             val orderItems = cartItems.map { cartItem ->
@@ -62,6 +62,7 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
                 date = Date(), // Current date
                 cancelReason = null, // No cancel reason at order creation
                 shippingAddress = address,
+                shippingFee = shippingFee,
                 paymentStatus = "Unpaid", // Consider starting with "Unpaid" or similar status
                 note = note
             )
@@ -92,8 +93,8 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
         }
     }
 
-    fun onPlaceOrderClicked(cartId: String, idAccount: DocumentReference, address: String, note: String) {
-        placeOrder(cartId, idAccount, address, note) { success, orderId ->
+    fun onPlaceOrderClicked(cartId: String, idAccount: DocumentReference, address: String, note: String, shippingFee: Double) {
+        placeOrder(cartId, idAccount, address, note, shippingFee) { success, orderId ->
             if (success) {
                 view.navigateToOrderConfirmation(true, orderId)
             } else {

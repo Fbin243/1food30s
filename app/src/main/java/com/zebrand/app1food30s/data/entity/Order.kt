@@ -28,6 +28,7 @@ data class Order(
     //Admin: Accept (Pending -> Order accepted), On delivery, Delivered
     var cancelReason: String? = "",
     var shippingAddress: String = "",
+    var shippingFee: Double = 0.0,
     var paymentStatus: String = "",
     var note: String = "",
     @get:ServerTimestamp

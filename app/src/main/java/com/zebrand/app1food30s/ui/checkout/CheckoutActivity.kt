@@ -359,6 +359,8 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 //            requestVNPay()
 //            val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
 //            presenter.onPlaceOrderClicked(cartId, userDocRef, address, note)
+            val userDocRef = FirebaseFirestore.getInstance().document("accounts/$userId")
+            presenter.onPlaceOrderClicked(cartId, userDocRef, address, note, shippingFee)
         }
     }
 
