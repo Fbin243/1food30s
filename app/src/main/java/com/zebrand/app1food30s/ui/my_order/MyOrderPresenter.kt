@@ -1,6 +1,7 @@
 package com.zebrand.app1food30s.ui.my_order
 
 import android.content.Context
+import android.view.View
 import android.widget.Toast
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.DocumentReference
@@ -10,7 +11,7 @@ import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.utils.FireStoreUtils
 
 
-class MyOrderPresenter(private val context: Context) {
+class MyOrderPresenter(private val context: Context, private val view: MyOrderMVPView) {
     fun getActiveOrderList(idAccount: String, adapter: MyOrderAdapter) {
         val dOrderRef = FireStoreUtils.mDBOrderRef
         val userDoc: DocumentReference = FireStoreUtils.mDBUserRef.document(idAccount)
@@ -20,12 +21,12 @@ class MyOrderPresenter(private val context: Context) {
             .whereNotIn("orderStatus", listOf("Delivered", "Cancelled"))
             .orderBy("date", Query.Direction.DESCENDING)
         query.addSnapshotListener { snapshot, error ->
-
             if (error != null) {
                 Toast.makeText(context, "Error when getting data", Toast.LENGTH_SHORT).show()
                 return@addSnapshotListener
             }
             snapshot?.let { querySnapshot ->
+                view.showShimmerEffectForOrders(querySnapshot.size())
                 for (dc in querySnapshot.documentChanges) {
                     val newObject: Order = dc.document.toObject(Order::class.java)
                     if (newObject.items.isNotEmpty()) {
@@ -44,6 +45,8 @@ class MyOrderPresenter(private val context: Context) {
                         }
                     }
                 }
+                view.setMyActiveOrderUI()
+                view.hideShimmerEffectForOrders()
             }
         }
     }
@@ -57,12 +60,12 @@ class MyOrderPresenter(private val context: Context) {
             .whereIn("orderStatus", listOf("Delivered", "Cancelled"))
             .orderBy("date", Query.Direction.DESCENDING)
         query.addSnapshotListener { snapshot, error ->
-
             if (error != null) {
                 Toast.makeText(context, "Error when getting data", Toast.LENGTH_SHORT).show()
                 return@addSnapshotListener
             }
             snapshot?.let { querySnapshot ->
+                view.showShimmerEffectForOrders(querySnapshot.size())
                 for (dc in querySnapshot.documentChanges) {
                     val newObject: Order = dc.document.toObject(Order::class.java)
                     if (newObject.items.isNotEmpty()) {
@@ -81,6 +84,8 @@ class MyOrderPresenter(private val context: Context) {
                         }
                     }
                 }
+                view.setMyPrevOrderUI()
+                view.hideShimmerEffectForOrders()
             }
         }
     }

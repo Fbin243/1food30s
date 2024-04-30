@@ -3,6 +3,7 @@ package com.zebrand.app1food30s.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -19,9 +20,16 @@ class ManageCategoryAdapter(private val categories: List<Category>, private val 
         val categoryName: TextView = listItemView.findViewById(R.id.categoryName)
         val categoryNumProduct: TextView = listItemView.findViewById(R.id.noProduct)
         val categoryDate: TextView = listItemView.findViewById(R.id.productDate)
+        val editBtn: Button = listItemView.findViewById(R.id.addBtn)
 
         init {
             itemView.setOnClickListener {
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    onCategoryClick(categories[position])
+                }
+            }
+            editBtn.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     onCategoryClick(categories[position])

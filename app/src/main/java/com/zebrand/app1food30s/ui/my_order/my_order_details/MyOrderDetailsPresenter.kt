@@ -30,6 +30,7 @@ class MyOrderDetailsPresenter(private val context: Context, private val view: My
             Log.d("Test00", "placeOrder: Starting order placement. ${orderDetails?.id} $newObject")
             if (newObject != null && newObject.items.isNotEmpty()) {
                 var check: Boolean = false
+                view.showShimmerEffectForOrders(newObject.items.size)
                 for (newItem in newObject.items) {
                     val oldItem = orderDetails?.items?.find { it.productId == newItem.productId }
                     if (oldItem != null && oldItem.reviewed != newItem.reviewed) {
@@ -71,6 +72,7 @@ class MyOrderDetailsPresenter(private val context: Context, private val view: My
                 }
 
                 view.setOrderDetailsUI()
+                view.hideShimmerEffectForOrders()
                 Log.d("Test00", "placeOrder: Starting order placement. $orderDetails")
             }
         }

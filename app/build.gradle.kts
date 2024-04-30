@@ -53,6 +53,12 @@ dependencies {
     implementation("com.google.firebase:firebase-database-ktx:20.3.1")
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
     implementation("androidx.room:room-common:2.6.1")
+    implementation("androidx.activity:activity:1.8.0")
+//     implementation(fileTree(mapOf(
+//         "dir" to "/Users/tuannguyen/Documents/GitHub/1food30s/app/src/main/java/com/zebrand/app1food30s/zalopay_source",
+//         "include" to listOf("*.aar", "*.jar"),
+// //        "exclude" to listOf()
+//     )))
     implementation("androidx.activity:activity-ktx:1.9.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -108,9 +114,21 @@ dependencies {
     // ================ Map =================
     implementation("com.google.android.gms:play-services-maps:18.2.0")
     implementation("com.google.android.libraries.places:places:3.4.0")
+    implementation("com.github.prolificinteractive:material-calendarview:2.0.0")
+//    implementation("org.threeten:threetenbp:1.5.1")
+//    implementation("com.android.support:multidex:2.0.1")
+//    ZaloPay
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation("commons-codec:commons-codec:1.14")
+
+    implementation(files("libs/merchant-1.0.25.aar"))
+
+//    implementation("com.paypal.android:paypal-native-payments:1.3.2")
+//    implementation("com.paypal.android:card-payments:1.3.2")
+//    implementation("com.paypal.checkout:android-sdk:1.3.2")
+//    implementation("com.paypal.android:card-payments:1.3.0")
+//    implementation("com.paypal.android:paypal-web-payments:1.3.0")
     implementation("org.osmdroid:osmdroid-android:6.1.10")
 //    implementation("com.here.sdk:search:4.9.0.0")
-    // ================ Map distance =================
-    implementation("com.squareup.okhttp3:okhttp:4.9.0")
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.paypal.android:paypal-native-payments:1.3.0")
 }

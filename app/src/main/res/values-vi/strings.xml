@@ -56,12 +56,7 @@
     <string name="txt_estimated_minutes">30 phút</string>
     <string name="txt_pay_now">Thanh toán ngay</string>
     <string name="txt_cancel_order">Hủy đơn hàng</string>
-    <string-array name="txt_delivery_status">
-        <item>Đang chờ</item>
-        <item>Đã chấp nhận đơn hàng</item>
-        <item>Đang giao hàng</item>
-        <item>Đã giao hàng</item>
-    </string-array>
+
     <string name="txt_address">Địa chỉ</string>
     <string name="txt_payment_info">Thông tin thanh toán</string>
     <string name="txt_payment_method">Phương thức thanh toán:&#160;</string>
@@ -87,7 +82,6 @@
     <string name="txt_order_type">Loại đơn hàng:&#160;</string>
     <string name="txt_delivery_time">Thời gian giao hàng: &#160;</string>
     <string name="txt_unpaid">Chưa thanh toán</string>
-    <string name="txt_cash_on_delivery">Thanh toán khi nhận hàng</string>
     <string name="txt_accept">Chấp nhận</string>
     <string name="txt_reject">Từ chối</string>
     <string name="txt_edit">Chỉnh sửa</string>
@@ -128,18 +122,6 @@
     <string name="txt_manage_offers">Quản lý ưu đãi</string>
     <string name="txt_manage_categories">Quản lý danh mục</string>
 
-    <string-array name="prices_array">
-        <item>Thịt</item>
-        <item>Rau củ</item>
-        <item>Canh</item>
-    </string-array>
-
-    <string-array name="offers_array">
-        <item>5%</item>
-        <item>10%</item>
-        <item>15%</item>
-    </string-array>
-
     <string name="product_price_number">$%.2f</string>
     <string name="close_button_description">Nút đóng</string>
     <string name="admin_statistics">Thống kê</string>
@@ -172,17 +154,6 @@
     <string name="txt_change_password">Đổi mật khẩu</string>
     <string name="txt_let_reset_your_password">Hãy đặt lại mật khẩu</string>
 
-    <string-array name="delivery_array">
-        <item>Đang chờ</item>
-        <item>Đã chấp nhận đơn hàng</item>
-        <item>Đang giao hàng</item>
-        <item>Đã giao hàng</item>
-    </string-array>
-
-    <string-array name="payment_array">
-        <item>Đã thanh toán</item>
-        <item>Chưa thanh toán</item>
-    </string-array>
     <string name="formatted_currency">%.2f</string>
     <string name="formatted_currency_dollar">$%.2f</string>
     <string name="wishlist_button">Nút danh sách mong muốn</string>
@@ -252,4 +223,15 @@
     <string name="txt_read_less">Ẩn bớt</string>
     <string name="txt_login_with_google">Đăng nhập với Google</string>
     <string name="txt_or_continue_with">Hoặc tiếp tục với</string>
+    <string name="txt_all_categories">Tất cả các danh mục</string>
+    <string name="txt_all_offers">Tất cả các ưu đãi</string>
+    <string name="txt_chat_detail">Chủ cửa hàng</string>
+    <string name="Chat">Trò chuyện</string>
+    <string name="txt_note">Chú ý:&#160;</string>
+    <string name="txt_reason_manage_order">Lý do:&#160;</string>
+    <string name="txt_note_my_order">Ghi chú</string>
+    <string name="txt_please_enter_order_id">Vui lòng nhập ID đơn hàng</string>
+    <string name="wishlist">Danh sách yêu thích</string>
+    <string name="txt_phone_2">Số điện thoại:&#160;</string>
+
 </resources>

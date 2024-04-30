@@ -7,52 +7,29 @@
     tools:context=".ui.offers.ManageOffer"
     android:paddingBottom="@dimen/spacing50">
 
-    <LinearLayout
-        android:id="@+id/linear_app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingLeft="@dimen/spacing14"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:paddingTop="@dimen/spacing12">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="90dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_logo"
-            android:contentDescription="@null"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </LinearLayout>
-
     <ImageView
         android:id="@+id/filter_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/linear_app_bar"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginRight="@dimen/spacing20"
-        android:layout_marginTop="21dp"
         android:src="@drawable/ic_filter"/>
 
     <ImageView
         android:id="@+id/add_product_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/linear_app_bar"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/filter_btn"
         android:layout_marginRight="@dimen/spacing10"
-        android:layout_marginTop="21dp"
         android:src="@drawable/ic_plus"/>
 
     <TextView
         android:id="@+id/tv_active_orders"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/txt_manage_categories"
+        android:text="@string/txt_all_categories"
         android:textSize="@dimen/font_header"
         android:fontFamily="@font/font_family"
         android:textFontWeight="600"
@@ -60,8 +37,7 @@
         android:paddingRight="@dimen/spacing24"
         android:paddingBottom="@dimen/spacing4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linear_app_bar"
-        android:layout_marginTop="@dimen/spacing20"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 

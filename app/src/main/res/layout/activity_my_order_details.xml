@@ -177,6 +177,21 @@
                         android:layout_marginTop="@dimen/spacing16"
                         android:fontFamily="@font/font_family"
                         android:textFontWeight="600"
+                        android:text="@string/txt_phone"
+                        android:textSize="@dimen/font_size16" />
+
+                    <TextView
+                        android:id="@+id/tvPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="0912345678" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing16"
+                        android:fontFamily="@font/font_family"
+                        android:textFontWeight="600"
                         android:text="@string/txt_payment_info"
                         android:textSize="@dimen/font_size16" />
 
@@ -192,21 +207,64 @@
                             android:textFontWeight="600"
                             android:text="@string/txt_payment_method"
                             android:textColor="@color/grey_60"
-                             />
+                            />
 
                         <TextView
+                            android:id="@+id/tvPaymentMethod"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/font_family"
                             android:textFontWeight="600"
                             android:text=" Cash on Delivery"
-                             />
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linearNote"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing8"
+                            android:fontFamily="@font/rubik_semibold"
+                            android:text="@string/txt_note_my_order"
+                            android:textSize="@dimen/font_size16" />
+
+                        <TextView
+                            android:id="@+id/tvNote"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Giao nhanh" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linearReason"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing8"
+                            android:fontFamily="@font/rubik_semibold"
+                            android:text="@string/txt_reason"
+                            android:textSize="@dimen/font_size16" />
+
+                        <TextView
+                            android:id="@+id/tvReason"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Het hang" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -242,7 +300,7 @@
                         app:cardElevation="@dimen/spacing4"
                         app:contentPadding="@dimen/spacing8"
                         android:layout_marginHorizontal="@dimen/spacing16"
-                        android:layout_marginTop="@dimen/spacing24"
+                        android:layout_marginTop="@dimen/spacing20"
                         android:layout_marginBottom="60dp"
                         >
 
@@ -259,7 +317,7 @@
                                 android:textSize="@dimen/font_size16" />
 
                             <LinearLayout
-                                android:id="@+id/order_item_list"
+                                android:id="@+id/orderItemList"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
@@ -270,6 +328,26 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"/>
                             </LinearLayout>
+
+                            <com.facebook.shimmer.ShimmerFrameLayout
+                                android:id="@+id/orderDetailsShimmer"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:orientation="vertical"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/textViewContainer">
+
+                                <LinearLayout
+                                    android:id="@+id/linearShimmer"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+                                </LinearLayout>
+
+                            </com.facebook.shimmer.ShimmerFrameLayout>
 
                             <androidx.cardview.widget.CardView
                                 android:layout_width="match_parent"

@@ -62,7 +62,7 @@
     <string name="txt_estimated_minutes">30 minutes</string>
     <string name="txt_pay_now">Pay Now</string>
     <string name="txt_cancel_order">Cancel Order</string>
-    <string-array name="txt_delivery_status">
+    <string-array name="txt_delivery_status" translatable="false">
         <item>Pending</item>
         <item>Order accepted</item>
         <item>On delivery</item>
@@ -70,7 +70,7 @@
     </string-array>
     <string name="txt_address">Address</string>
     <string name="txt_payment_info">Payment info</string>
-    <string name="txt_payment_method">Method:&#160;</string>
+    <string name="txt_payment_method">Payment method:&#160;</string>
     <string name="txt_payment_status">Status:&#160;</string>
     <string name="txt_order_details">Order details</string>
     <string name="txt_subtotal">Subtotal:&#160;</string>
@@ -93,7 +93,6 @@
     <string name="txt_order_type">Order Type:&#160;</string>
     <string name="txt_delivery_time">Delivery Time: &#160;</string>
     <string name="txt_unpaid">Unpaid</string>
-    <string name="txt_cash_on_delivery">Cash on Delivery</string>
     <string name="txt_accept">Accept</string>
     <string name="txt_reject">Reject</string>
     <string name="txt_edit">Edit</string>
@@ -113,7 +112,6 @@
     <string name="text_address">Address</string>
     <string name="txt_all_product">All products</string>
     <string name="txt_manage_products">Manage products</string>
-
     <string name="ava">ava</string>
     <string name="ic_change_language">ic_change_language</string>
     <string name="log_out">Log Out</string>
@@ -133,19 +131,6 @@
     <string name="txt_new_product">New product</string>
     <string name="txt_manage_offers">Manage offers</string>
     <string name="txt_manage_categories">Manage categories</string>
-
-    <string-array name="prices_array">
-        <item>Meat</item>
-        <item>Vegetable</item>
-        <item>Soup</item>
-    </string-array>
-
-    <string-array name="offers_array">
-        <item>5%</item>
-        <item>10%</item>
-        <item>15%</item>
-    </string-array>
-
     <string name="product_price_number">$%.2f</string>
     <string name="close_button_description">Close button</string>
     <string name="admin_statistics">Admin Statistics</string>
@@ -162,7 +147,7 @@
     <string name="txt_status">Status</string>
     <string name="txt_customer">Customer</string>
     <string name="txt_date_filter">Date</string>
-    <string name="txt_default_date">01/01/2024</string>
+    <string name="txt_default_date">dd/MM/yyyy</string>
     <string name="txt_delete_account">Delete account</string>
     <string name="txt_confirm_delete_account">Are you sure you want to delete your account?</string>
     <string name="txt_confirm_forgot_password">Are you sure you want to reset your password?</string>
@@ -178,17 +163,33 @@
     <string name="txt_change_password">Change password</string>
     <string name="txt_let_reset_your_password">Let\'s reset password</string>
 
-    <string-array name="delivery_array">
+    <string-array name="delivery_array" translatable="false">
         <item>Pending</item>
         <item>Order accepted</item>
         <item>On delivery</item>
         <item>Delivered</item>
     </string-array>
 
-    <string-array name="payment_array">
+    <string-array name="delivery_array_v2" translatable="false">
+        <item>Order accepted</item>
+        <item>On delivery</item>
+        <item>Delivered</item>
+    </string-array>
+
+    <string-array name="delivery_array_v3" translatable="false">
+        <item>Pending</item>
+        <item>Order accepted</item>
+        <item>On delivery</item>
+        <item>Delivered</item>
+        <item>Cancelled</item>
+    </string-array>
+
+
+    <string-array name="payment_array" translatable="false">
         <item>Paid</item>
         <item>Unpaid</item>
     </string-array>
+
     <string name="formatted_currency">%.2f</string>
     <string name="formatted_currency_dollar">$%.2f</string>
     <string name="wishlist_button">Wishlist button</string>
@@ -258,5 +259,24 @@
     <string name="txt_read_less">Read less</string>
     <string name="txt_login_with_google">Login with Google</string>
     <string name="txt_or_continue_with">Or continue with</string>
+    <string name="txt_all_categories">All categories</string>
+    <string name="txt_all_offers">All offers</string>
+    <string name="txt_chat_detail">Shop owner</string>
+    <string name="Chat">Chat</string>
+    <string name="txt_note">Note:&#160;</string>
+    <string name="txt_reason_manage_order">Reason:&#160;</string>
+    <string name="txt_note_my_order">Note</string>
+    <string name="txt_please_enter_order_id">Please enter order ID</string>
     <string name="wishlist">Wishlist</string>
+
+    <string name="txt_cash_on_delivery" translatable="false">Cash on Delivery</string>
+    <string name="txt_online_payment" translatable="false">Banking</string>
+    <string name="txt_phone_2">Phone:&#160;</string>
+    <string-array name="payment_method_array" translatable="false">
+        <item >Cash on Delivery</item>
+        <item>Banking</item>
+    </string-array>
+
+    <string name="txt_visible" translatable="false">visible</string>
+    <string name="txt_gone" translatable="false">gone</string>
 </resources>

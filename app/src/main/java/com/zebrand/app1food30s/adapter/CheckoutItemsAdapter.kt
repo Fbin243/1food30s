@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.CartItem
+import java.util.Locale
 
 class CheckoutItemsAdapter : RecyclerView.Adapter<CheckoutItemsAdapter.CheckoutViewHolder>() {
 
@@ -45,5 +47,13 @@ class CheckoutItemsAdapter : RecyclerView.Adapter<CheckoutItemsAdapter.CheckoutV
             productPrice.text = itemView.context.getString(R.string.product_price_number, item.productPrice)
             productQuantity.text = item.quantity.toString()
         }
+    }
+
+    fun getPrice(): Double {
+        var price = 0.0
+        items.forEach {
+            price += it.productPrice * it.quantity
+        }
+        return price
     }
 }

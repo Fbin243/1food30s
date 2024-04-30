@@ -1,38 +1,28 @@
 package com.zebrand.app1food30s.ui.my_order
 
-import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.textfield.TextInputEditText
 import com.zebrand.app1food30s.R
-import com.zebrand.app1food30s.adapter.ManageOrderAdapter
 import com.zebrand.app1food30s.adapter.MyOrderAdapter
 import com.zebrand.app1food30s.data.entity.Order
-import com.zebrand.app1food30s.databinding.ActivityMyOrderBinding
-import com.zebrand.app1food30s.databinding.FragmentManageOrderBinding
 import com.zebrand.app1food30s.databinding.FragmentMyActiveOrderBinding
-import com.zebrand.app1food30s.ui.manage_order.ManageOrderPresenter
-import com.zebrand.app1food30s.ui.manage_order.manage_order_details.ManageOrderDetailsActivity
 import com.zebrand.app1food30s.ui.my_order.my_order_details.MyOrderDetailsActivity
 import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
+import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 
-class MyActiveOrderFragment : Fragment(), MyOrderMVPView.MyActiveOrderMVPView {
+class MyActiveOrderFragment : Fragment(), MyOrderMVPView {
     lateinit var binding: FragmentMyActiveOrderBinding
     //    Chưa login nên không có đi qua local db để lấy data được
     private lateinit var mySharePreference: MySharedPreferences
@@ -43,7 +33,7 @@ class MyActiveOrderFragment : Fragment(), MyOrderMVPView.MyActiveOrderMVPView {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mySharePreference = MySharedPreferences.getInstance(context)
-        presenter = MyOrderPresenter(context)
+        presenter = MyOrderPresenter(context, this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -139,5 +129,31 @@ class MyActiveOrderFragment : Fragment(), MyOrderMVPView.MyActiveOrderMVPView {
 
         //getData
         presenter.getActiveOrderList(userId, myActiveOrderAdapter)
+    }
+
+    override fun setMyActiveOrderUI() {
+        if(myActiveOrderAdapter.itemCount == 0){
+            binding.rcvActiveMyOrder.visibility = View.GONE
+            binding.noItemLayout.visibility = View.VISIBLE
+        }else{
+            binding.rcvActiveMyOrder.visibility = View.VISIBLE
+            binding.noItemLayout.visibility = View.GONE
+        }
+    }
+
+//    Miss this function
+    override fun setMyPrevOrderUI() {}
+    override fun showShimmerEffectForOrders(size: Int) {
+        for (i in 0 until size) {
+            val shimmerLayout = layoutInflater.inflate(R.layout.product_card_view_linear_shimmer, binding.linearShimmer, false)
+            // Add the inflated layout to the parent LinearLayout
+            binding.linearShimmer.addView(shimmerLayout)
+        }
+
+        Utils.showShimmerEffect(binding.orderShimmer, binding.orderItemList)
+    }
+
+    override fun hideShimmerEffectForOrders() {
+        Utils.hideShimmerEffect(binding.orderShimmer, binding.orderItemList)
     }
 }

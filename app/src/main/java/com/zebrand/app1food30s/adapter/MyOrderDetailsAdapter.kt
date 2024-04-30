@@ -19,7 +19,7 @@ import com.zebrand.app1food30s.utils.Utils
 @Suppress("DEPRECATION")
 class MyOrderDetailsAdapter(
     private val context: Context,
-    private val orderItems: MutableList<OrderItem>,
+    val orderItems: MutableList<OrderItem>,
     private var isDelivered: Boolean = false
 ) :
     RecyclerView.Adapter<MyOrderDetailsAdapter.MyOrderViewHolder>() {
@@ -107,6 +107,10 @@ class MyOrderDetailsAdapter(
             discount += orderItem.discount
         }
         return discount
+    }
+
+    fun getOrderList(): MutableList<OrderItem> {
+        return orderItems
     }
 
     override fun getItemCount(): Int {

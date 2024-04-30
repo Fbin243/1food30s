@@ -5,26 +5,20 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.MyOrderAdapter
 import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.databinding.ActivityMyOrderBinding
 import com.zebrand.app1food30s.ui.my_order.adapter.MyOrderViewPagerAdapter
-import com.zebrand.app1food30s.ui.my_order.my_order_details.MyOrderDetailsActivity
-import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
-import com.zebrand.app1food30s.utils.SingletonKey
 
-class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
+class MyOrderActivity : AppCompatActivity() {
     lateinit var binding: ActivityMyOrderBinding
 //    Chưa login nên không có đi qua local db để lấy data được
     private lateinit var mySharePreference: MySharedPreferences
-    private lateinit var presenter: MyOrderPresenter
     private lateinit var viewPager2Adapter: MyOrderViewPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +39,6 @@ class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
     }
 
     private fun init(){
-        presenter = MyOrderPresenter(this)
         mySharePreference = MySharedPreferences.getInstance(this)
 
         viewPager2Adapter = MyOrderViewPagerAdapter(supportFragmentManager, lifecycle)
@@ -63,4 +56,6 @@ class MyOrderActivity : AppCompatActivity(), MyOrderMVPView {
             onBackPressedDispatcher.onBackPressed()
         }
     }
+
+
 }

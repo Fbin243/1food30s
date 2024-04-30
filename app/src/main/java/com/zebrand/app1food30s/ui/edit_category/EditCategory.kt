@@ -216,8 +216,7 @@ class EditCategory : AppCompatActivity() {
         fireStore.collection("categories").document(categoryId).update(categoryUpdate)
             .addOnSuccessListener {
                 // Xử lý thành công, ví dụ: hiển thị thông báo thành công cho người dùng
-                val intent = Intent(this, ManageCategory::class.java)
-                startActivity(intent)
+                finish()
             }
             .addOnFailureListener { e ->
                 // Xử lý thất bại, ví dụ: hiển thị thông báo lỗi cho người dùng

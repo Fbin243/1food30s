@@ -40,8 +40,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import java.math.BigDecimal
 import java.util.Date
+
 
 @Suppress("DEPRECATION")
 class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
@@ -126,7 +126,11 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
         binding.tvOrderId.text = Utils.formatId(orderDetails.id)
         binding.tvOrderDate.text = Utils.formatDate(orderDetails.date)
         binding.tvAddress.text = orderDetails.shippingAddress
+        binding.tvPhone.text = orderDetails.user.phone
+        binding.tvNote.text = orderDetails.note
+        binding.tvReason.text = orderDetails.cancelReason
         binding.tvPaymentStatus.text = orderDetails.paymentStatus.uppercase()
+        binding.tvPaymentMethod.text = orderDetails.paymentMethod
         binding.tvSubTotal.text = Utils.formatPrice(itemOrderDetailsAdapter.getSubTotal(), this)
         binding.tvDiscount.text = Utils.formatPrice(itemOrderDetailsAdapter.getDiscount(), this)
         binding.tvTotalAmount.text = Utils.formatPrice(orderDetails.totalAmount,this)
@@ -144,14 +148,24 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
             layoutParams.bottomMargin = 270
         }
 
+        if(orderDetails.note.trim().isEmpty()) {
+            binding.linearNote.visibility = View.GONE
+        }
+
         if (orderDetails.orderStatus == SingletonKey.CANCELLED) {
             binding.linearTracking.visibility = View.GONE
             binding.tvHasBeenCancelled.visibility = View.VISIBLE
+
+            if(orderDetails.cancelReason != null && orderDetails.cancelReason != "") {
+                binding.linearReason.visibility = View.VISIBLE
+            }
+
             binding.tvHasBeenCancelled.text = resources.getString(R.string.txt_has_been_cancelled)
             binding.tvHasBeenCancelled.setTextColor(ContextCompat.getColor(this, R.color.orange))
         } else if(orderDetails.orderStatus == SingletonKey.DELIVERED) {
             binding.linearTracking.visibility = View.GONE
             binding.tvHasBeenCancelled.visibility = View.VISIBLE
+
             binding.tvHasBeenCancelled.text = resources.getString(R.string.txt_your_order_has_been_successful)
             binding.tvHasBeenCancelled.setTextColor(ContextCompat.getColor(this, R.color.primary))
         } else {
@@ -215,6 +229,21 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
         }
 
         dialog.show()
+    }
+
+    override fun showShimmerEffectForOrders(size: Int) {
+        Log.d("Test00", "itemCount" + size)
+        for (i in 0 until size) {
+            val shimmerLayout = layoutInflater.inflate(R.layout.item_order_details_shimmer, binding.linearShimmer, false)
+            // Add the inflated layout to the parent LinearLayout
+            binding.linearShimmer.addView(shimmerLayout)
+        }
+
+        Utils.showShimmerEffect(binding.orderDetailsShimmer, binding.orderItemList)
+    }
+
+    override fun hideShimmerEffectForOrders() {
+        Utils.hideShimmerEffect(binding.orderDetailsShimmer, binding.orderItemList)
     }
 
     override fun handleReviewProduct() {

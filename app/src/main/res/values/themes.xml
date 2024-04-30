@@ -7,7 +7,6 @@
         <item name="android:windowBackground">@color/white</item>
         <item name="android:fontFamily">@font/rubik_regular</item>
         <item name="android:textSize">@dimen/font_default</item>
-
     </style>
 
     <style name="Theme.App1food30s" parent="Base.Theme.App1food30s">

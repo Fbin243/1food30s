@@ -37,6 +37,7 @@
             >
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tvReason"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
                 android:inputType="textEmailAddress"

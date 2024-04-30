@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clHeader"
@@ -161,7 +162,47 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/tvCartSummary"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tvPaymentMethod"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/txt_payment_method"
+                android:fontFamily="@font/font_family"
+                android:textFontWeight="700"
+                android:textSize="@dimen/font_size18"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toBottomOf="@+id/checkoutItemsRecyclerView"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="@dimen/spacing20"
+                android:paddingBottom="4dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutPaymentMethod"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxCornerRadiusBottomEnd="@dimen/spacing12"
+                app:boxCornerRadiusBottomStart="@dimen/spacing12"
+                app:boxCornerRadiusTopEnd="@dimen/spacing12"
+                app:boxCornerRadiusTopStart="@dimen/spacing12"
+                android:visibility="visible"
+                android:layout_marginTop="@dimen/spacing4"
+                app:layout_constraintTop_toBottomOf="@+id/tvPaymentMethod"
+                app:layout_constraintStart_toStartOf="parent"
+                >
+
+                <AutoCompleteTextView
+                    android:id="@+id/spinnerPayment"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spacing48"
+                    android:inputType="none"
+                    android:paddingHorizontal="@dimen/spacing12"
+                    android:text="Banking"
+                    tools:ignore="LabelFor" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.zebrand.app1food30s.ui.checkout.LockableNestedScrollView>
@@ -210,6 +251,18 @@
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView_total"
                 app:layout_constraintEnd_toEndOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--        <com.paypal.checkout.paymentbutton.PaymentButtonContainer-->
+        <!--            app:layout_constraintTop_toBottomOf="bottomContainer"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            android:id="@+id/payment_button_container"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="60dp"-->
+        <!--            app:paypal_button_color="@color/primary"-->
+        <!--            app:paypal_button_label="pay"-->
+        <!--            app:paypal_button_shape="rectangle"-->
+        <!--            app:paypal_button_size="large"-->
+        <!--            app:paypal_button_enabled="true" />-->
 
         <Button
             android:id="@+id/btnPlaceOrder"

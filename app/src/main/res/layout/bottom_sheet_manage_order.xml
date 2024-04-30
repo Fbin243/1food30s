@@ -37,10 +37,10 @@
             android:layout_height="wrap_content"
             app:boxStrokeColor="@color/primary"
             app:cursorColor="@color/primary"
-            app:hintTextColor="@color/primary"
             app:layout_constraintTop_toBottomOf="@+id/header_title">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/orderID"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing60"
                 android:inputType="textEmailAddress"
@@ -159,6 +159,8 @@
                 />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+
     </LinearLayout>
 
 
