@@ -378,6 +378,26 @@
                                             android:text="$24.80"
                                             android:textAlignment="viewEnd"/>
                                     </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal"
+                                        android:weightSum="2">
+                                        <TextView
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"
+                                            android:text="@string/txt_delivery_charge"/>
+                                        <TextView
+                                            android:id="@+id/tvShippingFee"
+                                            android:layout_width="0dp"
+                                            android:layout_weight="1"
+                                            android:layout_height="wrap_content"
+                                            android:text="$4.80"
+                                            android:textAlignment="viewEnd"/>
+                                    </LinearLayout>
+
                                     <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content"
@@ -387,6 +407,9 @@
                                             android:layout_width="0dp"
                                             android:layout_weight="5"
                                             android:layout_height="wrap_content"
+                                            android:textFontWeight="600"
+                                            android:fontFamily="@font/font_family"
+                                            android:textColor="@color/primary"
                                             android:text="@string/txt_deals"/>
 
                                         <TextView
@@ -395,6 +418,9 @@
                                             android:layout_height="wrap_content"
                                             android:layout_weight="5"
                                             android:text="$4.80"
+                                            android:textFontWeight="600"
+                                            android:fontFamily="@font/font_family"
+                                            android:textColor="@color/primary"
                                             android:textAlignment="viewEnd" />
                                     </LinearLayout>
 

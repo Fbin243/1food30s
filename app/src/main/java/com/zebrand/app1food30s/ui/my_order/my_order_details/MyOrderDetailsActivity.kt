@@ -131,7 +131,8 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
         binding.tvReason.text = orderDetails.cancelReason
         binding.tvPaymentStatus.text = orderDetails.paymentStatus.uppercase()
         binding.tvPaymentMethod.text = orderDetails.paymentMethod
-        binding.tvSubTotal.text = Utils.formatPrice(itemOrderDetailsAdapter.getSubTotal(), this)
+        binding.tvSubTotal.text = Utils.formatPrice(orderDetails.originAmount, this)
+        binding.tvShippingFee.text = Utils.formatPrice(orderDetails.shippingFee, this)
         binding.tvDiscount.text = Utils.formatPrice(itemOrderDetailsAdapter.getDiscount(), this)
         binding.tvTotalAmount.text = Utils.formatPrice(orderDetails.totalAmount,this)
 
