@@ -53,7 +53,7 @@ dependencies {
     implementation("com.google.firebase:firebase-database-ktx:20.3.1")
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
     implementation("androidx.room:room-common:2.6.1")
-    implementation("androidx.activity:activity:1.8.0")
+    implementation("androidx.activity:activity-ktx:1.9.0")
 //     implementation(fileTree(mapOf(
 //         "dir" to "/Users/tuannguyen/Documents/GitHub/1food30s/app/src/main/java/com/zebrand/app1food30s/zalopay_source",
 //         "include" to listOf("*.aar", "*.jar"),
@@ -119,7 +119,7 @@ dependencies {
 //    implementation("com.android.support:multidex:2.0.1")
 //    ZaloPay
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
-    implementation("commons-codec:commons-codec:1.14")
+    implementation("commons-codec:commons-codec:1.15")
 
     implementation(files("libs/merchant-1.0.25.aar"))
 
@@ -131,4 +131,7 @@ dependencies {
     implementation("org.osmdroid:osmdroid-android:6.1.10")
 //    implementation("com.here.sdk:search:4.9.0.0")
     implementation("com.paypal.android:paypal-native-payments:1.3.0")
+
+    // NEW MAP
+    implementation(files("libs/heresdk-explore-android-4.18.2.0.105808.aar"))
 }

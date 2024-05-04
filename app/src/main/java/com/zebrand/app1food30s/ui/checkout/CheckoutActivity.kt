@@ -1,7 +1,6 @@
 package com.zebrand.app1food30s.ui.checkout
 
 
-import android.content.Context
 //import com.paypal.checkout.PayPalCheckout
 //import com.paypal.checkout.approve.OnApprove
 //import com.paypal.checkout.config.CheckoutConfig
@@ -19,6 +18,7 @@ import android.content.Context
 //import vn.zalopay.sdk.ZaloPayError
 //import vn.zalopay.sdk.ZaloPaySDK
 //import vn.zalopay.sdk.listeners.PayOrderListener
+import android.content.Context
 import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
@@ -26,10 +26,12 @@ import android.location.Location
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.StrictMode
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Base64
 import android.util.Log
 import android.widget.ArrayAdapter
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.RequestQueue
@@ -43,11 +45,18 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.firestore.FirebaseFirestore
+import com.here.sdk.core.GeoBox
+import com.here.sdk.core.GeoCoordinates
+import com.here.sdk.core.LanguageCode
+import com.here.sdk.core.engine.SDKNativeEngine
+import com.here.sdk.core.engine.SDKOptions
+import com.here.sdk.core.errors.InstantiationErrorException
+import com.here.sdk.search.SearchEngine
+import com.here.sdk.search.SearchOptions
+import com.here.sdk.search.TextQuery
 import com.paypal.android.corepayments.CoreConfig
 import com.paypal.android.corepayments.Environment
 import com.paypal.android.corepayments.PayPalSDKError
@@ -68,8 +77,8 @@ import com.zebrand.app1food30s.ui.main.MainActivity
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.Utils
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -98,7 +107,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     private lateinit var paymentArr: Array<String>
 
     private lateinit var queue: RequestQueue
-    var orderId = ""
+    private var orderId = ""
     private val url = "https://api-m.sandbox.paypal.com/v2/checkout/orders/"
     private val urlToken = "https://api-m.sandbox.paypal.com/v1/oauth2/token"
     var token = "Bearer "
@@ -107,6 +116,13 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     val clientSecret = "EO0MxmLuQfbA0Cq8PSNbDA6JHHims1JBMjG4gCLLmjMesgI0tpIdWYyIJMBjsPCuRzltRQdbQaWIAIc4"
 //    val clientSecret = "AQi0jeUAAGwLBWPY-_J-KqReZQ5udKOfjEH17RwJGuzrRFqn-RKKiBoOtdSF1AOEd6yVw_tzGM1sbvzd"
 
+    private var searchEngine: SearchEngine? = null
+    // Coordinates roughly encompassing Ho Chi Minh City
+    private lateinit var southWestCornerHCMC: GeoCoordinates
+    private lateinit var northEastCornerHCMC: GeoCoordinates
+    private lateinit var hcmcGeoBox: GeoBox
+    private lateinit var hcmcArea: TextQuery.Area
+    private var searchJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,33 +157,19 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
             .findFragmentById(R.id.map) as SupportMapFragment
         // when the map is ready, onMapReady() callback is triggered
         mapFragment.getMapAsync(this)
-
         // -----Places SDK-----
         if (!Places.isInitialized()) {
             Places.initialize(applicationContext, apiKey)
         }
+        // NEW MAP
+        initializeHERESDK()
 
 //        Paypal
         queue = Volley.newRequestQueue(this)
 
-        binding.tvAddress.setOnFocusChangeListener { v, hasFocus ->
-//            Log.d("FocusChange", "Focus change detected. Has focus: $hasFocus")
-            if (hasFocus) {
-                // Log the beginning of the Autocomplete intent action
-//                Log.d("FocusChange", "Launching Autocomplete intent.")
-
-                // Define the fields to be retrieved
-                val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
-                // Full screen search
-                val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(this)
-
-                // Launch the Autocomplete intent when the user focuses on the input
-                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
-//                Log.d("FocusChange", "Intent for Autocomplete started.")
-            } else {
-                // Optionally log when the user moves focus away
-//                Log.d("FocusChange", "Focus lost from tvAddress.")
-            }
+        binding.searchButton.setOnClickListener() {
+            // Implement HERE SDK search suggestion logic here
+            handleAddressInput(binding.tvAddress.text.toString())
         }
 
         setupRecyclerView()
@@ -177,6 +179,82 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         presenter.loadCartData(cartId)
 
         handlePlaceOrderButton()
+    }
+
+    private fun initializeHERESDK() {
+        // Set your credentials for the HERE SDK.
+        val accessKeyID = "r9rEHx6tUarZRTyRl5_1IA"
+        val accessKeySecret = "Mx3jwrKn5HW6EowO5IdLT-LQOSfZpZsn-urW-EkgwjvAuRTe3X99lVJtDtGBlppBhGwbOg3OPoC6s-8FAtyu-g"
+        val options = SDKOptions(accessKeyID, accessKeySecret)
+        try {
+            val context: Context = this
+            SDKNativeEngine.makeSharedInstance(context, options)
+            initializeSearchEngine()
+            setupGeoCoordinates()
+        } catch (e: InstantiationErrorException) {
+            throw RuntimeException("Initialization of HERE SDK failed: " + e.error.name)
+        }
+    }
+
+    private fun initializeSearchEngine() {
+        try {
+            searchEngine = SearchEngine()
+        } catch (e: InstantiationErrorException) {
+            Log.e("HERE SDK", "Search engine initialization failed.", e)
+        }
+    }
+
+    private fun setupGeoCoordinates() {
+        southWestCornerHCMC = GeoCoordinates(10.693360, 106.568604)
+        northEastCornerHCMC = GeoCoordinates(10.880334, 106.826672)
+        hcmcGeoBox = GeoBox(southWestCornerHCMC, northEastCornerHCMC)
+        hcmcArea = TextQuery.Area(hcmcGeoBox)
+    }
+
+    private fun handleAddressInput(userInput: String) {
+        val autoSuggestQuery = TextQuery(userInput, hcmcArea)
+        val searchOptions = SearchOptions().apply {
+            languageCode = LanguageCode.VI_VN
+            maxItems = 5
+        }
+
+        searchEngine?.suggest(autoSuggestQuery, searchOptions) { error, suggestions ->
+            if (error != null) {
+                Log.e("HERE SDK", "Autosuggest Error: ${error.name}")
+                return@suggest
+            }
+
+            val addresses = suggestions?.map { it.title + " - " + it.place?.address?.addressText }.orEmpty()
+            runOnUiThread {
+                AlertDialog.Builder(this)
+                    .setTitle("Select Address")
+                    .setItems(addresses.toTypedArray()) { dialog, which ->
+                        selectAddressAndGeocode(suggestions!![which].title)
+                    }
+                    .show()
+            }
+        }
+    }
+
+    private fun selectAddressAndGeocode(selectedAddress: String) {
+//        Log.d("HERE SDK", "$selectedAddress")
+        val addressQuery = TextQuery(selectedAddress, hcmcArea)
+        searchEngine?.search(addressQuery, SearchOptions()) { error, results ->
+            if (error != null) {
+                Log.e("HERE SDK", "Search Error: ${error.name}")
+                return@search
+            }
+
+            results?.firstOrNull()?.geoCoordinates?.let { coordinates ->
+                runOnUiThread {
+                    mMap.clear() // Clear previous markers
+                    val markerOptions = MarkerOptions().position(LatLng(coordinates.latitude, coordinates.longitude)).title(selectedAddress)
+                    mMap.addMarker(markerOptions)
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(coordinates.latitude, coordinates.longitude), 15f))
+                    binding.tvAddress.setText(selectedAddress)
+                }
+            }
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -368,7 +446,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 
     private suspend fun capturePayPalOrder(token: String, orderId: String): String {
         return suspendCoroutine { continuation ->
-            var url = url + orderId + "/capture"
+            val url = url + orderId + "/capture"
 
             val jsonObjectRequest = object : JsonObjectRequest(
                 Method.POST, url, null,

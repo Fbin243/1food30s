@@ -22,6 +22,7 @@ allprojects {
         google()
         mavenCentral()
         maven(url = "https://jitpack.io")
+        maven(url = "https://repo.platform.here.com/artifactory/gradle-premium")
 
 //        maven(url = "https://oss.sonatype.org/content/repositories/snapshots/")
 //        flatDir {
