@@ -12,12 +12,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.firebase.firestore.FirebaseFirestore
+import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.ui.chat.ChatActivity
 import com.zebrand.app1food30s.adapter.CategoryAdapter
 import com.zebrand.app1food30s.adapter.OfferAdapter
 import com.zebrand.app1food30s.adapter.ProductAdapter
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Category
+import com.zebrand.app1food30s.data.entity.Chat
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.FragmentHomeBinding
@@ -99,6 +102,8 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
 
         }
 
+        setupChatListener(userId)
+
         return binding.root
     }
 
@@ -110,6 +115,28 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
             intent.putExtra("filterBy", "wishlist")
             intent.putExtra("title", "Wishlist")
             startActivity(intent)
+        }
+    }
+
+    private fun setupChatListener(chatId: String) {
+        val chatsCollection = FirebaseFirestore.getInstance().collection("chats")
+        val chatQuery = chatsCollection.whereEqualTo("idBuyer", chatId)
+        chatQuery.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.e("ChatActivity", "Listen failed.", e)
+                return@addSnapshotListener
+            }
+            if (snapshot != null && !snapshot.isEmpty) {
+                val document = snapshot.documents.first()
+                val updatedChat = document.toObject(Chat::class.java)
+                updatedChat?.let {
+                    if(!it.seenByBuyer){
+                        binding.ivChatScreen.setImageResource(R.drawable.chat_round_unread_svgrepo_com)
+                    } else {
+                        binding.ivChatScreen.setImageResource(R.drawable.ic_chat)
+                    }
+                }
+            }
         }
     }
 

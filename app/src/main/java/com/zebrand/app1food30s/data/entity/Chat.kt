@@ -10,6 +10,7 @@ data class Chat(
     val avaBuyer: String = "",
     val messages: List<Message> = listOf(),
     var seen: Boolean = false,
+    var seenByBuyer: Boolean = false,
     var date: Date? = Date()
 )
 

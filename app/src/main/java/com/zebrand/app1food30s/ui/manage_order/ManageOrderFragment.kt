@@ -24,10 +24,16 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputEditText
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.firestore
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.adapter.ManageChatAdapter
 import com.zebrand.app1food30s.adapter.ManageOrderAdapter
+import com.zebrand.app1food30s.data.entity.Chat
 import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.databinding.FragmentManageOrderBinding
 import com.zebrand.app1food30s.ui.chat.ChatManager
@@ -102,6 +108,7 @@ class ManageOrderFragment : Fragment(), ManageOrderMVPView, SwipeRefreshLayout.O
             val intent = Intent(requireContext(), ChatManager::class.java)
             startActivity(intent)
         }
+        setupChatListener()
     }
 
 
@@ -209,6 +216,30 @@ class ManageOrderFragment : Fragment(), ManageOrderMVPView, SwipeRefreshLayout.O
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun setupChatListener() {
+        val db = Firebase.firestore
+        db.collection("chats")
+            .orderBy("date", Query.Direction.DESCENDING) // Sắp xếp các chat theo trường 'date' giảm dần
+            .addSnapshotListener { snapshots, e ->
+                if (e != null) {
+                    Log.w("ChatManagerActivity", "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                val chats = mutableListOf<Chat>()
+                snapshots?.documents?.forEach { doc ->
+                    doc.toObject(Chat::class.java)?.let {
+//                        chats.add(it)
+                        if (!it.seen) { // Chỉ thêm chat nếu có ít nhất một tin nhắn
+                            binding.ivChatScreen.setImageResource(R.drawable.chat_round_unread_svgrepo_com)
+                        } else {
+                            binding.ivChatScreen.setImageResource(R.drawable.ic_chat)
+                        }
+                    }
+                }
+            }
     }
 
     override fun getManageOrders() {

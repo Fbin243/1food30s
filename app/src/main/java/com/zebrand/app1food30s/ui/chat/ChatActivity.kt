@@ -38,6 +38,9 @@ class ChatActivity : AppCompatActivity() {
         mySharedPreferences = MySharedPreferences.getInstance(this)
         currentUserId = mySharedPreferences.getString(SingletonKey.KEY_USER_ID)
         setupRecyclerView()
+//        currentUserId?.let {
+//            markChatAsRead(it)
+//        }
 //        Log.d("ChatActivity", "current id user: ${currentUserId}")
 //        handleDisplayMessages("CaobLG7qUCxM10RxWZAi")
         currentUserId?.let { handleDisplayMessages(it) }
@@ -62,6 +65,13 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        currentUserId?.let {
+            markChatAsRead(it)
+        }
+    }
+
 //    private fun setupRecyclerView() {
 //        messageAdapter = MessageAdapter(messages)
 //        binding.recyclerViewChat.apply {
@@ -79,6 +89,25 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
+    private fun markChatAsRead(chatId: String) {
+        val chatsCollection = FirebaseFirestore.getInstance().collection("chats")
+        val chatQuery = chatsCollection.whereEqualTo("idBuyer", chatId).limit(1)
+        chatQuery.get().addOnSuccessListener { querySnapshot ->
+            if (!querySnapshot.isEmpty) {
+                val document = querySnapshot.documents.first()
+                document.reference.update("seenByBuyer", true)
+                    .addOnSuccessListener {
+                        Log.d("ChatActivity", "Chat marked as read successfully.")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("ChatActivity", "Failed to mark chat as read.", e)
+                    }
+            }
+        }.addOnFailureListener { e ->
+            Log.e("ChatActivity", "Error fetching chat document.", e)
+        }
+    }
+
     private fun handleDisplayMessages(chatId: String) {
         val chatsCollection = FirebaseFirestore.getInstance().collection("chats")
         val chatQuery = chatsCollection.whereEqualTo("idBuyer", chatId)
@@ -88,6 +117,7 @@ class ChatActivity : AppCompatActivity() {
                 return@addSnapshotListener
             }
             if (snapshot != null && !snapshot.isEmpty) {
+                markChatAsRead(chatId)
                 val document = snapshot.documents.first()
                 val updatedChat = document.toObject(Chat::class.java)
                 updatedChat?.messages?.let {
@@ -120,6 +150,7 @@ class ChatActivity : AppCompatActivity() {
                             avaBuyer = avaSenderUrl,
                             messages = listOf(),
                             seen = false,
+                            seenByBuyer = true,
                             date = Date(),
                         )
                         chatsCollection.add(newChat).addOnSuccessListener {
