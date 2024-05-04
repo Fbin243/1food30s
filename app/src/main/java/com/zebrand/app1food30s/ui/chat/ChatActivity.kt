@@ -38,9 +38,9 @@ class ChatActivity : AppCompatActivity() {
         mySharedPreferences = MySharedPreferences.getInstance(this)
         currentUserId = mySharedPreferences.getString(SingletonKey.KEY_USER_ID)
         setupRecyclerView()
-//        currentUserId?.let {
-//            markChatAsRead(it)
-//        }
+        currentUserId?.let {
+            markChatAsRead(it)
+        }
 //        Log.d("ChatActivity", "current id user: ${currentUserId}")
 //        handleDisplayMessages("CaobLG7qUCxM10RxWZAi")
         currentUserId?.let { handleDisplayMessages(it) }
@@ -117,7 +117,6 @@ class ChatActivity : AppCompatActivity() {
                 return@addSnapshotListener
             }
             if (snapshot != null && !snapshot.isEmpty) {
-                markChatAsRead(chatId)
                 val document = snapshot.documents.first()
                 val updatedChat = document.toObject(Chat::class.java)
                 updatedChat?.messages?.let {

@@ -221,26 +221,31 @@ class ManageOrderFragment : Fragment(), ManageOrderMVPView, SwipeRefreshLayout.O
     private fun setupChatListener() {
         val db = Firebase.firestore
         db.collection("chats")
-            .orderBy("date", Query.Direction.DESCENDING) // Sắp xếp các chat theo trường 'date' giảm dần
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     Log.w("ChatManagerActivity", "Listen failed.", e)
                     return@addSnapshotListener
                 }
 
-                val chats = mutableListOf<Chat>()
+                var anyUnseen = false // Biến kiểm tra xem có tin nhắn chưa đọc không
+
                 snapshots?.documents?.forEach { doc ->
                     doc.toObject(Chat::class.java)?.let {
-//                        chats.add(it)
-                        if (!it.seen) { // Chỉ thêm chat nếu có ít nhất một tin nhắn
-                            binding.ivChatScreen.setImageResource(R.drawable.chat_round_unread_svgrepo_com)
-                        } else {
-                            binding.ivChatScreen.setImageResource(R.drawable.ic_chat)
+                        if (!it.seen && it.messages.isNotEmpty()) {
+                            anyUnseen = true // Đặt anyUnseen thành true nếu tìm thấy tin nhắn chưa đọc
                         }
                     }
                 }
+
+                // Cập nhật icon một lần dựa trên biến anyUnseen
+                if (anyUnseen) {
+                    binding.ivChatScreen.setImageResource(R.drawable.chat_round_unread_svgrepo_com)
+                } else {
+                    binding.ivChatScreen.setImageResource(R.drawable.ic_chat)
+                }
             }
     }
+
 
     override fun getManageOrders() {
         manageOrderAdapter = ManageOrderAdapter(mutableListOf())
