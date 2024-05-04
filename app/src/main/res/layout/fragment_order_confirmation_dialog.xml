@@ -60,28 +60,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Additional Text -->
-    <TextView
-        android:id="@+id/additional_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Your order is Cash On Delivery."
-        android:gravity="center"
-        android:textSize="18sp"
-        android:textColor="#555555"
-        app:layout_constraintTop_toBottomOf="@+id/order_confirmed_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+<!--    <TextView-->
+<!--        android:id="@+id/additional_text"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Your order is Cash On Delivery."-->
+<!--        android:gravity="center"-->
+<!--        android:textSize="18sp"-->
+<!--        android:textColor="#555555"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/order_confirmed_text"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent" />-->
 
     <TextView
         android:id="@+id/additional_text_2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Being delivered to:"
+        android:text="Your order will be delivered to:"
         android:gravity="center"
         android:textSize="18sp"
         android:textColor="#555555"
-        app:layout_constraintTop_toBottomOf="@+id/additional_text"
+        app:layout_constraintTop_toBottomOf="@+id/order_confirmed_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

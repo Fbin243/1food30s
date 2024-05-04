@@ -248,14 +248,10 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
             }
 
             results?.firstOrNull()?.geoCoordinates?.let { coordinates ->
+                val latLng = LatLng(coordinates.latitude, coordinates.longitude)
                 runOnUiThread {
-                    mMap.clear()
-                    val latLng = LatLng(coordinates.latitude, coordinates.longitude)
-                    val markerOptions = MarkerOptions().position(latLng).title(selectedAddress)
-                    mMap.addMarker(markerOptions)
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
                     binding.tvAddress.setText(selectedAddress)
-
+                    updateMarkerAndAddress(latLng, focusCamera = true)
                     calculateDistance(defaultLatLng, latLng)
                 }
             }
@@ -291,13 +287,23 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         }
 
         mMap.setOnMapClickListener { latLng ->
-            // Move the existing marker to the clicked position
-            marker?.position = latLng
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
-
-            // Use reverse geocoding to update the address and calculate distance
-            updateAddressAndCalculateDistance(latLng)
+            updateMarkerAndAddress(latLng)
         }
+    }
+
+    private fun updateMarkerAndAddress(latLng: LatLng, focusCamera: Boolean = true) {
+        if (marker == null) {
+            val markerOptions = MarkerOptions().position(latLng).title("Selected Location").draggable(true)
+            marker = mMap.addMarker(markerOptions)
+        } else {
+            marker?.position = latLng
+        }
+
+        if (focusCamera) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+        }
+
+        updateAddressAndCalculateDistance(latLng)
     }
 
     private fun updateAddressAndCalculateDistance(latLng: LatLng) {
