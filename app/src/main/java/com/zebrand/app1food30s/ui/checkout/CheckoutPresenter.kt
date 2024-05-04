@@ -46,7 +46,6 @@ class CheckoutPresenter(private val view: CheckoutMVPView, private val cartRepos
         launch {
             val orderItems = cartItems.map { cartItem ->
                 OrderItem(
-                    // TODO
                     productId = FirebaseFirestore.getInstance().document("products/${cartItem.productId?.id}"),
                     category = cartItem.productCategory,
                     discount = cartItem.productPrice - cartItem.oldPrice,
