@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
             replaceFragment(ProfileAfterLoginFragment())
         } else if (intent.getBooleanExtra("showOrderConfirmation", false)) {
             val address = intent.getStringExtra("address")
-            showOrderConfirmationToast()
+//            showOrderConfirmationToast()
             showOrderConfirmationDialog(address)
         }
     }

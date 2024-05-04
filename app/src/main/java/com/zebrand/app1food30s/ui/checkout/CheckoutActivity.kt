@@ -43,6 +43,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.widget.Autocomplete
@@ -69,6 +70,7 @@ import com.paypal.android.paypalnativepayments.PayPalNativeShippingAddress
 import com.paypal.android.paypalnativepayments.PayPalNativeShippingListener
 import com.paypal.android.paypalnativepayments.PayPalNativeShippingMethod
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.adapter.AddressAdapter
 import com.zebrand.app1food30s.adapter.CheckoutItemsAdapter
 import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.databinding.ActivityCheckoutBinding
@@ -122,7 +124,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     private lateinit var northEastCornerHCMC: GeoCoordinates
     private lateinit var hcmcGeoBox: GeoBox
     private lateinit var hcmcArea: TextQuery.Area
-    private var searchJob: Job? = null
+    private var marker: Marker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,7 +138,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 
 //        paypalConfig()
         apiKey = "AIzaSyBQFpHSKFfBqU9XM8ZFGOEHPGyMkh6iCZk"
-        defaultLatLng = LatLng(10.780889, 106.699306) // Central Post Office coordinates
+        defaultLatLng = LatLng(10.762622, 106.682171)  // University of Science
 
         preferences = MySharedPreferences.getInstance(this)
         userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
@@ -214,7 +216,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     private fun handleAddressInput(userInput: String) {
         val autoSuggestQuery = TextQuery(userInput, hcmcArea)
         val searchOptions = SearchOptions().apply {
-            languageCode = LanguageCode.VI_VN
+            languageCode = LanguageCode.EN_US // TODO
             maxItems = 5
         }
 
@@ -224,12 +226,13 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
                 return@suggest
             }
 
-            val addresses = suggestions?.map { it.title + " - " + it.place?.address?.addressText }.orEmpty()
+//            val addresses = suggestions?.map { it.title + " - " + it.place?.address?.addressText }.orEmpty()
+            val addresses = suggestions?.mapNotNull { it.place?.address?.addressText }.orEmpty()
             runOnUiThread {
                 AlertDialog.Builder(this)
                     .setTitle("Select Address")
-                    .setItems(addresses.toTypedArray()) { dialog, which ->
-                        selectAddressAndGeocode(suggestions!![which].title)
+                    .setAdapter(AddressAdapter(this, addresses)) { dialog, which ->
+                        selectAddressAndGeocode(addresses[which])
                     }
                     .show()
             }
@@ -237,7 +240,6 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     }
 
     private fun selectAddressAndGeocode(selectedAddress: String) {
-//        Log.d("HERE SDK", "$selectedAddress")
         val addressQuery = TextQuery(selectedAddress, hcmcArea)
         searchEngine?.search(addressQuery, SearchOptions()) { error, results ->
             if (error != null) {
@@ -247,11 +249,14 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 
             results?.firstOrNull()?.geoCoordinates?.let { coordinates ->
                 runOnUiThread {
-                    mMap.clear() // Clear previous markers
-                    val markerOptions = MarkerOptions().position(LatLng(coordinates.latitude, coordinates.longitude)).title(selectedAddress)
+                    mMap.clear()
+                    val latLng = LatLng(coordinates.latitude, coordinates.longitude)
+                    val markerOptions = MarkerOptions().position(latLng).title(selectedAddress)
                     mMap.addMarker(markerOptions)
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(coordinates.latitude, coordinates.longitude), 15f))
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
                     binding.tvAddress.setText(selectedAddress)
+
+                    calculateDistance(defaultLatLng, latLng)
                 }
             }
         }
@@ -260,9 +265,21 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         val hoChiMinhCity = LatLng(10.776889, 106.700806)
-        val marker = mMap.addMarker(MarkerOptions().position(hoChiMinhCity).title("Marker in Ho Chi Minh City").draggable(true))
+
+        // Initialize or move the marker
+        if (marker == null) {
+            val markerOptions = MarkerOptions().position(hoChiMinhCity).title("Marker in Ho Chi Minh City").draggable(true)
+            marker = mMap.addMarker(markerOptions)
+        } else {
+            marker?.position = hoChiMinhCity
+        }
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hoChiMinhCity, 10f))
 
+        setupMapListeners()
+    }
+
+    private fun setupMapListeners() {
         mMap.setOnCameraMoveStartedListener {
             val scrollView = findViewById<LockableNestedScrollView>(R.id.scrollView)
             scrollView.setScrollingEnabled(false)
@@ -273,36 +290,70 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
             scrollView.setScrollingEnabled(true)
         }
 
-        // Add a click listener for the map
         mMap.setOnMapClickListener { latLng ->
-            // Move the marker to the clicked position
-            if (marker != null) {
-                marker.position = latLng
-                calculateDistance(defaultLatLng, latLng)
-            }
-
-            // Optionally, animate the camera to the new position
+            // Move the existing marker to the clicked position
+            marker?.position = latLng
             mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
 
-            // Use reverse geocoding to update the address
-            val geocoder = Geocoder(this@CheckoutActivity, Locale.getDefault())
-            val addresses: List<Address>?
-            try {
-                addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-                if (!addresses.isNullOrEmpty()) {
-                    val address: Address = addresses[0]
-                    // Fetch the address lines and join them
-                    val addressText = (0..address.maxAddressLineIndex).joinToString(separator = " ") {
-                        address.getAddressLine(it)
-                    }
-                    binding.tvAddress.setText(addressText)
-                }
-            } catch (e: IOException) {
-                Log.e("CheckoutActivity", "Unable to get address from the clicked location", e)
-            }
+            // Use reverse geocoding to update the address and calculate distance
+            updateAddressAndCalculateDistance(latLng)
         }
     }
 
+    private fun updateAddressAndCalculateDistance(latLng: LatLng) {
+        val geocoder = Geocoder(this@CheckoutActivity, Locale.getDefault())
+        try {
+            val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            if (addresses != null) {
+                if (addresses.isNotEmpty()) {
+                    val address = addresses[0]
+                    val addressText = (0..address.maxAddressLineIndex).joinToString(separator = " ") { address.getAddressLine(it) }
+                    binding.tvAddress.setText(addressText)
+
+                    // Calculate distance from the default location to this new location
+                    calculateDistance(defaultLatLng, latLng)
+                }
+            }
+        } catch (e: IOException) {
+            Log.e("CheckoutActivity", "Unable to get address from the clicked location", e)
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode != AUTOCOMPLETE_REQUEST_CODE || data == null) return
+
+        if (resultCode == RESULT_OK) {
+            val place = Autocomplete.getPlaceFromIntent(data)
+            binding.tvAddress.setText(place.address)
+            binding.tvAddress.clearFocus()
+
+            place.latLng?.let {
+                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(it, 15f)
+                mMap.moveCamera(cameraUpdate)
+            }
+        } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+            val status = Autocomplete.getStatusFromIntent(data)
+            // Handle the error
+        }
+    }
+
+    private fun calculateDistance(from: LatLng, to: LatLng) {
+        val results = FloatArray(1)
+        Location.distanceBetween(from.latitude, from.longitude, to.latitude, to.longitude, results)
+        val distance = String.format("%.1f", results[0]/1000.0).toDouble() // distance in km
+
+        runOnUiThread {
+            shippingFee = distance * 0.2
+            val formattedShipFee = Utils.formatPrice(shippingFee, this@CheckoutActivity)  // Assume 0.2 as your rate
+            binding.tvShipInfo.text = "Ship: $formattedShipFee - Distance: ${distance} km"
+            updateTotalPrice()
+        }
+    }
+
+    // --------------------PAYPAL--------------------
     private suspend fun getPayPalToken(url: String): String {
         return suspendCoroutine { continuation ->
             val jsonObjectRequest = object : JsonObjectRequest(
@@ -472,59 +523,6 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         }
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-//        Log.d("ActivityResult", "Request Code: $requestCode, Result Code: $resultCode")
-
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK && data != null) {
-                val place = Autocomplete.getPlaceFromIntent(data)
-//                Log.d("ActivityResult", "Place found: ${place.name}")
-
-                // Get the address
-                binding.tvAddress.setText(place.address)
-                binding.tvAddress.clearFocus()
-//                Log.d("ActivityResult", "Address set: ${place.address}")
-
-                val latLng = place.latLng
-                // Use latitude and longitude to update the map's location
-                latLng?.let {
-                    val cameraUpdate = CameraUpdateFactory.newLatLngZoom(it, 15f)
-                    mMap.moveCamera(cameraUpdate)
-//                    Log.d("ActivityResult", "Map camera moved to: ${latLng.latitude}, ${latLng.longitude}")
-                }
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR && data != null) {
-                // Handle the error
-                val status = Autocomplete.getStatusFromIntent(data)
-//                Log.e("ActivityResult", "Autocomplete error: ${status.statusMessage}")
-            } else {
-//                Log.w("ActivityResult", "Result not OK or data is null")
-            }
-        } else {
-//            Log.d("ActivityResult", "Unhandled request code")
-        }
-    }
-
-    private fun calculateDistance(from: LatLng, to: LatLng) {
-        val results = FloatArray(1)
-        Location.distanceBetween(from.latitude, from.longitude, to.latitude, to.longitude, results)
-        val distance = String.format("%.1f", results[0]/1000.0).toDouble() // distance in km
-
-        runOnUiThread {
-            shippingFee = distance * 0.2
-            val formattedShipFee = Utils.formatPrice(shippingFee, this@CheckoutActivity)  // Assume 0.2 as your rate
-            binding.tvShipInfo.text = "Ship: $formattedShipFee - Distance: ${distance} km"
-            updateTotalPrice()
-        }
-    }
-
-    data class DirectionsResult(val routes: List<Route>)
-    data class Route(val legs: List<Leg>)
-    data class Leg(val distance: Distance, val duration: Duration)
-    data class Distance(val text: String, val value: Int)
-    data class Duration(val text: String, val value: Int)
-
     // TODO: fix snackbar top to bottom of container
     override fun navigateToOrderConfirmation(showOrderConfirmation: Boolean, orderId: String) {
         if (showOrderConfirmation) {
@@ -578,7 +576,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         }
     }
 
-    fun Context.getConnectivityManager() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    private fun Context.getConnectivityManager() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     fun getIpAddress(context: Context) = with(context.getConnectivityManager()) {
         getLinkProperties(activeNetwork)!!.linkAddresses[1].address.hostAddress!!
@@ -604,8 +602,6 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 
     override fun displayError(error: String) {
         runOnUiThread {
-            // Handle error or empty state
-//            binding.tvCartTotalAmount.text = getString(R.string.product_price_number, 0.0)
             binding.textViewAmount.text = Utils.formatPrice(0.0, this)
         }
     }
