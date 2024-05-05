@@ -89,7 +89,6 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
 //        binding.spinnerPayment.setOnItemClickListener { _, _, position, _ ->
 //            val selectedText = adapterStatus.getItem(position)
 //            presenter.changePaymentStatus(idOrder, selectedText.toString())
-////            Toast.makeText(this, selectedText, Toast.LENGTH_LONG).show()
 //        }
 
         // customer dropdown

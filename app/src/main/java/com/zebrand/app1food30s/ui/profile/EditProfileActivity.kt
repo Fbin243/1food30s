@@ -1,66 +1,45 @@
 package com.zebrand.app1food30s.ui.profile
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.textfield.TextInputEditText
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.databinding.ActivityEditProfileBinding
+import com.zebrand.app1food30s.ui.checkout.AddressMapFragment
+import com.zebrand.app1food30s.utils.FireStoreUtils.mDBUserRef
+import com.zebrand.app1food30s.utils.FirebaseService
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.Date
 
 class EditProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditProfileBinding
-    private val fireStore = FirebaseFirestore.getInstance()
-    private val fireStorage = FirebaseStorage.getInstance()
-    private val PICK_IMAGE_REQUEST = 71 // Unique request code
-
-    private lateinit var firstNameEditText: TextInputEditText
-    private lateinit var lastNameEditText: TextInputEditText
-    private lateinit var emailEditText: TextInputEditText
-    private lateinit var addressEditText: TextInputEditText
-    private lateinit var phoneEditText: TextInputEditText
-    private lateinit var saveButton: Button
+    private var addressMapFragment: AddressMapFragment? = null
+    private var userId: String? = null
+    private var isAdmin: Boolean? = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityEditProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        firstNameEditText = binding.editFirstName
 
-        val userId = intent.getStringExtra("USER_ID")
-        Log.d("MainActivity", "idUserInActivityEditProfile: $userId")
-//        firstNameEditText.setText(userId)
-        if (userId != null) {
-            fetchUserInformation(userId)
-        }
-
+        userId = intent.getStringExtra("USER_ID")
+        setupTvAddressMapFragment()
+        userId?.let { fetchUserInformation(it) }
         setupUI()
     }
 
+    private fun setupTvAddressMapFragment() {
+        addressMapFragment = supportFragmentManager.findFragmentById(R.id.address_map_fragment) as? AddressMapFragment
+    }
+
     private fun setupUI() {
-        firstNameEditText = binding.editFirstName
-        lastNameEditText = binding.editLastName
-        emailEditText = binding.editEmail
-        addressEditText = binding.editAddress
-        phoneEditText = binding.editPhone
-        saveButton = binding.saveBtn
-
-        val backIcon = findViewById<View>(R.id.backIcon)
-        backIcon.setOnClickListener {
-            finish()
-        }
-
-        saveButton.setOnClickListener {
-            val userId = intent.getStringExtra("USER_ID")
+        binding.backIcon.setOnClickListener { finish() }
+        binding.saveBtn.setOnClickListener {
             userId?.let {
                 updateUserInformation(it)
             } ?: run {
@@ -70,13 +49,13 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun updateUserInformation(userId: String) {
-        val firstName = firstNameEditText.text.toString().trim()
-        val lastName = lastNameEditText.text.toString().trim()
-        val email = emailEditText.text.toString().trim()
-        val address = addressEditText.text.toString().trim()
-        val phone = phoneEditText.text.toString().trim()
+        val firstName = binding.editFirstName.text.toString().trim()
+        val lastName = binding.editLastName.text.toString().trim()
+        val email = binding.editEmail.text.toString().trim()
+        val address = addressMapFragment?.getAddressText() ?: ""
+        val phone = binding.editPhone.text.toString().trim()
 
-        val userInforUpdate = hashMapOf<String, Any>(
+        val userInforUpdate = hashMapOf(
             "firstName" to firstName,
             "lastName" to lastName,
             "email" to email,
@@ -85,8 +64,11 @@ class EditProfileActivity : AppCompatActivity() {
             "date" to Date()
         )
 
-        fireStore.collection("accounts").document(userId).update(userInforUpdate)
+        mDBUserRef.document(userId).update(userInforUpdate as Map<String, Any>)
             .addOnSuccessListener {
+                if (isAdmin == true) {
+                    FirebaseService.saveShopAddress(address)
+                }
                 Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_LONG).show()
                 finish()
             }
@@ -94,24 +76,45 @@ class EditProfileActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error updating product: ${e.message}", Toast.LENGTH_LONG).show()
             }
     }
+//    private fun saveShopAddress(address: String) {
+//        val sharedPref = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
+//        with(sharedPref.edit()) {
+//            putString("ShopAddress", address)
+//            apply()
+//        }
+//    }
 
     private fun fetchUserInformation(userId: String) {
         lifecycleScope.launch {
             try {
-                val documentSnapshot = fireStore.collection("accounts").document(userId).get().await()
+                val documentSnapshot = mDBUserRef.document(userId).get().await()
                 val user = documentSnapshot.toObject(User::class.java)
                 user?.let {
-                    with(binding) {
-                        firstNameEditText.setText(it.firstName)
-                        lastNameEditText.setText(it.lastName)
-                        emailEditText.setText(it.email)
-                        addressEditText.setText(it.address)
-                        phoneEditText.setText(it.phone)
-                    }
+                    updateUIWithUserInfo(it)
                 }
             } catch (e: Exception) {
-                // Xử lý lỗi
+                Log.e("EditProfileActivity", "Error fetching user information", e)
             }
         }
+    }
+
+    private fun updateUIWithUserInfo(user: User) {
+        isAdmin = user.admin
+
+        binding.editFirstName.setText(user.firstName)
+        binding.editLastName.setText(user.lastName)
+        binding.editEmail.setText(user.email)
+        binding.editPhone.setText(user.phone)
+
+        // Ensure the fragment is ready before setting text
+        if (isFragmentReady()) {
+            addressMapFragment?.setAddressText(user.address)
+        } else {
+            Log.e("EditProfileActivity", "Fragment is not ready")
+        }
+    }
+
+    private fun isFragmentReady(): Boolean {
+        return addressMapFragment?.isAdded == true && addressMapFragment?.view != null
     }
 }
