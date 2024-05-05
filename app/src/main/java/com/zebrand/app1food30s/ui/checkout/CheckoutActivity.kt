@@ -208,10 +208,6 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 //        return sharedPreferences.getString("ShopAddress", "") ?: ""
 //    }
 
-    private fun getDiscounts(){
-
-    }
-
     private fun initializeMap() {
         mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
