@@ -80,13 +80,6 @@ class EditProfileActivity : AppCompatActivity() {
                 Utils.showCustomToast(this, "Error updating product: ${e.message}", "error")
             }
     }
-//    private fun saveShopAddress(address: String) {
-//        val sharedPref = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
-//        with(sharedPref.edit()) {
-//            putString("ShopAddress", address)
-//            apply()
-//        }
-//    }
 
     private fun fetchUserInformation(userId: String) {
         lifecycleScope.launch {

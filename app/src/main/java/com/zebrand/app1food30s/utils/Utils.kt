@@ -272,6 +272,10 @@ object Utils {
                         }
                     } else {
                         // New product, add to cart with addQuantity
+                        if (stock <= 0) {
+                            showCustomToast(context, "Not enough stock available.", "error")
+                            return@cart
+                        }
                         it.items.add(CartItem(productRef, "", "", 0.0, 0.0, "", 0, addQuantity))
                     }
 
@@ -297,7 +301,6 @@ object Utils {
 
         val userDoc: DocumentReference = userRef.document() // Automatically generates a unique document ID
         val userId = userDoc.id
-        // TODO: cart id instead of user id
         val cartDoc: DocumentReference = cartRef.document(userId) // Use userId as the document ID
 //        val cartDoc: DocumentReference = cartRef.document() // Automatically generates a unique document ID
         val wishListDoc: DocumentReference = wishListRef.document() // Automatically generates a unique document ID
@@ -311,7 +314,7 @@ object Utils {
         user.cartRef = cartDoc
         user.wishlistRef = wishListDoc
 
-        Log.d("userInfo", "Sign up " + user.toString())
+//        Log.d("userInfo", "Sign up " + user.toString())
 
         userDoc.set(user).addOnSuccessListener {
             callback()
@@ -319,11 +322,11 @@ object Utils {
         cartDoc.set(cart)
             .addOnSuccessListener {
                 // Xử lý khi tài liệu được thêm thành công
-                println("Document added with ID: ${userDoc.id}")
+//                println("Document added with ID: ${userDoc.id}")
             }
             .addOnFailureListener { e ->
                 // Xử lý lỗi nếu có
-                println("Error adding document: $e")
+//                println("Error adding document: $e")
             }
         wishListDoc.set(wishList)
     }
