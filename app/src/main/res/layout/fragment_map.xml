@@ -36,9 +36,11 @@
                 android:id="@+id/tvAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Address"
+                android:hint="@string/txt_address"
                 android:paddingTop="12dp"
-                android:paddingBottom="12dp" />
+                android:paddingBottom="12dp"
+                android:maxLines="2"
+                android:ellipsize="end"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView

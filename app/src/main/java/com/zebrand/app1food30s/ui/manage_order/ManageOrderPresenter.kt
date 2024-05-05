@@ -2,17 +2,11 @@ package com.zebrand.app1food30s.ui.manage_order
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
-import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.DocumentReference
 import com.zebrand.app1food30s.adapter.ManageOrderAdapter
-import com.zebrand.app1food30s.adapter.MyOrderAdapter
 import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.utils.FireStoreUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 class ManageOrderPresenter(private val context: Context, private val view: ManageOrderMVPView) {
     fun getManageOrders(adapter: ManageOrderAdapter, manageOrderList: MutableList<Order>, customerArr: MutableSet<String>) {
@@ -21,6 +15,7 @@ class ManageOrderPresenter(private val context: Context, private val view: Manag
         manageOrderList.clear()
         adapter.clear()
 
+        view.showShimmerEffectForOrders(5)
         mDBOrder.get().addOnSuccessListener { documents ->
             for (document in documents) {
                 val newObject: Order = document.toObject(Order::class.java)

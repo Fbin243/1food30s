@@ -236,5 +236,8 @@
     <string name="txt_map">Vui lòng chọn địa chỉ để tính phí ship</string>
     <string name="txt_cart_summary">Thông tin giỏ hàng</string>
     <string name="txt_shipping_info">Thông tin giao hàng</string>
+    <string name="txt_no_product_available">Không có sản phẩm phù hợp</string>
+    <string name="txt_no_category_available">Không có danh mục phù hợp</string>
+    <string name="txt_no_offer_available">Không có ưu đãi phù hợp</string>
 
 </resources>
