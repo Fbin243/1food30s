@@ -1,7 +1,6 @@
 package com.zebrand.app1food30s.ui.checkout
 
 
-import android.content.Context
 //import com.paypal.checkout.PayPalCheckout
 //import com.paypal.checkout.approve.OnApprove
 //import com.paypal.checkout.config.CheckoutConfig
@@ -19,6 +18,7 @@ import android.content.Context
 //import vn.zalopay.sdk.ZaloPayError
 //import vn.zalopay.sdk.ZaloPaySDK
 //import vn.zalopay.sdk.listeners.PayOrderListener
+import android.content.Context
 import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
@@ -26,10 +26,12 @@ import android.location.Location
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.StrictMode
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Base64
 import android.util.Log
 import android.widget.ArrayAdapter
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.RequestQueue
@@ -41,13 +43,21 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.firestore.FirebaseFirestore
+import com.here.sdk.core.GeoBox
+import com.here.sdk.core.GeoCoordinates
+import com.here.sdk.core.LanguageCode
+import com.here.sdk.core.engine.SDKNativeEngine
+import com.here.sdk.core.engine.SDKOptions
+import com.here.sdk.core.errors.InstantiationErrorException
+import com.here.sdk.search.SearchEngine
+import com.here.sdk.search.SearchOptions
+import com.here.sdk.search.TextQuery
 import com.paypal.android.corepayments.CoreConfig
 import com.paypal.android.corepayments.Environment
 import com.paypal.android.corepayments.PayPalSDKError
@@ -60,6 +70,7 @@ import com.paypal.android.paypalnativepayments.PayPalNativeShippingAddress
 import com.paypal.android.paypalnativepayments.PayPalNativeShippingListener
 import com.paypal.android.paypalnativepayments.PayPalNativeShippingMethod
 import com.zebrand.app1food30s.R
+import com.zebrand.app1food30s.adapter.AddressAdapter
 import com.zebrand.app1food30s.adapter.CheckoutItemsAdapter
 import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.databinding.ActivityCheckoutBinding
@@ -68,8 +79,8 @@ import com.zebrand.app1food30s.ui.main.MainActivity
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.Utils
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -98,7 +109,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     private lateinit var paymentArr: Array<String>
 
     private lateinit var queue: RequestQueue
-    var orderId = ""
+    private var orderId = ""
     private val url = "https://api-m.sandbox.paypal.com/v2/checkout/orders/"
     private val urlToken = "https://api-m.sandbox.paypal.com/v1/oauth2/token"
     var token = "Bearer "
@@ -106,6 +117,15 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 //    val clientId = "AQi0jeUAAGwLBWPY-_J-KqReZQ5udKOfjEH17RwJGuzrRFqn-RKKiBoOtdSF1AOEd6yVw_tzGM1sbvzd"
     val clientSecret = "EO0MxmLuQfbA0Cq8PSNbDA6JHHims1JBMjG4gCLLmjMesgI0tpIdWYyIJMBjsPCuRzltRQdbQaWIAIc4"
 //    val clientSecret = "AQi0jeUAAGwLBWPY-_J-KqReZQ5udKOfjEH17RwJGuzrRFqn-RKKiBoOtdSF1AOEd6yVw_tzGM1sbvzd"
+
+    private var searchEngine: SearchEngine? = null
+    // Coordinates roughly encompassing Ho Chi Minh City
+    private lateinit var southWestCornerHCMC: GeoCoordinates
+    private lateinit var northEastCornerHCMC: GeoCoordinates
+    private lateinit var hcmcGeoBox: GeoBox
+    private lateinit var hcmcArea: TextQuery.Area
+    private var marker: Marker? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCheckoutBinding.inflate(layoutInflater)
@@ -118,7 +138,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 
 //        paypalConfig()
         apiKey = "AIzaSyBQFpHSKFfBqU9XM8ZFGOEHPGyMkh6iCZk"
-        defaultLatLng = LatLng(10.780889, 106.699306) // Central Post Office coordinates
+        defaultLatLng = LatLng(10.762622, 106.682171)  // University of Science
 
         preferences = MySharedPreferences.getInstance(this)
         userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
@@ -139,33 +159,19 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
             .findFragmentById(R.id.map) as SupportMapFragment
         // when the map is ready, onMapReady() callback is triggered
         mapFragment.getMapAsync(this)
-
         // -----Places SDK-----
         if (!Places.isInitialized()) {
             Places.initialize(applicationContext, apiKey)
         }
+        // NEW MAP
+        initializeHERESDK()
 
 //        Paypal
         queue = Volley.newRequestQueue(this)
 
-        binding.tvAddress.setOnFocusChangeListener { v, hasFocus ->
-//            Log.d("FocusChange", "Focus change detected. Has focus: $hasFocus")
-            if (hasFocus) {
-                // Log the beginning of the Autocomplete intent action
-//                Log.d("FocusChange", "Launching Autocomplete intent.")
-
-                // Define the fields to be retrieved
-                val fields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
-                // Full screen search
-                val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields).build(this)
-
-                // Launch the Autocomplete intent when the user focuses on the input
-                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
-//                Log.d("FocusChange", "Intent for Autocomplete started.")
-            } else {
-                // Optionally log when the user moves focus away
-//                Log.d("FocusChange", "Focus lost from tvAddress.")
-            }
+        binding.searchButton.setOnClickListener() {
+            // Implement HERE SDK search suggestion logic here
+            handleAddressInput(binding.tvAddress.text.toString())
         }
 
         setupRecyclerView()
@@ -177,12 +183,99 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         handlePlaceOrderButton()
     }
 
+    private fun initializeHERESDK() {
+        // Set your credentials for the HERE SDK.
+        val accessKeyID = "r9rEHx6tUarZRTyRl5_1IA"
+        val accessKeySecret = "Mx3jwrKn5HW6EowO5IdLT-LQOSfZpZsn-urW-EkgwjvAuRTe3X99lVJtDtGBlppBhGwbOg3OPoC6s-8FAtyu-g"
+        val options = SDKOptions(accessKeyID, accessKeySecret)
+        try {
+            val context: Context = this
+            SDKNativeEngine.makeSharedInstance(context, options)
+            initializeSearchEngine()
+            setupGeoCoordinates()
+        } catch (e: InstantiationErrorException) {
+            throw RuntimeException("Initialization of HERE SDK failed: " + e.error.name)
+        }
+    }
+
+    private fun initializeSearchEngine() {
+        try {
+            searchEngine = SearchEngine()
+        } catch (e: InstantiationErrorException) {
+            Log.e("HERE SDK", "Search engine initialization failed.", e)
+        }
+    }
+
+    private fun setupGeoCoordinates() {
+        southWestCornerHCMC = GeoCoordinates(10.693360, 106.568604)
+        northEastCornerHCMC = GeoCoordinates(10.880334, 106.826672)
+        hcmcGeoBox = GeoBox(southWestCornerHCMC, northEastCornerHCMC)
+        hcmcArea = TextQuery.Area(hcmcGeoBox)
+    }
+
+    private fun handleAddressInput(userInput: String) {
+        val autoSuggestQuery = TextQuery(userInput, hcmcArea)
+        val searchOptions = SearchOptions().apply {
+            languageCode = LanguageCode.EN_US // TODO
+            maxItems = 5
+        }
+
+        searchEngine?.suggest(autoSuggestQuery, searchOptions) { error, suggestions ->
+            if (error != null) {
+                Log.e("HERE SDK", "Autosuggest Error: ${error.name}")
+                return@suggest
+            }
+
+//            val addresses = suggestions?.map { it.title + " - " + it.place?.address?.addressText }.orEmpty()
+            val addresses = suggestions?.mapNotNull { it.place?.address?.addressText }.orEmpty()
+            runOnUiThread {
+                AlertDialog.Builder(this)
+                    .setTitle("Select Address")
+                    .setAdapter(AddressAdapter(this, addresses)) { dialog, which ->
+                        selectAddressAndGeocode(addresses[which])
+                    }
+                    .show()
+            }
+        }
+    }
+
+    private fun selectAddressAndGeocode(selectedAddress: String) {
+        val addressQuery = TextQuery(selectedAddress, hcmcArea)
+        searchEngine?.search(addressQuery, SearchOptions()) { error, results ->
+            if (error != null) {
+                Log.e("HERE SDK", "Search Error: ${error.name}")
+                return@search
+            }
+
+            results?.firstOrNull()?.geoCoordinates?.let { coordinates ->
+                val latLng = LatLng(coordinates.latitude, coordinates.longitude)
+                runOnUiThread {
+                    binding.tvAddress.setText(selectedAddress)
+                    updateMarkerAndAddress(latLng, focusCamera = true)
+                    calculateDistance(defaultLatLng, latLng)
+                }
+            }
+        }
+    }
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         val hoChiMinhCity = LatLng(10.776889, 106.700806)
-        val marker = mMap.addMarker(MarkerOptions().position(hoChiMinhCity).title("Marker in Ho Chi Minh City").draggable(true))
+
+        // Initialize or move the marker
+        if (marker == null) {
+            val markerOptions = MarkerOptions().position(hoChiMinhCity).title("Marker in Ho Chi Minh City").draggable(true)
+            marker = mMap.addMarker(markerOptions)
+        } else {
+            marker?.position = hoChiMinhCity
+        }
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hoChiMinhCity, 10f))
 
+        setupMapListeners()
+    }
+
+    private fun setupMapListeners() {
         mMap.setOnCameraMoveStartedListener {
             val scrollView = findViewById<LockableNestedScrollView>(R.id.scrollView)
             scrollView.setScrollingEnabled(false)
@@ -193,36 +286,80 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
             scrollView.setScrollingEnabled(true)
         }
 
-        // Add a click listener for the map
         mMap.setOnMapClickListener { latLng ->
-            // Move the marker to the clicked position
-            if (marker != null) {
-                marker.position = latLng
-                calculateDistance(defaultLatLng, latLng)
-            }
-
-            // Optionally, animate the camera to the new position
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
-
-            // Use reverse geocoding to update the address
-            val geocoder = Geocoder(this@CheckoutActivity, Locale.getDefault())
-            val addresses: List<Address>?
-            try {
-                addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-                if (!addresses.isNullOrEmpty()) {
-                    val address: Address = addresses[0]
-                    // Fetch the address lines and join them
-                    val addressText = (0..address.maxAddressLineIndex).joinToString(separator = " ") {
-                        address.getAddressLine(it)
-                    }
-                    binding.tvAddress.setText(addressText)
-                }
-            } catch (e: IOException) {
-                Log.e("CheckoutActivity", "Unable to get address from the clicked location", e)
-            }
+            updateMarkerAndAddress(latLng)
         }
     }
 
+    private fun updateMarkerAndAddress(latLng: LatLng, focusCamera: Boolean = true) {
+        if (marker == null) {
+            val markerOptions = MarkerOptions().position(latLng).title("Selected Location").draggable(true)
+            marker = mMap.addMarker(markerOptions)
+        } else {
+            marker?.position = latLng
+        }
+
+        if (focusCamera) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+        }
+
+        updateAddressAndCalculateDistance(latLng)
+    }
+
+    private fun updateAddressAndCalculateDistance(latLng: LatLng) {
+        val geocoder = Geocoder(this@CheckoutActivity, Locale.getDefault())
+        try {
+            val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            if (addresses != null) {
+                if (addresses.isNotEmpty()) {
+                    val address = addresses[0]
+                    val addressText = (0..address.maxAddressLineIndex).joinToString(separator = " ") { address.getAddressLine(it) }
+                    binding.tvAddress.setText(addressText)
+
+                    // Calculate distance from the default location to this new location
+                    calculateDistance(defaultLatLng, latLng)
+                }
+            }
+        } catch (e: IOException) {
+            Log.e("CheckoutActivity", "Unable to get address from the clicked location", e)
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode != AUTOCOMPLETE_REQUEST_CODE || data == null) return
+
+        if (resultCode == RESULT_OK) {
+            val place = Autocomplete.getPlaceFromIntent(data)
+            binding.tvAddress.setText(place.address)
+            binding.tvAddress.clearFocus()
+
+            place.latLng?.let {
+                val cameraUpdate = CameraUpdateFactory.newLatLngZoom(it, 15f)
+                mMap.moveCamera(cameraUpdate)
+            }
+        } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+            val status = Autocomplete.getStatusFromIntent(data)
+            // Handle the error
+        }
+    }
+
+    private fun calculateDistance(from: LatLng, to: LatLng) {
+        val results = FloatArray(1)
+        Location.distanceBetween(from.latitude, from.longitude, to.latitude, to.longitude, results)
+        val distance = String.format("%.1f", results[0]/1000.0).toDouble() // distance in km
+
+        runOnUiThread {
+            shippingFee = distance * 0.2
+            val formattedShipFee = Utils.formatPrice(shippingFee, this@CheckoutActivity)  // Assume 0.2 as your rate
+            binding.tvShipInfo.text = "Ship: $formattedShipFee - Distance: ${distance} km"
+            updateTotalPrice()
+        }
+    }
+
+    // --------------------PAYPAL--------------------
     private suspend fun getPayPalToken(url: String): String {
         return suspendCoroutine { continuation ->
             val jsonObjectRequest = object : JsonObjectRequest(
@@ -366,7 +503,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 
     private suspend fun capturePayPalOrder(token: String, orderId: String): String {
         return suspendCoroutine { continuation ->
-            var url = url + orderId + "/capture"
+            val url = url + orderId + "/capture"
 
             val jsonObjectRequest = object : JsonObjectRequest(
                 Method.POST, url, null,
@@ -391,59 +528,6 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
             queue.add(jsonObjectRequest)
         }
     }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-//        Log.d("ActivityResult", "Request Code: $requestCode, Result Code: $resultCode")
-
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK && data != null) {
-                val place = Autocomplete.getPlaceFromIntent(data)
-//                Log.d("ActivityResult", "Place found: ${place.name}")
-
-                // Get the address
-                binding.tvAddress.setText(place.address)
-                binding.tvAddress.clearFocus()
-//                Log.d("ActivityResult", "Address set: ${place.address}")
-
-                val latLng = place.latLng
-                // Use latitude and longitude to update the map's location
-                latLng?.let {
-                    val cameraUpdate = CameraUpdateFactory.newLatLngZoom(it, 15f)
-                    mMap.moveCamera(cameraUpdate)
-//                    Log.d("ActivityResult", "Map camera moved to: ${latLng.latitude}, ${latLng.longitude}")
-                }
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR && data != null) {
-                // Handle the error
-                val status = Autocomplete.getStatusFromIntent(data)
-//                Log.e("ActivityResult", "Autocomplete error: ${status.statusMessage}")
-            } else {
-//                Log.w("ActivityResult", "Result not OK or data is null")
-            }
-        } else {
-//            Log.d("ActivityResult", "Unhandled request code")
-        }
-    }
-
-    private fun calculateDistance(from: LatLng, to: LatLng) {
-        val results = FloatArray(1)
-        Location.distanceBetween(from.latitude, from.longitude, to.latitude, to.longitude, results)
-        val distance = String.format("%.1f", results[0]/1000.0).toDouble() // distance in km
-
-        runOnUiThread {
-            shippingFee = distance * 0.2
-            val formattedShipFee = Utils.formatPrice(shippingFee, this@CheckoutActivity)  // Assume 0.2 as your rate
-            binding.tvShipInfo.text = "Ship: $formattedShipFee - Distance: ${distance} km"
-            updateTotalPrice()
-        }
-    }
-
-    data class DirectionsResult(val routes: List<Route>)
-    data class Route(val legs: List<Leg>)
-    data class Leg(val distance: Distance, val duration: Duration)
-    data class Distance(val text: String, val value: Int)
-    data class Duration(val text: String, val value: Int)
 
     // TODO: fix snackbar top to bottom of container
     override fun navigateToOrderConfirmation(showOrderConfirmation: Boolean, orderId: String) {
@@ -498,7 +582,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         }
     }
 
-    fun Context.getConnectivityManager() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    private fun Context.getConnectivityManager() = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     fun getIpAddress(context: Context) = with(context.getConnectivityManager()) {
         getLinkProperties(activeNetwork)!!.linkAddresses[1].address.hostAddress!!
@@ -524,8 +608,6 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 
     override fun displayError(error: String) {
         runOnUiThread {
-            // Handle error or empty state
-//            binding.tvCartTotalAmount.text = getString(R.string.product_price_number, 0.0)
             binding.textViewAmount.text = Utils.formatPrice(0.0, this)
         }
     }
