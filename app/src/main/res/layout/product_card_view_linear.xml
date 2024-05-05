@@ -38,8 +38,8 @@
                 <ImageView
                     android:id="@+id/productRibbon"
                     android:visibility="gone"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
                     android:background="@drawable/ic_sold_out" />

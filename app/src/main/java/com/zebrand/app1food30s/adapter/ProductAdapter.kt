@@ -98,6 +98,13 @@ class ProductAdapter(
             }
             holder.productOldPrice.visibility = View.VISIBLE
         }
+        Log.i("TAG123", "onBindViewHolder: $wishlistedProductIds")
+        Log.i("TAG123", "onBindViewHolder: $noItemLayout")
+        if(wishlistedProductIds.isEmpty()) {
+            noItemLayout?.visibility = View.VISIBLE
+        } else {
+            noItemLayout?.visibility = View.GONE
+        }
 
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(product)
@@ -119,7 +126,7 @@ class ProductAdapter(
 //        wishlistedProductIds.clear()
 //        wishlistedProductIds.addAll(newWishlistedProductIds)
         wishlistedProductIds = newWishlistedProductIds.toMutableSet()
-//        Log.d("Test00", "updateWishlistProductIds: $wishlistedProductIds")
+        Log.d("TAG123", "updateWishlistProductIds: $wishlistedProductIds")
     }
 
     fun updateWishlistState(newWishlistedProductIds: Set<String>) {
