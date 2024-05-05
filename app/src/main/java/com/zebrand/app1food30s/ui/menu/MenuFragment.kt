@@ -52,6 +52,11 @@ class MenuFragment(private val calledFromActivity: Boolean = false) : Fragment()
         Utils.initSwipeRefreshLayout(binding.swipeRefreshLayout, this, resources)
         Utils.replaceFragment(ListProductFragment(), childFragmentManager, R.id.fragment_container)
 
+        if (!calledFromActivity) {
+            Log.i("TAG123", "onCreateView: called from activity")
+            addPaddingBottom()
+        }
+
         childFragmentManager.registerFragmentLifecycleCallbacks(
             object : FragmentManager.FragmentLifecycleCallbacks() {
                 override fun onFragmentViewCreated(
@@ -114,6 +119,10 @@ class MenuFragment(private val calledFromActivity: Boolean = false) : Fragment()
         binding.backFromMenu.setOnClickListener {
             requireActivity().finish()
         }
+    }
+
+    fun addPaddingBottom() {
+        binding.fragmentContainer.setPadding(0, 0, 0, 150)
     }
 
     fun saveCategoryIdAndAdapterPosition(categoryId: String, adapterPosition: Int) {

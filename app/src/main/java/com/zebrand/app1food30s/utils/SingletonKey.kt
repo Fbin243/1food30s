@@ -24,4 +24,6 @@ object SingletonKey {
     const val BANKING = "Banking"
     const val CASH = "Cash on Delivery"
 
+    // Exchange rate (VND to USD)
+    const val EXCHANGE_RATE = "EXCHANGE_RATE"
 }

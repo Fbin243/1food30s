@@ -47,7 +47,7 @@
     <string name="txt_order_accepted_status">Đã chấp nhận đơn hàng</string>
     <string name="txt_on_delivery_status">Đang giao hàng</string>
     <string name="txt_delivered_status">Đã giao hàng</string>
-    <string name="txt_order_total">Tổng: </string>
+    <string name="txt_order_total">Tổng:&#160;</string>
     <string name="txt_see_order_status">Trạng thái đơn ></string>
     <string name="txt_previous_orders">Đơn hàng trước đó</string>
     <string name="txt_order_status">Trạng thái đơn</string>
@@ -233,5 +233,8 @@
     <string name="txt_please_enter_order_id">Vui lòng nhập ID đơn hàng</string>
     <string name="wishlist">Danh sách yêu thích</string>
     <string name="txt_phone_2">Số điện thoại:&#160;</string>
+    <string name="txt_map">Vui lòng chọn địa chỉ để tính phí ship</string>
+    <string name="txt_cart_summary">Thông tin giỏ hàng</string>
+    <string name="txt_shipping_info">Thông tin giao hàng</string>
 
 </resources>

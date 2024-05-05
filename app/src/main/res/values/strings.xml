@@ -279,4 +279,7 @@
 
     <string name="txt_visible" translatable="false">visible</string>
     <string name="txt_gone" translatable="false">gone</string>
+    <string name="txt_map">Choose address to calculate ship fee</string>
+    <string name="txt_cart_summary">Cart summary</string>
+    <string name="txt_shipping_info">Shipping Info</string>
 </resources>
