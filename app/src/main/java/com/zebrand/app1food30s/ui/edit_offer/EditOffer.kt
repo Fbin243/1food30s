@@ -150,6 +150,17 @@ class EditOffer : AppCompatActivity() {
     private fun saveOfferToFirestore(offerId: String) {
         val offerName = nameEditText.text.toString().trim()
 
+        if (offerName.isEmpty()) {
+            Toast.makeText(this, "Please enter offer name!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Kiểm tra có hình ảnh được chọn hay không
+        if (imageUri == null) {
+            Toast.makeText(this, "Please select image!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         imageUri?.let { uri ->
             val fileName = "product${UUID.randomUUID()}.png"
             val storageReference = fireStorage.reference.child("images/offer/$fileName")
@@ -168,6 +179,12 @@ class EditOffer : AppCompatActivity() {
 
     private fun updateOfferDetails(offerId: String, imagePath: String) {
         val offerName = nameEditText.text.toString().trim()
+
+        if (discountRateEditText.text.toString().toIntOrNull() == null) {
+            Toast.makeText(this, "Please enter rate!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val offerDiscountRate = discountRateEditText.text.toString().toIntOrNull() ?: 0
 
         val offerUpdate = hashMapOf<String, Any>(
