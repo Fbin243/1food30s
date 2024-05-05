@@ -11,6 +11,7 @@ import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
+import com.zebrand.app1food30s.utils.Utils
 
 class ManageOfferAdapter(private val offers: List<Offer>, private val onOfferClick: (Offer) -> Unit) :
     RecyclerView.Adapter<ManageOfferAdapter.OfferViewHolder>() {
@@ -50,7 +51,7 @@ class ManageOfferAdapter(private val offers: List<Offer>, private val onOfferCli
 
     override fun onBindViewHolder(holder: OfferViewHolder, position: Int) {
         val offer: Offer = offers[position]
-        Picasso.get().load(offer.image).into(holder.offerImg)
+        Picasso.get().load(offer.image).placeholder(Utils.getShimmerDrawable()).into(holder.offerImg)
         holder.offerName.text = offer.name
 //        holder.offerRate.text = offer.discountRate.toString()
 

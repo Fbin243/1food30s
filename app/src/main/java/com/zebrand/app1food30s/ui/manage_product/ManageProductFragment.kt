@@ -108,7 +108,7 @@ class ManageProductFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
+        override fun onResume() {
         super.onResume()
         handleDisplayProductList()
     }

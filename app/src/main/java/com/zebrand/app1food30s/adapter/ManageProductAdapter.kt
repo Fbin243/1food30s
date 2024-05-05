@@ -11,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Product
+import com.zebrand.app1food30s.utils.Utils
 
 class ManageProductAdapter(private val products: List<Product>, private val onProductClick: (Product) -> Unit) :
     RecyclerView.Adapter<ManageProductAdapter.ProductViewHolder>() {
@@ -49,7 +50,7 @@ class ManageProductAdapter(private val products: List<Product>, private val onPr
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product: Product = products[position]
-        Picasso.get().load(product.image).into(holder.productImg)
+        Picasso.get().load(product.image).placeholder(Utils.getShimmerDrawable()).into(holder.productImg)
 //        holder.productImg.setImageResource(product.image)
         holder.productTitle.text = product.name
         val categoryId = product.idCategory?.id ?: "non"
