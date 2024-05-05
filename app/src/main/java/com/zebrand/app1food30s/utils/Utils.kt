@@ -187,11 +187,10 @@ object Utils {
         context: Context,
         productId: String,
         userId: String,
-        defaultUserId: String = MySharedPreferences.defaultStringValue
+        defaultUserId: String = MySharedPreferences.defaultStringValue,
+        addQuantity: Int = 1
     ) {
         if (userId == defaultUserId) {
-//            val loginIntent = Intent(context, LoginActivity::class.java)
-//            context.startActivity(loginIntent)
             val loginIntent = Intent(context, LoginActivity::class.java)
             loginIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             context.startActivity(loginIntent)
@@ -207,38 +206,24 @@ object Utils {
 
             cartRef.get().addOnSuccessListener cart@{ document ->
                 val cart = document.toObject(Cart::class.java)
-//                val cart = if (document.exists()) {
-//                    document.toObject(Cart::class.java)
-//                }
-//                else {
-//                    Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
-//                }
                 cart?.let {
-                    val existingItemIndex =
-                        it.items.indexOfFirst { item -> item.productId == productRef }
+                    val existingItemIndex = it.items.indexOfFirst { item -> item.productId == productRef }
                     if (existingItemIndex >= 0) {
                         // Product exists, update quantity
-                        val newQuantity = it.items[existingItemIndex].quantity + 1
+                        val newQuantity = it.items[existingItemIndex].quantity + addQuantity
                         if (newQuantity <= stock) {
                             it.items[existingItemIndex].quantity = newQuantity
                         } else {
-                            Toast.makeText(context, "Product is out of stock.", Toast.LENGTH_SHORT)
-                                .show()
+                            Toast.makeText(context, "Not enough stock available.", Toast.LENGTH_SHORT).show()
                             return@cart
                         }
                     } else {
-                        // New product, add to cart
-                        it.items.add(CartItem(productRef, "", "", 0.0, 0.0, "", 0, 1))
+                        // New product, add to cart with addQuantity
+                        it.items.add(CartItem(productRef, "", "", 0.0, 0.0, "", 0, addQuantity))
                     }
 
                     cartRef.set(it).addOnSuccessListener {
-//                        Toast.makeText(
-//                            context,
-//                            "Added to cart successfully!",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                        showCustomSnackbar(context, "Added to cart successfully!")
-                        showCustomToast(context, "Added to cart successfully!", "success")
+                        Toast.makeText(context, "Added to cart successfully!", Toast.LENGTH_SHORT).show()
                     }
                 }
             }.addOnFailureListener { exception ->
@@ -250,6 +235,7 @@ object Utils {
             Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     fun setUserDataInFireStore(user: User, callback: () -> Unit = {}) {
         val userRef = FireStoreUtils.mDBUserRef

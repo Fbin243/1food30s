@@ -43,6 +43,7 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView, Wishlis
     private var currentProduct: Product? = null
     private lateinit var wishlistPresenter: WishlistPresenter
     private var wishlistedProductIds: MutableSet<String> = mutableSetOf()
+    private var productStock: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProductDetailBinding.inflate(layoutInflater)
@@ -76,6 +77,29 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView, Wishlis
         handleCloseDetailScreen()
         handleAddToCart()
         handleMainProductWishlistClick()
+        handleMinusPlusQuantity()
+    }
+
+    private fun handleMinusPlusQuantity() {
+        binding.ivMinus.setOnClickListener {
+            decrementProductQuantity()
+        }
+
+        binding.ivPlus.setOnClickListener {
+            incrementProductQuantity()
+        }
+    }
+    private fun incrementProductQuantity() {
+        val currentQuantity = binding.productQuantity.text.toString().toInt()
+        if (currentQuantity < productStock) {
+            binding.productQuantity.text = (currentQuantity + 1).toString()
+        }
+    }
+    private fun decrementProductQuantity() {
+        val currentQuantity = binding.productQuantity.text.toString().toInt()
+        if (currentQuantity > 1) {
+            binding.productQuantity.text = (currentQuantity - 1).toString()
+        }
     }
 
     private fun handleMainProductWishlistClick() {
@@ -151,17 +175,16 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView, Wishlis
     private fun handleAddToCart() {
         binding.addToCartBtn.setOnClickListener {
             currentProduct?.let { product ->
-                Utils.addProductToCart(applicationContext, product.id, userId, defaultUserId)  // Using userId as both userId and defaultUserId for example
+                val quantityText = binding.productQuantity.text.toString()
+                val quantity = try {
+                    quantityText.toInt()
+                } catch (e: NumberFormatException) {
+                    0
+                }
+                Utils.addProductToCart(applicationContext, product.id, userId, defaultUserId, quantity)  // Using userId as both userId and defaultUserId for example
             }
         }
     }
-
-//    private suspend fun fetchWishlistAndUpdateUI() {
-//        val wishlistItems = WishlistManager.fetchWishlistForCurrentUser()
-//        // Now you have the latest wishlistItems, you can use them to mark products as wishlisted in the UI
-//        // This step will depend on how you implement the display of related products
-//        showRelatedProducts(productDetailPresenter.relatedProducts, productDetailPresenter.offers)
-//    }
 
     override fun showProductDetail(product: Product, category: Category, offer: Offer?) {
         currentProduct = product
@@ -176,6 +199,7 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView, Wishlis
             binding.productSold.text = it
         }
         product.description.also { binding.productDescription.text = it }
+        productStock = product.stock
         "${product.stock}".also { binding.productStock.text = it }
 //        Handle price with offer
         val oldPrice = product.price
@@ -199,6 +223,13 @@ class ProductDetailActivity : AppCompatActivity(), ProductDetailMVPView, Wishlis
         binding.ivWishlist.setImageResource(
             if (isProductWishlisted) R.drawable.ic_wishlist_active else R.drawable.ic_wishlist
         )
+
+        // minus plus
+        val quantityControlEnabled = productStock > 0
+        binding.productQuantity.isEnabled = quantityControlEnabled
+        binding.ivPlus.isEnabled = quantityControlEnabled
+        binding.ivMinus.isEnabled = quantityControlEnabled
+        binding.productQuantity.text = if (quantityControlEnabled) "1" else "0"
     }
 
     // TODO

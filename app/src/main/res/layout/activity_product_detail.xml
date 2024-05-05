@@ -245,6 +245,7 @@
                                 android:paddingEnd="@dimen/spacing4">
 
                                 <ImageView
+                                    android:id="@+id/ivMinus"
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:layout_gravity="center_vertical"
@@ -263,6 +264,7 @@
                                     android:textStyle="bold" />
 
                                 <ImageView
+                                    android:id="@+id/ivPlus"
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:layout_gravity="center_vertical"
