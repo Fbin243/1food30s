@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.ui.profile
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -32,6 +33,7 @@ import com.zebrand.app1food30s.utils.FirebaseUtils.fireStorage
 import com.zebrand.app1food30s.utils.FirebaseUtils.fireStore
 import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
+import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -45,6 +47,7 @@ class ProfileAfterLoginFragment : Fragment() {
     private var imageUri: Uri? = null
     private var currentImagePath: String? = null
     private lateinit var mGoogleSignInClient: GoogleSignInClient
+    private lateinit var mySharePreference: MySharedPreferences
 
     // ResultLauncher for handling image picking result
     private val pickImageLauncher =
@@ -58,6 +61,10 @@ class ProfileAfterLoginFragment : Fragment() {
             }
         }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mySharePreference = MySharedPreferences.getInstance(context)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,12 +82,18 @@ class ProfileAfterLoginFragment : Fragment() {
         binding.ava.setOnClickListener {
             pickImageLauncher.launch("image/*")
         }
-        // Set up the click listener for the layoutMyOrders
-        binding.layoutMyOrders.setOnClickListener {
-            // Navigate to AdminStatisticsActivity
-            val intent = Intent(activity, MyOrderActivity::class.java)
-            startActivity(intent)
+
+        if(mySharePreference.getBoolean(SingletonKey.IS_ADMIN)) {
+            binding.layoutMyOrders.visibility = View.GONE
+        } else {
+            // Set up the click listener for the layoutMyOrders
+            binding.layoutMyOrders.setOnClickListener {
+                // Navigate to AdminStatisticsActivity
+                val intent = Intent(activity, MyOrderActivity::class.java)
+                startActivity(intent)
+            }
         }
+
         // ================================================================
 //        binding.username.setText(idUser)
         binding.layoutChangeLanguage.setOnClickListener {
