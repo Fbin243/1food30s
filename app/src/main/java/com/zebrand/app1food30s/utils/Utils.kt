@@ -272,6 +272,10 @@ object Utils {
                         }
                     } else {
                         // New product, add to cart with addQuantity
+                        if (stock <= 0) {
+                            showCustomToast(context, "Not enough stock available.", "error")
+                            return@cart
+                        }
                         it.items.add(CartItem(productRef, "", "", 0.0, 0.0, "", 0, addQuantity))
                     }
 
