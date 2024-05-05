@@ -16,7 +16,9 @@ class MyOrderViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifec
         return when (position) {
             0 -> MyActiveOrderFragment()
             1 -> MyPrevOrderFragment()
-            else -> MyActiveOrderFragment()
+            else -> MyPrevOrderFragment()
         }
     }
+
+
 }

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.MyOrderAdapter
@@ -42,7 +43,11 @@ class MyOrderActivity : AppCompatActivity() {
         mySharePreference = MySharedPreferences.getInstance(this)
 
         viewPager2Adapter = MyOrderViewPagerAdapter(supportFragmentManager, lifecycle)
+
         binding.viewPager2.adapter = viewPager2Adapter // Set adapter here
+
+        binding.viewPager2.isUserInputEnabled = false
+
         TabLayoutMediator(binding.tabLayout, binding.viewPager2) { tab, position ->
             when (position) {
                 0 -> tab.text = "Active"

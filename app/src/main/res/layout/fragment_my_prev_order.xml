@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".ui.my_order.MyPrevOrderFragment">
@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_margin="@dimen/spacing10"
+        android:layout_marginTop="@dimen/spacing10"
+        android:layout_marginHorizontal="@dimen/spacing10"
         >
         <androidx.recyclerview.widget.RecyclerView
             android:nestedScrollingEnabled="false"
@@ -20,56 +21,56 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <LinearLayout
-            android:id="@+id/noItemLayout"
-            android:layout_width="match_parent"
-            android:layout_height="1000dp"
-            android:orientation="vertical"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:gravity="center_horizontal"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@+id/linearBtn"
-            tools:ignore="UseCompoundDrawables"
-            android:background="@color/white">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/noItemLayout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="1000dp"-->
+<!--            android:orientation="vertical"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            android:gravity="center_horizontal"-->
+<!--            android:visibility="gone"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/linearBtn"-->
+<!--            tools:ignore="UseCompoundDrawables"-->
+<!--            android:background="@color/white">-->
 
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_marginTop="100dp"
-                android:src="@drawable/no_items" />
+<!--            <ImageView-->
+<!--                android:id="@+id/imageView2"-->
+<!--                android:layout_width="150dp"-->
+<!--                android:layout_height="150dp"-->
+<!--                android:layout_marginTop="100dp"-->
+<!--                android:src="@drawable/no_items" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="@string/txt_no_item_available"
-                android:textSize="@dimen/font_size16"
-                android:textStyle="bold" />
-        </LinearLayout>
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:text="@string/txt_no_item_available"-->
+<!--                android:textSize="@dimen/font_size16"-->
+<!--                android:textStyle="bold" />-->
+<!--        </LinearLayout>-->
     </LinearLayout>
 
 
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/orderShimmer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewContainer">
+<!--    <com.facebook.shimmer.ShimmerFrameLayout-->
+<!--        android:id="@+id/orderShimmer"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="12dp"-->
+<!--        android:orientation="vertical"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/textViewContainer">-->
 
-        <LinearLayout
-            android:id="@+id/linearShimmer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/linearShimmer"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical">-->
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
-    </com.facebook.shimmer.ShimmerFrameLayout>
+<!--    </com.facebook.shimmer.ShimmerFrameLayout>-->
 
 </FrameLayout>

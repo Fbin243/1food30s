@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.MyOrderAdapter
 import com.zebrand.app1food30s.data.entity.Order
+import com.zebrand.app1food30s.databinding.FragmentManageProductBinding
 import com.zebrand.app1food30s.databinding.FragmentMyActiveOrderBinding
 import com.zebrand.app1food30s.ui.my_order.my_order_details.MyOrderDetailsActivity
 import com.zebrand.app1food30s.utils.GlobalUtils
@@ -23,7 +24,10 @@ import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 
 class MyActiveOrderFragment : Fragment(), MyOrderMVPView {
-    lateinit var binding: FragmentMyActiveOrderBinding
+    private var _binding: FragmentMyActiveOrderBinding? = null
+    private val binding get() = _binding!!
+
+//    lateinit var binding: FragmentMyActiveOrderBinding
     //    Chưa login nên không có đi qua local db để lấy data được
     private lateinit var mySharePreference: MySharedPreferences
     private lateinit var presenter: MyOrderPresenter
@@ -37,7 +41,8 @@ class MyActiveOrderFragment : Fragment(), MyOrderMVPView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentMyActiveOrderBinding.inflate(inflater, container, false)
+//        binding = FragmentMyActiveOrderBinding.inflate(inflater, container, false)
+        _binding = FragmentMyActiveOrderBinding.inflate(inflater, container, false)
         return binding.root
     }
 
