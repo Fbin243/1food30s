@@ -13,6 +13,7 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.databinding.ActivityForgotPasswordBinding
 import com.zebrand.app1food30s.databinding.DialogDeleteAccountBinding
 import com.zebrand.app1food30s.utils.FirebaseUtils
+import com.zebrand.app1food30s.utils.Utils
 import com.zebrand.app1food30s.utils.ValidateInput
 
 class ForgotPasswordActivity : AppCompatActivity() {
@@ -85,7 +86,8 @@ class ForgotPasswordActivity : AppCompatActivity() {
         mAuth.sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(this, "Email sent.", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this, "Email sent.", Toast.LENGTH_SHORT).show()
+                    Utils.showCustomToast(this, "Email sent.", "success")
 
                     android.os.Handler(Looper.getMainLooper()).postDelayed({
                         onBackPressedDispatcher.onBackPressed()

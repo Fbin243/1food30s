@@ -63,39 +63,35 @@ object Utils {
         val toastText = layout.findViewById<TextView>(R.id.toast_text)
         toastText.text = message
         val toastIcon = layout.findViewById<ImageView>(R.id.toast_icon)
+        var color = ContextCompat.getColor(context, R.color.black)
 
         // Set text and background color based on the type
         when (type) {
             "success" -> {
                 layout.setBackgroundResource(R.drawable.background_toast_success)
+//                color = ContextCompat.getColor(context, R.color.black)
 
-//                toastText.setTextColor(Color.WHITE)
-//                val color = ContextCompat.getColor(context, R.color.white)
-//                toastIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN)
             }
             "error" -> {
                 layout.setBackgroundResource(R.drawable.background_toast_error)
-
-//                toastText.setTextColor(Color.WHITE)
-//                val color = ContextCompat.getColor(context, R.color.white)
-//                toastIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+//                color = ContextCompat.getColor(context, R.color.black)
             }
             "info" -> {
-                toastText.setTextColor(Color.WHITE)
                 layout.setBackgroundResource(R.drawable.background_toast_success)
-                val color = ContextCompat.getColor(context, R.color.white)
-                toastIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+//                color = ContextCompat.getColor(context, R.color.black)
             }
             else -> {
-                toastText.setTextColor(Color.BLACK)
-                layout.setBackgroundColor(Color.LTGRAY)
+                layout.setBackgroundResource(R.drawable.background_toast_success)
+//                color = ContextCompat.getColor(context, R.color.black)
             }
         }
+        toastText.setTextColor(color)
+        toastIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN)
 
         Toast(context).apply {
             duration = Toast.LENGTH_SHORT
             view = layout
-            setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 100)
+            setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 141)
             show()
         }
     }
@@ -214,7 +210,8 @@ object Utils {
                         if (newQuantity <= stock) {
                             it.items[existingItemIndex].quantity = newQuantity
                         } else {
-                            Toast.makeText(context, "Not enough stock available.", Toast.LENGTH_SHORT).show()
+//                            Toast.makeText(context, "Not enough stock available.", Toast.LENGTH_SHORT).show()
+                            showCustomToast(context, "Not enough stock available.", "error")
                             return@cart
                         }
                     } else {
@@ -223,7 +220,8 @@ object Utils {
                     }
 
                     cartRef.set(it).addOnSuccessListener {
-                        Toast.makeText(context, "Added to cart successfully!", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(context, "Added to cart successfully!", Toast.LENGTH_SHORT).show()
+                        showCustomToast(context, "Added to cart successfully!", "success")
                     }
                 }
             }.addOnFailureListener { exception ->
@@ -235,7 +233,6 @@ object Utils {
             Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
         }
     }
-
 
     fun setUserDataInFireStore(user: User, callback: () -> Unit = {}) {
         val userRef = FireStoreUtils.mDBUserRef
