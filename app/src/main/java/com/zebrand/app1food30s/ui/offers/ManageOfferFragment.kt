@@ -26,6 +26,7 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.adapter.ManageOfferAdapter
 import com.zebrand.app1food30s.adapter.ManageProductAdapter
 import com.zebrand.app1food30s.data.AppDatabase
+import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.databinding.ActivityManageOfferBinding
@@ -62,7 +63,7 @@ class ManageOfferFragment : Fragment() {
     private lateinit var toDatePickerText: TextInputEditText
     //    private lateinit var toDatePickerText: TextInputEditText
     val discountArray = arrayOf("1% to 10%", "11% to 50%", "More than 50%")
-    val numProductArray = arrayOf("0 to 1", "2 to 10", "11 to 50", "51 to 100", "More than 100")
+    val numProductArray = arrayOf("Empty", "1 to 10", "11 to 50", "51 to 100", "More than 100")
 
 
 //    override fun onCreate(savedInstanceState: Bundle?) {
@@ -133,7 +134,7 @@ class ManageOfferFragment : Fragment() {
 
         // date picker
         val datePickerText: TextInputEditText = dialogView.findViewById(R.id.datePicker)
-        val toDatePickerText: TextInputEditText = dialogView.findViewById(R.id.datePicker)
+        val toDatePickerText: TextInputEditText = dialogView.findViewById(R.id.toDatePicker)
         val myCalendar = Calendar.getInstance()
         val datePicker = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
             myCalendar.set(Calendar.YEAR, year)
@@ -277,25 +278,35 @@ class ManageOfferFragment : Fragment() {
     }
 
     private fun filterOffersByNumProduct(selectedNumProduct: String, offers: List<Offer>): List<Offer> {
-        val range = selectedNumProduct.split(" to ").mapNotNull { it.filter { char -> char.isDigit() }.toIntOrNull() }
-        if (range.size == 2) {
-            return offers.filter {
-                it.numProduct >= range[0] && it.numProduct <= range[1]
+        return when (selectedNumProduct) {
+            "Empty" -> offers.filter { it.numProduct == 0 }
+            "More than 100" -> offers.filter { it.numProduct > 100 }
+            else -> {
+                val range = selectedNumProduct.split(" to ").mapNotNull { it.toIntOrNull() }
+                if (range.size == 2) {
+                    offers.filter { it.numProduct >= range[0] && it.numProduct <= range[1] }
+                } else offers
             }
         }
-        return offers
     }
 
     private fun displayFilteredOffers(filteredOffers: List<Offer>) {
         // Update RecyclerView with filteredOffers
-        val adapter = ManageOfferAdapter(filteredOffers, onOfferClick = { offer ->
-            val intent = Intent(requireContext(), EditOffer::class.java).apply {
-                putExtra("OFFER_ID", offer.id)
-            }
-            startActivity(intent)
-        })
-        binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
-        binding.productRcv.adapter = adapter
+        if(filteredOffers.isEmpty()) {
+            binding.productRcv.visibility = View.GONE
+            binding.noItemLayout.visibility = View.VISIBLE
+        } else {
+            binding.productRcv.visibility = View.VISIBLE
+            binding.noItemLayout.visibility = View.GONE
+            val adapter = ManageOfferAdapter(filteredOffers, onOfferClick = { offer ->
+                val intent = Intent(requireContext(), EditOffer::class.java).apply {
+                    putExtra("OFFER_ID", offer.id)
+                }
+                startActivity(intent)
+            })
+            binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
+            binding.productRcv.adapter = adapter
+        }
     }
 
 

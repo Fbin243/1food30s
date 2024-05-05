@@ -341,14 +341,21 @@ class ManageProductFragment : Fragment() {
 
     private fun displayFilteredProducts(filteredProducts: List<Product>) {
         // Update RecyclerView with filteredProducts
-        val adapter = ManageProductAdapter(filteredProducts, onProductClick = { product ->
-            val intent = Intent(requireContext(), EditProduct::class.java).apply {
-                putExtra("PRODUCT_ID", product.id)
-            }
-            startActivity(intent)
-        })
-        binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
-        binding.productRcv.adapter = adapter
+        if(filteredProducts.isEmpty()) {
+            binding.productRcv.visibility = View.GONE
+            binding.noItemLayout.visibility = View.VISIBLE
+        } else {
+            binding.productRcv.visibility = View.VISIBLE
+            binding.noItemLayout.visibility = View.GONE
+            val adapter = ManageProductAdapter(filteredProducts, onProductClick = { product ->
+                val intent = Intent(requireContext(), EditProduct::class.java).apply {
+                    putExtra("PRODUCT_ID", product.id)
+                }
+                startActivity(intent)
+            })
+            binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
+            binding.productRcv.adapter = adapter
+        }
     }
 
 //    private fun displayFilteredProducts(filteredProducts: List<Product>) {

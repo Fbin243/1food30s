@@ -155,12 +155,6 @@ class EditOffer : AppCompatActivity() {
             return
         }
 
-        // Kiểm tra có hình ảnh được chọn hay không
-        if (imageUri == null) {
-            Toast.makeText(this, "Please select image!", Toast.LENGTH_SHORT).show()
-            return
-        }
-
         imageUri?.let { uri ->
             val fileName = "product${UUID.randomUUID()}.png"
             val storageReference = fireStorage.reference.child("images/offer/$fileName")

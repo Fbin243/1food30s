@@ -282,14 +282,22 @@ class ManageCategoryFragment : Fragment() {
 
     private fun displayFilteredCategories(filteredCategories: List<Category>) {
         // Update RecyclerView with filteredCategories
-        val adapter = ManageCategoryAdapter(filteredCategories, onCategoryClick = { category ->
-            val intent = Intent(requireContext(), EditCategory::class.java).apply {
-                putExtra("CATEGORY_ID", category.id)
-            }
-            startActivity(intent)
-        })
-        binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
-        binding.productRcv.adapter = adapter
+        if(filteredCategories.isEmpty()) {
+            binding.productRcv.visibility = View.GONE
+            binding.noItemLayout.visibility = View.VISIBLE
+        } else {
+            binding.productRcv.visibility = View.VISIBLE
+            binding.noItemLayout.visibility = View.GONE
+            val adapter = ManageCategoryAdapter(filteredCategories, onCategoryClick = { category ->
+                val intent = Intent(requireContext(), EditCategory::class.java).apply {
+                    putExtra("CATEGORY_ID", category.id)
+                }
+                startActivity(intent)
+            })
+            binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
+            binding.productRcv.adapter = adapter
+        }
+
     }
 
 
