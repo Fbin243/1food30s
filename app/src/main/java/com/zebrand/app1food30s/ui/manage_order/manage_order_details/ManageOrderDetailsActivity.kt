@@ -158,7 +158,7 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
         binding.tvSubTotal.text = Utils.formatPrice(orderDetails.originAmount, this)
         binding.tvShippingFee.text = Utils.formatPrice(orderDetails.shippingFee, this)
         binding.tvDiscount.text = Utils.formatPrice(itemOrderDetailsAdapter.getDiscount(), this)
-        binding.tvTotalAmount.text = Utils.formatPrice(orderDetails.totalAmount + orderDetails.shippingFee, this)
+        binding.tvTotalAmount.text = Utils.formatPrice(orderDetails.totalAmount + orderDetails.shippingFee - itemOrderDetailsAdapter.getDiscount(), this)
         binding.tvNote.text = orderDetails.note
         binding.tvReason.text = orderDetails.cancelReason
 
