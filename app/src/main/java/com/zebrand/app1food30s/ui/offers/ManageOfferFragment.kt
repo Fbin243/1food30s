@@ -62,7 +62,11 @@ class ManageOfferFragment : Fragment() {
     private lateinit var datePickerText: TextInputEditText
     private lateinit var toDatePickerText: TextInputEditText
 
-    
+
+    private var nameFilter: String? = null
+    private var selectedStartDate: String? = null
+    private var selectedEndDate: String? = null
+
     //    private lateinit var toDatePickerText: TextInputEditText
     val discountArray = arrayOf("1% to 10%", "11% to 50%", "More than 50%")
     val numProductArray = arrayOf("Empty", "1 to 10", "11 to 50", "51 to 100", "More than 100")
@@ -126,6 +130,16 @@ class ManageOfferFragment : Fragment() {
         datePickerText = dialogView.findViewById(R.id.datePicker)
         toDatePickerText = dialogView.findViewById(R.id.toDatePicker)
 
+        if(nameFilter != null) {
+            nameFilterEditText.setText(nameFilter)
+        }
+        if(selectedStartDate != null) {
+            datePickerText.setText(selectedStartDate)
+        }
+        if(selectedEndDate != null) {
+            toDatePickerText.setText(selectedEndDate)
+        }
+
         val adapterDiscount = ArrayAdapter(requireContext(), R.layout.dropdown_menu_popup_item, discountArray)
 //        adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
         discountRateAutoComplete.setAdapter(adapterDiscount)
@@ -148,6 +162,7 @@ class ManageOfferFragment : Fragment() {
             val formattedDate = sdf.format(myCalendar.time)
             Log.d("dateABC", formattedDate)
             datePickerText.setText(formattedDate)
+            selectedStartDate = formattedDate
         }
 
         val toDatePicker = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
@@ -160,6 +175,7 @@ class ManageOfferFragment : Fragment() {
             val formattedDate = sdf.format(myCalendar.time)
             Log.d("dateABC", formattedDate)
             toDatePickerText.setText(formattedDate)
+            selectedEndDate = formattedDate
         }
 
         datePickerText.setOnClickListener {
@@ -182,6 +198,7 @@ class ManageOfferFragment : Fragment() {
 
         // Setup for filter button
         botDialog.findViewById<MaterialButton>(R.id.saveBtn)?.setOnClickListener {
+            nameFilter = nameFilterEditText.text.toString()
             botDialog.dismiss()
             filterOffers()
         }

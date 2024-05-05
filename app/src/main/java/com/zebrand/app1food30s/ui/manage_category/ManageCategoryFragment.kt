@@ -64,6 +64,9 @@ class ManageCategoryFragment : Fragment() {
     private lateinit var toDatePickerText: TextInputEditText
     val numProductArray = arrayOf("Empty", "1 to 10", "11 to 50", "51 to 100", "More than 100")
 
+    private var nameFilter: String? = null
+    private var selectedStartDate: String? = null
+    private var selectedEndDate: String? = null
 
 
 //    override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,6 +126,16 @@ class ManageCategoryFragment : Fragment() {
         datePickerText = dialogView.findViewById(R.id.datePicker)
         toDatePickerText = dialogView.findViewById(R.id.toDatePicker)
 
+        if(nameFilter != null) {
+            nameFilterEditText.setText(nameFilter)
+        }
+        if(selectedStartDate != null) {
+            datePickerText.setText(selectedStartDate)
+        }
+        if(selectedEndDate != null) {
+            toDatePickerText.setText(selectedEndDate)
+        }
+
         val adapterNumProduct = ArrayAdapter(requireContext(), R.layout.dropdown_menu_popup_item, numProductArray)
 //        adapterPrice.setDropDownViewResource(R.layout.dropdown_menu_popup_item)
         numProductAutoComplete.setAdapter(adapterNumProduct)
@@ -141,6 +154,7 @@ class ManageCategoryFragment : Fragment() {
             val formattedDate = sdf.format(myCalendar.time)
             Log.d("dateABC", formattedDate)
             datePickerText.setText(formattedDate)
+            selectedStartDate = formattedDate
         }
 
         val toDatePicker = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
@@ -153,6 +167,7 @@ class ManageCategoryFragment : Fragment() {
             val formattedDate = sdf.format(myCalendar.time)
             Log.d("dateABC", formattedDate)
             toDatePickerText.setText(formattedDate)
+            selectedEndDate = formattedDate
         }
 
         datePickerText.setOnClickListener {
@@ -175,6 +190,8 @@ class ManageCategoryFragment : Fragment() {
 
         // Setup for filter button
         botDialog.findViewById<MaterialButton>(R.id.saveBtn)?.setOnClickListener {
+
+            nameFilter = nameFilterEditText.text.toString()
             botDialog.dismiss()
             filterCategories()
         }
