@@ -88,6 +88,17 @@ class ManageProductDetailActivity : AppCompatActivity() {
         val productName = nameEditText.text.toString().trim()
         val db = Firebase.firestore
 
+        if (productName.isEmpty()) {
+            Toast.makeText(this, "Please enter product name!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Kiểm tra có hình ảnh được chọn hay không
+        if (imageUri == null) {
+            Toast.makeText(this, "Please select image!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         imageUri?.let { uri ->
             val fileName = "product${UUID.randomUUID()}.png" // Tạo một tên file duy nhất
             val storageReference = Firebase.storage.reference.child("images/product/$fileName")
@@ -209,13 +220,34 @@ class ManageProductDetailActivity : AppCompatActivity() {
 
     private fun createAndSaveProduct(imagePath: String) {
         val productName = nameEditText.text.toString().trim()
+
+        if (priceEditText.text.toString().toDoubleOrNull() == null) {
+            Toast.makeText(this, "Please enter price!", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (stockEditText.text.toString().toIntOrNull() == null) {
+            Toast.makeText(this, "Please enter stock!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val productPrice = priceEditText.text.toString().toDoubleOrNull() ?: 0.0
         val productStock = stockEditText.text.toString().toIntOrNull() ?: 0
         val productDescription = descriptionEditText.text.toString().trim()
         val db = Firebase.firestore
 
+        if (productDescription.isEmpty()) {
+            Toast.makeText(this, "Please enter description!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
         val selectedCategoryName = categoryAutoComplete.text.toString()
         val selectedOfferName = offerAutoComplete.text.toString()
+
+        if (selectedCategoryName.isEmpty()) {
+            Toast.makeText(this, "Please choose category!", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         db.collection("categories").whereEqualTo("name", selectedCategoryName).limit(1).get()
             .addOnSuccessListener { categoryDocuments ->

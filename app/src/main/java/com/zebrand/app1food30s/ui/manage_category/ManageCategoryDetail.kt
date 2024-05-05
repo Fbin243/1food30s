@@ -72,6 +72,18 @@ class ManageCategoryDetail : AppCompatActivity() {
 
     private fun saveProductToFirestore() {
         val categoryName = nameEditText.text.toString().trim()
+
+        if (categoryName.isEmpty()) {
+            Toast.makeText(this, "Please enter category name!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Kiểm tra có hình ảnh được chọn hay không
+        if (imageUri == null) {
+            Toast.makeText(this, "Please select image!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val db = Firebase.firestore
 
         imageUri?.let { uri ->

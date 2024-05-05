@@ -73,6 +73,18 @@ class ManageOfferDetail : AppCompatActivity() {
 
     private fun saveProductToFirestore() {
         val offerName = nameEditText.text.toString().trim()
+
+        if (offerName.isEmpty()) {
+            Toast.makeText(this, "Please enter offer name!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Kiểm tra có hình ảnh được chọn hay không
+        if (imageUri == null) {
+            Toast.makeText(this, "Please select image!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val db = Firebase.firestore
 
         imageUri?.let { uri ->
@@ -95,6 +107,12 @@ class ManageOfferDetail : AppCompatActivity() {
 
     private fun createAndSaveOffer(imagePath: String) {
         val offerName = nameEditText.text.toString().trim()
+
+        if (discountRateEditText.text.toString().toIntOrNull() == null) {
+            Toast.makeText(this, "Please enter rate!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val offerDiscountRate = discountRateEditText.text.toString().toIntOrNull() ?: 0
         val db = Firebase.firestore
 

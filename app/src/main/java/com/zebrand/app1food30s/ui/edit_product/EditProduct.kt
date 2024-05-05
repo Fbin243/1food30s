@@ -162,6 +162,17 @@ class EditProduct : AppCompatActivity() {
     private fun saveProductToFirestore(productId: String, idCategory: String, idOffer: String) {
         val productName = nameEditText.text.toString().trim()
 
+        if (productName.isEmpty()) {
+            Toast.makeText(this, "Please enter product name!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Kiểm tra có hình ảnh được chọn hay không
+        if (imageUri == null) {
+            Toast.makeText(this, "Please select image!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         imageUri?.let { uri ->
             val fileName = "product${UUID.randomUUID()}.png"
             val storageReference = fireStorage.reference.child("images/product/$fileName")
@@ -289,12 +300,32 @@ class EditProduct : AppCompatActivity() {
 
     private fun updateProductDetails(productId: String, imagePath: String, idCategory: String, idOffer: String?) {
         val productName = nameEditText.text.toString().trim()
+
+        if (priceEditText.text.toString().toDoubleOrNull() == null) {
+            Toast.makeText(this, "Please enter price!", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (stockEditText.text.toString().toIntOrNull() == null) {
+            Toast.makeText(this, "Please enter stock!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val productPrice = priceEditText.text.toString().toDoubleOrNull() ?: 0.0
         val productStock = stockEditText.text.toString().toIntOrNull() ?: 0
         val productDescription = descriptionEditText.text.toString().trim()
 
+        if (productDescription.isEmpty()) {
+            Toast.makeText(this, "Please enter description!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val selectedCategoryName = categoryAutoComplete.text.toString()
         val selectedOfferName = offerAutoComplete.text.toString()
+
+        if (selectedCategoryName.isEmpty()) {
+            Toast.makeText(this, "Please choose category!", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         // Kiểm tra và cập nhật số lượng sản phẩm trong categories
         val categoriesCollection = FirebaseFirestore.getInstance().collection("categories")
