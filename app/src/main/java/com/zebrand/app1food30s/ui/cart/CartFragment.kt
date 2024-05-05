@@ -72,7 +72,7 @@ class CartFragment : Fragment(), CartMVPView {
                 }
             },
             onUpdateTotalPrice = { totalPrice ->
-                binding.textViewAmount.text = getString(R.string.product_price_number, totalPrice)
+                binding.textViewAmount.text = Utils.formatPrice(totalPrice, requireContext())
             }
         )
         binding.cartItemsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
