@@ -109,8 +109,14 @@ class HomeFragment : Fragment(), HomeMVPView, WishlistMVPView,
 
     private fun handleDisplayWishlistActivity() {
         binding.ivWishlistScreen.setOnClickListener {
-//            val intent = Intent(requireContext(), WishlistActivity::class.java)
-//            startActivity(intent)
+            val defaultId = MySharedPreferences.defaultStringValue
+            if (userId == defaultId) {
+                // User is not logged in, navigate to LoginActivity
+                val loginIntent = Intent(requireContext(), LoginActivity::class.java)
+                startActivity(loginIntent)
+                return@setOnClickListener // Stop further execution of this function
+            }
+
             val intent = Intent(requireContext(), ProductViewAllActivity::class.java)
             intent.putExtra("filterBy", "wishlist")
             intent.putExtra("title", "Wishlist")

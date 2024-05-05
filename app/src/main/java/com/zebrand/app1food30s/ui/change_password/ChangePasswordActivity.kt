@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.zebrand.app1food30s.databinding.ActivityChangePasswordBinding
+import com.zebrand.app1food30s.utils.Utils
 
 class ChangePasswordActivity : AppCompatActivity() {
 
@@ -28,7 +29,8 @@ class ChangePasswordActivity : AppCompatActivity() {
         binding.saveBtn.setOnClickListener {
             val currentPassword = binding.tvCurrentPassword.text.toString().trim()
             if(currentPassword.isEmpty()){
-                Toast.makeText(this, "Current password is required", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this, "Current password is required", Toast.LENGTH_SHORT).show()
+                Utils.showCustomToast(this, "Current password is required", "error")
                 return@setOnClickListener
             }
             changePassword(currentPassword)

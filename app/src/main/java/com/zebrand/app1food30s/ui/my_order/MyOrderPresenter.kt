@@ -10,6 +10,7 @@ import com.google.firebase.firestore.Query
 import com.zebrand.app1food30s.adapter.MyOrderAdapter
 import com.zebrand.app1food30s.data.entity.Order
 import com.zebrand.app1food30s.utils.FireStoreUtils
+import com.zebrand.app1food30s.utils.Utils
 
 
 class MyOrderPresenter(private val context: Context, private val view: MyOrderMVPView) {
@@ -25,7 +26,8 @@ class MyOrderPresenter(private val context: Context, private val view: MyOrderMV
             .orderBy("date", Query.Direction.DESCENDING)
         query.addSnapshotListener { snapshot, error ->
             if (error != null) {
-                Toast.makeText(context, "Error when getting data", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "Error when getting data", Toast.LENGTH_SHORT).show()
+                Utils.showCustomToast(context, "Error when getting data", "error")
                 return@addSnapshotListener
             }
             snapshot?.let { querySnapshot ->
@@ -69,7 +71,8 @@ class MyOrderPresenter(private val context: Context, private val view: MyOrderMV
             .orderBy("date", Query.Direction.DESCENDING)
         query.addSnapshotListener { snapshot, error ->
             if (error != null) {
-                Toast.makeText(context, "Error when getting data", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(context, "Error when getting data", Toast.LENGTH_SHORT).show()
+                Utils.showCustomToast(context, "Error when getting data", "error")
                 return@addSnapshotListener
             }
 

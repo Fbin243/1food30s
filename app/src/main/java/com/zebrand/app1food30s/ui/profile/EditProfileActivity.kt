@@ -12,6 +12,7 @@ import com.zebrand.app1food30s.databinding.ActivityEditProfileBinding
 import com.zebrand.app1food30s.ui.checkout.AddressMapFragment
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBUserRef
 import com.zebrand.app1food30s.utils.FirebaseService
+import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.Date
@@ -43,7 +44,8 @@ class EditProfileActivity : AppCompatActivity() {
             userId?.let {
                 updateUserInformation(it)
             } ?: run {
-                Toast.makeText(this, "Error: User ID is missing.", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(this, "User ID is missing.", Toast.LENGTH_SHORT).show()
+                Utils.showCustomToast(this, "User ID is missing.", "error")
             }
         }
     }
@@ -69,11 +71,13 @@ class EditProfileActivity : AppCompatActivity() {
                 if (isAdmin == true) {
                     FirebaseService.saveShopAddress(address)
                 }
-                Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_LONG).show()
+//                Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_LONG).show()
+                Utils.showCustomToast(this, "Profile updated successfully", "success")
                 finish()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Error updating product: ${e.message}", Toast.LENGTH_LONG).show()
+//                Toast.makeText(this, "Error updating product: ${e.message}", Toast.LENGTH_LONG).show()
+                Utils.showCustomToast(this, "Error updating product: ${e.message}", "error")
             }
     }
 //    private fun saveShopAddress(address: String) {

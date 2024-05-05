@@ -23,6 +23,7 @@ import com.zebrand.app1food30s.utils.FirebaseUtils
 import com.zebrand.app1food30s.utils.GlobalUtils
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
+import com.zebrand.app1food30s.utils.Utils
 import com.zebrand.app1food30s.utils.ValidateInput
 
 class DeleteAccountActivity : AppCompatActivity() {
@@ -97,7 +98,8 @@ class DeleteAccountActivity : AppCompatActivity() {
                     user.delete()
                         .addOnCompleteListener { deleteTask ->
                             if (deleteTask.isSuccessful) {
-                                Toast.makeText(this, "Deleted account.", Toast.LENGTH_SHORT).show()
+//                                Toast.makeText(this, "Delete account successfully", Toast.LENGTH_SHORT).show()
+                                Utils.showCustomToast(this, "Delete account successfully", "success")
 
                                 android.os.Handler(Looper.getMainLooper()).postDelayed({
                                     deleteAccountLogic()

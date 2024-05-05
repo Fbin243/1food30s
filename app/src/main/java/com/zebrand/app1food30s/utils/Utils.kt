@@ -106,39 +106,35 @@ object Utils {
         val toastText = layout.findViewById<TextView>(R.id.toast_text)
         toastText.text = message
         val toastIcon = layout.findViewById<ImageView>(R.id.toast_icon)
+        var color = ContextCompat.getColor(context, R.color.black)
 
         // Set text and background color based on the type
         when (type) {
             "success" -> {
                 layout.setBackgroundResource(R.drawable.background_toast_success)
+//                color = ContextCompat.getColor(context, R.color.black)
 
-//                toastText.setTextColor(Color.WHITE)
-//                val color = ContextCompat.getColor(context, R.color.white)
-//                toastIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN)
             }
             "error" -> {
                 layout.setBackgroundResource(R.drawable.background_toast_error)
-
-//                toastText.setTextColor(Color.WHITE)
-//                val color = ContextCompat.getColor(context, R.color.white)
-//                toastIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+//                color = ContextCompat.getColor(context, R.color.black)
             }
             "info" -> {
-                toastText.setTextColor(Color.WHITE)
                 layout.setBackgroundResource(R.drawable.background_toast_success)
-                val color = ContextCompat.getColor(context, R.color.white)
-                toastIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+//                color = ContextCompat.getColor(context, R.color.black)
             }
             else -> {
-                toastText.setTextColor(Color.BLACK)
-                layout.setBackgroundColor(Color.LTGRAY)
+                layout.setBackgroundResource(R.drawable.background_toast_success)
+//                color = ContextCompat.getColor(context, R.color.black)
             }
         }
+        toastText.setTextColor(color)
+        toastIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN)
 
         Toast(context).apply {
             duration = Toast.LENGTH_SHORT
             view = layout
-            setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 100)
+            setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 141)
             show()
         }
     }
@@ -243,11 +239,10 @@ object Utils {
         context: Context,
         productId: String,
         userId: String,
-        defaultUserId: String = MySharedPreferences.defaultStringValue
+        defaultUserId: String = MySharedPreferences.defaultStringValue,
+        addQuantity: Int = 1
     ) {
         if (userId == defaultUserId) {
-//            val loginIntent = Intent(context, LoginActivity::class.java)
-//            context.startActivity(loginIntent)
             val loginIntent = Intent(context, LoginActivity::class.java)
             loginIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             context.startActivity(loginIntent)
@@ -263,37 +258,25 @@ object Utils {
 
             cartRef.get().addOnSuccessListener cart@{ document ->
                 val cart = document.toObject(Cart::class.java)
-//                val cart = if (document.exists()) {
-//                    document.toObject(Cart::class.java)
-//                }
-//                else {
-//                    Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
-//                }
                 cart?.let {
-                    val existingItemIndex =
-                        it.items.indexOfFirst { item -> item.productId == productRef }
+                    val existingItemIndex = it.items.indexOfFirst { item -> item.productId == productRef }
                     if (existingItemIndex >= 0) {
                         // Product exists, update quantity
-                        val newQuantity = it.items[existingItemIndex].quantity + 1
+                        val newQuantity = it.items[existingItemIndex].quantity + addQuantity
                         if (newQuantity <= stock) {
                             it.items[existingItemIndex].quantity = newQuantity
                         } else {
-                            Toast.makeText(context, "Product is out of stock.", Toast.LENGTH_SHORT)
-                                .show()
+//                            Toast.makeText(context, "Not enough stock available.", Toast.LENGTH_SHORT).show()
+                            showCustomToast(context, "Not enough stock available.", "error")
                             return@cart
                         }
                     } else {
-                        // New product, add to cart
-                        it.items.add(CartItem(productRef, "", "", 0.0, 0.0, "", 0, 1))
+                        // New product, add to cart with addQuantity
+                        it.items.add(CartItem(productRef, "", "", 0.0, 0.0, "", 0, addQuantity))
                     }
 
                     cartRef.set(it).addOnSuccessListener {
-//                        Toast.makeText(
-//                            context,
-//                            "Added to cart successfully!",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                        showCustomSnackbar(context, "Added to cart successfully!")
+//                        Toast.makeText(context, "Added to cart successfully!", Toast.LENGTH_SHORT).show()
                         showCustomToast(context, "Added to cart successfully!", "success")
                     }
                 }

@@ -76,21 +76,25 @@ class SignUpActivity : AppCompatActivity() {
                             )
                         )
 
-                        Toast.makeText(this, "Sign up successfully", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(this, "Sign up successfully", Toast.LENGTH_SHORT).show()
+                        Utils.showCustomToast(this, "Sign up successfully", "success")
 
                         finish()
                     } else {
                         // Đăng ký thất bại
                         val exception = task.exception
                         if (exception is FirebaseAuthUserCollisionException) {
-                            Toast.makeText(this, "Email exists", Toast.LENGTH_SHORT).show()
+//                            Toast.makeText(this, "Email exists", Toast.LENGTH_SHORT).show()
+                            Utils.showCustomToast(this, "Email exists", "error")
                         } else {
                             // Xử lý các trường hợp lỗi khác
+                            Utils.showCustomToast(this, "Sign up failed", "error")
                         }
                     }
                 }
         } else {
-            Toast.makeText(this, "Invalid", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "Sign up failed", Toast.LENGTH_SHORT).show()
+            Utils.showCustomToast(this, "Sign up failed", "error")
         }
     }
 

@@ -131,7 +131,8 @@ class CartFragment : Fragment(), CartMVPView {
 
     override fun displayError(error: String) {
         context?.let {
-            Toast.makeText(it, error, Toast.LENGTH_SHORT).show()
+//            Toast.makeText(it, error, Toast.LENGTH_SHORT).show()
+            Utils.showCustomToast(it, error, "error")
         }
     }
 

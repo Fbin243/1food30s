@@ -193,11 +193,12 @@ class LoginActivity : AppCompatActivity() {
                         setKeyShareRef(email, password)
 
                         // Authorization
-                        Log.d("userInfo", "Da di qua 1 " + email)
+//                        Log.d("userInfo", "Da di qua 1 " + email)
                         authorization(email, mySharePreference)
 
                     } else {
-                        Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                        Utils.showCustomToast(this, "Authentication failed.", "error")
                     }
                 }
         }
@@ -227,8 +228,9 @@ class LoginActivity : AppCompatActivity() {
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
-                Toast.makeText(this, "Google sign in failed: ${e.message}", Toast.LENGTH_SHORT)
-                    .show()
+//                Toast.makeText(this, "Google sign in failed: ${e.message}", Toast.LENGTH_SHORT)
+//                    .show()
+                Utils.showCustomToast(this, "Google sign in failed: ${e.message}", "error")
             }
         }
     }
@@ -247,10 +249,12 @@ class LoginActivity : AppCompatActivity() {
                     if (user != null) {
                         handleLoggedInUser(user.displayName, user.email, user.photoUrl.toString())
                     } else {
-                        Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
+                        Utils.showCustomToast(this, "Authentication failed", "error")
                     }
                 } else {
-                    Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
+                    Utils.showCustomToast(this, "Authentication failed", "error")
                 }
             }
     }
@@ -302,8 +306,9 @@ class LoginActivity : AppCompatActivity() {
 
     private fun handleLoggedInUser(name: String?, email: String?, photoUrl: String?) {
         mySharePreference.setBoolean(SingletonKey.KEY_LOGGED, true)
-        Toast.makeText(this, "Signed in as $name", Toast.LENGTH_SHORT)
-            .show()
+//        Toast.makeText(this, "Signed in as $name", Toast.LENGTH_SHORT)
+//            .show()
+        Utils.showCustomToast(this, "Signed in as $name", "success")
         FireStoreUtils.mDBUserRef.whereEqualTo("email", email).get()
             .addOnSuccessListener { queryDocumentSnapshots ->
                 if (queryDocumentSnapshots.isEmpty) {
@@ -314,11 +319,13 @@ class LoginActivity : AppCompatActivity() {
                             val imagePath = "images/avatars/$fileName"
                             uploadImageFromUrl(photoUrl.toString(), imagePath)
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(
-                                    this@LoginActivity,
-                                    "Profile image uploaded successfully",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+//                                Toast.makeText(
+//                                    this@LoginActivity,
+//                                    "Profile image uploaded successfully",
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
+                                Utils.showCustomToast(this@LoginActivity,
+                                    "Profile image uploaded successfully", "success")
                             }
 
                             val newUser = User(
@@ -334,11 +341,13 @@ class LoginActivity : AppCompatActivity() {
                             }
                         } catch (e: Exception) {
                             withContext(Dispatchers.Main) {
-                                Toast.makeText(
-                                    this@LoginActivity,
-                                    "Failed to upload profile image",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+//                                Toast.makeText(
+//                                    this@LoginActivity,
+//                                    "Failed to upload profile image",
+//                                    Toast.LENGTH_SHORT
+//                                ).show()
+                                Utils.showCustomToast(this@LoginActivity,
+                                    "Failed to upload profile image", "error")
                             }
                         }
                     }
