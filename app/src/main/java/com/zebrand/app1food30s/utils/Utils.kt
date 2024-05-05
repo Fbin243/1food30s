@@ -4,13 +4,19 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -18,6 +24,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.facebook.shimmer.Shimmer
 import com.facebook.shimmer.ShimmerDrawable
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.DocumentReference
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.zebrand.app1food30s.R
@@ -35,8 +42,64 @@ import java.util.Locale
 
 
 object Utils {
-    val timeHandler: Long = 800
+    const val timeHandler: Long = 800
     val handler = Handler(Looper.getMainLooper())
+
+//    fun showCustomSnackbar(view: View, message: String) {
+//        Snackbar.make(view, message, Snackbar.LENGTH_SHORT).apply {
+////            setAction("Action") {
+////                // Handle action click
+////            }
+//            // Optionally customize the appearance
+//            setTextColor(Color.WHITE)
+//            setBackgroundTint(Color.BLACK)
+//            show()
+//        }
+//    }
+
+    fun showCustomToast(context: Context, message: String, type: String) {
+        val inflater = LayoutInflater.from(context)
+        val layout = inflater.inflate(R.layout.custom_toast, null)
+        val toastText = layout.findViewById<TextView>(R.id.toast_text)
+        toastText.text = message
+        val toastIcon = layout.findViewById<ImageView>(R.id.toast_icon)
+
+        // Set text and background color based on the type
+        when (type) {
+            "success" -> {
+                layout.setBackgroundResource(R.drawable.background_toast_success)
+
+//                toastText.setTextColor(Color.WHITE)
+//                val color = ContextCompat.getColor(context, R.color.white)
+//                toastIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+            }
+            "error" -> {
+                layout.setBackgroundResource(R.drawable.background_toast_error)
+
+//                toastText.setTextColor(Color.WHITE)
+//                val color = ContextCompat.getColor(context, R.color.white)
+//                toastIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+            }
+            "info" -> {
+                toastText.setTextColor(Color.WHITE)
+                layout.setBackgroundResource(R.drawable.background_toast_success)
+                val color = ContextCompat.getColor(context, R.color.white)
+                toastIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN)
+            }
+            else -> {
+                toastText.setTextColor(Color.BLACK)
+                layout.setBackgroundColor(Color.LTGRAY)
+            }
+        }
+
+        Toast(context).apply {
+            duration = Toast.LENGTH_SHORT
+            view = layout
+            setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 100)
+            show()
+        }
+    }
+
 
     fun formatPrice(price: Double, context: Context): String {
         val mySharedPreferences = MySharedPreferences.getInstance(context)
@@ -169,11 +232,13 @@ object Utils {
                     }
 
                     cartRef.set(it).addOnSuccessListener {
-                        Toast.makeText(
-                            context,
-                            "Added to cart successfully!",
-                            Toast.LENGTH_SHORT
-                        ).show()
+//                        Toast.makeText(
+//                            context,
+//                            "Added to cart successfully!",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                        showCustomSnackbar(context, "Added to cart successfully!")
+                        showCustomToast(context, "Added to cart successfully!", "success")
                     }
                 }
             }.addOnFailureListener { exception ->
@@ -185,68 +250,6 @@ object Utils {
             Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
         }
     }
-
-//    fun addProductToCart(context: Context, productId: String) {
-//        val db = FirebaseFirestore.getInstance()
-//        val preferences = MySharedPreferences.getInstance(context)
-//        val userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
-//        val defaultId = MySharedPreferences.defaultStringValue
-//
-//        // Check if the user is logged in before proceeding
-//        if (userId == defaultId) {
-//            // User is not logged in, navigate to LoginActivity
-//            val loginIntent = Intent(context, LoginActivity::class.java)
-//            context.startActivity(loginIntent)
-//            return // Stop further execution of this function
-//        }
-//
-//        val cartRef = FireStoreUtils.mDBCartRef.document(userId)
-//
-//        val productRef = FireStoreUtils.mDBProductRef.document(productId)
-//        productRef.get().addOnSuccessListener { productSnapshot ->
-//            val product = productSnapshot.toObject(Product::class.java)
-//            val stock = product?.stock ?: 0
-//
-//            if (stock > 0) {
-//                cartRef.get().addOnSuccessListener { document ->
-//                    val cart = if (document.exists()) {
-//                        document.toObject(Cart::class.java)
-//                    } else {
-//                        Cart(userId = db.document("accounts/$userId"), items = mutableListOf())
-//                    }
-//
-//                    cart?.let {
-//                        val existingItemIndex =
-//                            it.items.indexOfFirst { item -> item.productId == productRef }
-//                        if (existingItemIndex >= 0) {
-//                            // Product exists, update quantity
-//                            it.items[existingItemIndex].quantity += 1
-//                        } else {
-//                            // New product, add to cart
-//                            // TODO!
-//                            it.items.add(CartItem(productRef, "", "", 0.0, "", 0, 1))
-//                        }
-//
-//                        cartRef.set(it).addOnSuccessListener {
-//                            Toast.makeText(
-//                                context,
-//                                "Added to cart successfully!",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        }
-//                    }
-//                }.addOnFailureListener { exception ->
-//                    Log.e("Test00", "Error updating cart: ", exception)
-//                    Toast.makeText(context, "Failed to add to cart.", Toast.LENGTH_SHORT).show()
-//                }
-//            } else {
-//                Toast.makeText(context, "Product is out of stock.", Toast.LENGTH_SHORT).show()
-//            }
-//        }.addOnFailureListener { exception ->
-//            Log.e("Test00", "Error getting product: ", exception)
-//            Toast.makeText(context, "Failed to get product details.", Toast.LENGTH_SHORT).show()
-//        }
-//    }
 
     fun setUserDataInFireStore(user: User, callback: () -> Unit = {}) {
         val userRef = FireStoreUtils.mDBUserRef

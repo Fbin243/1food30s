@@ -18,19 +18,21 @@ package com.zebrand.app1food30s.ui.checkout
 //import vn.zalopay.sdk.ZaloPayError
 //import vn.zalopay.sdk.ZaloPaySDK
 //import vn.zalopay.sdk.listeners.PayOrderListener
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.location.Address
+import android.graphics.Point
 import android.location.Geocoder
 import android.location.Location
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.StrictMode
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Base64
 import android.util.Log
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,6 +42,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapFragment
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -80,7 +83,6 @@ import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
@@ -89,8 +91,14 @@ import java.util.Locale
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
+import kotlin.math.roundToInt
 
 class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallback {
+    // -----KEY-----
+    val clientId = "AXpqoGgnoXww1RmM2N15AKI7LV4es1uEB-kk0qO1X9OwdELkXnS18nTQ50Kdt9ERQQUoVOsGvOolFgWI"
+    //    val clientId = "AQi0jeUAAGwLBWPY-_J-KqReZQ5udKOfjEH17RwJGuzrRFqn-RKKiBoOtdSF1AOEd6yVw_tzGM1sbvzd"
+    val clientSecret = "EO0MxmLuQfbA0Cq8PSNbDA6JHHims1JBMjG4gCLLmjMesgI0tpIdWYyIJMBjsPCuRzltRQdbQaWIAIc4"
+//    val clientSecret = "AQi0jeUAAGwLBWPY-_J-KqReZQ5udKOfjEH17RwJGuzrRFqn-RKKiBoOtdSF1AOEd6yVw_tzGM1sbvzd"
 
     private lateinit var binding: ActivityCheckoutBinding
     private val checkoutItemsAdapter = CheckoutItemsAdapter()
@@ -99,32 +107,32 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     private lateinit var cartId: String
     private lateinit var preferences: MySharedPreferences
     private lateinit var userId: String
-    private lateinit var address: String
-    private lateinit var mMap: GoogleMap
-    private val AUTOCOMPLETE_REQUEST_CODE = 100 // Class constant
-    private lateinit var apiKey: String
-    private lateinit var defaultLatLng: LatLng
-    private var totalPrice: Double = 0.0
-    private var shippingFee: Double = 0.0
-    private lateinit var paymentArr: Array<String>
 
+    private lateinit var paymentArr: Array<String>
     private lateinit var queue: RequestQueue
     private var orderId = ""
     private val url = "https://api-m.sandbox.paypal.com/v2/checkout/orders/"
     private val urlToken = "https://api-m.sandbox.paypal.com/v1/oauth2/token"
     var token = "Bearer "
-    val clientId = "AXpqoGgnoXww1RmM2N15AKI7LV4es1uEB-kk0qO1X9OwdELkXnS18nTQ50Kdt9ERQQUoVOsGvOolFgWI"
-//    val clientId = "AQi0jeUAAGwLBWPY-_J-KqReZQ5udKOfjEH17RwJGuzrRFqn-RKKiBoOtdSF1AOEd6yVw_tzGM1sbvzd"
-    val clientSecret = "EO0MxmLuQfbA0Cq8PSNbDA6JHHims1JBMjG4gCLLmjMesgI0tpIdWYyIJMBjsPCuRzltRQdbQaWIAIc4"
-//    val clientSecret = "AQi0jeUAAGwLBWPY-_J-KqReZQ5udKOfjEH17RwJGuzrRFqn-RKKiBoOtdSF1AOEd6yVw_tzGM1sbvzd"
 
+    // -----MAP-----
+    private lateinit var address: String
+    private lateinit var mMap: GoogleMap
+    private var marker: Marker? = null
+    private lateinit var gestureDetector: GestureDetector
+    private val AUTOCOMPLETE_REQUEST_CODE = 100
+    private lateinit var defaultLatLng: LatLng
+    private var totalPrice: Double = 0.0
+    private var shippingFee: Double = 0.0
+    private lateinit var scrollView: LockableNestedScrollView
+    // -----HERE SDK MAP-----
     private var searchEngine: SearchEngine? = null
     // Coordinates roughly encompassing Ho Chi Minh City
     private lateinit var southWestCornerHCMC: GeoCoordinates
     private lateinit var northEastCornerHCMC: GeoCoordinates
     private lateinit var hcmcGeoBox: GeoBox
     private lateinit var hcmcArea: TextQuery.Area
-    private var marker: Marker? = null
+    private lateinit var mapFragment: SupportMapFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,8 +145,6 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 //        ZaloPaySDK.init(553, Environment.SANDBOX);
 
 //        paypalConfig()
-        apiKey = "AIzaSyBQFpHSKFfBqU9XM8ZFGOEHPGyMkh6iCZk"
-        defaultLatLng = LatLng(10.762622, 106.682171)  // University of Science
 
         preferences = MySharedPreferences.getInstance(this)
         userId = preferences.getString(SingletonKey.KEY_USER_ID) ?: ""
@@ -154,25 +160,15 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         binding.spinnerPayment.setAdapter(adapterStatus)
 //    --------------------
 
-        // -----Maps SDK for Android-----
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
-        // when the map is ready, onMapReady() callback is triggered
-        mapFragment.getMapAsync(this)
-        // -----Places SDK-----
-        if (!Places.isInitialized()) {
-            Places.initialize(applicationContext, apiKey)
-        }
-        // NEW MAP
+        // -----MAP-----
+        defaultLatLng = LatLng(10.762622, 106.682171)  // University of Science
+//        initializeGestureDetector()
+        initializeMap()
         initializeHERESDK()
+        setupAddressSearchButton()
 
 //        Paypal
         queue = Volley.newRequestQueue(this)
-
-        binding.searchButton.setOnClickListener() {
-            // Implement HERE SDK search suggestion logic here
-            handleAddressInput(binding.tvAddress.text.toString())
-        }
 
         setupRecyclerView()
         handleCloseCheckoutScreen()
@@ -181,6 +177,63 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         presenter.loadCartData(cartId)
 
         handlePlaceOrderButton()
+    }
+
+    private fun initializeMap() {
+        mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+    }
+
+    private fun setupAddressSearchButton() {
+        binding.searchButton.setOnClickListener {
+            val userInput = binding.tvAddress.text.toString()
+            if (userInput.isNotEmpty()) {
+                handleAddressInput(userInput)
+            } else {
+                Toast.makeText(this, "Please enter an address to search.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        setupMapMarker()
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 10f))
+
+        setupMapListeners()
+//        Log.d("Test00", "onMapReady: ${mapFragment.view}")
+//        mapFragment.view?.setOnTouchListener { _, event ->
+//            Log.d("Test00", "onMapReady: run")
+//            false
+//        }
+    }
+
+    private fun setupMapMarker() {
+        if (marker == null) {
+            val markerOptions = MarkerOptions().position(defaultLatLng).title("Marker in Ho Chi Minh City").draggable(true)
+            marker = mMap.addMarker(markerOptions)
+        } else {
+            marker?.position = defaultLatLng
+        }
+    }
+
+    private fun setupMapListeners() {
+        mMap.setOnCameraMoveStartedListener {
+//            Log.d("Test00", "setupMapListeners: start")
+            val scrollView = findViewById<LockableNestedScrollView>(R.id.scrollView)
+            scrollView.setScrollingEnabled(false)
+        }
+
+        mMap.setOnCameraIdleListener {
+//            Log.d("Test00", "setupMapListeners: end")
+            val scrollView = findViewById<LockableNestedScrollView>(R.id.scrollView)
+            scrollView.setScrollingEnabled(true)
+        }
+
+        mMap.setOnMapClickListener { latLng ->
+            updateMarkerAndAddress(latLng)
+        }
     }
 
     private fun initializeHERESDK() {
@@ -258,39 +311,6 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-        val hoChiMinhCity = LatLng(10.776889, 106.700806)
-
-        // Initialize or move the marker
-        if (marker == null) {
-            val markerOptions = MarkerOptions().position(hoChiMinhCity).title("Marker in Ho Chi Minh City").draggable(true)
-            marker = mMap.addMarker(markerOptions)
-        } else {
-            marker?.position = hoChiMinhCity
-        }
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hoChiMinhCity, 10f))
-
-        setupMapListeners()
-    }
-
-    private fun setupMapListeners() {
-        mMap.setOnCameraMoveStartedListener {
-            val scrollView = findViewById<LockableNestedScrollView>(R.id.scrollView)
-            scrollView.setScrollingEnabled(false)
-        }
-
-        mMap.setOnCameraIdleListener {
-            val scrollView = findViewById<LockableNestedScrollView>(R.id.scrollView)
-            scrollView.setScrollingEnabled(true)
-        }
-
-        mMap.setOnMapClickListener { latLng ->
-            updateMarkerAndAddress(latLng)
-        }
-    }
-
     private fun updateMarkerAndAddress(latLng: LatLng, focusCamera: Boolean = true) {
         if (marker == null) {
             val markerOptions = MarkerOptions().position(latLng).title("Selected Location").draggable(true)
@@ -300,7 +320,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         }
 
         if (focusCamera) {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng))
         }
 
         updateAddressAndCalculateDistance(latLng)
@@ -321,7 +341,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
                 }
             }
         } catch (e: IOException) {
-            Log.e("CheckoutActivity", "Unable to get address from the clicked location", e)
+//            Log.e("CheckoutActivity", "Unable to get address from the clicked location", e)
         }
     }
 
@@ -341,7 +361,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
                 mMap.moveCamera(cameraUpdate)
             }
         } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-            val status = Autocomplete.getStatusFromIntent(data)
+//            val status = Autocomplete.getStatusFromIntent(data)
             // Handle the error
         }
     }
@@ -367,12 +387,10 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
                 Response.Listener { response ->
                     val jsonResponse = JSONObject(response.toString())
                     val accessToken = jsonResponse.getString("access_token")
-//                    Toast.makeText(this@MainActivity, accessToken.toString(), Toast.LENGTH_SHORT).show()
 
                     continuation.resume(accessToken)
                 },
                 Response.ErrorListener { error ->
-//                    Toast.makeText(this@MainActivity, "Failed", Toast.LENGTH_SHORT).show()
                     continuation.resumeWithException(error)
                 }) {
 

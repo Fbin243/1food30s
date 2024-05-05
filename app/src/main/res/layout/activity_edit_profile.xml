@@ -20,11 +20,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <include
+            <ImageView
                 android:id="@+id/backIcon"
-                layout="@layout/item_back"
                 android:layout_width="30dp"
-                android:layout_height="30dp" />
+                android:layout_height="30dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_back"
+                android:padding="6dp"
+                android:background="@drawable/primary_circle_border"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -157,29 +161,12 @@
             app:layout_constraintTop_toBottomOf="@+id/email"
             tools:layout_editor_absoluteX="14dp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/address"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/address_map_fragment"
+            android:name="com.zebrand.app1food30s.ui.checkout.AddressMapFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/txt_address"
-            app:boxStrokeColor="@color/primary"
-            app:boxCornerRadiusTopStart="@dimen/radius8"
-            app:boxCornerRadiusTopEnd="@dimen/radius8"
-            app:boxCornerRadiusBottomStart="@dimen/radius8"
-            app:boxCornerRadiusBottomEnd="@dimen/radius8"
-            app:cursorColor="@color/primary"
-            app:hintTextColor="@color/primary"
-            >
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edit_address"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/spacing52"
-                android:maxLines="1"
-                android:gravity="center_vertical"
-                android:inputType="textEmailAddress"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintTop_toBottomOf="@+id/txt_address"/>
 
         <TextView
             android:id="@+id/text_phone"
@@ -187,7 +174,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing20"
             android:text="@string/txt_phone"
-            app:layout_constraintTop_toBottomOf="@+id/address"
+            app:layout_constraintTop_toBottomOf="@+id/address_map_fragment"
             app:layout_constraintStart_toStartOf="parent"
             tools:layout_editor_absoluteX="3dp" />
 
