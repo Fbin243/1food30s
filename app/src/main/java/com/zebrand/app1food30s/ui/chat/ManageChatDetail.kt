@@ -66,6 +66,13 @@ class ManageChatDetail : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        currentUserId?.let {
+            markChatAsRead(it)
+        }
+    }
+
     private fun setupRecyclerView() {
         messageAdapter = MessageAdapter(messages, "zErR5nXOOmmqrz1YR5V7") // Chuyển ID người dùng hiện tại tới adapter
         binding.recyclerViewChat.apply {
@@ -164,6 +171,7 @@ class ManageChatDetail : AppCompatActivity() {
 //                        }
                     val chatUpdateMap = hashMapOf<String, Any>(
                         "messages" to FieldValue.arrayUnion(message),
+                        "seenByBuyer" to false,
                         "date" to Date()  // Cập nhật thời gian hiện tại cho chat
                     )
                     document.reference.update(chatUpdateMap)

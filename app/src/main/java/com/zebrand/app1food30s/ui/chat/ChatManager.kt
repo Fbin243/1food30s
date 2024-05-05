@@ -45,7 +45,10 @@ class ChatManager : AppCompatActivity(), ChatClickListener {
                 val chats = mutableListOf<Chat>()
                 snapshots?.documents?.forEach { doc ->
                     doc.toObject(Chat::class.java)?.let {
-                        chats.add(it)
+//                        chats.add(it)
+                        if (it.messages.isNotEmpty()) { // Chỉ thêm chat nếu có ít nhất một tin nhắn
+                            chats.add(it)
+                        }
                     }
                 }
                 // Luôn tạo lại adapter với danh sách chat mới để cập nhật UI
