@@ -107,7 +107,7 @@ class AddressMapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         setupMapMarker()
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 10f))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 16f))
         setupMapListeners()
     }
     private fun setupMapMarker() {

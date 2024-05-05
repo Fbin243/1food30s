@@ -11,6 +11,7 @@ import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.data.entity.Review
 import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.data.entity.WishlistItem
+import com.zebrand.app1food30s.utils.FireStoreUtils.mDBGlobalRef
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBWishlistRef
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +29,50 @@ object FirebaseService {
     private var firstTimeGetProducts: Boolean = true
     private var firstTimeGetCategories: Boolean = true
     private var firstTimeGetOffers: Boolean = true
+
+    fun saveShopAddress(address: String) {
+        val shopAddressRef = mDBGlobalRef.document("shop_address")
+
+        // Create a data object to store the address
+        val addressData = hashMapOf(
+            "address" to address
+        )
+
+        // Set the address data in the document
+        shopAddressRef.set(addressData)
+            .addOnSuccessListener {
+                // Address saved successfully
+//                Log.d("Test00", "Shop address saved successfully")
+            }
+            .addOnFailureListener { e ->
+                // Error saving address
+                Log.e("Test00", "Error saving shop address", e)
+            }
+    }
+    fun getShopAddress(callback: (String) -> Unit) {
+        // Create a reference to the shop address document
+        val shopAddressRef = mDBGlobalRef.document("shop_address")
+
+        // Get the shop address data from Firestore
+        shopAddressRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    // Document exists, retrieve the address
+                    val address = document.getString("address") ?: ""
+//                    Log.d("Test00", "getShopAddress: $address")
+                    callback(address)
+                } else {
+                    // Document does not exist or is empty
+                    callback("")
+                }
+            }
+            .addOnFailureListener { e ->
+                // Error getting shop address
+                Log.e("Test00", "Error getting shop address", e)
+                callback("")
+            }
+    }
+
     suspend fun getListCategories(db: AppDatabase): List<Category> {
         return withContext(Dispatchers.IO) {
             try {
@@ -139,42 +184,6 @@ object FirebaseService {
             }
         }
     }
-
-//    suspend fun getWishlistProducts(userId: String): List<WishlistItem> {
-//        return withContext(Dispatchers.IO) {
-//            try {
-//                val wishlistRef = mDBWishlistRef.document(userId)
-//                val documentSnapshot = wishlistRef.get().await()
-//                val productIds = documentSnapshot.get("productIds")
-//                    .let { it as? List<*>? }
-//                    ?.filterIsInstance<String>()
-//                    ?: listOf()
-//                // Prepare Firestore read tasks for each product ID
-//                val tasks = productIds.map { productId ->
-//                    async { FireStoreUtils.mDBProductRef.document(productId).get().await() }
-//                }
-//
-//                // Await all tasks to finish and process their results
-//                val wishlistItems = tasks.awaitAll().mapNotNull { document ->
-//                    if (document.exists()) {
-//                        WishlistItem(
-//                            productId = document.id,
-//                            name = document.getString("name") ?: "",
-//                            price = document.getDouble("price") ?: 0.0,
-//                            image = document.getString("image") ?: ""
-//                        )
-//                    } else {
-//                        null
-//                    }
-//                }
-//
-//                wishlistItems // Return the list of WishlistItems
-//            } catch (e: Exception) {
-//                Log.e("getWishlistProducts", "Error getting wishlist products", e)
-//                emptyList<WishlistItem>() // Return an empty list in case of error
-//            }
-//        }
-//    }
 
     suspend fun getListOffers(db: AppDatabase): List<Offer> {
         return withContext(Dispatchers.IO) {

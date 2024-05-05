@@ -79,6 +79,7 @@ import com.zebrand.app1food30s.data.entity.CartItem
 import com.zebrand.app1food30s.databinding.ActivityCheckoutBinding
 import com.zebrand.app1food30s.ui.cart.CartRepository
 import com.zebrand.app1food30s.ui.main.MainActivity
+import com.zebrand.app1food30s.utils.FirebaseService
 import com.zebrand.app1food30s.utils.MySharedPreferences
 import com.zebrand.app1food30s.utils.SingletonKey
 import com.zebrand.app1food30s.utils.Utils
@@ -179,6 +180,35 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
         handlePlaceOrderButton()
     }
 
+    private fun updateDefaultLatLngFromShopAddress() {
+        FirebaseService.getShopAddress { address ->
+            if (address.isNotEmpty()) {
+                val geocoder = Geocoder(this, Locale.getDefault())
+                try {
+                    val addressList = geocoder.getFromLocationName(address, 1)
+                    if (addressList != null) {
+                        if (addressList.isNotEmpty()) {
+                            val location = addressList[0]
+                            val newLatLng = LatLng(location.latitude, location.longitude)
+                            defaultLatLng = newLatLng  // Update the defaultLatLng with new coordinates
+//                            Log.d("Geocoder", "updateDefaultLatLngFromShopAddress: $defaultLatLng")
+//                        setupMapMarker()  // Update map to the new location
+                        } else {
+                            Log.e("Geocoder", "No location found for address")
+                        }
+                    }
+                } catch (e: IOException) {
+                    Log.e("Geocoder", "Failed to geocode address", e)
+                }
+            }
+        }
+    }
+//    private fun getShopAddress(): String {
+//        val sharedPreferences = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
+//        return sharedPreferences.getString("ShopAddress", "") ?: ""
+//    }
+
+
     private fun initializeMap() {
         mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -198,8 +228,10 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
     @SuppressLint("ClickableViewAccessibility")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+        updateDefaultLatLngFromShopAddress()
         setupMapMarker()
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 10f))
+//        setupMapMarker()
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, 16f))
 
         setupMapListeners()
 //        Log.d("Test00", "onMapReady: ${mapFragment.view}")

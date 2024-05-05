@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.ui.profile
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -10,6 +11,7 @@ import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.databinding.ActivityEditProfileBinding
 import com.zebrand.app1food30s.ui.checkout.AddressMapFragment
 import com.zebrand.app1food30s.utils.FireStoreUtils.mDBUserRef
+import com.zebrand.app1food30s.utils.FirebaseService
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.Date
@@ -18,6 +20,7 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditProfileBinding
     private var addressMapFragment: AddressMapFragment? = null
     private var userId: String? = null
+    private var isAdmin: Boolean? = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +66,9 @@ class EditProfileActivity : AppCompatActivity() {
 
         mDBUserRef.document(userId).update(userInforUpdate as Map<String, Any>)
             .addOnSuccessListener {
+                if (isAdmin == true) {
+                    FirebaseService.saveShopAddress(address)
+                }
                 Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_LONG).show()
                 finish()
             }
@@ -70,6 +76,13 @@ class EditProfileActivity : AppCompatActivity() {
                 Toast.makeText(this, "Error updating product: ${e.message}", Toast.LENGTH_LONG).show()
             }
     }
+//    private fun saveShopAddress(address: String) {
+//        val sharedPref = getSharedPreferences("AppSettings", Context.MODE_PRIVATE)
+//        with(sharedPref.edit()) {
+//            putString("ShopAddress", address)
+//            apply()
+//        }
+//    }
 
     private fun fetchUserInformation(userId: String) {
         lifecycleScope.launch {
@@ -86,6 +99,8 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun updateUIWithUserInfo(user: User) {
+        isAdmin = user.admin
+
         binding.editFirstName.setText(user.firstName)
         binding.editLastName.setText(user.lastName)
         binding.editEmail.setText(user.email)
