@@ -346,7 +346,8 @@ class EditProduct : AppCompatActivity() {
                     val categoryDocumentRef = categoryDocuments.documents.first().reference
 
                     // Kiểm tra và cập nhật offers nếu selectedOfferName không rỗng
-                    if (selectedOfferName != "Choose offer" && selectedOfferName != "None") {
+                    Log.d("test select offer", "result: $selectedOfferName")
+                    if (selectedOfferName != "Choose offer") {
                         FirebaseFirestore.getInstance().collection("offers").whereEqualTo("name", selectedOfferName).limit(1).get()
                             .addOnSuccessListener { offerDocuments ->
                                 if (offerDocuments.documents.isNotEmpty()) {
@@ -376,11 +377,12 @@ class EditProduct : AppCompatActivity() {
             "image" to imagePath,
             "date" to Date()
         )
-        offerRef?.let {
-            productUpdate["idOffer"] = it
-        }
+//        offerRef?.let {
+//            productUpdate["idOffer"] = it
+//        }
 
         FirebaseFirestore.getInstance().collection("products").document(productId).update(productUpdate)
+        FirebaseFirestore.getInstance().collection("products").document(productId).update("idOffer", offerRef)
             .addOnSuccessListener {
                 // Cập nhật số lượng sản phẩm mới
                 updateCategoryAndOfferCount(categoryRef, offerRef)
@@ -433,7 +435,7 @@ class EditProduct : AppCompatActivity() {
     private fun loadOffersFromFirebase(offerStr: String) {
         val db = Firebase.firestore
         val offerList = ArrayList<String>()
-        offerList.add("None")
+        offerList.add("Choose offer")
 
         db.collection("offers").get()
             .addOnSuccessListener { documents ->
