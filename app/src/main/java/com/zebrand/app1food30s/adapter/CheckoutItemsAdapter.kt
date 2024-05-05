@@ -56,4 +56,8 @@ class CheckoutItemsAdapter : RecyclerView.Adapter<CheckoutItemsAdapter.CheckoutV
         }
         return price
     }
+
+    fun getDiscounts(): Double{
+        return items.sumOf { it.oldPrice - it.productPrice }
+    }
 }

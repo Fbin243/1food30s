@@ -208,6 +208,9 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
 //        return sharedPreferences.getString("ShopAddress", "") ?: ""
 //    }
 
+    private fun getDiscounts(){
+
+    }
 
     private fun initializeMap() {
         mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
@@ -457,7 +460,7 @@ class CheckoutActivity : AppCompatActivity(), CheckoutMVPView, OnMapReadyCallbac
             val amount = JSONObject()
             amount.put("currency_code", "USD")
             amount.put("value", "5.00")
-//            amount.put("value", (amountInput + shippingFee).toString())
+            amount.put("value", (amountInput + shippingFee - checkoutItemsAdapter.getDiscounts()).toString())
             purchaseUnits.put("amount", amount)
             val purchaseUnitsArray = JSONArray()
             purchaseUnitsArray.put(purchaseUnits)
