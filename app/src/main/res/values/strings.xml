@@ -279,4 +279,7 @@
 
     <string name="txt_visible" translatable="false">visible</string>
     <string name="txt_gone" translatable="false">gone</string>
+    <string name="txt_no_product_available">No Product Available</string>
+    <string name="txt_no_category_available">No category available</string>
+    <string name="txt_no_offer_available">No Offer Available</string>
 </resources>

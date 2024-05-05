@@ -292,14 +292,21 @@ class ManageOfferFragment : Fragment() {
 
     private fun displayFilteredOffers(filteredOffers: List<Offer>) {
         // Update RecyclerView with filteredOffers
-        val adapter = ManageOfferAdapter(filteredOffers, onOfferClick = { offer ->
-            val intent = Intent(requireContext(), EditOffer::class.java).apply {
-                putExtra("OFFER_ID", offer.id)
-            }
-            startActivity(intent)
-        })
-        binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
-        binding.productRcv.adapter = adapter
+        if(filteredOffers.isEmpty()) {
+            binding.productRcv.visibility = View.GONE
+            binding.noItemLayout.visibility = View.VISIBLE
+        } else {
+            binding.productRcv.visibility = View.VISIBLE
+            binding.noItemLayout.visibility = View.GONE
+            val adapter = ManageOfferAdapter(filteredOffers, onOfferClick = { offer ->
+                val intent = Intent(requireContext(), EditOffer::class.java).apply {
+                    putExtra("OFFER_ID", offer.id)
+                }
+                startActivity(intent)
+            })
+            binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
+            binding.productRcv.adapter = adapter
+        }
     }
 
 
