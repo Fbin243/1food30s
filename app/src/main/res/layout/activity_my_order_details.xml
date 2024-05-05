@@ -187,37 +187,24 @@
                         android:text="0912345678" />
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing16"
                         android:fontFamily="@font/font_family"
                         android:textFontWeight="600"
-                        android:text="@string/txt_payment_info"
-                        android:textSize="@dimen/font_size16" />
+                        android:text="@string/txt_payment_method_2"
+                        android:textSize="@dimen/font_size16"
+                        android:layout_marginTop="@dimen/spacing16"
+                        />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tvPaymentMethod"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/font_family"
-                            android:textFontWeight="600"
-                            android:text="@string/txt_payment_method"
-                            android:textColor="@color/grey_60"
-                            />
-
-                        <TextView
-                            android:id="@+id/tvPaymentMethod"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/font_family"
-                            android:textFontWeight="600"
-                            android:text=" Cash on Delivery"
-                            />
-                    </LinearLayout>
+                        android:fontFamily="@font/font_family"
+                        android:textFontWeight="600"
+                        android:textColor="@color/primary"
+                        android:text=" Cash on Delivery"
+                        />
 
                     <LinearLayout
                         android:id="@+id/linearNote"

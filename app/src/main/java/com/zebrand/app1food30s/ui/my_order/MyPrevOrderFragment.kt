@@ -134,27 +134,27 @@ class MyPrevOrderFragment : Fragment(), MyOrderMVPView {
     override fun setMyActiveOrderUI() {}
 
     override fun setMyPrevOrderUI() {
-        Handler().postDelayed({
-            if (myPrevOrderAdapter.itemCount == 0) {
-                binding.orderItemList.visibility = View.GONE
-                binding.noItemLayout.visibility = View.VISIBLE
-            } else {
-                binding.orderItemList.visibility = View.VISIBLE
-                binding.noItemLayout.visibility = View.GONE
-            }
-        }, Utils.timeHandler + 200)
+//        Handler().postDelayed({
+//            if (myPrevOrderAdapter.itemCount == 0) {
+//                binding.orderItemList.visibility = View.GONE
+//                binding.noItemLayout.visibility = View.VISIBLE
+//            } else {
+//                binding.orderItemList.visibility = View.VISIBLE
+//                binding.noItemLayout.visibility = View.GONE
+//            }
+//        }, Utils.timeHandler + 200)
     }
 
     override fun showShimmerEffectForOrders(size: Int) {
-        for (i in 0 until size) {
-            val shimmerLayout = layoutInflater.inflate(R.layout.product_card_view_linear_shimmer, binding.linearShimmer, false)
-            // Add the inflated layout to the parent LinearLayout
-            binding.linearShimmer.addView(shimmerLayout)
-        }
-        Utils.showShimmerEffect(binding.orderShimmer, binding.orderItemList)
+//        for (i in 0 until size) {
+//            val shimmerLayout = layoutInflater.inflate(R.layout.product_card_view_linear_shimmer, binding.linearShimmer, false)
+//            // Add the inflated layout to the parent LinearLayout
+//            binding.linearShimmer.addView(shimmerLayout)
+//        }
+//        Utils.showShimmerEffect(binding.orderShimmer, binding.orderItemList)
     }
 
     override fun hideShimmerEffectForOrders() {
-        Utils.hideShimmerEffect(binding.orderShimmer, binding.orderItemList)
+//        Utils.hideShimmerEffect(binding.orderShimmer, binding.orderItemList)
     }
 }

@@ -15,6 +15,14 @@ class MySharedPreferences private constructor(context: Context) {
         return sharedPreferences.getString(key, defaultStringValue)
     }
 
+    fun setInt(key: String, value: Int) {
+        sharedPreferences.edit().putInt(key, value.toInt()).apply()
+    }
+
+    fun getInt(key: String): Int {
+        return sharedPreferences.getInt(key, 0)
+    }
+
     fun setBoolean(key: String, value: Boolean) {
         sharedPreferences.edit().putBoolean(key, value).apply()
     }

@@ -1,5 +1,6 @@
 package com.zebrand.app1food30s.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +34,7 @@ class ProductAdapter(
         val productOldPrice: TextView = listItemView.findViewById(R.id.productOldPrice)
         private val addButton: Button = listItemView.findViewById(R.id.addBtn)
         val ivWishlist: ImageView = listItemView.findViewById(R.id.ivWishlist)
+        val productRibbon: ImageView = listItemView.findViewById(R.id.productRibbon)
 
         init {
             addButton.setOnClickListener {
@@ -76,6 +78,10 @@ class ProductAdapter(
         Picasso.get().load(product.image).placeholder(getShimmerDrawable()).into(holder.productImg)
         holder.productTitle.text = product.name
         holder.productDescription.text = product.description
+        if(product.stock == 0) {
+            Log.i("TAG123", "onBindViewHolder: ${product.name} is out of stock")
+            holder.productRibbon.visibility = View.VISIBLE
+        }
 
         // Find offer of product
         val oldPrice = product.price
@@ -91,6 +97,13 @@ class ProductAdapter(
                 holder.productPrice.text = it
             }
             holder.productOldPrice.visibility = View.VISIBLE
+        }
+        Log.i("TAG123", "onBindViewHolder: $wishlistedProductIds")
+        Log.i("TAG123", "onBindViewHolder: $noItemLayout")
+        if(wishlistedProductIds.isEmpty()) {
+            noItemLayout?.visibility = View.VISIBLE
+        } else {
+            noItemLayout?.visibility = View.GONE
         }
 
         holder.itemView.setOnClickListener {
@@ -113,7 +126,7 @@ class ProductAdapter(
 //        wishlistedProductIds.clear()
 //        wishlistedProductIds.addAll(newWishlistedProductIds)
         wishlistedProductIds = newWishlistedProductIds.toMutableSet()
-//        Log.d("Test00", "updateWishlistProductIds: $wishlistedProductIds")
+        Log.d("TAG123", "updateWishlistProductIds: $wishlistedProductIds")
     }
 
     fun updateWishlistState(newWishlistedProductIds: Set<String>) {

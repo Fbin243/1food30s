@@ -27,6 +27,11 @@ import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.DocumentReference
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.squareup.okhttp.Call
+import com.squareup.okhttp.Callback
+import com.squareup.okhttp.OkHttpClient
+import com.squareup.okhttp.Request
+import com.squareup.okhttp.Response
 import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Cart
 import com.zebrand.app1food30s.data.entity.CartItem
@@ -34,16 +39,54 @@ import com.zebrand.app1food30s.data.entity.Product
 import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.data.entity.Wishlist
 import com.zebrand.app1food30s.ui.authentication.LoginActivity
+import org.json.JSONObject
+import java.io.IOException
+import java.text.NumberFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
+import kotlin.math.log
 
 
 object Utils {
     const val timeHandler: Long = 800
     val handler = Handler(Looper.getMainLooper())
+    var hasExchageRate = false
+
+    private fun fetchExchangeRate(callback: (Int) -> Unit) {
+        val client = OkHttpClient()
+
+        val request = Request.Builder()
+            .url("https://api.exchangerate-api.com/v4/latest/USD")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(request: Request?, e: IOException?) {
+                println("Failed to fetch exchange rate: ${e?.message}")
+            }
+
+            override fun onResponse(response: Response?) {
+                val responseBody = response?.body()?.string()
+                val exchangeRate = parseExchangeRate(responseBody)
+                callback(exchangeRate)
+            }
+        })
+    }
+
+    private fun parseExchangeRate(responseBody: String?): Int {
+        return try {
+            val json = responseBody?.trim() ?: ""
+            val jsonObject = JSONObject(json)
+            val rates = jsonObject.getJSONObject("rates")
+            val vndRate = rates.getInt("VND")
+            vndRate
+        } catch (e: Exception) {
+            println("Error parsing exchange rate: ${e.message}")
+            0
+        }
+    }
 
 //    fun showCustomSnackbar(view: View, message: String) {
 //        Snackbar.make(view, message, Snackbar.LENGTH_SHORT).apply {
@@ -100,10 +143,23 @@ object Utils {
     fun formatPrice(price: Double, context: Context): String {
         val mySharedPreferences = MySharedPreferences.getInstance(context)
         val languageCode = mySharedPreferences.getString(SingletonKey.KEY_LANGUAGE_CODE) ?: "en"
-        if (languageCode == "vi") {
-            return String.format("%.0f", price * 25000).replace(",", ".") + "đ"
+        val exchangeRate = mySharedPreferences.getInt(SingletonKey.EXCHANGE_RATE)
+        if(!hasExchageRate) {
+            hasExchageRate = true
+            Log.i("TAG123", "formatPrice: exchange rate is 0")
+            fetchExchangeRate { exchangeRate ->
+                mySharedPreferences.setInt(SingletonKey.EXCHANGE_RATE, exchangeRate)
+            }
         }
-        return "$" + String.format("%.2f", price).replace(",", ".")
+        var locale = Locale("en", "US")
+        var convertedPrice = price
+
+        if (languageCode == "vi") {
+            locale = Locale("vi", "VN")
+            convertedPrice *= exchangeRate
+        }
+        val currencyFormat = NumberFormat.getCurrencyInstance(locale)
+        return currencyFormat.format(convertedPrice)
     }
 
     fun formatRating(price: Double): String {

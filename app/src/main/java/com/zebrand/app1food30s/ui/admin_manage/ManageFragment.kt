@@ -30,6 +30,8 @@ class ManageFragment : Fragment() {
     private fun init() {
         viewPager2Adapter = ManageViewPagerAdapter(childFragmentManager, lifecycle)
         binding.viewPager2.adapter = viewPager2Adapter
+        binding.viewPager2.isUserInputEnabled = false
+        binding.viewPager2.offscreenPageLimit = 3
         TabLayoutMediator(binding.tabLayout, binding.viewPager2) { tab, position ->
             when (position) {
                 0 -> tab.text = "Product"

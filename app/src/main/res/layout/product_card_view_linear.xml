@@ -20,13 +20,32 @@
             app:cardCornerRadius="@dimen/spacing16"
             android:layout_marginEnd="@dimen/spacing10">
 
-            <ImageView
-                android:id="@+id/productImg"
+
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/product1"
-                app:shapeAppearanceOverlay="@style/RoundedImageView" />
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/productImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/product1"
+                    app:shapeAppearanceOverlay="@style/RoundedImageView" />
+
+                <!-- Ribbon View -->
+                <ImageView
+                    android:id="@+id/productRibbon"
+                    android:visibility="gone"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:background="@drawable/ic_sold_out" />
+                <!-- Customize the size and background of the ribbon as per your requirement -->
+
+            </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
         <LinearLayout

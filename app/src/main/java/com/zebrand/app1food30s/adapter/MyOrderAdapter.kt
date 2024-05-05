@@ -75,4 +75,9 @@ class MyOrderAdapter(
     override fun getItemCount(): Int {
         return orders.size
     }
+
+    fun clear() {
+        orders.clear()
+        notifyDataSetChanged()
+    }
 }

@@ -162,6 +162,11 @@ class EditProduct : AppCompatActivity() {
     private fun saveProductToFirestore(productId: String, idCategory: String, idOffer: String) {
         val productName = nameEditText.text.toString().trim()
 
+        if (productName.isEmpty()) {
+            Toast.makeText(this, "Please enter product name!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         imageUri?.let { uri ->
             val fileName = "product${UUID.randomUUID()}.png"
             val storageReference = fireStorage.reference.child("images/product/$fileName")
@@ -289,12 +294,32 @@ class EditProduct : AppCompatActivity() {
 
     private fun updateProductDetails(productId: String, imagePath: String, idCategory: String, idOffer: String?) {
         val productName = nameEditText.text.toString().trim()
+
+        if (priceEditText.text.toString().toDoubleOrNull() == null) {
+            Toast.makeText(this, "Please enter price!", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (stockEditText.text.toString().toIntOrNull() == null) {
+            Toast.makeText(this, "Please enter stock!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val productPrice = priceEditText.text.toString().toDoubleOrNull() ?: 0.0
         val productStock = stockEditText.text.toString().toIntOrNull() ?: 0
         val productDescription = descriptionEditText.text.toString().trim()
 
+        if (productDescription.isEmpty()) {
+            Toast.makeText(this, "Please enter description!", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val selectedCategoryName = categoryAutoComplete.text.toString()
         val selectedOfferName = offerAutoComplete.text.toString()
+
+        if (selectedCategoryName.isEmpty()) {
+            Toast.makeText(this, "Please choose category!", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         // Kiểm tra và cập nhật số lượng sản phẩm trong categories
         val categoriesCollection = FirebaseFirestore.getInstance().collection("categories")
@@ -321,7 +346,8 @@ class EditProduct : AppCompatActivity() {
                     val categoryDocumentRef = categoryDocuments.documents.first().reference
 
                     // Kiểm tra và cập nhật offers nếu selectedOfferName không rỗng
-                    if (selectedOfferName != "Choose offer" && selectedOfferName != "None") {
+                    Log.d("test select offer", "result: $selectedOfferName")
+                    if (selectedOfferName != "Choose offer") {
                         FirebaseFirestore.getInstance().collection("offers").whereEqualTo("name", selectedOfferName).limit(1).get()
                             .addOnSuccessListener { offerDocuments ->
                                 if (offerDocuments.documents.isNotEmpty()) {
@@ -351,11 +377,12 @@ class EditProduct : AppCompatActivity() {
             "image" to imagePath,
             "date" to Date()
         )
-        offerRef?.let {
-            productUpdate["idOffer"] = it
-        }
+//        offerRef?.let {
+//            productUpdate["idOffer"] = it
+//        }
 
         FirebaseFirestore.getInstance().collection("products").document(productId).update(productUpdate)
+        FirebaseFirestore.getInstance().collection("products").document(productId).update("idOffer", offerRef)
             .addOnSuccessListener {
                 // Cập nhật số lượng sản phẩm mới
                 updateCategoryAndOfferCount(categoryRef, offerRef)
@@ -408,7 +435,7 @@ class EditProduct : AppCompatActivity() {
     private fun loadOffersFromFirebase(offerStr: String) {
         val db = Firebase.firestore
         val offerList = ArrayList<String>()
-        offerList.add("None")
+        offerList.add("Choose offer")
 
         db.collection("offers").get()
             .addOnSuccessListener { documents ->

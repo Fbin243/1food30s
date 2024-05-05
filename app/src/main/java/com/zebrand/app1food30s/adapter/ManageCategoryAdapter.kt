@@ -12,6 +12,7 @@ import com.zebrand.app1food30s.R
 import com.zebrand.app1food30s.data.entity.Offer
 import com.zebrand.app1food30s.data.entity.Category
 import com.zebrand.app1food30s.data.entity.Product
+import com.zebrand.app1food30s.utils.Utils
 
 class ManageCategoryAdapter(private val categories: List<Category>, private val onCategoryClick: (Category) -> Unit) :
     RecyclerView.Adapter<ManageCategoryAdapter.CategoryViewHolder>() {
@@ -50,7 +51,7 @@ class ManageCategoryAdapter(private val categories: List<Category>, private val 
 
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         val category: Category = categories[position]
-        Picasso.get().load(category.image).into(holder.categoryImg)
+        Picasso.get().load(category.image).placeholder(Utils.getShimmerDrawable()).into(holder.categoryImg)
         holder.categoryName.text = category.name
         holder.categoryNumProduct.text = category.numProduct.toString()
 

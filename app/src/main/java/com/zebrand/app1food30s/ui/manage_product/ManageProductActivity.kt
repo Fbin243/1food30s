@@ -87,8 +87,8 @@ class ManageProductActivity : AppCompatActivity() {
     private fun handleDisplayProductList() {
         lifecycleScope.launch {
             showShimmerEffectForProducts()
-//            val db = AppDatabase.getInstance(applicationContext)
-            val adapter = ManageProductAdapter(getListProducts(), onProductClick = { product ->
+            val db = AppDatabase.getInstance(applicationContext)
+            val adapter = ManageProductAdapter(FirebaseService.getListProducts(db), onProductClick = { product ->
                 val intent = Intent(this@ManageProductActivity, EditProduct::class.java).apply {
                     putExtra("PRODUCT_ID", product.id)
                 }
@@ -337,47 +337,4 @@ class ManageProductActivity : AppCompatActivity() {
         binding.productRcv.layoutManager = LinearLayoutManager(this@ManageProductActivity)
         binding.productRcv.adapter = adapter
     }
-
-//    private fun displayFilteredProducts(filteredProducts: List<Product>) {
-//        showShimmerEffectForProducts()
-////            val db = AppDatabase.getInstance(applicationContext)
-//        val adapter = ManageProductAdapter(filteredProducts, onProductClick = { product ->
-//            val intent = Intent(this@ManageProductActivity, EditProduct::class.java).apply {
-//                putExtra("PRODUCT_ID", product.id)
-//            }
-//            startActivity(intent)
-//        })
-//        binding.productRcv.layoutManager = LinearLayoutManager(this@ManageProductActivity)
-//        binding.productRcv.adapter = adapter
-//        hideShimmerEffectForProducts()
-//    }
-
-
-
-
-    private suspend fun getListProducts(): List<Product> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val querySnapshot = fireStore.collection("products").orderBy("date", Query.Direction.DESCENDING).get().await()
-                querySnapshot.documents.mapNotNull { document ->
-                    val id = document.id
-                    val name = document.getString("name") ?: ""
-                    val image = document.getString("image") ?: "images/product/product3.png"
-                    val imageUrl = fireStorage.reference.child(image).downloadUrl.await().toString()
-                    val price = document.getDouble("price") ?: 0.0
-                    val description = document.getString("description") ?: ""
-                    val stock = document.getLong("stock")?.toInt() ?: 0
-                    val sold = document.getLong("sold")?.toInt() ?: 0
-                    val idCategoryRef = document.getDocumentReference("idCategory")
-                    val idOfferRef = document.getDocumentReference("idOffer")
-
-                    Product(id, idCategoryRef, idOfferRef, name, imageUrl, price, description, stock, sold, document.getDate("date"))
-                }
-            } catch (e: Exception) {
-                Log.e("getListProducts", "Error getting products", e)
-                emptyList()
-            }
-        }
-    }
-
 }

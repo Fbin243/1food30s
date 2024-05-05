@@ -71,6 +71,7 @@
     <string name="txt_address">Address</string>
     <string name="txt_payment_info">Payment info</string>
     <string name="txt_payment_method">Payment method:&#160;</string>
+    <string name="txt_payment_method_2">Payment method</string>
     <string name="txt_payment_status">Status:&#160;</string>
     <string name="txt_order_details">Order details</string>
     <string name="txt_subtotal">Subtotal:&#160;</string>
@@ -279,4 +280,10 @@
 
     <string name="txt_visible" translatable="false">visible</string>
     <string name="txt_gone" translatable="false">gone</string>
+    <string name="txt_map">Choose address to calculate ship fee</string>
+    <string name="txt_cart_summary">Cart summary</string>
+    <string name="txt_shipping_info">Shipping Info</string>
+    <string name="txt_no_product_available">No Product Available</string>
+    <string name="txt_no_category_available">No category available</string>
+    <string name="txt_no_offer_available">No Offer Available</string>
 </resources>

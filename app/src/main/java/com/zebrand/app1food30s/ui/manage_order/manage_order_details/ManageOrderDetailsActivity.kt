@@ -39,6 +39,7 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
     private lateinit var itemOrderDetailsAdapter: MyOrderDetailsAdapter
     private var manageOrderDetailsList: MutableList<OrderItem> = mutableListOf()
     val handler = Handler(Looper.getMainLooper())
+    private lateinit var customerName: String
 //    private lateinit var spinnerPayment: AutoCompleteTextView
 //    private lateinit var spinnerDelivery: AutoCompleteTextView
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -156,8 +157,8 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
 //        binding.tvPaymentStatus.text = orderDetails.paymentStatus.uppercase()
         binding.tvSubTotal.text = Utils.formatPrice(orderDetails.originAmount, this)
         binding.tvShippingFee.text = Utils.formatPrice(orderDetails.shippingFee, this)
-        binding.tvDiscount.text = "-" + Utils.formatPrice(itemOrderDetailsAdapter.getDiscount(), this)
-        binding.tvTotalAmount.text = Utils.formatPrice(orderDetails.totalAmount + orderDetails.shippingFee, this)
+        binding.tvDiscount.text = Utils.formatPrice(itemOrderDetailsAdapter.getDiscount(), this)
+        binding.tvTotalAmount.text = Utils.formatPrice(orderDetails.totalAmount + orderDetails.shippingFee - itemOrderDetailsAdapter.getDiscount(), this)
         binding.tvNote.text = orderDetails.note
         binding.tvReason.text = orderDetails.cancelReason
 

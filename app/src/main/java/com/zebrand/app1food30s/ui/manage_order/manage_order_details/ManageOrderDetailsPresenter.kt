@@ -39,45 +39,56 @@ class ManageOrderDetailsPresenter(
             }
 
             val newObject: Order? = snapshot.toObject(Order::class.java)
-            Log.d("Test00", "placeOrder: Starting order placement. ${orderDetails?.id} $newObject")
-            if (newObject != null && newObject.items.isNotEmpty()) {
-                view.showShimmerEffectForOrders(newObject.items.size)
-                if (orderDetails?.id?.isEmpty() == false && (orderDetails.orderStatus != newObject.orderStatus
-                            || orderDetails.paymentStatus != newObject.paymentStatus
-                            || orderDetails.cancelReason != newObject.cancelReason) ) {
-                    // Trạng thái đã được sửa đổi, cập nhật lại trong adapter
-                    orderDetails.apply {
-                        orderStatus = newObject.orderStatus
-                        paymentStatus = newObject.paymentStatus
-                        cancelReason = newObject.cancelReason
-                    }
-                } else {
-                    // Nếu không có sự thay đổi trạng thái, thêm dữ liệu mới vào adapter
-                    orderDetails?.apply {
-                        id = newObject.id
-                        idAccount = newObject.idAccount
-                        items.clear()
-                        items.addAll(newObject.items)
-                        totalAmount = newObject.totalAmount
-                        orderStatus = newObject.orderStatus
-                        cancelReason = newObject.cancelReason
-                        shippingAddress = newObject.shippingAddress
-                        paymentStatus = newObject.paymentStatus
-                        paymentMethod = newObject.paymentMethod
-                        originAmount = newObject.originAmount
-                        shippingFee = newObject.shippingFee
-                        note = newObject.note
-                        date = newObject.date
-                    }
-                    adapter.updateIsDelivered(newObject.orderStatus)
-                    for (item in newObject.items) {
-                        adapter.insertData(item)
+            if(newObject != null){
+                newObject.idAccount?.get()?.addOnSuccessListener {
+                    Log.d(
+                        "Test00",
+                        "placeOrder: Starting order placement. ${orderDetails?.id} $newObject"
+                    )
+                    val userObject = it.toObject(User::class.java)
+
+                    if (userObject != null && newObject.items.isNotEmpty()) {
+                        view.showShimmerEffectForOrders(newObject.items.size)
+                        if (orderDetails?.id?.isEmpty() == false && (orderDetails.orderStatus != newObject.orderStatus
+                                    || orderDetails.paymentStatus != newObject.paymentStatus
+                                    || orderDetails.cancelReason != newObject.cancelReason)
+                        ) {
+                            // Trạng thái đã được sửa đổi, cập nhật lại trong adapter
+                            orderDetails.apply {
+                                orderStatus = newObject.orderStatus
+                                paymentStatus = newObject.paymentStatus
+                                cancelReason = newObject.cancelReason
+                            }
+                        } else {
+                            // Nếu không có sự thay đổi trạng thái, thêm dữ liệu mới vào adapter
+                            orderDetails?.apply {
+                                id = newObject.id
+                                idAccount = newObject.idAccount
+                                user = userObject
+                                items.clear()
+                                items.addAll(newObject.items)
+                                totalAmount = newObject.totalAmount
+                                orderStatus = newObject.orderStatus
+                                originAmount = newObject.originAmount
+                                shippingFee = newObject.shippingFee
+                                cancelReason = newObject.cancelReason
+                                shippingAddress = newObject.shippingAddress
+                                paymentStatus = newObject.paymentStatus
+                                paymentMethod = newObject.paymentMethod
+                                note = newObject.note
+                                date = newObject.date
+                            }
+                            adapter.updateIsDelivered(newObject.orderStatus)
+                            for (item in newObject.items) {
+                                adapter.insertData(item)
+                            }
+                        }
+
+                        view.setManageOrderDetailsUI()
+                        view.hideShimmerEffectForOrders()
+                        Log.d("Test00", "placeOrder: Starting order placement. $orderDetails")
                     }
                 }
-
-                view.setManageOrderDetailsUI()
-                view.hideShimmerEffectForOrders()
-                Log.d("Test00", "placeOrder: Starting order placement. $orderDetails")
             }
         }
     }

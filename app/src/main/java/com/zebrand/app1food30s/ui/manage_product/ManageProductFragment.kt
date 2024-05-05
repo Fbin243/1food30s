@@ -62,6 +62,13 @@ class ManageProductFragment : Fragment() {
     private lateinit var nameFilterEditText: TextInputEditText
     private lateinit var datePickerText: TextInputEditText
     private lateinit var toDatePickerText: TextInputEditText
+
+    private var nameFilter: String? = null
+    private var selectedCategory: String? = null
+    private var selectedPriceRange: String? = null
+    private var selectedStartDate: String? = null
+    private var selectedEndDate: String? = null
+
     lateinit var categoryArr: ArrayList<String>
     val priceArr = arrayOf("1$ to 10$", "11$ to 50$", "51$ to 100$", "More than 100$")
 
@@ -108,7 +115,7 @@ class ManageProductFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
+        override fun onResume() {
         super.onResume()
         handleDisplayProductList()
     }
@@ -152,11 +159,30 @@ class ManageProductFragment : Fragment() {
         botDialog = BottomSheetDialog(requireContext(), R.style.BottomSheetDialogTheme)
         botDialog.setContentView(dialogView)
 
+
+
         nameFilterEditText = dialogView.findViewById(R.id.nameFilter)
         categoryAutoComplete = dialogView.findViewById(R.id.autoCompleteCategory)
         priceAutoComplete = dialogView.findViewById(R.id.autoCompletePrice)
         datePickerText = dialogView.findViewById(R.id.datePicker)
         toDatePickerText = dialogView.findViewById(R.id.toDatePicker)
+
+
+        if(nameFilter != null) {
+            nameFilterEditText.setText(nameFilter)
+        }
+        if(selectedCategory != null) {
+            categoryAutoComplete.setText(selectedCategory)
+        }
+        if(selectedPriceRange != null) {
+            priceAutoComplete.setText(selectedPriceRange)
+        }
+        if(selectedStartDate != null) {
+            datePickerText.setText(selectedStartDate)
+        }
+        if(selectedEndDate != null) {
+            toDatePickerText.setText(selectedEndDate)
+        }
 
         loadCategoriesFromFirebase()
 
@@ -182,6 +208,7 @@ class ManageProductFragment : Fragment() {
             val formattedDate = sdf.format(myCalendar.time)
             Log.d("dateABC", formattedDate)
             datePickerText.setText(formattedDate)
+            selectedStartDate = formattedDate
         }
 
         val toDatePicker = DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
@@ -194,6 +221,7 @@ class ManageProductFragment : Fragment() {
             val formattedDate = sdf.format(myCalendar.time)
             Log.d("dateABC", formattedDate)
             toDatePickerText.setText(formattedDate)
+            selectedEndDate = formattedDate
         }
 
         datePickerText.setOnClickListener {
@@ -214,8 +242,13 @@ class ManageProductFragment : Fragment() {
 
         // Setup for filter button
         botDialog.findViewById<MaterialButton>(R.id.saveBtn)?.setOnClickListener {
-            botDialog.dismiss()
             filterProducts()
+
+            nameFilter = nameFilterEditText.text.toString()
+            selectedCategory = categoryAutoComplete.text.toString()
+            selectedPriceRange = priceAutoComplete.text.toString()
+
+            botDialog.dismiss()
         }
 
         // Setup for cancel button
@@ -341,14 +374,21 @@ class ManageProductFragment : Fragment() {
 
     private fun displayFilteredProducts(filteredProducts: List<Product>) {
         // Update RecyclerView with filteredProducts
-        val adapter = ManageProductAdapter(filteredProducts, onProductClick = { product ->
-            val intent = Intent(requireContext(), EditProduct::class.java).apply {
-                putExtra("PRODUCT_ID", product.id)
-            }
-            startActivity(intent)
-        })
-        binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
-        binding.productRcv.adapter = adapter
+        if(filteredProducts.isEmpty()) {
+            binding.productRcv.visibility = View.GONE
+            binding.noItemLayout.visibility = View.VISIBLE
+        } else {
+            binding.productRcv.visibility = View.VISIBLE
+            binding.noItemLayout.visibility = View.GONE
+            val adapter = ManageProductAdapter(filteredProducts, onProductClick = { product ->
+                val intent = Intent(requireContext(), EditProduct::class.java).apply {
+                    putExtra("PRODUCT_ID", product.id)
+                }
+                startActivity(intent)
+            })
+            binding.productRcv.layoutManager = LinearLayoutManager(requireContext())
+            binding.productRcv.adapter = adapter
+        }
     }
 
 //    private fun displayFilteredProducts(filteredProducts: List<Product>) {
