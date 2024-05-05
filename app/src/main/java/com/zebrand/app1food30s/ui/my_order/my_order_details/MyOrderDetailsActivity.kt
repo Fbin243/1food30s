@@ -132,10 +132,10 @@ class MyOrderDetailsActivity : AppCompatActivity(), MyOrderDetailsMVPView {
         binding.tvPaymentStatus.text = orderDetails.paymentStatus.uppercase()
         binding.tvPaymentMethod.text = orderDetails.paymentMethod
         binding.tvSubTotal.text = Utils.formatPrice(orderDetails.originAmount, this)
-        binding.tvDiscount.text = Utils.formatPrice(itemOrderDetailsAdapter.getDiscount(), this)
+        binding.tvDiscount.text = Utils.formatPrice(orderDetails.originAmount - orderDetails.totalAmount, this)
         binding.tvShippingFee.text = Utils.formatPrice(orderDetails.shippingFee, this)
         binding.tvTotalAmount.text = Utils.formatPrice(orderDetails.totalAmount +
-                orderDetails.shippingFee - itemOrderDetailsAdapter.getDiscount(),this)
+                orderDetails.shippingFee,this)
 
 //        -----------------Control button-----------------
         val layoutParams = LinearLayout.LayoutParams(

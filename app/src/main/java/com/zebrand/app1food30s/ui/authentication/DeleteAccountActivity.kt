@@ -54,6 +54,10 @@ class DeleteAccountActivity : AppCompatActivity() {
             }
         }
 
+        binding.backIcon.root.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
     }
 
     private fun showCustomConfirmDialogBox() {

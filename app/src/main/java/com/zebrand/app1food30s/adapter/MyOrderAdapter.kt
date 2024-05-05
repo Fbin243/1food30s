@@ -63,7 +63,7 @@ class MyOrderAdapter(
 
         holder.tvID.text = Utils.formatId(order.id)
         holder.tvOrderDate.text = Utils.formatDate(order.date)
-        holder.orderAmount.text = Utils.formatPrice(order.totalAmount, holder.itemView.context)
+        holder.orderAmount.text = Utils.formatPrice(order.totalAmount + order.shippingFee, holder.itemView.context)
         val binding = DataBindingUtil.bind<MyOrderStatusSpanBinding>(holder.orderStatusSpan)
         binding?.orderStatusSpan = order.orderStatus
 
