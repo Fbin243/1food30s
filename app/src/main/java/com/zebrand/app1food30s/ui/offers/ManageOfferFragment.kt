@@ -61,6 +61,8 @@ class ManageOfferFragment : Fragment() {
     private lateinit var numProductAutoComplete: AutoCompleteTextView
     private lateinit var datePickerText: TextInputEditText
     private lateinit var toDatePickerText: TextInputEditText
+
+    
     //    private lateinit var toDatePickerText: TextInputEditText
     val discountArray = arrayOf("1% to 10%", "11% to 50%", "More than 50%")
     val numProductArray = arrayOf("Empty", "1 to 10", "11 to 50", "51 to 100", "More than 100")
