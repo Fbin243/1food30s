@@ -233,5 +233,6 @@
     <string name="txt_please_enter_order_id">Vui lòng nhập ID đơn hàng</string>
     <string name="wishlist">Danh sách yêu thích</string>
     <string name="txt_phone_2">Số điện thoại:&#160;</string>
+    <string name="txt_payment_method_2">Phương thức thanh toán</string>
 
 </resources>

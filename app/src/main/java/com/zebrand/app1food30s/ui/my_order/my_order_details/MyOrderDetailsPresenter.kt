@@ -63,6 +63,8 @@ class MyOrderDetailsPresenter(private val context: Context, private val view: My
                                     items.addAll(newObject.items)
                                     totalAmount = newObject.totalAmount
                                     orderStatus = newObject.orderStatus
+                                    originAmount = newObject.originAmount
+                                    shippingFee = newObject.shippingFee
                                     cancelReason = newObject.cancelReason
                                     shippingAddress = newObject.shippingAddress
                                     paymentStatus = newObject.paymentStatus

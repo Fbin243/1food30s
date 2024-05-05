@@ -71,6 +71,7 @@
     <string name="txt_address">Address</string>
     <string name="txt_payment_info">Payment info</string>
     <string name="txt_payment_method">Payment method:&#160;</string>
+    <string name="txt_payment_method_2">Payment method</string>
     <string name="txt_payment_status">Status:&#160;</string>
     <string name="txt_order_details">Order details</string>
     <string name="txt_subtotal">Subtotal:&#160;</string>
