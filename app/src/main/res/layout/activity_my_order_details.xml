@@ -215,6 +215,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/font_family"
                             android:textFontWeight="600"
+                            android:textColor="@color/primary"
                             android:text=" Cash on Delivery"
                             />
                     </LinearLayout>

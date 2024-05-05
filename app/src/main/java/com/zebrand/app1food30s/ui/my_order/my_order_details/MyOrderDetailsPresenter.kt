@@ -8,6 +8,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.Query
 import com.zebrand.app1food30s.adapter.MyOrderDetailsAdapter
 import com.zebrand.app1food30s.data.entity.Order
+import com.zebrand.app1food30s.data.entity.User
 import com.zebrand.app1food30s.utils.FireStoreUtils
 
 class MyOrderDetailsPresenter(private val context: Context, private val view: MyOrderDetailsMVPView) {
@@ -28,52 +29,60 @@ class MyOrderDetailsPresenter(private val context: Context, private val view: My
 
             val newObject: Order? = snapshot.toObject(Order::class.java)
             Log.d("Test00", "placeOrder: Starting order placement. ${orderDetails?.id} $newObject")
-            if (newObject != null && newObject.items.isNotEmpty()) {
-                var check: Boolean = false
-                view.showShimmerEffectForOrders(newObject.items.size)
-                for (newItem in newObject.items) {
-                    val oldItem = orderDetails?.items?.find { it.productId == newItem.productId }
-                    if (oldItem != null && oldItem.reviewed != newItem.reviewed) {
-                        check = true
-                        // Replace the old item with the new item
-                        val index = orderDetails.items.indexOf(oldItem)
-                        orderDetails.items[index] = newItem
+            if (newObject != null) {
+                newObject.idAccount?.get()?.addOnSuccessListener {
+                    val userObject = it.toObject(User::class.java)
+
+                    if(userObject != null  && newObject.items.isNotEmpty()){
+                        var check: Boolean = false
+                        view.showShimmerEffectForOrders(newObject.items.size)
+                        for (newItem in newObject.items) {
+                            val oldItem = orderDetails?.items?.find { it.productId == newItem.productId }
+                            if (oldItem != null && oldItem.reviewed != newItem.reviewed) {
+                                check = true
+                                // Replace the old item with the new item
+                                val index = orderDetails.items.indexOf(oldItem)
+                                orderDetails.items[index] = newItem
+                            }
+                        }
+
+                        if(!check){
+                            if (orderDetails?.id?.isEmpty() == false && (orderDetails.orderStatus != newObject.orderStatus || orderDetails.paymentStatus != newObject.paymentStatus) ) {
+                                // Trạng thái đã được sửa đổi, cập nhật lại trong adapter
+                                orderDetails.apply {
+                                    orderStatus = newObject.orderStatus
+                                    paymentStatus = newObject.paymentStatus
+                                }
+                            } else {
+                                // Nếu không có sự thay đổi trạng thái, thêm dữ liệu mới vào adapter
+                                orderDetails?.apply {
+                                    id = newObject.id
+                                    idAccount = newObject.idAccount
+                                    user = userObject
+                                    items.clear()
+                                    items.addAll(newObject.items)
+                                    totalAmount = newObject.totalAmount
+                                    orderStatus = newObject.orderStatus
+                                    cancelReason = newObject.cancelReason
+                                    shippingAddress = newObject.shippingAddress
+                                    paymentStatus = newObject.paymentStatus
+                                    paymentMethod = newObject.paymentMethod
+                                    note = newObject.note
+                                    date = newObject.date
+                                }
+                                adapter.updateIsDelivered(newObject.orderStatus)
+                                for (item in newObject.items) {
+                                    adapter.insertData(item)
+                                }
+                                view.handleReviewProduct()
+                            }
+                        }
+
+                        view.setOrderDetailsUI()
+                        view.hideShimmerEffectForOrders()
+                        Log.d("Test00", "placeOrder: Starting order placement. $orderDetails")
                     }
                 }
-
-                if(!check){
-                    if (orderDetails?.id?.isEmpty() == false && (orderDetails.orderStatus != newObject.orderStatus || orderDetails.paymentStatus != newObject.paymentStatus) ) {
-                        // Trạng thái đã được sửa đổi, cập nhật lại trong adapter
-                        orderDetails.apply {
-                            orderStatus = newObject.orderStatus
-                            paymentStatus = newObject.paymentStatus
-                        }
-                    } else {
-                        // Nếu không có sự thay đổi trạng thái, thêm dữ liệu mới vào adapter
-                        orderDetails?.apply {
-                            id = newObject.id
-                            idAccount = newObject.idAccount
-                            items.clear()
-                            items.addAll(newObject.items)
-                            totalAmount = newObject.totalAmount
-                            orderStatus = newObject.orderStatus
-                            cancelReason = newObject.cancelReason
-                            shippingAddress = newObject.shippingAddress
-                            paymentStatus = newObject.paymentStatus
-                            note = newObject.note
-                            date = newObject.date
-                        }
-                        adapter.updateIsDelivered(newObject.orderStatus)
-                        for (item in newObject.items) {
-                            adapter.insertData(item)
-                        }
-                        view.handleReviewProduct()
-                    }
-                }
-
-                view.setOrderDetailsUI()
-                view.hideShimmerEffectForOrders()
-                Log.d("Test00", "placeOrder: Starting order placement. $orderDetails")
             }
         }
     }
