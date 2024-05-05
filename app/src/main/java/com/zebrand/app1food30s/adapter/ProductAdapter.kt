@@ -100,11 +100,6 @@ class ProductAdapter(
         }
         Log.i("TAG123", "onBindViewHolder: $wishlistedProductIds")
         Log.i("TAG123", "onBindViewHolder: $noItemLayout")
-        if(wishlistedProductIds.isEmpty()) {
-            noItemLayout?.visibility = View.VISIBLE
-        } else {
-            noItemLayout?.visibility = View.GONE
-        }
 
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(product)
