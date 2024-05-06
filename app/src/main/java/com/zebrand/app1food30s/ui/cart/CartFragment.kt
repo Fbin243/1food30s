@@ -44,14 +44,14 @@ class CartFragment : Fragment(), CartMVPView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupRecyclerView()
-
         if (userId.isNotBlank()) {
             presenter = CartPresenter(this, userId, requireContext())
 //          presenter.listenToCartChanges()
 //            Log.d("Test00", "onViewCreated: loadCart()")
 //            presenter.loadCart()
         }
+
+        setupRecyclerView()
 
         handleCheckoutNavigation(userId)
 
@@ -62,6 +62,7 @@ class CartFragment : Fragment(), CartMVPView {
         adapter = CartAdapter(
             context = requireContext(),
             items = mutableListOf(),
+            presenter = presenter,
             onItemDeleted = { cartItem ->
                 cartItem.productId?.let { productRef ->
                     presenter.removeFromCart(productRef)
