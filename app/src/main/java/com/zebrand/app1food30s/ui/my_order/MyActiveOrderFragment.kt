@@ -24,10 +24,10 @@ import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 
 class MyActiveOrderFragment : Fragment(), MyOrderMVPView {
-    private var _binding: FragmentMyActiveOrderBinding? = null
-    private val binding get() = _binding!!
+//    private var _binding: FragmentMyActiveOrderBinding? = null
+//    private val binding get() = _binding!!
 
-//    lateinit var binding: FragmentMyActiveOrderBinding
+    lateinit var binding: FragmentMyActiveOrderBinding
     //    Chưa login nên không có đi qua local db để lấy data được
     private lateinit var mySharePreference: MySharedPreferences
     private lateinit var presenter: MyOrderPresenter
@@ -41,8 +41,8 @@ class MyActiveOrderFragment : Fragment(), MyOrderMVPView {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-//        binding = FragmentMyActiveOrderBinding.inflate(inflater, container, false)
-        _binding = FragmentMyActiveOrderBinding.inflate(inflater, container, false)
+        binding = FragmentMyActiveOrderBinding.inflate(inflater, container, false)
+//        _binding = FragmentMyActiveOrderBinding.inflate(inflater, container, false)
         return binding.root
     }
 
