@@ -200,7 +200,8 @@ class ProfileAfterLoginFragment : Fragment() {
                     // Update other user info views as necessary
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, "Error fetching user information", Toast.LENGTH_LONG).show()
+//                Toast.makeText(context, "Error fetching user information", Toast.LENGTH_LONG).show()
+                context?.let { Utils.showCustomToast(it, "Error fetching user information", "error") }
             }
         }
     }

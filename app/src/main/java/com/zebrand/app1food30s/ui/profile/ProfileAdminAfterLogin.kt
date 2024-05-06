@@ -30,6 +30,7 @@ import com.zebrand.app1food30s.ui.offers.ManageOffer
 import com.zebrand.app1food30s.utils.FireStoreUtils
 import com.zebrand.app1food30s.utils.FirebaseUtils.fireStorage
 import com.zebrand.app1food30s.utils.FirebaseUtils.fireStore
+import com.zebrand.app1food30s.utils.Utils
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
@@ -173,7 +174,8 @@ class ProfileAdminAfterLogin : Fragment() {
                     // Update other user info views as necessary
                 }
             } catch (e: Exception) {
-                Toast.makeText(context, "Error fetching user information", Toast.LENGTH_LONG).show()
+//                Toast.makeText(context, "Error fetching user information", Toast.LENGTH_LONG).show()
+                context?.let { Utils.showCustomToast(it, "Error fetching user information", "error") }
             }
         }
     }
