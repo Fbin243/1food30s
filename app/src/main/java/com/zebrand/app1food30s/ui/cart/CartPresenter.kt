@@ -8,6 +8,10 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.zebrand.app1food30s.data.AppDatabase
 import com.zebrand.app1food30s.data.entity.Cart
+import com.zebrand.app1food30s.data.entity.CartItem
+import com.zebrand.app1food30s.utils.FireStoreUtils
+import com.zebrand.app1food30s.utils.FireStoreUtils.mDBCartRef
+import com.zebrand.app1food30s.utils.FirebaseUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,6 +56,32 @@ class CartPresenter(private val view: CartMVPView, private val userId: String, c
         }
     }
 
+    fun updateCartOnExit(cartItems: List<CartItem>) {
+        val cartRef = mDBCartRef.document(userId)
+
+        FirebaseUtils.fireStore.runTransaction { transaction ->
+            val cartSnapshot = transaction.get(cartRef)
+            if (cartSnapshot.exists()) {
+                val cart = cartSnapshot.toObject(Cart::class.java)
+                cart?.let {
+                    it.items.forEach { item ->
+                        val cartItemToUpdate = cartItems.find { ci -> ci.productId?.id == item.productId?.id }
+                        if (cartItemToUpdate != null) {
+                            item.quantity = cartItemToUpdate.quantity
+                        }
+                    }
+
+                    transaction.set(cartRef, it)
+                }
+            } else {
+                Log.d("CartAdapter", "No cart to update: ${cartRef.path}")
+            }
+        }.addOnSuccessListener {
+            Log.d("CartAdapter", "Transaction success for cart: ${userId}")
+        }.addOnFailureListener { e ->
+            Log.e("CartAdapter", "Transaction failure for cart: ${userId}", e)
+        }
+    }
 
     fun removeFromCart(productRef: DocumentReference) {
         cartRef?.let { ref ->

@@ -1,12 +1,15 @@
 package com.zebrand.app1food30s.adapter
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -78,21 +81,60 @@ class CartAdapter(
 
             itemQuantity.text = detailedCartItem.quantity.toString()
 
+//            plusBtn.setOnClickListener {
+//                if (detailedCartItem.quantity < detailedCartItem.productStock) {
+//                    val newQuantity = detailedCartItem.quantity + 1
+//                    detailedCartItem.quantity = newQuantity // Update the item directly
+//                    notifyItemChanged(position, "quantity") // Use payload to specify what changed
+////                    onQuantityUpdated(detailedCartItem, newQuantity)
+//                    onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
+//                }
+//            }
+//
+//            minusBtn.setOnClickListener {
+//                val newQuantity = detailedCartItem.quantity - 1
+//                if (newQuantity >= 1) { // Ensure quantity doesn't go below 1
+//                    detailedCartItem.quantity = newQuantity
+//                    notifyItemChanged(position, "quantity") // Use payload to specify what changed
+////                    onQuantityUpdated(detailedCartItem, newQuantity)
+//                    onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
+//                }
+//            }
+
+            val grey = ContextCompat.getColor(context, R.color.grey_30)
+            val primary = ContextCompat.getColor(context, R.color.primary)
+
             plusBtn.setOnClickListener {
                 if (detailedCartItem.quantity < detailedCartItem.productStock) {
                     val newQuantity = detailedCartItem.quantity + 1
-                    detailedCartItem.quantity = newQuantity // Update the item directly
-                    notifyItemChanged(position, "quantity") // Use payload to specify what changed
-                    onQuantityUpdated(detailedCartItem, newQuantity) // Notify the presenter
+                    detailedCartItem.quantity = newQuantity
+                    notifyItemChanged(position, "quantity")
+                    onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
+                    // Enable minus button if the quantity increases above 1
+                    holder.minusBtn.setColorFilter(primary, PorterDuff.Mode.SRC_IN)
+                }
+                // Disable the plus button if the quantity reaches the stock limit
+                if (detailedCartItem.quantity >= detailedCartItem.productStock) {
+                    holder.plusBtn.setColorFilter(grey, PorterDuff.Mode.SRC_IN)
+                } else {
+                    holder.plusBtn.setColorFilter(primary, PorterDuff.Mode.SRC_IN)
                 }
             }
 
             minusBtn.setOnClickListener {
                 val newQuantity = detailedCartItem.quantity - 1
-                if (newQuantity >= 1) { // Ensure quantity doesn't go below 1
+                if (newQuantity >= 1) {
                     detailedCartItem.quantity = newQuantity
-                    notifyItemChanged(position, "quantity") // Use payload to specify what changed
-                    onQuantityUpdated(detailedCartItem, newQuantity)
+                    notifyItemChanged(position, "quantity")
+                    onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
+                    // Enable the plus button if the quantity goes below the stock limit
+                    holder.plusBtn.setColorFilter(primary, PorterDuff.Mode.SRC_IN)
+                }
+                // Disable the minus button if the quantity decreases to 1
+                if (newQuantity <= 1) {
+                    holder.minusBtn.setColorFilter(grey, PorterDuff.Mode.SRC_IN)
+                } else {
+                    holder.minusBtn.setColorFilter(primary, PorterDuff.Mode.SRC_IN)
                 }
             }
 
@@ -102,6 +144,9 @@ class CartAdapter(
         }
     }
 
+    fun getItems(): List<CartItem> {
+        return items.toList()  // Create a copy of the list to prevent external modifications
+    }
     override fun getItemCount(): Int = items.size
 
     fun updateItems(newItems: List<CartItem>) {
