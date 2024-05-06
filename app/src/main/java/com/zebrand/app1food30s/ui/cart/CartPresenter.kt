@@ -64,16 +64,34 @@ class CartPresenter(private val view: CartMVPView, private val userId: String, c
             if (cartSnapshot.exists()) {
                 val cart = cartSnapshot.toObject(Cart::class.java)
                 cart?.let {
-                    it.items.forEach { item ->
-                        val cartItemToUpdate = cartItems.find { ci -> ci.productId?.id == item.productId?.id }
-                        if (cartItemToUpdate != null) {
-                            item.quantity = cartItemToUpdate.quantity
+                    // A list of items currently in Firestore
+                    val firestoreItems = it.items.toMutableList()
+
+                    // Identify items to be removed
+                    val newCartItemIds = cartItems.mapNotNull { it.productId?.id }.toSet()
+                    val itemsToRemove = firestoreItems.filter { item -> !newCartItemIds.contains(item.productId?.id) }
+
+                    // Remove items that are no longer present
+                    firestoreItems.removeAll { item -> itemsToRemove.contains(item) }
+
+                    // Update quantities of existing items
+                    firestoreItems.forEach { item ->
+                        cartItems.find { ci -> ci.productId?.id == item.productId?.id }?.also { newItem ->
+                            item.quantity = newItem.quantity
                         }
                     }
 
-                    transaction.set(cartRef, it)
+                    // Add new items that are not in Firestore
+//                    cartItems.filter { newItem -> newItem.productId?.id !in firestoreItems.map { it.productId?.id } }
+//                        .forEach { newItem ->
+//                            firestoreItems.add(newItem)
+//                        }
+
+                    // Set the updated list back to Firestore
+                    transaction.set(cartRef, mapOf("items" to firestoreItems))
                 }
             } else {
+                // Optionally create a new cart if it doesn't exist
                 Log.d("CartAdapter", "No cart to update: ${cartRef.path}")
             }
         }.addOnSuccessListener {
@@ -82,6 +100,33 @@ class CartPresenter(private val view: CartMVPView, private val userId: String, c
             Log.e("CartAdapter", "Transaction failure for cart: ${userId}", e)
         }
     }
+
+//    fun updateCartOnExit(cartItems: List<CartItem>) {
+//        val cartRef = mDBCartRef.document(userId)
+//
+//        FirebaseUtils.fireStore.runTransaction { transaction ->
+//            val cartSnapshot = transaction.get(cartRef)
+//            if (cartSnapshot.exists()) {
+//                val cart = cartSnapshot.toObject(Cart::class.java)
+//                cart?.let {
+//                    it.items.forEach { item ->
+//                        val cartItemToUpdate = cartItems.find { ci -> ci.productId?.id == item.productId?.id }
+//                        if (cartItemToUpdate != null) {
+//                            item.quantity = cartItemToUpdate.quantity
+//                        }
+//                    }
+//
+//                    transaction.set(cartRef, it)
+//                }
+//            } else {
+//                Log.d("CartAdapter", "No cart to update: ${cartRef.path}")
+//            }
+//        }.addOnSuccessListener {
+//            Log.d("CartAdapter", "Transaction success for cart: ${userId}")
+//        }.addOnFailureListener { e ->
+//            Log.e("CartAdapter", "Transaction failure for cart: ${userId}", e)
+//        }
+//    }
 
     fun removeFromCart(productRef: DocumentReference) {
         cartRef?.let { ref ->

@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -128,16 +129,18 @@ class CartAdapter(
                 updateButtonColors(detailedCartItem, holder)
             } else {
                 // Remove the item when quantity is 1 and minusBtn is pressed
-                presenter.updateCartOnExit(items.toList())
-                onItemDeleted(detailedCartItem)
+//                presenter.updateCartOnExit(items.toList())
+//                onItemDeleted(detailedCartItem)
                 removeItemByPosition(position)  // Additional method to handle item removal
+                Log.d("Test00", "setButtonListeners: $items")
             }
         }
 
         holder.deleteBtn.setOnClickListener {
-            presenter.updateCartOnExit(items.toList())
-            onItemDeleted(detailedCartItem)
+//            presenter.updateCartOnExit(items.toList())
+//            onItemDeleted(detailedCartItem)
             removeItemByPosition(position)
+            Log.d("Test00", "setButtonListeners: $items")
         }
     }
 
