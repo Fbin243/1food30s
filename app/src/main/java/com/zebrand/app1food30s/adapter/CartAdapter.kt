@@ -81,45 +81,71 @@ class CartAdapter(
 
             itemQuantity.text = detailedCartItem.quantity.toString()
 
-//            plusBtn.setOnClickListener {
-//                if (detailedCartItem.quantity < detailedCartItem.productStock) {
-//                    val newQuantity = detailedCartItem.quantity + 1
-//                    detailedCartItem.quantity = newQuantity // Update the item directly
-//                    notifyItemChanged(position, "quantity") // Use payload to specify what changed
-////                    onQuantityUpdated(detailedCartItem, newQuantity)
-//                    onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
-//                }
-//            }
+            updateButtonColors(detailedCartItem, holder)
+
+            setButtonListeners(detailedCartItem, holder, position)
+        }
+    }
+
+    private fun updateButtonColors(detailedCartItem: CartItem, holder: CartViewHolder) {
+        val grey = ContextCompat.getColor(context, R.color.grey_30)
+        val primary = ContextCompat.getColor(context, R.color.primary)
+
+        // Set colors based on the current quantity
+        if (detailedCartItem.quantity >= detailedCartItem.productStock) {
+            holder.plusBtn.setColorFilter(grey, PorterDuff.Mode.SRC_IN)
+        } else {
+            holder.plusBtn.setColorFilter(primary, PorterDuff.Mode.SRC_IN)
+        }
+
+        if (detailedCartItem.quantity <= 1) {
+            holder.minusBtn.setColorFilter(grey, PorterDuff.Mode.SRC_IN)
+        } else {
+            holder.minusBtn.setColorFilter(primary, PorterDuff.Mode.SRC_IN)
+        }
+    }
+
+//    private fun setButtonListeners(detailedCartItem: CartItem, holder: CartViewHolder, position: Int) {
 //
-//            minusBtn.setOnClickListener {
-//                val newQuantity = detailedCartItem.quantity - 1
-//                if (newQuantity >= 1) { // Ensure quantity doesn't go below 1
-//                    detailedCartItem.quantity = newQuantity
-//                    notifyItemChanged(position, "quantity") // Use payload to specify what changed
-////                    onQuantityUpdated(detailedCartItem, newQuantity)
-//                    onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
-//                }
+//        holder.plusBtn.setOnClickListener {
+//            if (detailedCartItem.quantity < detailedCartItem.productStock) {
+//                val newQuantity = detailedCartItem.quantity + 1
+//                detailedCartItem.quantity = newQuantity
+//                notifyItemChanged(position, "quantity")
+//                onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
+//                updateButtonColors(detailedCartItem, holder)
 //            }
+//        }
+//
+//        holder.minusBtn.setOnClickListener {
+//            if (detailedCartItem.quantity > 1) {
+//                val newQuantity = detailedCartItem.quantity - 1
+//                detailedCartItem.quantity = newQuantity
+//                notifyItemChanged(position, "quantity")
+//                onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
+//                updateButtonColors(detailedCartItem, holder)
+//            } else {
+//                // Remove the item when quantity is 1 and minusBtn is pressed
+//                onItemDeleted(detailedCartItem)
+////                removeItemByPosition(position)  // Additional method to handle item removal
+//            }
+//        }
+//
+//        holder.deleteBtn.setOnClickListener {
+//            onItemDeleted(detailedCartItem)
+//        }
+//    }
+//
+//    private fun removeItemByPosition(position: Int) {
+//        if (position >= 0 && position < items.size) {
+//            items.removeAt(position)
+//            notifyItemRemoved(position)
+//            notifyItemRangeChanged(position, items.size)
+//            onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
+//        }
+//    }
 
-            val grey = ContextCompat.getColor(context, R.color.grey_30)
-            val primary = ContextCompat.getColor(context, R.color.primary)
-
-            plusBtn.setOnClickListener {
-                if (detailedCartItem.quantity < detailedCartItem.productStock) {
-                    val newQuantity = detailedCartItem.quantity + 1
-                    detailedCartItem.quantity = newQuantity
-                    notifyItemChanged(position, "quantity")
-                    onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
-                    // Enable minus button if the quantity increases above 1
-                    holder.minusBtn.setColorFilter(primary, PorterDuff.Mode.SRC_IN)
-                }
-                // Disable the plus button if the quantity reaches the stock limit
-                if (detailedCartItem.quantity >= detailedCartItem.productStock) {
-                    holder.plusBtn.setColorFilter(grey, PorterDuff.Mode.SRC_IN)
-                } else {
-                    holder.plusBtn.setColorFilter(primary, PorterDuff.Mode.SRC_IN)
-                }
-            }
+    private fun setButtonListeners(detailedCartItem: CartItem, holder: CartViewHolder, position: Int) {
 
             minusBtn.setOnClickListener {
                 val newQuantity = detailedCartItem.quantity - 1
@@ -137,10 +163,21 @@ class CartAdapter(
                     holder.minusBtn.setColorFilter(primary, PorterDuff.Mode.SRC_IN)
                 }
             }
+        }
 
-            deleteBtn.setOnClickListener {
-                onItemDeleted(detailedCartItem)
+        holder.minusBtn.setOnClickListener {
+            val newQuantity = detailedCartItem.quantity - 1
+            if (newQuantity >= 1) {
+                detailedCartItem.quantity = newQuantity
+                notifyItemChanged(position, "quantity")
+                onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
+                // Update button colors
+                updateButtonColors(detailedCartItem, holder)
             }
+        }
+
+        holder.deleteBtn.setOnClickListener {
+            onItemDeleted(detailedCartItem)
         }
     }
 
@@ -174,17 +211,4 @@ class CartAdapter(
             notifyItemRemoved(indexToRemove)
         }
     }
-
-//    fun removeItem(position: Int) {
-//        items.removeAt(position)
-//        notifyItemRemoved(position)
-//        notifyItemRangeChanged(position, items.size) // Update positions of remaining items
-//        onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
-//    }
-//
-//    fun addItem(item: CartItem) {
-//        items.add(item)
-//        notifyItemInserted(items.size - 1)
-//        onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
-//    }
 }
