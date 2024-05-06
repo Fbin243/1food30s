@@ -86,18 +86,18 @@ class ManageOrderDetailsActivity : AppCompatActivity(), ManageOrderDetailsMVPVie
 
         val adapterStatus = ArrayAdapter(this, R.layout.item_drop_down_filter, paymentArr)
         binding.spinnerPayment.setAdapter(adapterStatus)
-//        binding.spinnerPayment.setOnItemClickListener { _, _, position, _ ->
-//            val selectedText = adapterStatus.getItem(position)
-//            presenter.changePaymentStatus(idOrder, selectedText.toString())
-//        }
+        binding.spinnerPayment.setOnItemClickListener { _, _, position, _ ->
+            val selectedText = adapterStatus.getItem(position)
+            presenter.changePaymentStatus(idOrder, selectedText.toString())
+        }
 
         // customer dropdown
         val adapterCus = ArrayAdapter(this, R.layout.item_drop_down_filter, deliveryArr)
         binding.spinnerDelivery.setAdapter(adapterCus)
-//        binding.spinnerDelivery.setOnItemClickListener { _, view, position, _ ->
-//            val selectedText = adapterCus.getItem(position)
-//            presenter.changeOrderStatus(idOrder, selectedText.toString())
-//        }
+        binding.spinnerDelivery.setOnItemClickListener { _, view, position, _ ->
+            val selectedText = adapterCus.getItem(position)
+            presenter.changeOrderStatus(idOrder, selectedText.toString())
+        }
     }
 
     private fun showCustomRejectDialogBox() {
