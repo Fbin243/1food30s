@@ -33,7 +33,7 @@
     <color name="red">#E12013</color>
     <color name="light_red">#F3B9B4</color>
     <color name="pending">#C1EAA62A</color>
-    <color name="order_accepted">#CBDF592F</color>
+    <color name="order_accepted">#01DBC7</color>
     <color name="on_delivery">#8CD8F1</color>
     <color name="delivered">#BE3ACC3F</color>
     <color name="cancelled">#9FDD2525</color>
