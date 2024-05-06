@@ -2,6 +2,7 @@ package com.zebrand.app1food30s.ui.cart
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -146,8 +147,28 @@ class CartFragment : Fragment(), CartMVPView {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        if (this::presenter.isInitialized && adapter.itemCount > 0) {
+            presenter.updateCartOnExit(adapter.getItems())  // Perform cart update
+        }
+    }
+
     override fun onDestroyView() {
+//        Log.d("Test00", "onDestroyView: ")
+//        if (this::presenter.isInitialized && adapter.itemCount > 0) {
+////            Log.d("Test00", "onDestroyView: ")
+//            presenter.updateCartOnExit(adapter.getItems())  // Ensure you have a method in adapter to get all items
+//        }
+
         super.onDestroyView()
         _binding = null
     }
+
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        if (this::presenter.isInitialized && adapter.itemCount > 0) {
+//            presenter.updateCartOnExit(adapter.getItems())  // Perform cart update
+//        }
+//    }
 }

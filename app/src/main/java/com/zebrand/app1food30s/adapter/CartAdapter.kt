@@ -83,7 +83,8 @@ class CartAdapter(
                     val newQuantity = detailedCartItem.quantity + 1
                     detailedCartItem.quantity = newQuantity // Update the item directly
                     notifyItemChanged(position, "quantity") // Use payload to specify what changed
-                    onQuantityUpdated(detailedCartItem, newQuantity) // Notify the presenter
+//                    onQuantityUpdated(detailedCartItem, newQuantity)
+                    onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
                 }
             }
 
@@ -92,7 +93,8 @@ class CartAdapter(
                 if (newQuantity >= 1) { // Ensure quantity doesn't go below 1
                     detailedCartItem.quantity = newQuantity
                     notifyItemChanged(position, "quantity") // Use payload to specify what changed
-                    onQuantityUpdated(detailedCartItem, newQuantity)
+//                    onQuantityUpdated(detailedCartItem, newQuantity)
+                    onUpdateTotalPrice(items.sumOf { it.productPrice * it.quantity })
                 }
             }
 
@@ -102,6 +104,9 @@ class CartAdapter(
         }
     }
 
+    fun getItems(): List<CartItem> {
+        return items.toList()  // Create a copy of the list to prevent external modifications
+    }
     override fun getItemCount(): Int = items.size
 
     fun updateItems(newItems: List<CartItem>) {
